@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Lock } from 'lucide-react';
+import { X, Lock } from 'lucide-react';
 import { Button } from './Button';
 
 interface LoginModalProps {
@@ -94,12 +94,12 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                                 </>
                             ) : (
                                 <div className="text-center py-8">
-                                    <div className="w-16 h-16 bg-gravix-success/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                                        <Check className="w-8 h-8 text-gravix-success" />
+                                    <div className="w-16 h-16 bg-gravix-red/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <X className="w-8 h-8 text-gravix-red" />
                                     </div>
-                                    <h2 className="text-xl font-bold text-white mb-2">Access Granted</h2>
+                                    <h2 className="text-xl font-bold text-white mb-2">Access Denied</h2>
                                     <p className="text-gravix-gray-400 mb-8 text-sm">
-                                        Redirecting to your dashboard...
+                                        Please contact procurement for authorization.
                                     </p>
                                 </div>
                             )}
