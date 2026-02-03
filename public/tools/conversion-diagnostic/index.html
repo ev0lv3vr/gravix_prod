@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversion Rate Diagnostic Tool | Glue Masters</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); }
+        .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+        .status-critical { background: #dc2626; }
+        .status-warning { background: #f59e0b; }
+        .status-good { background: #22c55e; }
+        .status-unknown { background: #6b7280; }
+        .checklist-item.checked { opacity: 0.6; text-decoration: line-through; }
+        .severity-high { border-left: 4px solid #dc2626; }
+        .severity-medium { border-left: 4px solid #f59e0b; }
+        .severity-low { border-left: 4px solid #22c55e; }
+        .tab-active { background: rgba(59, 130, 246, 0.3); border-bottom: 2px solid #3b82f6; }
+        @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .pulse-slow { animation: pulse-slow 2s infinite; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold">🔍 Conversion Rate Diagnostic Tool</h1>
+                <p class="text-gray-400 mt-1">Systematic investigation for conversion crashes</p>
+            </div>
+            <div class="text-right">
+                <div class="text-sm text-gray-400">Last Updated</div>
+                <div id="lastUpdated" class="text-lg font-mono">--</div>
+            </div>
+        </div>
+
+        <!-- SKU Selector -->
+        <div class="card rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-4 mb-4">
+                <h2 class="text-xl font-semibold">📦 SKU Under Investigation</h2>
+                <button onclick="addNewSku()" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-sm">+ Add SKU</button>
+            </div>
+            <div id="skuTabs" class="flex gap-2 flex-wrap">
+                <!-- SKU tabs will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Active Investigation -->
+        <div id="investigationArea">
+            <!-- Main content loaded dynamically -->
+        </div>
+
+        <!-- No SKU Selected State -->
+        <div id="emptyState" class="card rounded-xl p-12 text-center hidden">
+            <div class="text-6xl mb-4">🔬</div>
+            <h3 class="text-xl font-semibold mb-2">Start an Investigation</h3>
+            <p class="text-gray-400 mb-6">Add a SKU to begin diagnosing conversion issues</p>
+            <button onclick="addNewSku()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold">
+                + Add First SKU
+            </button>
+        </div>
+    </div>
+
+    <!-- Add SKU Modal -->
+    <div id="addSkuModal" class="fixed inset-0 bg-black/70 flex items-center justify-center hidden z-50">
+        <div class="card rounded-xl p-8 w-full max-w-md mx-4">
+            <h3 class="text-xl font-bold mb-6">Add SKU for Investigation</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">ASIN</label>
+                    <input type="text" id="newAsin" placeholder="B01M8JT9LI" 
+                        class="w-full bg-slate-700 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Product Name</label>
+                    <input type="text" id="newName" placeholder="2oz Thin CA Glue" 
+                        class="w-full bg-slate-700 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Previous CVR %</label>
+                        <input type="number" step="0.1" id="newPrevCvr" placeholder="26.3" 
+                            class="w-full bg-slate-700 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Current CVR %</label>
+                        <input type="number" step="0.1" id="newCurrCvr" placeholder="13.4" 
+                            class="w-full bg-slate-700 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-4 mt-6">
+                <button onclick="closeModal()" class="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded">Cancel</button>
+                <button onclick="saveSku()" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded font-semibold">Start Investigation</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data persistence
+        const STORAGE_KEY = 'conversionDiagnostic';
+        
+        // Diagnostic categories and checklists
+        const diagnosticCategories = [
+            {
+                id: 'listing',
+                name: '📝 Listing Issues',
+                icon: '📝',
+                description: 'Content, images, and A+ changes',
+                severity: 'high',
+                items: [
+                    { id: 'title_changed', text: 'Title was changed recently', action: 'Compare current vs previous title in Seller Central > Listing Quality' },
+                    { id: 'bullets_changed', text: 'Bullet points were modified', action: 'Review bullet point history, check for keyword removal' },
+                    { id: 'images_changed', text: 'Main image or gallery changed', action: 'Check image quality, lifestyle vs product shots ratio' },
+                    { id: 'aplus_issue', text: 'A+ Content removed or modified', action: 'Verify A+ status in A+ Content Manager' },
+                    { id: 'backend_keywords', text: 'Backend search terms changed', action: 'Review backend keywords in Listing > Edit > Keywords' },
+                    { id: 'brand_story', text: 'Brand Story affected', action: 'Check Brand Story section on listing' },
+                    { id: 'video_removed', text: 'Product video removed or changed', action: 'Verify video presence and quality' }
+                ]
+            },
+            {
+                id: 'reviews',
+                name: '⭐ Reviews & Ratings',
+                icon: '⭐',
+                description: 'Review count, rating, and sentiment',
+                severity: 'high',
+                items: [
+                    { id: 'rating_drop', text: 'Star rating dropped significantly', action: 'Check rating history, identify recent negative reviews' },
+                    { id: 'negative_reviews', text: 'Recent 1-2 star reviews on first page', action: 'Review first page of reviews, consider responding' },
+                    { id: 'review_count', text: 'Lost reviews (suppressed/removed)', action: 'Compare current count vs historical data' },
+                    { id: 'competitor_reviews', text: 'Competitor gained reviews advantage', action: 'Check top 3 competitors review counts/ratings' },
+                    { id: 'qa_issues', text: 'Negative Q&A appearing prominently', action: 'Review Q&A section for concerning questions' }
+                ]
+            },
+            {
+                id: 'price',
+                name: '💰 Pricing & Buy Box',
+                icon: '💰',
+                description: 'Price competitiveness and Buy Box',
+                severity: 'high',
+                items: [
+                    { id: 'price_increase', text: 'Price increased recently', action: 'Review pricing history, compare to competitors' },
+                    { id: 'competitor_undercut', text: 'Competitor undercut on price', action: 'Check competitive pricing landscape' },
+                    { id: 'buy_box_lost', text: 'Lost Buy Box percentage', action: 'Check Buy Box % in Business Reports' },
+                    { id: 'coupon_removed', text: 'Coupon or deal removed', action: 'Verify coupon status in Advertising > Coupons' },
+                    { id: 'subscribe_save', text: 'Subscribe & Save issues', action: 'Check S&S enrollment and discount' }
+                ]
+            },
+            {
+                id: 'inventory',
+                name: '📦 Inventory & Fulfillment',
+                icon: '📦',
+                description: 'Stock levels and shipping',
+                severity: 'medium',
+                items: [
+                    { id: 'low_stock', text: 'Low stock indicator showing', action: 'Check inventory levels in FBA Inventory' },
+                    { id: 'delivery_date', text: 'Delivery date pushed out', action: 'Check listing for delivery promise changes' },
+                    { id: 'prime_badge', text: 'Prime badge issues', action: 'Verify Prime eligibility status' },
+                    { id: 'stranded', text: 'Inventory stranded/suppressed', action: 'Check Fix Stranded Inventory report' },
+                    { id: 'restock_limits', text: 'Hit restock limits', action: 'Review Restock Limits in Inventory Planning' }
+                ]
+            },
+            {
+                id: 'traffic',
+                name: '🚦 Traffic Quality',
+                icon: '🚦',
+                description: 'Traffic source and quality changes',
+                severity: 'medium',
+                items: [
+                    { id: 'ppc_changed', text: 'PPC campaigns modified', action: 'Review recent campaign changes in Advertising Console' },
+                    { id: 'keyword_rank', text: 'Lost organic keyword rankings', action: 'Check keyword ranks in Helium10 Keyword Tracker' },
+                    { id: 'traffic_source', text: 'Traffic source mix changed', action: 'Review traffic sources in Brand Analytics' },
+                    { id: 'asin_targeting', text: 'Being targeted by competitors', action: 'Check Product Targeting reports' },
+                    { id: 'external_traffic', text: 'External traffic source changed', action: 'Review external traffic campaigns' }
+                ]
+            },
+            {
+                id: 'competition',
+                name: '⚔️ Competitive Landscape',
+                icon: '⚔️',
+                description: 'Competitor actions and market changes',
+                severity: 'medium',
+                items: [
+                    { id: 'new_competitor', text: 'New competitor entered market', action: 'Check SERP for new listings' },
+                    { id: 'competitor_promo', text: 'Competitor running promotion', action: 'Review competitor listings for deals/coupons' },
+                    { id: 'competitor_listing', text: 'Competitor improved listing', action: 'Analyze top competitor listings for changes' },
+                    { id: 'market_shift', text: 'Market demand shift', action: 'Check Google Trends and keyword volumes' }
+                ]
+            },
+            {
+                id: 'technical',
+                name: '🔧 Technical Issues',
+                icon: '🔧',
+                description: 'Catalog and policy problems',
+                severity: 'high',
+                items: [
+                    { id: 'suppressed', text: 'Listing suppressed/inactive', action: 'Check Manage Inventory for suppression alerts' },
+                    { id: 'catalog_issue', text: 'Catalog merge/split issue', action: 'Verify ASIN/parent-child relationships' },
+                    { id: 'policy_warning', text: 'Policy violation warning', action: 'Check Account Health and Policy Compliance' },
+                    { id: 'hijacker', text: 'Unauthorized seller on listing', action: 'Check for other sellers on the listing' },
+                    { id: 'variation_issue', text: 'Variation family problems', action: 'Review parent-child structure' }
+                ]
+            },
+            {
+                id: 'external',
+                name: '🌍 External Factors',
+                icon: '🌍',
+                description: 'Seasonality and market conditions',
+                severity: 'low',
+                items: [
+                    { id: 'seasonality', text: 'Seasonal demand drop', action: 'Compare to same period last year' },
+                    { id: 'holiday_effect', text: 'Post-holiday hangover', action: 'Account for holiday timing differences' },
+                    { id: 'category_change', text: 'Category-wide trend', action: 'Check category BSR distribution' },
+                    { id: 'economic', text: 'Economic conditions impact', action: 'Consider macro factors affecting discretionary spend' }
+                ]
+            }
+        ];
+
+        // State
+        let state = {
+            skus: [],
+            activeSkuId: null
+        };
+
+        // Initialize
+        function init() {
+            loadState();
+            render();
+            updateTimestamp();
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                state = JSON.parse(saved);
+            }
+            
+            // Pre-populate with 2oz Thin if empty
+            if (state.skus.length === 0) {
+                state.skus.push({
+                    id: 'sku_' + Date.now(),
+                    asin: 'B01M8JT9LI',
+                    name: '2oz Thin CA Glue',
+                    prevCvr: 26.3,
+                    currCvr: 13.4,
+                    checkedItems: {},
+                    findings: [],
+                    notes: '',
+                    status: 'investigating',
+                    createdAt: new Date().toISOString()
+                });
+                state.activeSkuId = state.skus[0].id;
+                saveState();
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function updateTimestamp() {
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+        }
+
+        function render() {
+            renderSkuTabs();
+            if (state.activeSkuId) {
+                document.getElementById('emptyState').classList.add('hidden');
+                document.getElementById('investigationArea').classList.remove('hidden');
+                renderInvestigation();
+            } else {
+                document.getElementById('emptyState').classList.remove('hidden');
+                document.getElementById('investigationArea').classList.add('hidden');
+            }
+        }
+
+        function renderSkuTabs() {
+            const container = document.getElementById('skuTabs');
+            container.innerHTML = state.skus.map(sku => {
+                const isActive = sku.id === state.activeSkuId;
+                const drop = ((sku.prevCvr - sku.currCvr) / sku.prevCvr * 100).toFixed(0);
+                const checkedCount = Object.values(sku.checkedItems).filter(v => v).length;
+                const totalItems = diagnosticCategories.reduce((sum, cat) => sum + cat.items.length, 0);
+                
+                return `
+                    <button onclick="selectSku('${sku.id}')" 
+                        class="px-4 py-2 rounded-lg flex items-center gap-2 ${isActive ? 'tab-active' : 'bg-slate-700 hover:bg-slate-600'}">
+                        <span class="font-semibold">${sku.name}</span>
+                        <span class="text-xs px-2 py-0.5 rounded ${drop > 30 ? 'bg-red-600' : drop > 15 ? 'bg-yellow-600' : 'bg-green-600'}">
+                            -${drop}%
+                        </span>
+                        <span class="text-xs text-gray-400">${checkedCount}/${totalItems}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectSku(skuId) {
+            state.activeSkuId = skuId;
+            saveState();
+            render();
+        }
+
+        function addNewSku() {
+            document.getElementById('addSkuModal').classList.remove('hidden');
+            document.getElementById('newAsin').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('addSkuModal').classList.add('hidden');
+            document.getElementById('newAsin').value = '';
+            document.getElementById('newName').value = '';
+            document.getElementById('newPrevCvr').value = '';
+            document.getElementById('newCurrCvr').value = '';
+        }
+
+        function saveSku() {
+            const asin = document.getElementById('newAsin').value.trim();
+            const name = document.getElementById('newName').value.trim();
+            const prevCvr = parseFloat(document.getElementById('newPrevCvr').value) || 0;
+            const currCvr = parseFloat(document.getElementById('newCurrCvr').value) || 0;
+
+            if (!asin || !name) {
+                alert('Please enter ASIN and Product Name');
+                return;
+            }
+
+            const newSku = {
+                id: 'sku_' + Date.now(),
+                asin,
+                name,
+                prevCvr,
+                currCvr,
+                checkedItems: {},
+                findings: [],
+                notes: '',
+                status: 'investigating',
+                createdAt: new Date().toISOString()
+            };
+
+            state.skus.push(newSku);
+            state.activeSkuId = newSku.id;
+            saveState();
+            closeModal();
+            render();
+        }
+
+        function getActiveSku() {
+            return state.skus.find(s => s.id === state.activeSkuId);
+        }
+
+        function renderInvestigation() {
+            const sku = getActiveSku();
+            if (!sku) return;
+
+            const drop = ((sku.prevCvr - sku.currCvr) / sku.prevCvr * 100).toFixed(1);
+            const checkedCount = Object.values(sku.checkedItems).filter(v => v).length;
+            const totalItems = diagnosticCategories.reduce((sum, cat) => sum + cat.items.length, 0);
+            const confirmedFindings = sku.findings.filter(f => f.confirmed).length;
+
+            const container = document.getElementById('investigationArea');
+            container.innerHTML = `
+                <!-- Summary Card -->
+                <div class="card rounded-xl p-6 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold">${sku.name}</h2>
+                            <p class="text-gray-400 font-mono">${sku.asin}</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button onclick="deleteSku('${sku.id}')" class="text-red-400 hover:text-red-300 text-sm">🗑️ Remove</button>
+                            <select onchange="updateStatus('${sku.id}', this.value)" 
+                                class="bg-slate-700 rounded px-3 py-1.5 text-sm">
+                                <option value="investigating" ${sku.status === 'investigating' ? 'selected' : ''}>🔍 Investigating</option>
+                                <option value="diagnosed" ${sku.status === 'diagnosed' ? 'selected' : ''}>✅ Diagnosed</option>
+                                <option value="resolved" ${sku.status === 'resolved' ? 'selected' : ''}>🎉 Resolved</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                        <div class="bg-slate-700/50 rounded-lg p-4 text-center">
+                            <div class="text-3xl font-bold text-green-400">${sku.prevCvr}%</div>
+                            <div class="text-sm text-gray-400">Previous CVR</div>
+                        </div>
+                        <div class="bg-slate-700/50 rounded-lg p-4 text-center">
+                            <div class="text-3xl font-bold text-red-400">${sku.currCvr}%</div>
+                            <div class="text-sm text-gray-400">Current CVR</div>
+                        </div>
+                        <div class="bg-slate-700/50 rounded-lg p-4 text-center">
+                            <div class="text-3xl font-bold text-yellow-400">-${drop}%</div>
+                            <div class="text-sm text-gray-400">Drop</div>
+                        </div>
+                        <div class="bg-slate-700/50 rounded-lg p-4 text-center">
+                            <div class="text-3xl font-bold">${checkedCount}/${totalItems}</div>
+                            <div class="text-sm text-gray-400">Checked</div>
+                        </div>
+                        <div class="bg-slate-700/50 rounded-lg p-4 text-center">
+                            <div class="text-3xl font-bold text-blue-400">${confirmedFindings}</div>
+                            <div class="text-sm text-gray-400">Findings</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-700 rounded-full h-2 mb-2">
+                        <div class="bg-blue-500 h-2 rounded-full transition-all" style="width: ${(checkedCount/totalItems*100).toFixed(0)}%"></div>
+                    </div>
+                    <div class="text-sm text-gray-400 text-right">${(checkedCount/totalItems*100).toFixed(0)}% complete</div>
+                </div>
+
+                <!-- Category Grid -->
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    ${diagnosticCategories.map(cat => renderCategory(cat, sku)).join('')}
+                </div>
+
+                <!-- Confirmed Findings -->
+                <div class="card rounded-xl p-6 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold">🎯 Confirmed Findings</h3>
+                        <button onclick="addFinding('${sku.id}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-sm">+ Add Finding</button>
+                    </div>
+                    <div id="findingsList" class="space-y-3">
+                        ${sku.findings.length === 0 ? 
+                            '<p class="text-gray-500 text-center py-8">No findings yet. Check items above and add confirmed issues here.</p>' :
+                            sku.findings.map((f, i) => `
+                                <div class="bg-slate-700/50 rounded-lg p-4 ${f.confirmed ? 'severity-high' : 'border-l-4 border-slate-600'}">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <span class="text-lg">${f.category || '🔍'}</span>
+                                                <span class="font-semibold">${f.title}</span>
+                                                ${f.confirmed ? '<span class="text-xs bg-red-600 px-2 py-0.5 rounded">CONFIRMED</span>' : ''}
+                                            </div>
+                                            <p class="text-gray-400 text-sm">${f.description}</p>
+                                            ${f.action ? `<p class="text-blue-400 text-sm mt-2">📋 Action: ${f.action}</p>` : ''}
+                                        </div>
+                                        <div class="flex items-center gap-2 ml-4">
+                                            <button onclick="toggleFindingConfirmed('${sku.id}', ${i})" 
+                                                class="text-sm ${f.confirmed ? 'text-green-400' : 'text-gray-500'}">
+                                                ${f.confirmed ? '✅' : '⬜'}
+                                            </button>
+                                            <button onclick="removeFinding('${sku.id}', ${i})" class="text-red-400 hover:text-red-300">×</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                </div>
+
+                <!-- Investigation Notes -->
+                <div class="card rounded-xl p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4">📝 Investigation Notes</h3>
+                    <textarea id="skuNotes" onchange="updateNotes('${sku.id}', this.value)" 
+                        placeholder="Add notes about your investigation..."
+                        class="w-full bg-slate-700 rounded-lg p-4 min-h-32 focus:outline-none focus:ring-2 focus:ring-blue-500">${sku.notes}</textarea>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4">⚡ Quick Actions</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <a href="https://sellercentral.amazon.com/inventory/ref=xx_invmgr_dnav_xx?asin=${sku.asin}" 
+                            target="_blank" class="bg-slate-700 hover:bg-slate-600 rounded-lg p-4 text-center">
+                            <div class="text-2xl mb-2">📦</div>
+                            <div class="text-sm">View in Seller Central</div>
+                        </a>
+                        <a href="https://www.amazon.com/dp/${sku.asin}" target="_blank" 
+                            class="bg-slate-700 hover:bg-slate-600 rounded-lg p-4 text-center">
+                            <div class="text-2xl mb-2">🛒</div>
+                            <div class="text-sm">View Live Listing</div>
+                        </a>
+                        <a href="https://app.helium10.com/cerebro?keywords=${sku.asin}" target="_blank" 
+                            class="bg-slate-700 hover:bg-slate-600 rounded-lg p-4 text-center">
+                            <div class="text-2xl mb-2">🧠</div>
+                            <div class="text-sm">Helium10 Cerebro</div>
+                        </a>
+                        <button onclick="exportReport('${sku.id}')" 
+                            class="bg-slate-700 hover:bg-slate-600 rounded-lg p-4 text-center">
+                            <div class="text-2xl mb-2">📊</div>
+                            <div class="text-sm">Export Report</div>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCategory(cat, sku) {
+            const catChecked = cat.items.filter(item => sku.checkedItems[item.id]).length;
+            const hasIssues = cat.items.some(item => sku.checkedItems[item.id]);
+            
+            return `
+                <div class="card rounded-xl p-5 ${cat.severity === 'high' ? 'severity-high' : cat.severity === 'medium' ? 'severity-medium' : 'severity-low'}">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">${cat.icon}</span>
+                            <div>
+                                <h4 class="font-semibold">${cat.name}</h4>
+                                <p class="text-xs text-gray-400">${cat.description}</p>
+                            </div>
+                        </div>
+                        <span class="text-sm ${catChecked > 0 ? 'text-yellow-400' : 'text-gray-500'}">${catChecked}/${cat.items.length}</span>
+                    </div>
+                    <div class="space-y-2">
+                        ${cat.items.map(item => `
+                            <label class="flex items-start gap-3 p-2 rounded hover:bg-slate-700/50 cursor-pointer group ${sku.checkedItems[item.id] ? 'checklist-item checked' : ''}">
+                                <input type="checkbox" ${sku.checkedItems[item.id] ? 'checked' : ''} 
+                                    onchange="toggleItem('${sku.id}', '${item.id}', '${cat.icon}')"
+                                    class="mt-1 rounded">
+                                <div class="flex-1">
+                                    <div class="text-sm">${item.text}</div>
+                                    <div class="text-xs text-gray-500 hidden group-hover:block">${item.action}</div>
+                                </div>
+                                ${sku.checkedItems[item.id] ? `
+                                    <button onclick="event.stopPropagation(); addFindingFromItem('${sku.id}', '${cat.icon}', '${item.text}', '${item.action.replace(/'/g, "\\'")}')"
+                                        class="text-xs bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded opacity-0 group-hover:opacity-100">
+                                        + Finding
+                                    </button>
+                                ` : ''}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleItem(skuId, itemId, catIcon) {
+            const sku = state.skus.find(s => s.id === skuId);
+            if (sku) {
+                sku.checkedItems[itemId] = !sku.checkedItems[itemId];
+                saveState();
+                render();
+            }
+        }
+
+        function addFinding(skuId) {
+            const title = prompt('Finding title:');
+            if (!title) return;
+            
+            const description = prompt('Description:');
+            const action = prompt('Recommended action:');
+            
+            const sku = state.skus.find(s => s.id === skuId);
+            if (sku) {
+                sku.findings.push({
+                    title,
+                    description: description || '',
+                    action: action || '',
+                    confirmed: true,
+                    category: '🔍',
+                    createdAt: new Date().toISOString()
+                });
+                saveState();
+                render();
+            }
+        }
+
+        function addFindingFromItem(skuId, catIcon, title, action) {
+            const description = prompt('Add details about this finding:', '');
+            
+            const sku = state.skus.find(s => s.id === skuId);
+            if (sku) {
+                sku.findings.push({
+                    title,
+                    description: description || '',
+                    action,
+                    confirmed: true,
+                    category: catIcon,
+                    createdAt: new Date().toISOString()
+                });
+                saveState();
+                render();
+            }
+        }
+
+        function toggleFindingConfirmed(skuId, index) {
+            const sku = state.skus.find(s => s.id === skuId);
+            if (sku && sku.findings[index]) {
+                sku.findings[index].confirmed = !sku.findings[index].confirmed;
+                saveState();
+                render();
+            }
+        }
+
+        function removeFinding(skuId, index) {
+            const sku = state.skus.find(s => s.id === skuId);
+            if (sku) {
+                sku.findings.splice(index, 1);
+                saveState();
+                render();
+            }
+        }
+
+        function updateNotes(skuId, notes) {
+            const sku = state.skus.find(s => s.id === skuId);
+            if (sku) {
+                sku.notes = notes;
+                saveState();
+            }
+        }
+
+        function updateStatus(skuId, status) {
+            const sku = state.skus.find(s => s.id === skuId);
+            if (sku) {
+                sku.status = status;
+                saveState();
+                render();
+            }
+        }
+
+        function deleteSku(skuId) {
+            if (!confirm('Remove this SKU investigation?')) return;
+            state.skus = state.skus.filter(s => s.id !== skuId);
+            if (state.activeSkuId === skuId) {
+                state.activeSkuId = state.skus.length > 0 ? state.skus[0].id : null;
+            }
+            saveState();
+            render();
+        }
+
+        function exportReport(skuId) {
+            const sku = state.skus.find(s => s.id === skuId);
+            if (!sku) return;
+
+            const drop = ((sku.prevCvr - sku.currCvr) / sku.prevCvr * 100).toFixed(1);
+            const checkedItems = Object.entries(sku.checkedItems)
+                .filter(([k, v]) => v)
+                .map(([k]) => {
+                    for (const cat of diagnosticCategories) {
+                        const item = cat.items.find(i => i.id === k);
+                        if (item) return `- ${cat.icon} ${item.text}`;
+                    }
+                    return `- ${k}`;
+                });
+
+            const report = `# Conversion Diagnostic Report
+## ${sku.name} (${sku.asin})
+
+### Summary
+- **Previous CVR:** ${sku.prevCvr}%
+- **Current CVR:** ${sku.currCvr}%  
+- **Drop:** ${drop}%
+- **Status:** ${sku.status}
+- **Generated:** ${new Date().toLocaleString()}
+
+### Checked Items (${checkedItems.length})
+${checkedItems.join('\n') || 'None'}
+
+### Confirmed Findings (${sku.findings.filter(f => f.confirmed).length})
+${sku.findings.filter(f => f.confirmed).map(f => `
+#### ${f.category} ${f.title}
+${f.description}
+**Action:** ${f.action}
+`).join('\n') || 'None confirmed'}
+
+### Investigation Notes
+${sku.notes || 'No notes'}
+`;
+
+            // Download as file
+            const blob = new Blob([report], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cvr-diagnostic-${sku.asin}-${new Date().toISOString().split('T')[0]}.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

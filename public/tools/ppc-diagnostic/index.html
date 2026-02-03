@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPC Campaign Diagnostic | Glue Masters</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0f1419;
+            --bg-card: #1c2128;
+            --bg-input: #2d333b;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-yellow: #d29922;
+            --accent-red: #f85149;
+            --accent-purple: #a371f7;
+            --border: #30363d;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .status-badge {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: var(--accent-yellow);
+            color: #000;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        button {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            background: var(--border);
+        }
+        
+        button.primary {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: #fff;
+        }
+        
+        button.primary:hover {
+            background: #4393e6;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .card h2 {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .card h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+        
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .metric-value.good { color: var(--accent-green); }
+        .metric-value.warning { color: var(--accent-yellow); }
+        .metric-value.bad { color: var(--accent-red); }
+        
+        .delta {
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+        
+        .delta.up { background: rgba(63, 185, 80, 0.2); color: var(--accent-green); }
+        .delta.down { background: rgba(248, 81, 73, 0.2); color: var(--accent-red); }
+        
+        /* Campaign Selector */
+        .campaign-selector {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .campaign-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .campaign-tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .campaign-tab:hover {
+            border-color: var(--accent-blue);
+        }
+        
+        .campaign-tab.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+        
+        .campaign-tab .name {
+            font-weight: 500;
+        }
+        
+        .campaign-tab .asin {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        
+        .campaign-tab.active .asin {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Data Entry */
+        .data-entry {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .input-group label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .input-group input {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+        
+        /* Diagnostic Checklist */
+        .diagnostic-section {
+            margin-bottom: 24px;
+        }
+        
+        .diagnostic-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--bg-input);
+            cursor: pointer;
+        }
+        
+        .category-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+        
+        .category-icon {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .progress-pill {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: var(--bg-dark);
+        }
+        
+        .category-content {
+            padding: 16px 20px;
+            display: none;
+        }
+        
+        .category-content.open {
+            display: block;
+        }
+        
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .check-item:last-child {
+            border-bottom: none;
+        }
+        
+        .check-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+        
+        .check-content {
+            flex: 1;
+        }
+        
+        .check-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .check-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .severity {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        
+        .severity.critical { background: rgba(248, 81, 73, 0.2); color: var(--accent-red); }
+        .severity.high { background: rgba(210, 153, 34, 0.2); color: var(--accent-yellow); }
+        .severity.medium { background: rgba(88, 166, 255, 0.2); color: var(--accent-blue); }
+        
+        /* Chart Container */
+        .chart-container {
+            height: 250px;
+            position: relative;
+        }
+        
+        /* Findings Log */
+        .findings-log {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        
+        .finding-entry {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-input);
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .finding-type {
+            width: 8px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        
+        .finding-type.issue { background: var(--accent-red); }
+        .finding-type.opportunity { background: var(--accent-green); }
+        .finding-type.note { background: var(--accent-blue); }
+        
+        .finding-content {
+            flex: 1;
+        }
+        
+        .finding-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .add-finding {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .add-finding input {
+            flex: 1;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: var(--text-primary);
+        }
+        
+        .add-finding select {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: var(--text-primary);
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+        
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .quick-action:hover {
+            border-color: var(--accent-blue);
+            background: var(--bg-input);
+        }
+        
+        /* Health Score */
+        .health-score {
+            text-align: center;
+            padding: 24px;
+        }
+        
+        .health-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 36px;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .health-circle::before {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            border-radius: 50%;
+            background: var(--bg-card);
+        }
+        
+        .health-circle span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .health-circle.critical { background: conic-gradient(var(--accent-red) 0deg, var(--accent-red) calc(var(--score) * 3.6deg), var(--bg-input) calc(var(--score) * 3.6deg)); }
+        .health-circle.warning { background: conic-gradient(var(--accent-yellow) 0deg, var(--accent-yellow) calc(var(--score) * 3.6deg), var(--bg-input) calc(var(--score) * 3.6deg)); }
+        .health-circle.good { background: conic-gradient(var(--accent-green) 0deg, var(--accent-green) calc(var(--score) * 3.6deg), var(--bg-input) calc(var(--score) * 3.6deg)); }
+        
+        .health-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        /* Recommendations */
+        .recommendations {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .rec-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .rec-item:last-child {
+            border-bottom: none;
+        }
+        
+        .rec-priority {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .rec-priority.p1 { background: var(--accent-red); }
+        .rec-priority.p2 { background: var(--accent-yellow); color: #000; }
+        .rec-priority.p3 { background: var(--accent-blue); }
+        
+        .rec-content h4 {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .rec-content p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        /* Preloaded Data Notice */
+        .preload-notice {
+            background: rgba(163, 113, 247, 0.1);
+            border: 1px solid var(--accent-purple);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .preload-notice strong {
+            color: var(--accent-purple);
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-entry {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                📊 PPC Campaign Diagnostic
+                <span class="status-badge">Manual Mode</span>
+            </h1>
+            <div class="header-actions">
+                <button onclick="exportReport()">📄 Export Report</button>
+                <button onclick="clearData()">🗑️ Clear Data</button>
+                <button class="primary" onclick="saveData()">💾 Save</button>
+            </div>
+        </header>
+        
+        <div class="preload-notice">
+            <strong>🎯 Pre-loaded:</strong> 8oz Thick (B01M8JT9LI) campaign data — traffic down 55% YoY. 
+            Use this tool to systematically diagnose why.
+        </div>
+        
+        <!-- Campaign Selector -->
+        <div class="campaign-selector">
+            <h2 style="margin-bottom: 12px; font-size: 14px; color: var(--text-secondary);">SELECT CAMPAIGN TO DIAGNOSE</h2>
+            <div class="campaign-tabs" id="campaignTabs">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+        
+        <!-- Current Period Data Entry -->
+        <div class="card" style="margin-bottom: 24px;">
+            <h2>📈 Enter Campaign Metrics (Current Period)</h2>
+            <div class="data-entry">
+                <div class="input-group">
+                    <label>Impressions</label>
+                    <input type="number" id="impressions" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label>Clicks</label>
+                    <input type="number" id="clicks" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label>Spend ($)</label>
+                    <input type="number" id="spend" step="0.01" placeholder="0.00">
+                </div>
+                <div class="input-group">
+                    <label>Sales ($)</label>
+                    <input type="number" id="sales" step="0.01" placeholder="0.00">
+                </div>
+                <div class="input-group">
+                    <label>Orders</label>
+                    <input type="number" id="orders" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label>ACoS (%)</label>
+                    <input type="number" id="acos" step="0.1" placeholder="0.0">
+                </div>
+            </div>
+            
+            <h2 style="margin-top: 20px;">📉 Prior Period (for comparison)</h2>
+            <div class="data-entry">
+                <div class="input-group">
+                    <label>Impressions (Prior)</label>
+                    <input type="number" id="impressionsPrior" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label>Clicks (Prior)</label>
+                    <input type="number" id="clicksPrior" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label>Spend (Prior)</label>
+                    <input type="number" id="spendPrior" step="0.01" placeholder="0.00">
+                </div>
+                <div class="input-group">
+                    <label>Sales (Prior)</label>
+                    <input type="number" id="salesPrior" step="0.01" placeholder="0.00">
+                </div>
+            </div>
+            <button class="primary" onclick="calculateMetrics()">🔄 Calculate & Analyze</button>
+        </div>
+        
+        <!-- Metrics Overview -->
+        <div class="grid">
+            <div class="card">
+                <h2>Traffic Health</h2>
+                <div class="metric">
+                    <span class="metric-label">Impressions</span>
+                    <span class="metric-value" id="metricImpressions">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Clicks</span>
+                    <span class="metric-value" id="metricClicks">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">CTR</span>
+                    <span class="metric-value" id="metricCTR">--</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Efficiency</h2>
+                <div class="metric">
+                    <span class="metric-label">ACoS</span>
+                    <span class="metric-value" id="metricACoS">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">ROAS</span>
+                    <span class="metric-value" id="metricROAS">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">CPC</span>
+                    <span class="metric-value" id="metricCPC">--</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Conversion</h2>
+                <div class="metric">
+                    <span class="metric-label">CVR</span>
+                    <span class="metric-value" id="metricCVR">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Orders</span>
+                    <span class="metric-value" id="metricOrders">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Avg Order Value</span>
+                    <span class="metric-value" id="metricAOV">--</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="health-score">
+                    <div class="health-circle warning" id="healthCircle" style="--score: 45;">
+                        <span id="healthScore">45</span>
+                    </div>
+                    <div class="health-label">Campaign Health Score</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- YoY Change Chart -->
+        <div class="card" style="margin-bottom: 24px;">
+            <h2>📊 YoY Performance Change</h2>
+            <div class="chart-container">
+                <canvas id="yoyChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Diagnostic Checklist -->
+        <div class="diagnostic-section">
+            <h2 style="margin-bottom: 16px; font-size: 18px;">🔍 Diagnostic Checklist</h2>
+            
+            <!-- Budget & Delivery -->
+            <div class="diagnostic-category" data-category="budget">
+                <div class="category-header" onclick="toggleCategory('budget')">
+                    <h3>
+                        <span class="category-icon" style="background: rgba(248, 81, 73, 0.2); color: var(--accent-red);">💰</span>
+                        Budget & Delivery Issues
+                    </h3>
+                    <span class="progress-pill" id="progress-budget">0/5</span>
+                </div>
+                <div class="category-content" id="content-budget">
+                    <div class="check-item">
+                        <input type="checkbox" id="check-budget-1" onchange="updateProgress('budget')">
+                        <div class="check-content">
+                            <div class="check-title">Campaign running out of budget</div>
+                            <div class="check-desc">Check if "Out of Budget" appears in Campaign Manager. Campaigns pause mid-day = lost impressions.</div>
+                        </div>
+                        <span class="severity critical">Critical</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-budget-2" onchange="updateProgress('budget')">
+                        <div class="check-content">
+                            <div class="check-title">Daily budget too low vs competition</div>
+                            <div class="check-desc">If competitors outspend you 3:1, you'll lose impression share. Check Sponsored Products > Impressions Share.</div>
+                        </div>
+                        <span class="severity high">High</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-budget-3" onchange="updateProgress('budget')">
+                        <div class="check-content">
+                            <div class="check-title">Portfolio budget cap hit</div>
+                            <div class="check-desc">If campaign is in a portfolio, check if portfolio budget cap is limiting delivery.</div>
+                        </div>
+                        <span class="severity high">High</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-budget-4" onchange="updateProgress('budget')">
+                        <div class="check-content">
+                            <div class="check-title">Bid strategy too conservative</div>
+                            <div class="check-desc">"Down only" bidding can starve campaigns. Consider "Dynamic bids - up and down" for competitive keywords.</div>
+                        </div>
+                        <span class="severity medium">Medium</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-budget-5" onchange="updateProgress('budget')">
+                        <div class="check-content">
+                            <div class="check-title">Placement modifiers misconfigured</div>
+                            <div class="check-desc">Top of Search / Product Pages bid adjustments may be too low (or too high, wasting budget).</div>
+                        </div>
+                        <span class="severity medium">Medium</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Keyword & Targeting -->
+            <div class="diagnostic-category" data-category="keywords">
+                <div class="category-header" onclick="toggleCategory('keywords')">
+                    <h3>
+                        <span class="category-icon" style="background: rgba(210, 153, 34, 0.2); color: var(--accent-yellow);">🎯</span>
+                        Keyword & Targeting Issues
+                    </h3>
+                    <span class="progress-pill" id="progress-keywords">0/6</span>
+                </div>
+                <div class="category-content" id="content-keywords">
+                    <div class="check-item">
+                        <input type="checkbox" id="check-keywords-1" onchange="updateProgress('keywords')">
+                        <div class="check-content">
+                            <div class="check-title">Too many negative keywords killing reach</div>
+                            <div class="check-desc">Over-aggressive negative matching can block good traffic. Review recent negatives added.</div>
+                        </div>
+                        <span class="severity critical">Critical</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-keywords-2" onchange="updateProgress('keywords')">
+                        <div class="check-content">
+                            <div class="check-title">Bids too low on high-volume keywords</div>
+                            <div class="check-desc">If your bids are below suggested bid range, you won't win auctions. Check Targeting tab for bid recommendations.</div>
+                        </div>
+                        <span class="severity critical">Critical</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-keywords-3" onchange="updateProgress('keywords')">
+                        <div class="check-content">
+                            <div class="check-title">Keywords paused or archived</div>
+                            <div class="check-desc">Were any top-performing keywords accidentally paused? Filter by "Paused" status.</div>
+                        </div>
+                        <span class="severity high">High</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-keywords-4" onchange="updateProgress('keywords')">
+                        <div class="check-content">
+                            <div class="check-title">Match type too restrictive</div>
+                            <div class="check-desc">All Exact match = limited reach. Need Phrase/Broad for discovery. Check match type distribution.</div>
+                        </div>
+                        <span class="severity medium">Medium</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-keywords-5" onchange="updateProgress('keywords')">
+                        <div class="check-content">
+                            <div class="check-title">Keyword relevance score dropped</div>
+                            <div class="check-desc">Amazon's Quality Score equivalent. If listing content changed, keyword relevance may have dropped.</div>
+                        </div>
+                        <span class="severity medium">Medium</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-keywords-6" onchange="updateProgress('keywords')">
+                        <div class="check-content">
+                            <div class="check-title">Auto campaigns need harvest</div>
+                            <div class="check-desc">Check Search Term Report for converting queries not yet in manual campaigns.</div>
+                        </div>
+                        <span class="severity medium">Medium</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Competition -->
+            <div class="diagnostic-category" data-category="competition">
+                <div class="category-header" onclick="toggleCategory('competition')">
+                    <h3>
+                        <span class="category-icon" style="background: rgba(88, 166, 255, 0.2); color: var(--accent-blue);">⚔️</span>
+                        Competition Changes
+                    </h3>
+                    <span class="progress-pill" id="progress-competition">0/4</span>
+                </div>
+                <div class="category-content" id="content-competition">
+                    <div class="check-item">
+                        <input type="checkbox" id="check-competition-1" onchange="updateProgress('competition')">
+                        <div class="check-content">
+                            <div class="check-title">New aggressive competitor entered</div>
+                            <div class="check-desc">Check search results for new Sponsored Products from competitors you haven't seen before.</div>
+                        </div>
+                        <span class="severity critical">Critical</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-competition-2" onchange="updateProgress('competition')">
+                        <div class="check-content">
+                            <div class="check-title">Competitor running heavy promos</div>
+                            <div class="check-desc">Lightning Deals, coupons, or Prime Day-style discounts shift traffic to competitors.</div>
+                        </div>
+                        <span class="severity high">High</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-competition-3" onchange="updateProgress('competition')">
+                        <div class="check-content">
+                            <div class="check-title">CPC inflation in category</div>
+                            <div class="check-desc">If category CPCs rose 20%+, same budget buys fewer clicks. Check CPC trends in Advertising Console.</div>
+                        </div>
+                        <span class="severity high">High</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-competition-4" onchange="updateProgress('competition')">
+                        <div class="check-content">
+                            <div class="check-title">Impression share lost to competition</div>
+                            <div class="check-desc">Check Brand Analytics > Search Query Performance for impression share trends on top keywords.</div>
+                        </div>
+                        <span class="severity medium">Medium</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Listing Issues -->
+            <div class="diagnostic-category" data-category="listing">
+                <div class="category-header" onclick="toggleCategory('listing')">
+                    <h3>
+                        <span class="category-icon" style="background: rgba(63, 185, 80, 0.2); color: var(--accent-green);">📦</span>
+                        Listing & Product Issues
+                    </h3>
+                    <span class="progress-pill" id="progress-listing">0/5</span>
+                </div>
+                <div class="category-content" id="content-listing">
+                    <div class="check-item">
+                        <input type="checkbox" id="check-listing-1" onchange="updateProgress('listing')">
+                        <div class="check-content">
+                            <div class="check-title">Listing suppressed or inactive</div>
+                            <div class="check-desc">If listing is suppressed, PPC won't deliver. Check Manage Inventory for suppressed status.</div>
+                        </div>
+                        <span class="severity critical">Critical</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-listing-2" onchange="updateProgress('listing')">
+                        <div class="check-content">
+                            <div class="check-title">Out of stock or low inventory</div>
+                            <div class="check-desc">FBA inventory issues = lower ad rank. Check FBA Inventory for stock levels.</div>
+                        </div>
+                        <span class="severity critical">Critical</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-listing-3" onchange="updateProgress('listing')">
+                        <div class="check-content">
+                            <div class="check-title">Lost Buy Box</div>
+                            <div class="check-desc">No Buy Box = PPC won't run (for SP campaigns). Check Buy Box % in Business Reports.</div>
+                        </div>
+                        <span class="severity critical">Critical</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-listing-4" onchange="updateProgress('listing')">
+                        <div class="check-content">
+                            <div class="check-title">Main image or title changed</div>
+                            <div class="check-desc">Changes to main image or title can tank CTR. Check if creative was recently updated.</div>
+                        </div>
+                        <span class="severity high">High</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-listing-5" onchange="updateProgress('listing')">
+                        <div class="check-content">
+                            <div class="check-title">Reviews dropped or negative review surge</div>
+                            <div class="check-desc">Rating drop from 4.5 to 4.2 can hurt CVR significantly. Check review trends.</div>
+                        </div>
+                        <span class="severity high">High</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seasonality -->
+            <div class="diagnostic-category" data-category="seasonality">
+                <div class="category-header" onclick="toggleCategory('seasonality')">
+                    <h3>
+                        <span class="category-icon" style="background: rgba(163, 113, 247, 0.2); color: var(--accent-purple);">📅</span>
+                        Seasonality & External
+                    </h3>
+                    <span class="progress-pill" id="progress-seasonality">0/4</span>
+                </div>
+                <div class="category-content" id="content-seasonality">
+                    <div class="check-item">
+                        <input type="checkbox" id="check-seasonality-1" onchange="updateProgress('seasonality')">
+                        <div class="check-content">
+                            <div class="check-title">Category demand seasonally down</div>
+                            <div class="check-desc">Some categories have natural low seasons. Check Google Trends for category demand patterns.</div>
+                        </div>
+                        <span class="severity high">High</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-seasonality-2" onchange="updateProgress('seasonality')">
+                        <div class="check-content">
+                            <div class="check-title">Post-holiday hangover</div>
+                            <div class="check-desc">Jan/Feb typically see traffic drops after Q4 peak. Compare to same period last year.</div>
+                        </div>
+                        <span class="severity medium">Medium</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-seasonality-3" onchange="updateProgress('seasonality')">
+                        <div class="check-content">
+                            <div class="check-title">Economic/consumer sentiment shift</div>
+                            <div class="check-desc">Macro factors (recession fears, etc.) can impact discretionary spending categories.</div>
+                        </div>
+                        <span class="severity medium">Medium</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-seasonality-4" onchange="updateProgress('seasonality')">
+                        <div class="check-content">
+                            <div class="check-title">Amazon algorithm/UI changes</div>
+                            <div class="check-desc">Amazon periodically changes search results layout, affecting ad placement visibility.</div>
+                        </div>
+                        <span class="severity medium">Medium</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Campaign Structure -->
+            <div class="diagnostic-category" data-category="structure">
+                <div class="category-header" onclick="toggleCategory('structure')">
+                    <h3>
+                        <span class="category-icon" style="background: rgba(255, 255, 255, 0.1); color: var(--text-primary);">🏗️</span>
+                        Campaign Structure Issues
+                    </h3>
+                    <span class="progress-pill" id="progress-structure">0/4</span>
+                </div>
+                <div class="category-content" id="content-structure">
+                    <div class="check-item">
+                        <input type="checkbox" id="check-structure-1" onchange="updateProgress('structure')">
+                        <div class="check-content">
+                            <div class="check-title">Campaign accidentally paused</div>
+                            <div class="check-desc">Check campaign status. Someone may have paused it manually.</div>
+                        </div>
+                        <span class="severity critical">Critical</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-structure-2" onchange="updateProgress('structure')">
+                        <div class="check-content">
+                            <div class="check-title">Ad groups with no active targets</div>
+                            <div class="check-desc">All keywords in an ad group may be paused/archived. Check ad group targeting status.</div>
+                        </div>
+                        <span class="severity high">High</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-structure-3" onchange="updateProgress('structure')">
+                        <div class="check-content">
+                            <div class="check-title">Campaign schedule restrictions</div>
+                            <div class="check-desc">Dayparting settings may be limiting when ads run. Check campaign scheduling.</div>
+                        </div>
+                        <span class="severity medium">Medium</span>
+                    </div>
+                    <div class="check-item">
+                        <input type="checkbox" id="check-structure-4" onchange="updateProgress('structure')">
+                        <div class="check-content">
+                            <div class="check-title">Auto-campaign cannibalizing manual</div>
+                            <div class="check-desc">If same keywords in auto and manual, they compete. Check for duplicate targeting.</div>
+                        </div>
+                        <span class="severity medium">Medium</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Findings Log -->
+        <div class="findings-log">
+            <h2 style="margin-bottom: 16px; font-size: 14px; color: var(--text-secondary);">📝 FINDINGS LOG</h2>
+            <div id="findingsList">
+                <!-- Populated dynamically -->
+            </div>
+            <div class="add-finding">
+                <select id="findingType">
+                    <option value="issue">🔴 Issue</option>
+                    <option value="opportunity">🟢 Opportunity</option>
+                    <option value="note">🔵 Note</option>
+                </select>
+                <input type="text" id="findingText" placeholder="Add a finding...">
+                <button onclick="addFinding()">Add</button>
+            </div>
+        </div>
+        
+        <!-- Recommendations -->
+        <div class="recommendations" style="margin-top: 24px;">
+            <h2 style="margin-bottom: 16px; font-size: 14px; color: var(--text-secondary);">💡 RECOMMENDATIONS</h2>
+            <div id="recommendationsList">
+                <div class="rec-item">
+                    <span class="rec-priority p1">1</span>
+                    <div class="rec-content">
+                        <h4>Check budget status first</h4>
+                        <p>55% traffic drop often = budget exhaustion. Verify campaign isn't going "Out of Budget" mid-day.</p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <span class="rec-priority p1">2</span>
+                    <div class="rec-content">
+                        <h4>Review bid levels vs suggested bids</h4>
+                        <p>If your bids are 50%+ below Amazon's suggested bid, you're not winning auctions.</p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <span class="rec-priority p2">3</span>
+                    <div class="rec-content">
+                        <h4>Check inventory & Buy Box</h4>
+                        <p>Low FBA inventory or lost Buy Box will tank PPC delivery regardless of bids.</p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <span class="rec-priority p3">4</span>
+                    <div class="rec-content">
+                        <h4>Compare to category trends</h4>
+                        <p>If entire category traffic is down (post-holiday), your campaign may be performing normally.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a class="quick-action" href="https://advertising.amazon.com" target="_blank">
+                📊 Amazon Advertising Console
+            </a>
+            <a class="quick-action" href="https://sellercentral.amazon.com/business-reports" target="_blank">
+                📈 Business Reports
+            </a>
+            <a class="quick-action" href="https://sellercentral.amazon.com/inventory" target="_blank">
+                📦 FBA Inventory
+            </a>
+            <a class="quick-action" href="https://www.amazon.com/dp/B01M8JT9LI" target="_blank">
+                🔗 View 8oz Thick Listing
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Campaign data structure
+        const campaigns = [
+            { id: '8oz-thick', name: '8oz Thick', asin: 'B01M8JT9LI', traffic_drop: -55 },
+            { id: '8oz-medium', name: '8oz Medium', asin: 'B01MFXL0P3', traffic_drop: -33 },
+            { id: '16oz-thick', name: '16oz Thick', asin: 'B01M5CHQJ6', traffic_drop: -45 },
+            { id: '16oz-medium', name: '16oz Medium', asin: 'B01LVTLBSV', traffic_drop: -40 },
+        ];
+        
+        let currentCampaign = campaigns[0];
+        let findings = [];
+        let campaignData = {};
+        let yoyChart = null;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderCampaignTabs();
+            selectCampaign(campaigns[0]);
+            initChart();
+        });
+        
+        function renderCampaignTabs() {
+            const container = document.getElementById('campaignTabs');
+            container.innerHTML = campaigns.map(c => `
+                <div class="campaign-tab ${c.id === currentCampaign.id ? 'active' : ''}" onclick="selectCampaign(campaigns.find(x => x.id === '${c.id}'))">
+                    <div class="name">${c.name}</div>
+                    <div class="asin">${c.asin} | ${c.traffic_drop}% traffic</div>
+                </div>
+            `).join('');
+        }
+        
+        function selectCampaign(campaign) {
+            currentCampaign = campaign;
+            renderCampaignTabs();
+            
+            // Load campaign-specific data if exists
+            if (campaignData[campaign.id]) {
+                const data = campaignData[campaign.id];
+                document.getElementById('impressions').value = data.impressions || '';
+                document.getElementById('clicks').value = data.clicks || '';
+                document.getElementById('spend').value = data.spend || '';
+                document.getElementById('sales').value = data.sales || '';
+                document.getElementById('orders').value = data.orders || '';
+                document.getElementById('acos').value = data.acos || '';
+                document.getElementById('impressionsPrior').value = data.impressionsPrior || '';
+                document.getElementById('clicksPrior').value = data.clicksPrior || '';
+                document.getElementById('spendPrior').value = data.spendPrior || '';
+                document.getElementById('salesPrior').value = data.salesPrior || '';
+                calculateMetrics();
+            } else {
+                // Clear form
+                document.querySelectorAll('.data-entry input').forEach(i => i.value = '');
+                resetMetricDisplays();
+            }
+            
+            updateChart();
+        }
+        
+        function resetMetricDisplays() {
+            ['metricImpressions', 'metricClicks', 'metricCTR', 'metricACoS', 'metricROAS', 'metricCPC', 'metricCVR', 'metricOrders', 'metricAOV'].forEach(id => {
+                document.getElementById(id).textContent = '--';
+                document.getElementById(id).className = 'metric-value';
+            });
+        }
+        
+        function calculateMetrics() {
+            const impressions = parseFloat(document.getElementById('impressions').value) || 0;
+            const clicks = parseFloat(document.getElementById('clicks').value) || 0;
+            const spend = parseFloat(document.getElementById('spend').value) || 0;
+            const sales = parseFloat(document.getElementById('sales').value) || 0;
+            const orders = parseFloat(document.getElementById('orders').value) || 0;
+            
+            const impressionsPrior = parseFloat(document.getElementById('impressionsPrior').value) || 0;
+            const clicksPrior = parseFloat(document.getElementById('clicksPrior').value) || 0;
+            
+            // Calculate derived metrics
+            const ctr = impressions > 0 ? (clicks / impressions * 100) : 0;
+            const acos = sales > 0 ? (spend / sales * 100) : 0;
+            const roas = spend > 0 ? (sales / spend) : 0;
+            const cpc = clicks > 0 ? (spend / clicks) : 0;
+            const cvr = clicks > 0 ? (orders / clicks * 100) : 0;
+            const aov = orders > 0 ? (sales / orders) : 0;
+            
+            // Calculate changes
+            const impressionChange = impressionsPrior > 0 ? ((impressions - impressionsPrior) / impressionsPrior * 100) : 0;
+            const clickChange = clicksPrior > 0 ? ((clicks - clicksPrior) / clicksPrior * 100) : 0;
+            
+            // Update displays
+            updateMetric('metricImpressions', impressions.toLocaleString(), impressionChange);
+            updateMetric('metricClicks', clicks.toLocaleString(), clickChange);
+            updateMetric('metricCTR', ctr.toFixed(2) + '%', null, ctr >= 0.3 ? 'good' : ctr >= 0.15 ? 'warning' : 'bad');
+            updateMetric('metricACoS', acos.toFixed(1) + '%', null, acos <= 25 ? 'good' : acos <= 40 ? 'warning' : 'bad');
+            updateMetric('metricROAS', roas.toFixed(2) + 'x', null, roas >= 4 ? 'good' : roas >= 2.5 ? 'warning' : 'bad');
+            updateMetric('metricCPC', '$' + cpc.toFixed(2), null, cpc <= 0.50 ? 'good' : cpc <= 1.00 ? 'warning' : 'bad');
+            updateMetric('metricCVR', cvr.toFixed(1) + '%', null, cvr >= 10 ? 'good' : cvr >= 5 ? 'warning' : 'bad');
+            updateMetric('metricOrders', orders.toLocaleString());
+            updateMetric('metricAOV', '$' + aov.toFixed(2));
+            
+            // Save to campaign data
+            campaignData[currentCampaign.id] = {
+                impressions, clicks, spend, sales, orders, acos,
+                impressionsPrior, clicksPrior,
+                spendPrior: parseFloat(document.getElementById('spendPrior').value) || 0,
+                salesPrior: parseFloat(document.getElementById('salesPrior').value) || 0
+            };
+            
+            // Update health score
+            updateHealthScore(acos, roas, ctr, cvr);
+            
+            // Update chart
+            updateChart();
+        }
+        
+        function updateMetric(id, value, change = null, colorClass = null) {
+            const el = document.getElementById(id);
+            let html = value;
+            if (change !== null && change !== 0) {
+                const deltaClass = change > 0 ? 'up' : 'down';
+                html += `<span class="delta ${deltaClass}">${change > 0 ? '+' : ''}${change.toFixed(1)}%</span>`;
+            }
+            el.innerHTML = html;
+            if (colorClass) {
+                el.className = 'metric-value ' + colorClass;
+            }
+        }
+        
+        function updateHealthScore(acos, roas, ctr, cvr) {
+            // Calculate composite score (0-100)
+            let score = 50; // baseline
+            
+            // ACoS contribution (lower is better)
+            if (acos <= 20) score += 15;
+            else if (acos <= 30) score += 10;
+            else if (acos <= 40) score += 5;
+            else if (acos > 50) score -= 10;
+            
+            // ROAS contribution
+            if (roas >= 5) score += 15;
+            else if (roas >= 3) score += 10;
+            else if (roas >= 2) score += 5;
+            else if (roas < 1.5) score -= 10;
+            
+            // CTR contribution
+            if (ctr >= 0.4) score += 10;
+            else if (ctr >= 0.25) score += 5;
+            else if (ctr < 0.15) score -= 5;
+            
+            // CVR contribution
+            if (cvr >= 15) score += 10;
+            else if (cvr >= 8) score += 5;
+            else if (cvr < 5) score -= 5;
+            
+            score = Math.max(0, Math.min(100, score));
+            
+            const circle = document.getElementById('healthCircle');
+            const scoreEl = document.getElementById('healthScore');
+            
+            scoreEl.textContent = Math.round(score);
+            circle.style.setProperty('--score', score);
+            
+            circle.className = 'health-circle';
+            if (score >= 70) circle.classList.add('good');
+            else if (score >= 40) circle.classList.add('warning');
+            else circle.classList.add('critical');
+        }
+        
+        function initChart() {
+            const ctx = document.getElementById('yoyChart').getContext('2d');
+            yoyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Impressions', 'Clicks', 'Spend', 'Sales'],
+                    datasets: [{
+                        label: 'YoY Change %',
+                        data: [0, 0, 0, 0],
+                        backgroundColor: ['#58a6ff', '#58a6ff', '#58a6ff', '#58a6ff'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#30363d' },
+                            ticks: { color: '#8b949e' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#8b949e' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function updateChart() {
+            if (!yoyChart) return;
+            
+            const data = campaignData[currentCampaign.id];
+            if (!data) {
+                yoyChart.data.datasets[0].data = [0, 0, 0, 0];
+                yoyChart.update();
+                return;
+            }
+            
+            const changes = [
+                data.impressionsPrior > 0 ? ((data.impressions - data.impressionsPrior) / data.impressionsPrior * 100) : 0,
+                data.clicksPrior > 0 ? ((data.clicks - data.clicksPrior) / data.clicksPrior * 100) : 0,
+                data.spendPrior > 0 ? ((data.spend - data.spendPrior) / data.spendPrior * 100) : 0,
+                data.salesPrior > 0 ? ((data.sales - data.salesPrior) / data.salesPrior * 100) : 0
+            ];
+            
+            yoyChart.data.datasets[0].data = changes;
+            yoyChart.data.datasets[0].backgroundColor = changes.map(c => c >= 0 ? '#3fb950' : '#f85149');
+            yoyChart.update();
+        }
+        
+        function toggleCategory(category) {
+            const content = document.getElementById(`content-${category}`);
+            content.classList.toggle('open');
+        }
+        
+        function updateProgress(category) {
+            const content = document.getElementById(`content-${category}`);
+            const checkboxes = content.querySelectorAll('input[type="checkbox"]');
+            const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+            document.getElementById(`progress-${category}`).textContent = `${checked}/${checkboxes.length}`;
+        }
+        
+        function addFinding() {
+            const type = document.getElementById('findingType').value;
+            const text = document.getElementById('findingText').value.trim();
+            if (!text) return;
+            
+            findings.push({
+                type,
+                text,
+                campaign: currentCampaign.id,
+                timestamp: new Date().toISOString()
+            });
+            
+            document.getElementById('findingText').value = '';
+            renderFindings();
+            saveData();
+        }
+        
+        function renderFindings() {
+            const container = document.getElementById('findingsList');
+            container.innerHTML = findings.map((f, i) => `
+                <div class="finding-entry">
+                    <div class="finding-type ${f.type}"></div>
+                    <div class="finding-content">
+                        <div class="finding-meta">${f.campaign} • ${new Date(f.timestamp).toLocaleString()}</div>
+                        <div>${f.text}</div>
+                    </div>
+                    <button onclick="deleteFinding(${i})" style="background: none; border: none; color: var(--text-secondary); cursor: pointer;">×</button>
+                </div>
+            `).join('');
+        }
+        
+        function deleteFinding(index) {
+            findings.splice(index, 1);
+            renderFindings();
+            saveData();
+        }
+        
+        function saveData() {
+            const data = {
+                campaignData,
+                findings,
+                checkboxes: {}
+            };
+            
+            // Save checkbox states
+            document.querySelectorAll('.diagnostic-category').forEach(cat => {
+                const category = cat.dataset.category;
+                const checkboxes = cat.querySelectorAll('input[type="checkbox"]');
+                data.checkboxes[category] = Array.from(checkboxes).map(cb => cb.checked);
+            });
+            
+            localStorage.setItem('ppc-diagnostic-data', JSON.stringify(data));
+        }
+        
+        function loadData() {
+            const saved = localStorage.getItem('ppc-diagnostic-data');
+            if (!saved) return;
+            
+            try {
+                const data = JSON.parse(saved);
+                campaignData = data.campaignData || {};
+                findings = data.findings || [];
+                
+                // Restore checkbox states
+                if (data.checkboxes) {
+                    Object.keys(data.checkboxes).forEach(category => {
+                        const content = document.getElementById(`content-${category}`);
+                        if (!content) return;
+                        const checkboxes = content.querySelectorAll('input[type="checkbox"]');
+                        data.checkboxes[category].forEach((checked, i) => {
+                            if (checkboxes[i]) checkboxes[i].checked = checked;
+                        });
+                        updateProgress(category);
+                    });
+                }
+                
+                renderFindings();
+            } catch (e) {
+                console.error('Failed to load data:', e);
+            }
+        }
+        
+        function clearData() {
+            if (!confirm('Clear all diagnostic data?')) return;
+            localStorage.removeItem('ppc-diagnostic-data');
+            campaignData = {};
+            findings = [];
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.progress-pill').forEach(p => p.textContent = '0/' + p.textContent.split('/')[1]);
+            document.querySelectorAll('.data-entry input').forEach(i => i.value = '');
+            resetMetricDisplays();
+            renderFindings();
+            updateChart();
+        }
+        
+        function exportReport() {
+            let report = `# PPC Diagnostic Report\n`;
+            report += `Generated: ${new Date().toLocaleString()}\n\n`;
+            
+            campaigns.forEach(campaign => {
+                const data = campaignData[campaign.id];
+                report += `## ${campaign.name} (${campaign.asin})\n`;
+                report += `Traffic Change: ${campaign.traffic_drop}%\n\n`;
+                
+                if (data) {
+                    report += `### Metrics\n`;
+                    report += `- Impressions: ${data.impressions?.toLocaleString() || 'N/A'}\n`;
+                    report += `- Clicks: ${data.clicks?.toLocaleString() || 'N/A'}\n`;
+                    report += `- Spend: $${data.spend?.toFixed(2) || 'N/A'}\n`;
+                    report += `- Sales: $${data.sales?.toFixed(2) || 'N/A'}\n`;
+                    report += `- Orders: ${data.orders || 'N/A'}\n\n`;
+                }
+            });
+            
+            report += `## Findings\n`;
+            findings.forEach(f => {
+                report += `- [${f.type.toUpperCase()}] ${f.campaign}: ${f.text}\n`;
+            });
+            
+            // Download
+            const blob = new Blob([report], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ppc-diagnostic-${new Date().toISOString().split('T')[0]}.md`;
+            a.click();
+        }
+    </script>
+</body>
+</html>
