@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Lock } from 'lucide-react';
+import { X, Lock, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from './Button';
+import { supabase } from '../../lib/supabase';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginModalProps {
     isOpen: boolean;
@@ -9,20 +11,46 @@ interface LoginModalProps {
 }
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
-    const [step, setStep] = React.useState<'form' | 'success'>('form');
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState('');
+    const [success, setSuccess] = React.useState(false);
+    const navigate = useNavigate();
     const [formData, setFormData] = React.useState({
         email: '',
         password: ''
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simulate Login
-        setTimeout(() => {
-            setStep('success');
-            console.log('Logging in user:', formData.email);
-        }, 1000);
+        setError('');
+        setLoading(true);
+
+        const { error } = await supabase.auth.signInWithPassword({
+            email: formData.email,
+            password: formData.password
+        });
+
+        if (error) {
+            setError(error.message);
+            setLoading(false);
+        } else {
+            setSuccess(true);
+            setTimeout(() => {
+                onClose();
+                navigate('/tools');
+            }, 1000);
+        }
     };
+
+    // Reset state when modal closes
+    React.useEffect(() => {
+        if (!isOpen) {
+            setFormData({ email: '', password: '' });
+            setError('');
+            setSuccess(false);
+            setLoading(false);
+        }
+    }, [isOpen]);
 
     return (
         <AnimatePresence>
@@ -53,17 +81,33 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         </button>
 
                         <div className="p-6 sm:p-8">
-                            {step === 'form' ? (
+                            {success ? (
+                                <div className="text-center py-8">
+                                    <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <CheckCircle className="w-8 h-8 text-green-500" />
+                                    </div>
+                                    <h2 className="text-xl font-bold text-white mb-2">Welcome Back!</h2>
+                                    <p className="text-gravix-gray-400 text-sm">
+                                        Redirecting to dashboard...
+                                    </p>
+                                </div>
+                            ) : (
                                 <>
                                     <div className="text-center mb-6">
                                         <div className="w-12 h-12 bg-gravix-slate border border-gravix-steel/30 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <Lock className="w-5 h-5 text-gravix-red" />
                                         </div>
-                                        <h2 className="text-xl font-bold text-white mb-1">Distributor Portal</h2>
+                                        <h2 className="text-xl font-bold text-white mb-1">Tools Portal</h2>
                                         <p className="text-gravix-gray-400 text-xs">
-                                            Enter your credentials to access the VMI dashboard.
+                                            Sign in to access dashboards and analytics.
                                         </p>
                                     </div>
+
+                                    {error && (
+                                        <div className="bg-red-900/30 border border-red-500/50 text-red-200 px-3 py-2 rounded mb-4 text-sm">
+                                            {error}
+                                        </div>
+                                    )}
 
                                     <form onSubmit={handleSubmit} className="space-y-4">
                                         <div className="space-y-2">
@@ -72,7 +116,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                                                 id="login-email"
                                                 type="email"
                                                 required
-                                                className="w-full bg-gravix-charcoal border border-gravix-steel/50 rounded px-3 py-2 text-white focus:border-gravix-red focus:outline-none transition-colors"
+                                                disabled={loading}
+                                                className="w-full bg-gravix-charcoal border border-gravix-steel/50 rounded px-3 py-2 text-white focus:border-gravix-red focus:outline-none transition-colors disabled:opacity-50"
                                                 value={formData.email}
                                                 onChange={e => setFormData({ ...formData, email: e.target.value })}
                                             />
@@ -83,25 +128,25 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                                                 id="login-password"
                                                 type="password"
                                                 required
-                                                className="w-full bg-gravix-charcoal border border-gravix-steel/50 rounded px-3 py-2 text-white focus:border-gravix-red focus:outline-none transition-colors"
+                                                disabled={loading}
+                                                className="w-full bg-gravix-charcoal border border-gravix-steel/50 rounded px-3 py-2 text-white focus:border-gravix-red focus:outline-none transition-colors disabled:opacity-50"
                                                 value={formData.password}
                                                 onChange={e => setFormData({ ...formData, password: e.target.value })}
                                             />
                                         </div>
 
-                                        <Button type="submit" className="w-full mt-2">Sign In</Button>
+                                        <Button type="submit" className="w-full mt-2" disabled={loading}>
+                                            {loading ? (
+                                                <span className="flex items-center justify-center gap-2">
+                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                    Signing in...
+                                                </span>
+                                            ) : (
+                                                'Sign In'
+                                            )}
+                                        </Button>
                                     </form>
                                 </>
-                            ) : (
-                                <div className="text-center py-8">
-                                    <div className="w-16 h-16 bg-gravix-red/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                                        <X className="w-8 h-8 text-gravix-red" />
-                                    </div>
-                                    <h2 className="text-xl font-bold text-white mb-2">Access Denied</h2>
-                                    <p className="text-gravix-gray-400 mb-8 text-sm">
-                                        Please contact procurement for authorization.
-                                    </p>
-                                </div>
                             )}
                         </div>
                     </motion.div>
