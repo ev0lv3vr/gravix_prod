@@ -39,6 +39,12 @@ class Settings(BaseSettings):
     resend_api_key: str
     from_email: str = "noreply@gravix.com"
     
+    # Database (direct connection)
+    database_url: Optional[str] = None
+    
+    # CORS
+    allowed_origins: str = "http://localhost:3000"
+    
     # App Settings
     max_retries_ai: int = 3
     ai_timeout_seconds: int = 60
