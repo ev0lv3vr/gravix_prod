@@ -71,7 +71,7 @@ export function useUsageTracking(): UsageData {
         );
         setUsed(0);
       }
-      setLimit(FREE_TIER_LIMIT * 2); // analyses + specs combined for local tracking
+      setLimit(FREE_TIER_LIMIT); // free tier: 5 analyses/month
     },
     []
   );
