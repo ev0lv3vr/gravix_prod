@@ -31,10 +31,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // Redirect to dashboard on sign in (handles both password and OAuth)
+      if (event === 'SIGNED_IN' && session) {
+        // Use setTimeout to let Supabase finish URL cleanup first
+        setTimeout(() => {
+          const path = window.location.pathname;
+          if (path === '/' || path === '') {
+            window.location.href = '/dashboard';
+          }
+        }, 100);
+      }
     });
 
     return () => subscription.unsubscribe();

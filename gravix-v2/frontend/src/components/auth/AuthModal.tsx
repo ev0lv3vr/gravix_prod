@@ -63,7 +63,8 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
       setError(authError.message || 'Invalid email or password');
       setIsLoading(false);
     } else {
-      window.location.href = '/dashboard';
+      // AuthContext.onAuthStateChange handles redirect to /dashboard
+      onOpenChange(false);
     }
   };
 
