@@ -53,21 +53,45 @@ export default function FailureAnalysisPage() {
       if (formData.additionalContext)
         requestData.additional_notes = formData.additionalContext;
 
-      const response = await api.createFailureAnalysis(requestData);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response: any = await api.createFailureAnalysis(requestData);
 
-      // Map API response to display format
+      // Map API response (snake_case) to display format (camelCase)
+      const rootCauses = response.root_causes || response.rootCauses || [];
+      const contribFactors = response.contributing_factors || response.contributingFactors || [];
+      const recs = response.recommendations || [];
+      const prevention = response.prevention_plan || response.preventionPlan || '';
+      const confScore = response.confidence_score ?? response.confidenceScore ?? 0.85;
+
+      // Backend returns recommendations as array of { title, description, priority, ... }
+      // Frontend expects { immediate: string[], longTerm: string[] }
+      let immediateActions: string[] = [];
+      let longTermSolutions: string[] = [];
+      if (Array.isArray(recs)) {
+        immediateActions = recs
+          .filter((r: Record<string, unknown>) => r.priority === 'immediate')
+          .map((r: Record<string, unknown>) => (r.description as string) || (r.title as string) || '');
+        longTermSolutions = recs
+          .filter((r: Record<string, unknown>) => r.priority === 'long_term' || r.priority === 'short_term')
+          .map((r: Record<string, unknown>) => (r.description as string) || (r.title as string) || '');
+      } else if (recs && typeof recs === 'object') {
+        immediateActions = (recs as Record<string, string[]>).immediate || [];
+        longTermSolutions = (recs as Record<string, string[]>).longTerm || (recs as Record<string, string[]>).long_term || [];
+      }
+
       const mapped: FailureResultData = {
         diagnosis: {
           topRootCause:
-            response.rootCauses?.[0]?.cause || 'Analysis Complete',
-          confidence: response.rootCauses?.[0]?.confidence || 0.85,
+            rootCauses[0]?.cause || 'Analysis Complete',
+          confidence: rootCauses[0]?.confidence || 0.85,
           explanation:
-            response.rootCauses?.[0]?.explanation || 'See details below.',
+            rootCauses[0]?.explanation || 'See details below.',
         },
-        rootCauses: (response.rootCauses || []).map(
+        rootCauses: rootCauses.map(
           (
             rc: {
               cause: string;
+              category?: string;
               confidence: number;
               explanation: string;
               evidence?: string[];
@@ -76,19 +100,19 @@ export default function FailureAnalysisPage() {
           ) => ({
             rank: i + 1,
             cause: rc.cause,
-            category: 'general',
+            category: rc.category || 'general',
             confidence: rc.confidence,
             explanation: rc.explanation,
             mechanism: rc.evidence?.join('. ') || '',
           })
         ),
-        contributingFactors: response.contributingFactors || [],
-        immediateActions: response.recommendations?.immediate || [],
-        longTermSolutions: response.recommendations?.longTerm || [],
-        preventionPlan: response.preventionPlan
-          ? response.preventionPlan.split('\n').filter(Boolean)
+        contributingFactors: contribFactors,
+        immediateActions,
+        longTermSolutions,
+        preventionPlan: typeof prevention === 'string'
+          ? prevention.split('\n').filter(Boolean)
           : [],
-        confidenceScore: response.confidenceScore || 0.85,
+        confidenceScore: confScore,
       };
 
       setResultData(mapped);

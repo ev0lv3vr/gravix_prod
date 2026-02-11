@@ -6,8 +6,13 @@ from typing import Optional
 
 
 class CheckoutRequest(BaseModel):
-    """Request to create Stripe checkout session."""
-    price_id: str = Field(..., description="Stripe price ID for the plan")
+    """Request to create Stripe checkout session.
+    
+    Accepts either a direct price_id or a tier name (pro/team).
+    If tier is provided, the server resolves it to the correct price_id.
+    """
+    price_id: Optional[str] = Field(None, description="Stripe price ID for the plan")
+    tier: Optional[str] = Field(None, description="Plan tier name: 'pro' or 'team'")
     success_url: Optional[str] = Field(None, description="URL to redirect after successful payment")
     cancel_url: Optional[str] = Field(None, description="URL to redirect if payment canceled")
 

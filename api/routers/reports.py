@@ -13,7 +13,8 @@ from services.pdf_generator import pdf_generator
 router = APIRouter(prefix="/reports", tags=["reports"])
 
 
-@router.post("/analysis/{analysis_id}")
+@router.get("/analysis/{analysis_id}/pdf")
+@router.get("/analysis/{analysis_id}")
 async def generate_analysis_report(
     analysis_id: str,
     current_user: Dict[str, Any] = Depends(get_current_user),
@@ -58,7 +59,8 @@ async def generate_analysis_report(
     )
 
 
-@router.post("/spec/{spec_id}")
+@router.get("/spec/{spec_id}/pdf")
+@router.get("/spec/{spec_id}")
 async def generate_spec_report(
     spec_id: str,
     current_user: Dict[str, Any] = Depends(get_current_user),

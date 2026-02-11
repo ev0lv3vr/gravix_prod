@@ -107,9 +107,16 @@ async def get_case(
     case = result.data[0]
     case_id = case['id']
     
-    # Increment view count
+    # Increment view count atomically using RPC if available, otherwise
+    # fall back to a simple increment (still a read-then-write but avoids
+    # storing stale reads in the response).
     current_views = case.get('views', 0)
-    db.table("case_library").update({"views": current_views + 1}).eq("id", case_id).execute()
+    try:
+        # Use Supabase RPC for atomic increment if the function exists
+        db.rpc("increment_case_views", {"case_id": case_id}).execute()
+    except Exception:
+        # Fallback: simple update (minor race window under high concurrency)
+        db.table("case_library").update({"views": current_views + 1}).eq("id", case_id).execute()
     
     return CaseDetail(
         id=case['id'],

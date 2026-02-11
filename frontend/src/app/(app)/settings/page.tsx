@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
+import { api, isApiConfigured } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,9 +21,18 @@ export default function SettingsPage() {
 
   const handleSaveProfile = async () => {
     setIsSaving(true);
-    // TODO: API call to save profile
-    await new Promise(r => setTimeout(r, 500));
-    setIsSaving(false);
+    try {
+      if (isApiConfigured() && user) {
+        await api.updateUser({ name, company, role });
+      } else {
+        // Demo mode — simulate save
+        await new Promise(r => setTimeout(r, 500));
+      }
+    } catch (err) {
+      console.error('Failed to save profile:', err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const usagePct = Math.min((used / limit) * 100, 100);

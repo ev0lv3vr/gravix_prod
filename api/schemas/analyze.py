@@ -43,6 +43,7 @@ class FailureAnalysisCreate(BaseModel):
     temperature_range: Optional[str] = None
     humidity: Optional[str] = None
     chemical_exposure: Optional[str] = None
+    environment_conditions: Optional[List[str]] = Field(None, description="List of environment conditions")
     
     # Application details
     time_to_failure: Optional[str] = None
@@ -50,8 +51,13 @@ class FailureAnalysisCreate(BaseModel):
     surface_preparation: Optional[str] = None
     cure_conditions: Optional[str] = None
     
+    # Frontend-specific fields
+    industry: Optional[str] = Field(None, description="Industry sector")
+    production_impact: Optional[str] = Field(None, description="Production impact level")
+    
     # Additional data
     additional_notes: Optional[str] = None
+    additional_context: Optional[str] = None
     test_results: Optional[str] = None
 
 

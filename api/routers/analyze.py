@@ -62,6 +62,11 @@ async def create_failure_analysis(
     prevention_plan = ai_result.get('prevention_plan', '')
     confidence_score = ai_result.get('confidence_score', 0.5)
     
+    # Merge additional_context into additional_notes if provided
+    additional_notes = analysis_input.additional_notes or ''
+    if analysis_input.additional_context:
+        additional_notes = f"{additional_notes}\n{analysis_input.additional_context}".strip()
+    
     # Store in database
     db_record = {
         "user_id": user_id,
@@ -79,7 +84,7 @@ async def create_failure_analysis(
         "application_method": analysis_input.application_method,
         "surface_preparation": analysis_input.surface_preparation,
         "cure_conditions": analysis_input.cure_conditions,
-        "additional_notes": analysis_input.additional_notes,
+        "additional_notes": additional_notes or None,
         "test_results": analysis_input.test_results,
         "analysis_result": ai_result,
         "root_causes": root_causes_data,

@@ -46,41 +46,48 @@ export default function SpecToolPage() {
         additional_requirements: formData.additionalContext || undefined,
       };
 
-      const response = await api.createSpecRequest(requestData);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response: any = await api.createSpecRequest(requestData);
 
-      // Map API response to display format
+      // Map API response (snake_case) to display format (camelCase)
+      // Backend returns recommended_spec, product_characteristics, etc.
+      const rec = response.recommended_spec || response.recommendedSpec;
+      const chars = response.product_characteristics || response.productCharacteristics;
+      const guidance = response.application_guidance || response.applicationGuidance;
+      const alts = response.alternatives || [];
+
       const mapped: SpecResultData = {
         recommendedSpec: {
-          materialType: response.recommendedSpec?.title || 'Unknown',
-          chemistry: response.recommendedSpec?.chemistry || 'Unknown',
-          subcategory: 'General',
-          rationale: response.recommendedSpec?.rationale || '',
+          materialType: rec?.material_type || rec?.title || 'Unknown',
+          chemistry: rec?.chemistry || 'Unknown',
+          subcategory: rec?.subcategory || 'General',
+          rationale: rec?.rationale || '',
         },
         productCharacteristics: {
-          viscosityRange: response.productCharacteristics?.viscosity,
-          cureTime: response.productCharacteristics?.cureTime,
-          expectedStrength: response.productCharacteristics?.shearStrength,
+          viscosityRange: chars?.viscosity_range || chars?.viscosity,
+          cureTime: chars?.cure_time || chars?.cureTime,
+          expectedStrength: chars?.expected_strength || chars?.shearStrength,
           temperatureResistance:
-            response.productCharacteristics?.serviceTemperature,
-          gapFillCapability: response.productCharacteristics?.gapFill,
+            chars?.temperature_resistance || chars?.serviceTemperature,
+          gapFillCapability: chars?.gap_fill_capability || chars?.gapFill,
         },
         applicationGuidance: {
           surfacePreparation:
-            response.applicationGuidance?.surfacePrep || [],
+            guidance?.surface_preparation || guidance?.surfacePrep || [],
           applicationTips:
-            response.applicationGuidance?.applicationTips || [],
-          curingNotes: response.applicationGuidance?.curingNotes || [],
+            guidance?.application_tips || guidance?.applicationTips || [],
+          curingNotes: guidance?.curing_notes || guidance?.curingNotes || [],
           commonMistakesToAvoid:
-            response.applicationGuidance?.mistakesToAvoid || [],
+            guidance?.common_mistakes_to_avoid || guidance?.mistakesToAvoid || [],
         },
         warnings: response.warnings || [],
-        alternatives: (response.alternatives || []).map(
-          (alt: { name?: string; pros?: string[]; cons?: string[] }) => ({
-            materialType: alt.name || '',
-            chemistry: alt.name || '',
-            advantages: alt.pros || [],
-            disadvantages: alt.cons || [],
-            whenToUse: 'See advantages/disadvantages',
+        alternatives: alts.map(
+          (alt: Record<string, unknown>) => ({
+            materialType: (alt.material_type as string) || (alt.name as string) || '',
+            chemistry: (alt.chemistry as string) || (alt.name as string) || '',
+            advantages: (alt.advantages as string[]) || (alt.pros as string[]) || [],
+            disadvantages: (alt.disadvantages as string[]) || (alt.cons as string[]) || [],
+            whenToUse: (alt.when_to_use as string) || 'See advantages/disadvantages',
           })
         ),
         confidenceScore: 0.85,

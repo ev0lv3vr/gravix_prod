@@ -1,8 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -11,10 +8,8 @@ export async function GET(request: Request) {
   const next = searchParams.get('next') ?? '/';
 
   if (token_hash && type) {
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
     const { error } = await supabase.auth.verifyOtp({
-      type: type as any,
+      type: type as 'magiclink' | 'email',
       token_hash,
     });
 
@@ -23,6 +18,6 @@ export async function GET(request: Request) {
     }
   }
 
-  // Return the user to an error page with some instructions
+  // Return the user to an error page with instructions
   return NextResponse.redirect(new URL('/auth/error', request.url));
 }

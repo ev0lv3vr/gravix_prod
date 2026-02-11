@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { api, isApiConfigured } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ThumbsUp, ThumbsDown, CheckCircle } from 'lucide-react';
@@ -24,7 +25,13 @@ export default function FeedbackPage() {
   };
 
   const handleSubmit = async () => {
-    // TODO: POST to /v1/feedback/{analysisId}
+    try {
+      if (isApiConfigured() && outcome) {
+        await api.submitFeedback(analysisId, { outcome, details });
+      }
+    } catch (err) {
+      console.error('Failed to submit feedback:', err);
+    }
     setSubmitted(true);
   };
 

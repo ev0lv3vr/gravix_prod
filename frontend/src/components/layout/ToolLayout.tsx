@@ -1,7 +1,8 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
+import { api } from '@/lib/api';
 
 interface ToolLayoutProps {
   formPanel: ReactNode;
@@ -10,15 +11,32 @@ interface ToolLayoutProps {
 }
 
 export function ToolLayout({ formPanel, resultsPanel, className }: ToolLayoutProps) {
+  const [analyses, setAnalyses] = useState('847');
+  const [substrates, setSubstrates] = useState('30+');
+  const [resolution, setResolution] = useState('73%');
+
+  useEffect(() => {
+    api
+      .getPublicStats()
+      .then((data) => {
+        if (data.analysesCompleted) setAnalyses(String(data.analysesCompleted));
+        if (data.substrateCombinations) setSubstrates(`${data.substrateCombinations}+`);
+        if (data.resolutionRate) setResolution(`${data.resolutionRate}%`);
+      })
+      .catch(() => {
+        // Keep hardcoded fallback
+      });
+  }, []);
+
   return (
     <div className={cn('flex flex-col', className)}>
       {/* Stats Bar (Component 2.1) */}
       <div className="h-8 bg-brand-800/50 flex items-center justify-center text-xs text-[#94A3B8] border-b border-[#1F2937]">
-        <span className="font-mono">847</span>&nbsp;analyses completed&nbsp;
+        <span className="font-mono">{analyses}</span>&nbsp;analyses completed&nbsp;
         <span className="text-[#374151] mx-2">•</span>&nbsp;
-        <span className="font-mono">30+</span>&nbsp;substrates&nbsp;
+        <span className="font-mono">{substrates}</span>&nbsp;substrates&nbsp;
         <span className="text-[#374151] mx-2">•</span>&nbsp;
-        <span className="font-mono">73%</span>&nbsp;resolution rate
+        <span className="font-mono">{resolution}</span>&nbsp;resolution rate
       </div>
 
       {/* Two-panel layout */}

@@ -2,28 +2,32 @@
 Material specification Pydantic schemas.
 """
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union
 from datetime import datetime
 
 
 class BondRequirements(BaseModel):
-    """Bond performance requirements."""
+    """Bond performance requirements — accepts both detailed and simple forms."""
     shear_strength: Optional[str] = None
     tensile_strength: Optional[str] = None
     peel_strength: Optional[str] = None
     flexibility_required: Optional[bool] = None
     gap_fill: Optional[str] = None
     other_requirements: Optional[str] = None
+    # Simple form fields from frontend
+    load_type: Optional[str] = None
 
 
 class EnvironmentalConditions(BaseModel):
-    """Operating environment specifications."""
+    """Operating environment specifications — accepts both detailed and simple forms."""
     temp_min: Optional[str] = None
     temp_max: Optional[str] = None
     humidity: Optional[str] = None
     chemical_exposure: Optional[List[str]] = None
     uv_exposure: Optional[bool] = None
     outdoor_use: Optional[bool] = None
+    # Simple form field from frontend
+    conditions: Optional[List[str]] = None
 
 
 class CureConstraints(BaseModel):
@@ -81,10 +85,10 @@ class SpecRequestCreate(BaseModel):
     substrate_a: str = Field(..., description="Primary substrate material")
     substrate_b: str = Field(..., description="Secondary substrate material")
     
-    # Requirements
-    bond_requirements: BondRequirements
-    environment: EnvironmentalConditions
-    cure_constraints: CureConstraints
+    # Requirements — accept object or omit
+    bond_requirements: Optional[BondRequirements] = None
+    environment: Optional[EnvironmentalConditions] = None
+    cure_constraints: Optional[Union[str, CureConstraints]] = None
     
     # Production details
     production_volume: Optional[str] = Field(None, description="low, medium, high")
@@ -103,24 +107,24 @@ class SpecRequestResponse(BaseModel):
     material_category: str
     substrate_a: str
     substrate_b: str
-    bond_requirements: Dict[str, Any]
-    environment: Dict[str, Any]
-    cure_constraints: Dict[str, Any]
-    production_volume: Optional[str]
-    application_method: Optional[str]
-    additional_requirements: Optional[str]
+    bond_requirements: Optional[Dict[str, Any]] = None
+    environment: Optional[Dict[str, Any]] = None
+    cure_constraints: Optional[Any] = None
+    production_volume: Optional[str] = None
+    application_method: Optional[str] = None
+    additional_requirements: Optional[str] = None
     
     # Specification results
-    recommended_spec: RecommendedSpec
-    product_characteristics: ProductCharacteristics
-    application_guidance: ApplicationGuidance
-    warnings: List[str]
-    alternatives: List[AlternativeApproach]
+    recommended_spec: Optional[RecommendedSpec] = None
+    product_characteristics: Optional[ProductCharacteristics] = None
+    application_guidance: Optional[ApplicationGuidance] = None
+    warnings: List[str] = []
+    alternatives: List[AlternativeApproach] = []
     
     # Metadata
     status: str
-    ai_model_version: Optional[str]
-    processing_time_ms: Optional[int]
+    ai_model_version: Optional[str] = None
+    processing_time_ms: Optional[int] = None
     created_at: datetime
     updated_at: datetime
 
@@ -131,7 +135,7 @@ class SpecRequestListItem(BaseModel):
     material_category: str
     substrate_a: str
     substrate_b: str
-    recommended_material_type: Optional[str]
+    recommended_material_type: Optional[str] = None
     status: str
     created_at: datetime
 

@@ -1,11 +1,32 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { api, isApiConfigured } from '@/lib/api';
 import { Search, Download, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+
+interface HistoryItem {
+  id: string;
+  type: 'spec' | 'failure';
+  substrates: string;
+  result: string;
+  outcome: string | null;
+  date: string;
+  pdfAvailable: boolean;
+}
+
+const MOCK_ANALYSES: HistoryItem[] = [
+  { id: '1', type: 'spec', substrates: 'Aluminum 6061 → ABS', result: 'Two-Part Epoxy', outcome: 'confirmed', date: '2024-12-10', pdfAvailable: true },
+  { id: '2', type: 'failure', substrates: 'Steel 304 → Polycarbonate', result: 'Surface Prep Issue', outcome: 'pending', date: '2024-12-09', pdfAvailable: true },
+  { id: '3', type: 'spec', substrates: 'HDPE → HDPE', result: 'Structural Acrylic', outcome: null, date: '2024-12-08', pdfAvailable: true },
+  { id: '4', type: 'failure', substrates: 'Copper → Glass', result: 'CTE Mismatch', outcome: 'confirmed', date: '2024-12-05', pdfAvailable: true },
+  { id: '5', type: 'spec', substrates: 'Nylon 6 → Nylon 6', result: 'Cyanoacrylate', outcome: null, date: '2024-12-01', pdfAvailable: true },
+  { id: '6', type: 'failure', substrates: 'Titanium → PEEK', result: 'Moisture Contamination', outcome: 'pending', date: '2024-11-28', pdfAvailable: false },
+  { id: '7', type: 'spec', substrates: 'Brass → PBT', result: 'UV-Cure Acrylic', outcome: 'confirmed', date: '2024-11-20', pdfAvailable: false },
+];
 
 export default function HistoryPage() {
   const { user } = useAuth();
@@ -13,17 +34,53 @@ export default function HistoryPage() {
   const [substrateFilter, setSubstrateFilter] = useState('all');
   const [outcomeFilter, setOutcomeFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [analyses, setAnalyses] = useState<HistoryItem[]>(MOCK_ANALYSES);
 
-  // Mock data
-  const analyses = [
-    { id: '1', type: 'spec', substrates: 'Aluminum 6061 → ABS', result: 'Two-Part Epoxy', outcome: 'confirmed', date: '2024-12-10', pdfAvailable: true },
-    { id: '2', type: 'failure', substrates: 'Steel 304 → Polycarbonate', result: 'Surface Prep Issue', outcome: 'pending', date: '2024-12-09', pdfAvailable: true },
-    { id: '3', type: 'spec', substrates: 'HDPE → HDPE', result: 'Structural Acrylic', outcome: null, date: '2024-12-08', pdfAvailable: true },
-    { id: '4', type: 'failure', substrates: 'Copper → Glass', result: 'CTE Mismatch', outcome: 'confirmed', date: '2024-12-05', pdfAvailable: true },
-    { id: '5', type: 'spec', substrates: 'Nylon 6 → Nylon 6', result: 'Cyanoacrylate', outcome: null, date: '2024-12-01', pdfAvailable: true },
-    { id: '6', type: 'failure', substrates: 'Titanium → PEEK', result: 'Moisture Contamination', outcome: 'pending', date: '2024-11-28', pdfAvailable: false },
-    { id: '7', type: 'spec', substrates: 'Brass → PBT', result: 'UV-Cure Acrylic', outcome: 'confirmed', date: '2024-11-20', pdfAvailable: false },
-  ];
+  useEffect(() => {
+    if (!user || !isApiConfigured()) return;
+
+    Promise.all([
+      api.listFailureAnalyses().catch(() => []),
+      api.listSpecRequests().catch(() => []),
+    ]).then(([rawAnalyses, rawSpecs]) => {
+      const items: HistoryItem[] = [];
+
+      const analysisList = Array.isArray(rawAnalyses)
+        ? rawAnalyses
+        : ((rawAnalyses as unknown as Record<string, unknown>)?.items as unknown[]) || [];
+      (analysisList as Record<string, unknown>[]).forEach((a) => {
+        items.push({
+          id: a.id as string,
+          type: 'failure',
+          substrates: `${a.substrate_a || '?'} → ${a.substrate_b || '?'}`,
+          result: (a.failure_mode as string) || 'Analysis',
+          outcome: null,
+          date: ((a.created_at as string) || '').slice(0, 10),
+          pdfAvailable: (a.status as string) === 'completed',
+        });
+      });
+
+      const specList = Array.isArray(rawSpecs)
+        ? rawSpecs
+        : ((rawSpecs as unknown as Record<string, unknown>)?.items as unknown[]) || [];
+      (specList as Record<string, unknown>[]).forEach((s) => {
+        items.push({
+          id: s.id as string,
+          type: 'spec',
+          substrates: `${s.substrate_a || '?'} → ${s.substrate_b || '?'}`,
+          result: (s.recommended_material_type as string) || 'Spec',
+          outcome: null,
+          date: ((s.created_at as string) || '').slice(0, 10),
+          pdfAvailable: (s.status as string) === 'completed',
+        });
+      });
+
+      if (items.length > 0) {
+        items.sort((a, b) => b.date.localeCompare(a.date));
+        setAnalyses(items);
+      }
+    });
+  }, [user]);
 
   const isFreeUser = !user;
   const visibleLimit = isFreeUser ? 5 : analyses.length;
@@ -85,7 +142,16 @@ export default function HistoryPage() {
             </span>
             <span className="text-xs text-[#64748B]">{a.date}</span>
             {a.pdfAvailable && (
-              <button className="text-[#94A3B8] hover:text-white transition-colors" title="Download PDF">
+              <button
+                onClick={() => {
+                  const url = a.type === 'failure'
+                    ? api.getAnalysisPdfUrl(a.id)
+                    : api.getSpecPdfUrl(a.id);
+                  window.open(url, '_blank');
+                }}
+                className="text-[#94A3B8] hover:text-white transition-colors"
+                title="Download PDF"
+              >
                 <Download className="w-4 h-4" />
               </button>
             )}

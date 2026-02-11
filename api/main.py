@@ -9,6 +9,7 @@ from config import settings
 
 # Import routers
 from routers import health, analyze, specify, users, cases, reports, billing
+from routers import feedback
 
 
 @asynccontextmanager
@@ -73,6 +74,7 @@ app.include_router(users.router)
 app.include_router(cases.router)
 app.include_router(reports.router)
 app.include_router(billing.router)
+app.include_router(feedback.router)
 
 
 # Root endpoint

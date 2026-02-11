@@ -2,12 +2,14 @@
 Stripe payment integration service.
 """
 import stripe
+from datetime import datetime
 from config import settings
 from typing import Dict, Any
 from supabase import Client
 
 
-stripe.api_key = settings.stripe_secret_key
+if settings.stripe_secret_key:
+    stripe.api_key = settings.stripe_secret_key
 
 
 class StripeService:
@@ -213,10 +215,6 @@ class StripeService:
         """Handle failed payment."""
         # Could send notification emails about payment failure
         pass
-
-
-# Import datetime for timestamp conversion
-from datetime import datetime
 
 
 # Global instance

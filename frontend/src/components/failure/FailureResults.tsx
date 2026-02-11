@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Search, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { ConfidenceBadge } from '../shared/ConfidenceBadge';
 import { Button } from '@/components/ui/button';
+import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
 interface FailureResultsProps {
@@ -37,7 +38,7 @@ interface FailureResultData {
   confidenceScore: number;
 }
 
-export function FailureResults({ status, data, onNewAnalysis, onRunSpecAnalysis, isFree: _isFree = true }: FailureResultsProps) {
+export function FailureResults({ status, data, onNewAnalysis, onRunSpecAnalysis, isFree: _isFree = true, analysisId }: FailureResultsProps & { analysisId?: string }) {
   const [loadingPhase, setLoadingPhase] = useState(1);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [feedbackExpanded, setFeedbackExpanded] = useState(false);
@@ -228,7 +229,13 @@ export function FailureResults({ status, data, onNewAnalysis, onRunSpecAnalysis,
         {/* 9. Action bar */}
         <div className="fixed bottom-0 left-0 right-0 md:left-[45%] bg-[#0A1628] border-t border-[#1F2937] p-4 z-50">
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button variant="outline" className="flex-1 min-h-[44px]">Export PDF</Button>
+            <Button
+              variant="outline"
+              className="flex-1 min-h-[44px]"
+              onClick={() => {
+                if (analysisId) window.open(api.getAnalysisPdfUrl(analysisId), '_blank');
+              }}
+            >Export PDF</Button>
             <Button variant="outline" className="flex-1 min-h-[44px]">Request Expert Review</Button>
             {onRunSpecAnalysis && (
               <Button onClick={onRunSpecAnalysis} variant="outline" className="flex-1 min-h-[44px]">Run Spec Analysis →</Button>

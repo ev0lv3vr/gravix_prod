@@ -1,27 +1,82 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
+import { api, isApiConfigured } from '@/lib/api';
 import { FlaskConical, Search, ArrowRight, MessageSquare } from 'lucide-react';
+
+interface RecentAnalysis {
+  id: string;
+  type: 'spec' | 'failure';
+  substrates: string;
+  result: string;
+  date: string;
+  outcome: string | null;
+}
+
+const MOCK_ANALYSES: RecentAnalysis[] = [
+  { id: '1', type: 'spec', substrates: 'Aluminum 6061 → ABS', result: 'Two-Part Epoxy', date: '2024-12-10', outcome: 'Confirmed' },
+  { id: '2', type: 'failure', substrates: 'Steel 304 → Polycarbonate', result: 'Surface Prep Issue', date: '2024-12-09', outcome: 'Pending' },
+  { id: '3', type: 'spec', substrates: 'HDPE → HDPE', result: 'Structural Acrylic', date: '2024-12-08', outcome: null },
+];
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const { used, limit } = useUsageTracking();
+  const [recentAnalyses, setRecentAnalyses] = useState<RecentAnalysis[]>(MOCK_ANALYSES);
+  const [pendingFeedback] = useState(2);
 
   const greeting = user?.email
     ? `Welcome back, ${user.email.split('@')[0]}`
     : 'Welcome back';
 
-  // Mock recent analyses
-  const recentAnalyses = [
-    { id: '1', type: 'spec', substrates: 'Aluminum 6061 → ABS', result: 'Two-Part Epoxy', date: '2024-12-10', outcome: 'Confirmed' },
-    { id: '2', type: 'failure', substrates: 'Steel 304 → Polycarbonate', result: 'Surface Prep Issue', date: '2024-12-09', outcome: 'Pending' },
-    { id: '3', type: 'spec', substrates: 'HDPE → HDPE', result: 'Structural Acrylic', date: '2024-12-08', outcome: null },
-  ];
+  useEffect(() => {
+    if (!user || !isApiConfigured()) return;
 
-  // Mock pending feedback
-  const pendingFeedback = 2;
+    // Fetch real analyses and specs, merge and sort by date
+    Promise.all([
+      api.listFailureAnalyses().catch(() => []),
+      api.listSpecRequests().catch(() => []),
+    ]).then(([rawAnalyses, rawSpecs]) => {
+      const items: RecentAnalysis[] = [];
+
+      // Handle either array or paginated { items: [...] } response
+      const analysisList = Array.isArray(rawAnalyses)
+        ? rawAnalyses
+        : ((rawAnalyses as unknown as Record<string, unknown>)?.items as unknown[]) || [];
+      (analysisList as Record<string, unknown>[]).slice(0, 5).forEach((a) => {
+        items.push({
+          id: a.id as string,
+          type: 'failure',
+          substrates: `${a.substrate_a || ''} → ${a.substrate_b || ''}`,
+          result: (a.failure_mode as string) || 'Failure Analysis',
+          date: ((a.created_at as string) || '').slice(0, 10),
+          outcome: null,
+        });
+      });
+
+      const specList = Array.isArray(rawSpecs)
+        ? rawSpecs
+        : ((rawSpecs as unknown as Record<string, unknown>)?.items as unknown[]) || [];
+      (specList as Record<string, unknown>[]).slice(0, 5).forEach((s) => {
+        items.push({
+          id: s.id as string,
+          type: 'spec',
+          substrates: `${s.substrate_a || ''} → ${s.substrate_b || ''}`,
+          result: (s.recommended_material_type as string) || 'Spec Request',
+          date: ((s.created_at as string) || '').slice(0, 10),
+          outcome: null,
+        });
+      });
+
+      if (items.length > 0) {
+        items.sort((a, b) => b.date.localeCompare(a.date));
+        setRecentAnalyses(items.slice(0, 5));
+      }
+    });
+  }, [user]);
 
   return (
     <div className="container mx-auto px-6 py-10">

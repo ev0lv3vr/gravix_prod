@@ -127,6 +127,52 @@ export class ApiClient {
     return response.json();
   }
 
+  // Usage
+  async getUserUsage(): Promise<Record<string, number>> {
+    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/users/me/usage`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch usage');
+    return response.json();
+  }
+
+  // User profile update
+  async updateUser(data: { name?: string; company?: string; role?: string }): Promise<unknown> {
+    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/users/me`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('Failed to update profile');
+    return response.json();
+  }
+
+  // Feedback
+  async submitFeedback(
+    analysisId: string,
+    data: { outcome: string; details?: string }
+  ): Promise<unknown> {
+    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/feedback/${analysisId}`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('Failed to submit feedback');
+    return response.json();
+  }
+
+  // Public stats
+  async getPublicStats(): Promise<Record<string, number>> {
+    const url = isApiConfigured() ? `${API_URL}/stats/public` : '/api/stats/public';
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Failed to fetch stats');
+    return response.json();
+  }
+
   // PDF Download URLs
   getAnalysisPdfUrl(id: string): string {
     return `${API_URL}/reports/analysis/${id}/pdf`;

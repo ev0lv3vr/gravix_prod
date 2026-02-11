@@ -1,9 +1,11 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Search, UserX, DollarSign, Clock, Check } from 'lucide-react';
+import { api } from '@/lib/api';
 
 export default function LandingPage() {
   return (
@@ -80,12 +82,28 @@ function HeroSection() {
    Component 1.2: Social Proof Bar
    ============================================================ */
 function SocialProofBar() {
-  const stats = [
+  const [stats, setStats] = useState([
     { number: '847+', label: 'analyses completed' },
     { number: '30+', label: 'substrate combinations' },
     { number: '7', label: 'adhesive families' },
     { number: '73%', label: 'resolution rate' },
-  ];
+  ]);
+
+  useEffect(() => {
+    api
+      .getPublicStats()
+      .then((data) => {
+        setStats([
+          { number: `${data.analysesCompleted || 847}+`, label: 'analyses completed' },
+          { number: `${data.substrateCombinations || 30}+`, label: 'substrate combinations' },
+          { number: `${data.adhesiveFamilies || 7}`, label: 'adhesive families' },
+          { number: `${data.resolutionRate || 73}%`, label: 'resolution rate' },
+        ]);
+      })
+      .catch(() => {
+        // Keep hardcoded fallback
+      });
+  }, []);
 
   return (
     <section className="w-full bg-brand-800/50 border-t border-b border-[#1F2937] py-4">

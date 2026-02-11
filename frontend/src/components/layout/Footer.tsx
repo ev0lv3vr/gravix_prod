@@ -50,11 +50,6 @@ export function Footer() {
             <h3 className="text-sm font-semibold text-white mb-3">Company</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/about" className="text-sm text-text-secondary hover:text-white transition-colors">
-                  About
-                </Link>
-              </li>
-              <li>
                 <a href="mailto:hello@gravix.ai" className="text-sm text-text-secondary hover:text-white transition-colors">
                   Contact
                 </a>

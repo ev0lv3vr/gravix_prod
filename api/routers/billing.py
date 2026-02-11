@@ -24,10 +24,37 @@ async def create_checkout_session(
     """
     Create Stripe Checkout Session for subscription upgrade.
     
+    Accepts either price_id directly or tier name (pro/team) which resolves to price_id.
     Returns checkout URL for user to complete payment.
     """
+    if not settings.stripe_secret_key:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Billing is not configured"
+        )
+
     user_id = current_user['id']
     user_email = current_user['email']
+    
+    # Resolve price_id from tier if not provided directly
+    price_id = checkout_request.price_id
+    if not price_id and checkout_request.tier:
+        tier_map = {
+            'pro': settings.stripe_price_id_pro,
+            'team': settings.stripe_price_id_team,
+        }
+        price_id = tier_map.get(checkout_request.tier)
+        if not price_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Unknown tier: {checkout_request.tier}. Valid tiers: pro, team"
+            )
+    
+    if not price_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Either price_id or tier must be provided"
+        )
     
     # Default URLs if not provided
     success_url = checkout_request.success_url or f"{settings.frontend_url}/dashboard?upgrade=success"
@@ -37,7 +64,7 @@ async def create_checkout_session(
         result = await stripe_service.create_checkout_session(
             user_id=user_id,
             user_email=user_email,
-            price_id=checkout_request.price_id,
+            price_id=price_id,
             success_url=success_url,
             cancel_url=cancel_url,
             db=db
@@ -134,6 +161,9 @@ async def stripe_webhook(
         return {"status": "success"}
     
     except Exception as e:
-        # Log error but return 200 to prevent Stripe retries for app errors
+        # Return 500 so Stripe retries the webhook delivery
         print(f"Error handling webhook: {str(e)}")
-        return {"status": "error", "message": str(e)}
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Webhook processing error: {str(e)}"
+        )
