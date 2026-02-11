@@ -25,7 +25,7 @@ Last updated: 2026-02-10
 ### Gluemasters (gluemasters.com)
 - **What:** E-commerce store selling cyanoacrylate (CA/super glue) — B2B + consumer
 - **Platform:** Shopify
-- **Products:** Thick, Medium, Thin, Ultra Thin CA glue in 16oz bottles (~$42-46)
+- **Products:** Thick (1500 CPS), Medium (700 CPS), Thin (100 CPS), Ultra Thin (5 CPS) CA glue in 16oz bottles (~$42-46)
 - **Fulfillment:** ShipBob (multiple warehouses: Twin Lakes WI, Ontario CA, Buford GA)
 - **Key audience:** Craftspeople, reef/aquascaping (Reef2Reef sponsor), manufacturers
 - **Issues identified:** Empty homepage sections, no product differentiation, fake sale pricing, no visible reviews, needs dual-audience segmentation

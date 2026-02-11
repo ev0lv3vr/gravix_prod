@@ -55,9 +55,9 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="mailto:hello@gravix.ai" className="text-sm text-text-secondary hover:text-white transition-colors">
+                <Link href="/contact" className="text-sm text-text-secondary hover:text-white transition-colors">
                   Contact
-                </a>
+                </Link>
               </li>
               <li>
                 <Link href="/privacy" className="text-sm text-text-secondary hover:text-white transition-colors">
