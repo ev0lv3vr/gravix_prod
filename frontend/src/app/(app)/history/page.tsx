@@ -1,177 +1,148 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
+import { Search, Download, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { FileSearch, FileText, Search, Download } from 'lucide-react';
-import { formatRelativeTime } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 export default function HistoryPage() {
+  const { user } = useAuth();
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [substrateFilter, setSubstrateFilter] = useState('all');
+  const [outcomeFilter, setOutcomeFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Mock data - in real app, fetch from API
+  // Mock data
   const analyses = [
-    {
-      id: '1',
-      title: 'Cyanoacrylate debonding on aluminum-ABS',
-      date: '2024-02-09T10:30:00Z',
-      status: 'completed',
-      confidence: 0.85,
-    },
-    {
-      id: '2',
-      title: 'Epoxy cracking on polycarbonate',
-      date: '2024-02-08T14:20:00Z',
-      status: 'completed',
-      confidence: 0.72,
-    },
+    { id: '1', type: 'spec', substrates: 'Aluminum 6061 → ABS', result: 'Two-Part Epoxy', outcome: 'confirmed', date: '2024-12-10', pdfAvailable: true },
+    { id: '2', type: 'failure', substrates: 'Steel 304 → Polycarbonate', result: 'Surface Prep Issue', outcome: 'pending', date: '2024-12-09', pdfAvailable: true },
+    { id: '3', type: 'spec', substrates: 'HDPE → HDPE', result: 'Structural Acrylic', outcome: null, date: '2024-12-08', pdfAvailable: true },
+    { id: '4', type: 'failure', substrates: 'Copper → Glass', result: 'CTE Mismatch', outcome: 'confirmed', date: '2024-12-05', pdfAvailable: true },
+    { id: '5', type: 'spec', substrates: 'Nylon 6 → Nylon 6', result: 'Cyanoacrylate', outcome: null, date: '2024-12-01', pdfAvailable: true },
+    { id: '6', type: 'failure', substrates: 'Titanium → PEEK', result: 'Moisture Contamination', outcome: 'pending', date: '2024-11-28', pdfAvailable: false },
+    { id: '7', type: 'spec', substrates: 'Brass → PBT', result: 'UV-Cure Acrylic', outcome: 'confirmed', date: '2024-11-20', pdfAvailable: false },
   ];
 
-  const specs = [
-    {
-      id: '1',
-      title: 'Stainless steel to polycarbonate bonding',
-      date: '2024-02-07T09:15:00Z',
-      status: 'completed',
-    },
-  ];
+  const isFreeUser = !user;
+  const visibleLimit = isFreeUser ? 5 : analyses.length;
 
-  const filteredAnalyses = analyses.filter((a) =>
-    a.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const filteredSpecs = specs.filter((s) =>
-    s.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filtered = analyses.filter(a => {
+    if (typeFilter !== 'all' && a.type !== typeFilter) return false;
+    if (outcomeFilter !== 'all' && (a.outcome || 'none') !== outcomeFilter) return false;
+    if (searchQuery && !a.substrates.toLowerCase().includes(searchQuery.toLowerCase()) && !a.result.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    return true;
+  });
 
   return (
-    <div className="container max-w-4xl py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">History</h1>
-        <p className="text-muted-foreground">
-          View and download your past failure analyses and material specifications
-        </p>
-      </div>
+    <div className="container mx-auto px-6 py-10">
+      <h1 className="text-2xl font-bold text-white mb-8">Analysis History</h1>
 
-      <div className="mb-6">
-        <div className="relative">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search your history..."
-            className="pl-10"
+      {/* Component 7.1: Filters Bar */}
+      <div className="flex flex-col md:flex-row gap-3 mb-6">
+        <FilterSelect value={typeFilter} onChange={setTypeFilter} options={[
+          { value: 'all', label: 'All Types' },
+          { value: 'spec', label: 'Spec' },
+          { value: 'failure', label: 'Failure' },
+        ]} />
+        <FilterSelect value={substrateFilter} onChange={setSubstrateFilter} options={[
+          { value: 'all', label: 'All Substrates' },
+        ]} />
+        <FilterSelect value={outcomeFilter} onChange={setOutcomeFilter} options={[
+          { value: 'all', label: 'All Outcomes' },
+          { value: 'confirmed', label: 'Confirmed' },
+          { value: 'pending', label: 'Pending' },
+          { value: 'none', label: 'No Feedback' },
+        ]} />
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B]" />
+          <input
+            type="text"
+            placeholder="Search…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full h-10 pl-10 pr-4 bg-[#111827] border border-[#374151] rounded text-sm text-white placeholder:text-[#64748B] focus:outline-none focus:border-accent-500"
           />
         </div>
       </div>
 
-      <Tabs defaultValue="analyses">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="analyses">
-            Failure Analyses ({analyses.length})
-          </TabsTrigger>
-          <TabsTrigger value="specs">
-            Spec Requests ({specs.length})
-          </TabsTrigger>
-        </TabsList>
+      {/* Component 7.2: History List */}
+      <div className="space-y-3">
+        {filtered.slice(0, visibleLimit).map((a) => (
+          <div key={a.id} className="bg-brand-800 border border-[#1F2937] rounded-lg p-4 flex flex-col md:flex-row md:items-center gap-3 hover:border-accent-500/50 transition-colors cursor-pointer">
+            <span className={cn('px-2 py-0.5 rounded text-xs font-medium w-fit',
+              a.type === 'spec' ? 'bg-accent-500/10 text-accent-500' : 'bg-warning/10 text-warning'
+            )}>
+              {a.type === 'spec' ? 'Spec' : 'Failure'}
+            </span>
+            <span className="text-sm text-white flex-1">{a.substrates}</span>
+            <span className="text-sm text-[#94A3B8] hidden md:block">{a.result}</span>
+            <span className={cn('text-xs font-medium hidden md:block',
+              a.outcome === 'confirmed' ? 'text-success' : a.outcome === 'pending' ? 'text-warning' : 'text-[#64748B]'
+            )}>
+              {a.outcome || '—'}
+            </span>
+            <span className="text-xs text-[#64748B]">{a.date}</span>
+            {a.pdfAvailable && (
+              <button className="text-[#94A3B8] hover:text-white transition-colors" title="Download PDF">
+                <Download className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        ))}
 
-        <TabsContent value="analyses" className="mt-6">
-          {filteredAnalyses.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-12">
-                <FileSearch className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">No analyses found</p>
-                <Button asChild>
-                  <Link href="/analyze">Create Your First Analysis</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {filteredAnalyses.map((analysis) => (
-                <Card key={analysis.id} className="hover:border-primary transition-colors">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <FileSearch className="h-5 w-5 text-primary" />
-                          <CardTitle className="text-base">{analysis.title}</CardTitle>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>{formatRelativeTime(analysis.date)}</span>
-                          <Badge variant="secondary">{analysis.status}</Badge>
-                          <span className="text-primary font-medium">
-                            {Math.round(analysis.confidence * 100)}% confidence
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="ghost" size="icon" asChild>
-                          <a href={`/api/reports/analysis/${analysis.id}/pdf`} download>
-                            <Download className="h-4 w-4" />
-                          </a>
-                        </Button>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/analyze/${analysis.id}`}>View</Link>
-                        </Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
+        {/* Free user: blur + upgrade for items beyond limit */}
+        {isFreeUser && filtered.length > visibleLimit && (
+          <div className="relative">
+            {/* Blurred cards */}
+            <div className="filter blur-[6px] select-none pointer-events-none space-y-3">
+              {filtered.slice(visibleLimit, visibleLimit + 2).map((a) => (
+                <div key={a.id} className="bg-brand-800 border border-[#1F2937] rounded-lg p-4">
+                  <span className="text-sm text-white">{a.substrates}</span>
+                </div>
               ))}
             </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="specs" className="mt-6">
-          {filteredSpecs.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-12">
-                <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">No spec requests found</p>
-                <Button asChild>
-                  <Link href="/specify">Create Your First Spec</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {filteredSpecs.map((spec) => (
-                <Card key={spec.id} className="hover:border-primary transition-colors">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <FileText className="h-5 w-5 text-primary" />
-                          <CardTitle className="text-base">{spec.title}</CardTitle>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>{formatRelativeTime(spec.date)}</span>
-                          <Badge variant="secondary">{spec.status}</Badge>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="ghost" size="icon" asChild>
-                          <a href={`/api/reports/spec/${spec.id}/pdf`} download>
-                            <Download className="h-4 w-4" />
-                          </a>
-                        </Button>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/specify/${spec.id}`}>View</Link>
-                        </Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
-              ))}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="bg-[#0A1628]/90 border border-accent-500/20 rounded-lg p-6 text-center max-w-sm">
+                <Lock className="w-8 h-8 text-accent-500 mx-auto mb-3" />
+                <h3 className="text-lg font-bold text-white mb-2">Upgrade to see full history</h3>
+                <p className="text-sm text-[#94A3B8] mb-4">Free accounts can view the last 5 analyses.</p>
+                <Link href="/pricing" className="inline-block bg-accent-500 hover:bg-accent-600 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+                  Upgrade to Pro
+                </Link>
+              </div>
             </div>
-          )}
-        </TabsContent>
-      </Tabs>
+          </div>
+        )}
+
+        {/* Load more (for Pro users) */}
+        {!isFreeUser && filtered.length > 10 && (
+          <div className="text-center pt-4">
+            <Button variant="outline">Load more</Button>
+          </div>
+        )}
+
+        {filtered.length === 0 && (
+          <div className="text-center py-12 text-[#64748B]">No analyses found matching your filters.</div>
+        )}
+      </div>
     </div>
+  );
+}
+
+function FilterSelect({ value, onChange, options }: {
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="h-10 px-3 bg-[#111827] border border-[#374151] rounded text-sm text-white focus:outline-none focus:border-accent-500 appearance-none cursor-pointer"
+    >
+      {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+    </select>
   );
 }

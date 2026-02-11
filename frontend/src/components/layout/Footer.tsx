@@ -2,101 +2,75 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="border-t bg-background">
-      <div className="container py-8 md:py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+    <footer className="w-full bg-[#050D1A] py-12 border-t border-[#1F2937]">
+      <div className="container mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Column 1: Brand */}
           <div>
-            <h3 className="font-semibold mb-4">Product</h3>
-            <ul className="space-y-3 text-sm">
+            <div className="text-lg font-bold font-mono text-white mb-3">
+              GRAVIX
+            </div>
+            <p className="text-sm text-text-secondary mb-4">
+              Industrial materials intelligence
+            </p>
+            <p className="text-xs text-text-tertiary">
+              © 2026 Gravix. All rights reserved.
+            </p>
+          </div>
+
+          {/* Column 2: Product */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-3">Product</h3>
+            <ul className="space-y-2">
               <li>
-                <Link
-                  href="/analyze"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/tool" className="text-sm text-text-secondary hover:text-white transition-colors">
+                  Spec Engine
+                </Link>
+              </li>
+              <li>
+                <Link href="/failure" className="text-sm text-text-secondary hover:text-white transition-colors">
                   Failure Analysis
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/specify"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Spec Generator
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/cases"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Case Library
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/pricing"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/pricing" className="text-sm text-text-secondary hover:text-white transition-colors">
                   Pricing
+                </Link>
+              </li>
+              <li>
+                <Link href="/cases" className="text-sm text-text-secondary hover:text-white transition-colors">
+                  Case Library
                 </Link>
               </li>
             </ul>
           </div>
 
+          {/* Column 3: Company */}
           <div>
-            <h3 className="font-semibold mb-4">Company</h3>
-            <ul className="space-y-3 text-sm">
+            <h3 className="text-sm font-semibold text-white mb-3">Company</h3>
+            <ul className="space-y-2">
               <li>
-                <Link
-                  href="/about"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/about" className="text-sm text-text-secondary hover:text-white transition-colors">
                   About
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/contact"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <a href="mailto:hello@gravix.ai" className="text-sm text-text-secondary hover:text-white transition-colors">
                   Contact
+                </a>
+              </li>
+              <li>
+                <Link href="/privacy" className="text-sm text-text-secondary hover:text-white transition-colors">
+                  Privacy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="text-sm text-text-secondary hover:text-white transition-colors">
+                  Terms
                 </Link>
               </li>
             </ul>
           </div>
-
-          <div>
-            <h3 className="font-semibold mb-4">Legal</h3>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link
-                  href="/privacy"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/terms"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold mb-4">Gravix</h3>
-            <p className="text-sm text-muted-foreground">
-              AI-powered industrial materials intelligence.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Gravix. All rights reserved.
         </div>
       </div>
     </footer>

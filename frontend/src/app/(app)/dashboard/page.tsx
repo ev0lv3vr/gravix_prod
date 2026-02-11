@@ -1,218 +1,116 @@
 'use client';
 
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { AlertCircle, FileSearch, FileText, History, BookOpen } from 'lucide-react';
-import { PLAN_LIMITS } from '@/lib/constants';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUsageTracking } from '@/hooks/useUsageTracking';
+import { FlaskConical, Search, ArrowRight, MessageSquare } from 'lucide-react';
 
 export default function DashboardPage() {
-  // Mock user data - in real app, fetch from API
-  const user = {
-    plan: 'free' as const,
-    analysesThisMonth: 1,
-    specsThisMonth: 0,
-  };
+  const { user } = useAuth();
+  const { used, limit } = useUsageTracking();
 
-  const limits = PLAN_LIMITS[user.plan];
-  const analysesPercent = (user.analysesThisMonth / limits.analyses) * 100;
-  const specsPercent = (user.specsThisMonth / limits.specs) * 100;
+  const greeting = user?.email
+    ? `Welcome back, ${user.email.split('@')[0]}`
+    : 'Welcome back';
 
-  // Mock recent activity
-  const recentActivity = [
-    {
-      id: '1',
-      type: 'analysis',
-      title: 'Cyanoacrylate debonding on aluminum-ABS',
-      date: '2 hours ago',
-      status: 'completed',
-    },
+  // Mock recent analyses
+  const recentAnalyses = [
+    { id: '1', type: 'spec', substrates: 'Aluminum 6061 → ABS', result: 'Two-Part Epoxy', date: '2024-12-10', outcome: 'Confirmed' },
+    { id: '2', type: 'failure', substrates: 'Steel 304 → Polycarbonate', result: 'Surface Prep Issue', date: '2024-12-09', outcome: 'Pending' },
+    { id: '3', type: 'spec', substrates: 'HDPE → HDPE', result: 'Structural Acrylic', date: '2024-12-08', outcome: null },
   ];
 
+  // Mock pending feedback
+  const pendingFeedback = 2;
+
   return (
-    <div className="container py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome back! Here&apos;s your materials intelligence overview.
-        </p>
+    <div className="container mx-auto px-6 py-10">
+      {/* Component 6.1: Dashboard Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
+        <h1 className="text-2xl font-bold text-white mb-2 md:mb-0">{greeting}</h1>
+        <div className="flex items-center gap-3">
+          <span className="px-3 py-1 bg-accent-500/10 text-accent-500 text-xs font-semibold rounded-full uppercase">
+            {user ? 'Free' : 'Guest'}
+          </span>
+          <span className="text-sm text-[#94A3B8] font-mono">{used}/{limit} analyses used</span>
+        </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid gap-6 md:grid-cols-2 mb-8">
-        <Card className="cursor-pointer hover:border-primary transition-colors">
-          <Link href="/analyze">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileSearch className="h-5 w-5 text-primary" />
-                    Diagnose Failure
-                  </CardTitle>
-                  <CardDescription className="mt-2">
-                    Get AI-powered root cause analysis in seconds
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-          </Link>
-        </Card>
-
-        <Card className="cursor-pointer hover:border-primary transition-colors">
-          <Link href="/specify">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-primary" />
-                    Generate Spec
-                  </CardTitle>
-                  <CardDescription className="mt-2">
-                    Create vendor-neutral material specifications
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-          </Link>
-        </Card>
+      {/* Component 6.2: Quick Actions */}
+      <div className="grid md:grid-cols-2 gap-6 mb-10">
+        <Link href="/tool" className="group bg-brand-800 border border-[#1F2937] rounded-lg p-6 hover:border-accent-500 transition-colors">
+          <FlaskConical className="w-8 h-8 text-accent-500 mb-3" />
+          <h3 className="text-lg font-semibold text-white mb-1">New Material Spec</h3>
+          <p className="text-sm text-[#94A3B8]">Generate a vendor-neutral adhesive specification</p>
+          <span className="text-sm text-accent-500 mt-3 inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+            Start <ArrowRight className="w-4 h-4" />
+          </span>
+        </Link>
+        <Link href="/failure" className="group bg-brand-800 border border-[#1F2937] rounded-lg p-6 hover:border-accent-500 transition-colors">
+          <Search className="w-8 h-8 text-accent-500 mb-3" />
+          <h3 className="text-lg font-semibold text-white mb-1">Diagnose a Failure</h3>
+          <p className="text-sm text-[#94A3B8]">Get ranked root causes with confidence scores</p>
+          <span className="text-sm text-accent-500 mt-3 inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+            Start <ArrowRight className="w-4 h-4" />
+          </span>
+        </Link>
       </div>
 
-      {/* Usage Meters */}
-      <div className="grid gap-6 md:grid-cols-2 mb-8">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Failure Analyses</CardTitle>
-            <CardDescription>
-              {user.analysesThisMonth} of {limits.analyses} used this month
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Progress value={analysesPercent} className="mb-2" />
-            <p className="text-sm text-muted-foreground">
-              {limits.analyses - user.analysesThisMonth} remaining
-            </p>
-            {analysesPercent >= 100 && (
-              <div className="mt-4 flex items-center gap-2 text-sm text-warning">
-                <AlertCircle className="h-4 w-4" />
-                <span>Limit reached.</span>
-                <Link href="/pricing" className="text-primary hover:underline">
-                  Upgrade now
-                </Link>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Spec Requests</CardTitle>
-            <CardDescription>
-              {user.specsThisMonth} of {limits.specs} used this month
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Progress value={specsPercent} className="mb-2" />
-            <p className="text-sm text-muted-foreground">
-              {limits.specs - user.specsThisMonth} remaining
-            </p>
-            {specsPercent >= 100 && (
-              <div className="mt-4 flex items-center gap-2 text-sm text-warning">
-                <AlertCircle className="h-4 w-4" />
-                <span>Limit reached.</span>
-                <Link href="/pricing" className="text-primary hover:underline">
-                  Upgrade now
-                </Link>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Recent Activity */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Your latest analyses and specifications</CardDescription>
-          </div>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/history">
-              <History className="h-4 w-4 mr-2" />
-              View All
-            </Link>
-          </Button>
-        </CardHeader>
-        <CardContent>
-          {recentActivity.length === 0 ? (
-            <div className="text-center py-12">
-              <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground mb-4">No activity yet</p>
-              <div className="flex gap-4 justify-center">
-                <Button asChild>
-                  <Link href="/analyze">Diagnose First Failure</Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/cases">Browse Case Library</Link>
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {recentActivity.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0"
-                >
-                  <div className="flex items-center gap-4">
-                    {item.type === 'analysis' ? (
-                      <FileSearch className="h-5 w-5 text-muted-foreground" />
-                    ) : (
-                      <FileText className="h-5 w-5 text-muted-foreground" />
-                    )}
-                    <div>
-                      <p className="font-medium">{item.title}</p>
-                      <p className="text-sm text-muted-foreground">{item.date}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <Badge>{item.status}</Badge>
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link
-                        href={
-                          item.type === 'analysis'
-                            ? `/analyze/${item.id}`
-                            : `/specify/${item.id}`
-                        }
-                      >
-                        View
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Plan Info */}
-      {user.plan === 'free' && (
-        <Card className="mt-8 border-primary">
-          <CardHeader>
-            <CardTitle>Upgrade to Pro</CardTitle>
-            <CardDescription>
-              Get 15 analyses + 15 specs per month, full PDF reports, and priority support
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild>
-              <Link href="/pricing">View Plans</Link>
-            </Button>
-          </CardContent>
-        </Card>
+      {/* Component 6.4: Pending Feedback Banner */}
+      {pendingFeedback > 0 && (
+        <div className="bg-accent-500/10 border border-accent-500/20 rounded-lg p-4 mb-8 flex items-center gap-3">
+          <MessageSquare className="w-5 h-5 text-accent-500 flex-shrink-0" />
+          <p className="text-sm text-[#94A3B8]">
+            You have <strong className="text-white">{pendingFeedback} analyses</strong> waiting for feedback.
+          </p>
+        </div>
       )}
+
+      {/* Component 6.3: Recent Analyses */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-white">Recent Analyses</h2>
+          <Link href="/history" className="text-sm text-accent-500 hover:underline">View All →</Link>
+        </div>
+        <div className="bg-brand-800 border border-[#1F2937] rounded-lg overflow-hidden">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-[#1F2937]">
+                <th className="text-left text-xs text-[#64748B] font-medium p-4">Type</th>
+                <th className="text-left text-xs text-[#64748B] font-medium p-4">Substrates</th>
+                <th className="text-left text-xs text-[#64748B] font-medium p-4 hidden md:table-cell">Result</th>
+                <th className="text-left text-xs text-[#64748B] font-medium p-4 hidden md:table-cell">Outcome</th>
+                <th className="text-left text-xs text-[#64748B] font-medium p-4">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentAnalyses.map((a) => (
+                <tr key={a.id} className="border-b border-[#1F2937] last:border-0 hover:bg-[#1F2937] transition-colors cursor-pointer">
+                  <td className="p-4">
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      a.type === 'spec' ? 'bg-accent-500/10 text-accent-500' : 'bg-warning/10 text-warning'
+                    }`}>
+                      {a.type === 'spec' ? 'Spec' : 'Failure'}
+                    </span>
+                  </td>
+                  <td className="p-4 text-sm text-white">{a.substrates}</td>
+                  <td className="p-4 text-sm text-[#94A3B8] hidden md:table-cell">{a.result}</td>
+                  <td className="p-4 hidden md:table-cell">
+                    {a.outcome ? (
+                      <span className={`text-xs font-medium ${a.outcome === 'Confirmed' ? 'text-success' : 'text-warning'}`}>
+                        {a.outcome}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-[#64748B]">—</span>
+                    )}
+                  </td>
+                  <td className="p-4 text-sm text-[#64748B]">{a.date}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

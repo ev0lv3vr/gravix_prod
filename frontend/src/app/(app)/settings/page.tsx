@@ -2,232 +2,157 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import { CreditCard, User as UserIcon, AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function SettingsPage() {
-  const [saving, setSaving] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const { user } = useAuth();
+  const { used, limit } = useUsageTracking();
 
-  // Mock user data
-  const [formData, setFormData] = useState({
-    name: 'John Doe',
-    email: 'john@company.com',
-    company: 'Acme Manufacturing',
-    role: 'Process Engineer',
-  });
+  const [name, setName] = useState('');
+  const [company, setCompany] = useState('');
+  const [role, setRole] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const userPlan = {
-    name: 'free',
-    displayName: 'Free',
-    analysesThisMonth: 1,
-    specsThisMonth: 0,
-    analysesLimit: 2,
-    specsLimit: 2,
+  const handleSaveProfile = async () => {
+    setIsSaving(true);
+    // TODO: API call to save profile
+    await new Promise(r => setTimeout(r, 500));
+    setIsSaving(false);
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setSuccess(false);
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setSaving(false);
-    setSuccess(true);
-    setTimeout(() => setSuccess(false), 3000);
-  };
+  const usagePct = Math.min((used / limit) * 100, 100);
 
   return (
-    <div className="container max-w-4xl py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your account settings and preferences
-        </p>
-      </div>
+    <div className="container mx-auto px-6 py-10 max-w-[640px]">
+      <h1 className="text-2xl font-bold text-white mb-10">Settings</h1>
 
-      <div className="space-y-6">
-        {/* Profile Settings */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <UserIcon className="h-5 w-5" />
-              <CardTitle>Profile Information</CardTitle>
+      {/* Component 10.1: Profile Section */}
+      <section className="mb-10">
+        <h2 className="text-lg font-semibold text-white mb-6">Profile</h2>
+        <div className="space-y-5">
+          <div>
+            <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Name</Label>
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+              className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
+            />
+          </div>
+          <div>
+            <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Email</Label>
+            <Input
+              value={user?.email || ''}
+              readOnly
+              className="h-11 bg-[#111827] border-[#374151] rounded text-sm opacity-60 cursor-not-allowed"
+            />
+            <p className="text-xs text-[#64748B] mt-1">Email cannot be changed</p>
+          </div>
+          <div>
+            <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Company</Label>
+            <Input
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              placeholder="Your company"
+              className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
+            />
+          </div>
+          <div>
+            <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Role / Title</Label>
+            <Input
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              placeholder="e.g., Manufacturing Engineer"
+              className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
+            />
+          </div>
+          <Button onClick={handleSaveProfile} disabled={isSaving} className="bg-accent-500 hover:bg-accent-600 text-white">
+            {isSaving ? 'Saving…' : 'Save Changes'}
+          </Button>
+        </div>
+      </section>
+
+      <hr className="border-[#1F2937] my-10" />
+
+      {/* Component 10.2: Subscription Section */}
+      <section className="mb-10">
+        <h2 className="text-lg font-semibold text-white mb-6">Subscription</h2>
+        <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <span className="px-3 py-1 bg-accent-500/10 text-accent-500 text-xs font-semibold rounded-full uppercase">
+              Free Plan
+            </span>
+            <Link href="/pricing" className="text-sm text-accent-500 hover:underline">Upgrade</Link>
+          </div>
+
+          {/* Usage bar */}
+          <div className="mb-4">
+            <div className="flex justify-between text-xs text-[#94A3B8] mb-1">
+              <span>Usage this month</span>
+              <span className="font-mono">{used} / {limit}</span>
             </div>
-            <CardDescription>
-              Update your personal and company details
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSave} className="space-y-4">
-              {success && (
-                <Alert>
-                  <CheckCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    Profile updated successfully!
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    disabled
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Contact support to change your email
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="company">Company</Label>
-                  <Input
-                    id="company"
-                    value={formData.company}
-                    onChange={(e) =>
-                      setFormData({ ...formData, company: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="role">Role</Label>
-                  <Input
-                    id="role"
-                    value={formData.role}
-                    onChange={(e) =>
-                      setFormData({ ...formData, role: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-
-              <Button type="submit" disabled={saving}>
-                {saving ? 'Saving...' : 'Save Changes'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* Current Plan */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <CreditCard className="h-5 w-5" />
-              <CardTitle>Current Plan</CardTitle>
+            <div className="w-full h-2 bg-[#1F2937] rounded-full overflow-hidden">
+              <div
+                className="h-full bg-accent-500 rounded-full transition-all"
+                style={{ width: `${usagePct}%` }}
+              />
             </div>
-            <CardDescription>
-              Manage your subscription and billing
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-semibold text-lg">
-                  {userPlan.displayName} Plan
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {userPlan.analysesThisMonth} of {userPlan.analysesLimit} analyses used
-                  this month
-                </p>
-              </div>
-              <Badge variant="secondary">{userPlan.displayName}</Badge>
-            </div>
+          </div>
 
-            <Separator />
+          <Button variant="outline" className="w-full" disabled>
+            Manage Subscription
+          </Button>
+          <p className="text-xs text-[#64748B] mt-2 text-center">
+            Stripe billing portal available for Pro and Team plans
+          </p>
+        </div>
+      </section>
 
-            <div>
-              <p className="text-sm font-medium mb-2">Usage This Month:</p>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">
-                    Failure Analyses:
-                  </span>
-                  <span>
-                    {userPlan.analysesThisMonth} / {userPlan.analysesLimit}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Spec Requests:</span>
-                  <span>
-                    {userPlan.specsThisMonth} / {userPlan.specsLimit}
-                  </span>
-                </div>
-              </div>
-            </div>
+      <hr className="border-[#1F2937] my-10" />
 
-            {userPlan.name === 'free' && (
-              <>
-                <Separator />
-                <Alert>
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    Upgrade to Pro for 15 analyses + 15 specs per month, full PDF
-                    reports, and priority support.
-                  </AlertDescription>
-                </Alert>
-              </>
-            )}
+      {/* Component 10.3: Data Section */}
+      <section>
+        <h2 className="text-lg font-semibold text-white mb-6">Data</h2>
+        <div className="space-y-4">
+          <Button variant="outline" className="w-full justify-start">
+            Export My Data (JSON)
+          </Button>
 
-            <div className="flex gap-4">
-              <Button asChild>
-                <Link href="/pricing">
-                  {userPlan.name === 'free' ? 'Upgrade Plan' : 'Change Plan'}
-                </Link>
-              </Button>
-              {userPlan.name !== 'free' && (
-                <Button variant="outline" asChild>
-                  <Link href="/settings/billing">Manage Billing</Link>
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Danger Zone */}
-        <Card className="border-destructive">
-          <CardHeader>
-            <CardTitle className="text-destructive">Danger Zone</CardTitle>
-            <CardDescription>
-              Irreversible account actions
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button variant="destructive" disabled>
+          {!showDeleteConfirm ? (
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-danger hover:text-danger hover:bg-danger/10"
+              onClick={() => setShowDeleteConfirm(true)}
+            >
               Delete Account
             </Button>
-            <p className="text-xs text-muted-foreground mt-2">
-              Contact support to delete your account
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+          ) : (
+            <div className="bg-danger/10 border border-danger/20 rounded-lg p-4">
+              <p className="text-sm text-white mb-3">
+                Are you sure? This will permanently delete your account and all analysis data. This action cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="text-[#94A3B8]"
+                >
+                  Cancel
+                </Button>
+                <Button variant="danger" size="sm">
+                  Delete My Account
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

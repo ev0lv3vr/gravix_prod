@@ -1,14 +1,24 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { ThemeProvider } from 'next-themes';
+import { DM_Sans, JetBrains_Mono } from 'next/font/google';
+import { AuthProvider } from '@/contexts/AuthContext';
 import '@/styles/globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: 'Gravix — AI-Powered Industrial Materials Intelligence',
+  title: 'GRAVIX — Industrial Adhesive Specification Platform',
   description:
-    'Specify industrial materials with confidence. Diagnose failures in minutes.',
+    'AI-powered platform for precise adhesive specification and failure analysis. Trusted by manufacturing engineers worldwide.',
 };
 
 export default function RootLayout({
@@ -17,16 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className={`${dmSans.variable} ${jetbrainsMono.variable} font-sans`}>
+        <AuthProvider>
           {children}
-        </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

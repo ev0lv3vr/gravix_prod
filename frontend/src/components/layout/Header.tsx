@@ -1,121 +1,205 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from './ThemeToggle';
-import { supabase } from '@/lib/supabase';
-import { User } from '@/lib/types';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOut, Settings, User as UserIcon } from 'lucide-react';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { Menu, X, User } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUsageTracking } from '@/hooks/useUsageTracking';
 
-interface HeaderProps {
-  user?: User | null;
-}
+export function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-export function Header({ user }: HeaderProps) {
-  const pathname = usePathname();
-  const isAuthPage = pathname?.startsWith('/login') || pathname?.startsWith('/signup');
+  const { user, signOut } = useAuth();
+  const { used, limit } = useUsageTracking();
+
+  const navLinks = [
+    { href: '/tool', label: 'Spec Engine' },
+    { href: '/failure', label: 'Failure Analysis' },
+    { href: '/pricing', label: 'Pricing' },
+  ];
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/';
+    await signOut();
+    setIsMobileMenuOpen(false);
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-600 bg-clip-text text-transparent">
-              Gravix
-            </span>
-          </Link>
+    <>
+      <header className="sticky top-0 z-50 w-full h-16 bg-[#0A1628] border-b border-[#1F2937]">
+        <div className="container mx-auto h-full flex items-center justify-between px-6">
+          {/* Left: Logo */}
+          <div className="flex items-center gap-10">
+            <Link
+              href="/"
+              className="text-lg font-bold font-mono text-white hover:text-accent-500 transition-colors"
+            >
+              GRAVIX
+            </Link>
 
-          {user && (
-            <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-              <Link
-                href="/dashboard"
-                className="transition-colors hover:text-foreground/80"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/analyze"
-                className="transition-colors hover:text-foreground/80"
-              >
-                Diagnose Failure
-              </Link>
-              <Link
-                href="/specify"
-                className="transition-colors hover:text-foreground/80"
-              >
-                Spec Material
-              </Link>
-              <Link
-                href="/cases"
-                className="transition-colors hover:text-foreground/80"
-              >
-                Case Library
-              </Link>
+            {/* Desktop Nav */}
+            <nav className="hidden md:flex items-center gap-8">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-medium text-text-secondary hover:text-white transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
-          )}
-        </div>
+          </div>
 
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <UserIcon className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>
-                  {user.name || user.email}
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/settings">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/settings/billing">
-                    Billing
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            !isAuthPage && (
+          {/* Right: Auth buttons */}
+          <div className="hidden md:flex items-center gap-4">
+            {!user ? (
               <>
-                <Button variant="ghost" asChild>
-                  <Link href="/login">Sign In</Link>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-text-secondary"
+                  onClick={() => setIsAuthModalOpen(true)}
+                >
+                  Sign In
                 </Button>
-                <Button asChild>
-                  <Link href="/signup">Get Started</Link>
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="bg-accent-500 hover:bg-accent-600 text-white"
+                  onClick={() => setIsAuthModalOpen(true)}
+                >
+                  Try Free →
                 </Button>
               </>
-            )
-          )}
+            ) : (
+              <>
+                <Badge variant="outline" className="font-mono text-xs text-text-secondary border-brand-600">
+                  {used}/{limit} analyses
+                </Badge>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="gap-2">
+                      <User className="h-4 w-4" />
+                      <span className="text-sm">{user.email?.split('@')[0]}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem asChild>
+                      <Link href="/settings">Settings</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/history">History</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden text-white"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </button>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Mobile Menu Overlay — full-screen */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-[#0A1628] md:hidden pt-16">
+          <nav className="flex flex-col p-6 gap-2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-lg font-medium py-4 px-4 rounded text-text-secondary hover:text-white hover:bg-brand-800 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="mt-6 flex flex-col gap-3">
+              {!user ? (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className="w-full"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setIsAuthModalOpen(true);
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="lg"
+                    className="w-full bg-accent-500 hover:bg-accent-600"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setIsAuthModalOpen(true);
+                    }}
+                  >
+                    Try Free →
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Badge variant="outline" className="font-mono w-fit border-brand-600">
+                    {used}/{limit} analyses
+                  </Badge>
+                  <Link
+                    href="/settings"
+                    className="text-lg font-medium py-4 px-4 rounded text-text-secondary hover:text-white hover:bg-brand-800 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Settings
+                  </Link>
+                  <Link
+                    href="/history"
+                    className="text-lg font-medium py-4 px-4 rounded text-text-secondary hover:text-white hover:bg-brand-800 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    History
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className="w-full"
+                    onClick={handleSignOut}
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              )}
+            </div>
+          </nav>
+        </div>
+      )}
+
+      {/* Auth Modal */}
+      <AuthModal open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
+    </>
   );
 }
