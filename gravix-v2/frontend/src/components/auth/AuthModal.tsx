@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Mail, Eye, EyeOff } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
 type AuthView = 'sign-in' | 'sign-up' | 'forgot-password' | 'check-email';
@@ -30,6 +31,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const router = useRouter();
   const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
 
   const resetForm = () => {
@@ -64,6 +66,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
       setIsLoading(false);
     } else {
       handleClose();
+      router.push('/dashboard');
     }
   };
 
