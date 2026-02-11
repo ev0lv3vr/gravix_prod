@@ -1,10 +1,30 @@
+# Vercel
 .vercel
+
+# Environment files
 .env*.local
 .env
 api/.env
 frontend/.env.local
+
+# Build artifacts
 node_modules/
 __pycache__/
 *.pyc
 dist/
 .next/
+
+# OpenClaw workspace files (not part of Gravix)
+MEMORY.md
+SOUL.md
+USER.md
+AGENTS.md
+IDENTITY.md
+TOOLS.md
+HEARTBEAT.md
+BOOTSTRAP.md
+memory/
+tools/
+avatars/
+moneysamurai/
+gravix/
