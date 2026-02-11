@@ -8,6 +8,7 @@ import { FlaskConical, Search, ArrowRight, MessageSquare } from 'lucide-react';
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
+  const { used, limit } = useUsageTracking();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -18,7 +19,6 @@ export default function DashboardPage() {
   if (loading || !user) {
     return null;
   }
-  const { used, limit } = useUsageTracking();
 
   const greeting = user?.email
     ? `Welcome back, ${user.email.split('@')[0]}`

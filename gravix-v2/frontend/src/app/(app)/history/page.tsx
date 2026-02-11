@@ -9,6 +9,10 @@ import { cn } from '@/lib/utils';
 
 export default function HistoryPage() {
   const { user, loading } = useAuth();
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [substrateFilter, setSubstrateFilter] = useState('all');
+  const [outcomeFilter, setOutcomeFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (!loading && !user) {
@@ -19,10 +23,6 @@ export default function HistoryPage() {
   if (loading || !user) {
     return null;
   }
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [substrateFilter, setSubstrateFilter] = useState('all');
-  const [outcomeFilter, setOutcomeFilter] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
 
   // Mock data
   const analyses = [

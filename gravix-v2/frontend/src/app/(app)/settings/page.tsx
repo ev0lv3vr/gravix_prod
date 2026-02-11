@@ -10,6 +10,12 @@ import { Label } from '@/components/ui/label';
 
 export default function SettingsPage() {
   const { user, loading } = useAuth();
+  const { used, limit } = useUsageTracking();
+  const [name, setName] = useState('');
+  const [company, setCompany] = useState('');
+  const [role, setRole] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -20,13 +26,6 @@ export default function SettingsPage() {
   if (loading || !user) {
     return null;
   }
-  const { used, limit } = useUsageTracking();
-
-  const [name, setName] = useState('');
-  const [company, setCompany] = useState('');
-  const [role, setRole] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleSaveProfile = async () => {
     setIsSaving(true);
