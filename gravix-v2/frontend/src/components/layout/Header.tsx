@@ -23,6 +23,7 @@ export function Header() {
   const { used, limit } = useUsageTracking();
 
   const navLinks = [
+    ...(user ? [{ href: '/dashboard', label: 'Dashboard' }] : []),
     { href: '/tool', label: 'Spec Engine' },
     { href: '/failure', label: 'Failure Analysis' },
     { href: '/pricing', label: 'Pricing' },
