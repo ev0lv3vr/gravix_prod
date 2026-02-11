@@ -26,6 +26,7 @@ export default function FailureAnalysisPage() {
     setStatus('loading');
 
     try {
+      // Map frontend form data to backend FailureAnalysisCreate schema (snake_case)
       const requestData: Record<string, unknown> = {
         material_category: 'adhesive',
         failure_mode: formData.failureMode,
@@ -36,33 +37,68 @@ export default function FailureAnalysisPage() {
 
       if (formData.adhesiveUsed) requestData.material_subcategory = formData.adhesiveUsed;
       if (formData.timeToFailure) requestData.time_to_failure = formData.timeToFailure;
-      if (formData.industry) requestData.industry = formData.industry;
-      if (formData.environment.length > 0) requestData.environment_conditions = formData.environment;
       if (formData.surfacePrep) requestData.surface_preparation = formData.surfacePrep;
-      if (formData.productionImpact) requestData.production_impact = formData.productionImpact;
       if (formData.additionalContext) requestData.additional_notes = formData.additionalContext;
+      // Environment conditions go into chemical_exposure or additional_notes
+      if (formData.environment.length > 0) {
+        requestData.chemical_exposure = formData.environment.join(', ');
+      }
 
       const response = await api.createFailureAnalysis(requestData);
 
+      // Map backend snake_case response to frontend FailureResultData
+      // Handle both camelCase (from types.ts) and snake_case (from backend) field names
+      const rootCauses = response.rootCauses || (response as any).root_causes || [];
+      const contribFactors = response.contributingFactors || (response as any).contributing_factors || [];
+      const recs = response.recommendations || (response as any).recommendations || [];
+      const prevPlan = (response as any).prevention_plan || (response as any).preventionPlan || '';
+      const confScore = (response as any).confidence_score || (response as any).confidenceScore || 0.85;
+      const simCases = (response as any).similar_cases || (response as any).similarCases || [];
+
+      // Recommendations can come as array of objects or as {immediate, longTerm}
+      let immediateActions: string[] = [];
+      let longTermSolutions: string[] = [];
+
+      if (Array.isArray(recs)) {
+        immediateActions = recs
+          .filter((r: any) => r.priority === 'immediate' || r.priority === 'short_term')
+          .map((r: any) => `${r.title}: ${r.description}`);
+        longTermSolutions = recs
+          .filter((r: any) => r.priority === 'long_term')
+          .map((r: any) => `${r.title}: ${r.description}`);
+        // If no categorization, split evenly
+        if (immediateActions.length === 0 && longTermSolutions.length === 0) {
+          const mid = Math.ceil(recs.length / 2);
+          immediateActions = recs.slice(0, mid).map((r: any) => typeof r === 'string' ? r : `${r.title || ''}: ${r.description || ''}`);
+          longTermSolutions = recs.slice(mid).map((r: any) => typeof r === 'string' ? r : `${r.title || ''}: ${r.description || ''}`);
+        }
+      } else if (recs && typeof recs === 'object') {
+        immediateActions = (recs as any).immediate || [];
+        longTermSolutions = (recs as any).longTerm || (recs as any).long_term || [];
+      }
+
       const mapped: FailureResultData = {
         diagnosis: {
-          topRootCause: response.rootCauses?.[0]?.cause || 'Analysis Complete',
-          confidence: response.rootCauses?.[0]?.confidence || 0.85,
-          explanation: response.rootCauses?.[0]?.explanation || 'See details below.',
+          topRootCause: rootCauses[0]?.cause || 'Analysis Complete',
+          confidence: rootCauses[0]?.confidence || 0.85,
+          explanation: rootCauses[0]?.explanation || 'See details below.',
         },
-        rootCauses: (response.rootCauses || []).map((rc: any, i: number) => ({
+        rootCauses: rootCauses.map((rc: any, i: number) => ({
           rank: i + 1,
           cause: rc.cause,
-          category: 'general',
+          category: rc.category || 'general',
           confidence: rc.confidence,
           explanation: rc.explanation,
-          mechanism: rc.evidence?.join('. ') || '',
+          mechanism: Array.isArray(rc.evidence) ? rc.evidence.join('. ') : (rc.evidence || ''),
         })),
-        contributingFactors: response.contributingFactors || [],
-        immediateActions: response.recommendations?.immediate || [],
-        longTermSolutions: response.recommendations?.longTerm || [],
-        preventionPlan: response.preventionPlan ? response.preventionPlan.split('\n').filter(Boolean) : [],
-        confidenceScore: response.confidenceScore || 0.85,
+        contributingFactors: contribFactors,
+        immediateActions,
+        longTermSolutions,
+        preventionPlan: typeof prevPlan === 'string'
+          ? prevPlan.split('\n').filter(Boolean)
+          : Array.isArray(prevPlan) ? prevPlan : [],
+        similarCases: simCases,
+        confidenceScore: confScore,
       };
 
       setResultData(mapped);

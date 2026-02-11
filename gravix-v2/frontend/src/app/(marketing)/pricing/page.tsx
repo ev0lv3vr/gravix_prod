@@ -7,7 +7,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Check, ChevronDown, ChevronUp, Star } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://gravix-prod.onrender.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
 
 export default function PricingPage() {
   const { session } = useAuth();
@@ -17,14 +17,14 @@ export default function PricingPage() {
     setIsLoading(true);
     try {
       const token = session?.access_token;
-      const response = await fetch(`${BACKEND_URL}/billing/checkout`, {
+      const response = await fetch(`${API_URL}/billing/checkout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
-          tier: 'pro',
+          price_id: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || undefined,
           success_url: `${window.location.origin}/dashboard?checkout=success`,
           cancel_url: `${window.location.origin}/pricing?checkout=cancel`,
         }),

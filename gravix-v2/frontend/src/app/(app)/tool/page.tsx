@@ -24,54 +24,79 @@ export default function SpecToolPage() {
     setStatus('loading');
 
     try {
+      // Map frontend form data to backend SpecRequestCreate schema
+      const envConditions: string[] = formData.environment || [];
       const requestData: Record<string, unknown> = {
         material_category: 'adhesive',
         substrate_a: formData.substrateA,
         substrate_b: formData.substrateB,
         bond_requirements: {
-          load_type: formData.loadType,
+          shear_strength: formData.loadType === 'structural' ? 'High (>3000 psi)' :
+                          formData.loadType === 'semi-structural' ? 'Medium (1000-3000 psi)' :
+                          formData.loadType === 'non-structural' ? 'Low (<1000 psi)' : undefined,
           gap_fill: formData.gapFill ? `${formData.gapFill}mm` : undefined,
+          flexibility_required: formData.loadType === 'sealing',
+          other_requirements: formData.loadType || undefined,
         },
         environment: {
           temp_min: `${formData.tempMin}°C`,
           temp_max: `${formData.tempMax}°C`,
-          conditions: formData.environment,
+          chemical_exposure: envConditions.filter(e => e.includes('Chemical')).length > 0
+            ? envConditions.filter(e => e.includes('Chemical'))
+            : undefined,
+          uv_exposure: envConditions.includes('UV/outdoor'),
+          outdoor_use: envConditions.includes('UV/outdoor'),
+          humidity: envConditions.includes('High humidity') ? 'High' : undefined,
         },
-        cure_constraints: formData.cureConstraint || undefined,
+        cure_constraints: {
+          preferred_method: formData.cureConstraint === 'room_temp' ? 'Room temperature' :
+                           formData.cureConstraint === 'heat_available' ? 'Heat cure' :
+                           formData.cureConstraint === 'uv_available' ? 'UV cure' :
+                           formData.cureConstraint === 'fast_fixture' ? 'Fast fixture (<5 min)' : undefined,
+          heat_available: formData.cureConstraint === 'heat_available',
+          uv_available: formData.cureConstraint === 'uv_available',
+        },
         additional_requirements: formData.additionalContext || undefined,
       };
 
       const response = await api.createSpecRequest(requestData);
 
+      // Map backend snake_case response to frontend SpecResultData
+      const recSpec = response.recommendedSpec || (response as any).recommended_spec || {};
+      const prodChars = response.productCharacteristics || (response as any).product_characteristics || {};
+      const appGuidance = response.applicationGuidance || (response as any).application_guidance || {};
+      const responseWarnings = response.warnings || (response as any).warnings || [];
+      const responseAlts = response.alternatives || (response as any).alternatives || [];
+
       const mapped: SpecResultData = {
         recommendedSpec: {
-          materialType: response.recommendedSpec?.title || 'Unknown',
-          chemistry: response.recommendedSpec?.chemistry || 'Unknown',
+          materialType: recSpec.title || 'Unknown',
+          chemistry: recSpec.chemistry || 'Unknown',
           subcategory: 'General',
-          rationale: response.recommendedSpec?.rationale || '',
+          rationale: recSpec.rationale || '',
         },
         productCharacteristics: {
-          viscosityRange: response.productCharacteristics?.viscosity,
-          cureTime: response.productCharacteristics?.cureTime,
-          expectedStrength: response.productCharacteristics?.shearStrength,
-          temperatureResistance: response.productCharacteristics?.serviceTemperature,
-          gapFillCapability: response.productCharacteristics?.gapFill,
+          viscosityRange: prodChars.viscosity || prodChars.viscosity_range,
+          cureTime: prodChars.cure_time || prodChars.cureTime,
+          expectedStrength: prodChars.shear_strength || prodChars.shearStrength,
+          temperatureResistance: prodChars.service_temperature || prodChars.serviceTemperature,
+          gapFillCapability: prodChars.gap_fill || prodChars.gapFill,
         },
         applicationGuidance: {
-          surfacePreparation: response.applicationGuidance?.surfacePrep || [],
-          applicationTips: response.applicationGuidance?.applicationTips || [],
-          curingNotes: response.applicationGuidance?.curingNotes || [],
-          commonMistakesToAvoid: response.applicationGuidance?.mistakesToAvoid || [],
+          surfacePreparation: appGuidance.surface_prep || appGuidance.surfacePrep || [],
+          applicationTips: appGuidance.application_tips || appGuidance.applicationTips || [],
+          curingNotes: appGuidance.curing_notes || appGuidance.curingNotes || [],
+          commonMistakesToAvoid: appGuidance.mistakes_to_avoid || appGuidance.mistakesToAvoid || [],
         },
-        warnings: response.warnings || [],
-        alternatives: (response.alternatives || []).map((alt: any) => ({
+        warnings: responseWarnings,
+        alternatives: (responseAlts).map((alt: any) => ({
           materialType: alt.name || '',
           chemistry: alt.name || '',
           advantages: alt.pros || [],
           disadvantages: alt.cons || [],
           whenToUse: 'See advantages/disadvantages',
         })),
-        confidenceScore: 0.85,
+        confidenceScore: (response as any).confidence_score || (response as any).confidenceScore || 0.85,
       };
 
       setResultData(mapped);
