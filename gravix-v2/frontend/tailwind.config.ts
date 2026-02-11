@@ -39,8 +39,8 @@ const config: Config = {
         // Text colors
         text: {
           primary: '#F9FAFB',
-          secondary: '#9CA3AF',
-          tertiary: '#6B7280',
+          secondary: '#94A3B8',
+          tertiary: '#64748B',
         },
         // Elevation levels (for surface colors)
         surface: {

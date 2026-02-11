@@ -2,13 +2,12 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { SubstrateSelector } from '../tool/SubstrateSelector';
-import { EnvironmentChips } from '../tool/EnvironmentChips';
 import { FailureModeCards } from './FailureModeCards';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 interface FailureFormData {
@@ -18,8 +17,10 @@ interface FailureFormData {
   substrateB: string;
   failureMode: string;
   timeToFailure: string;
-  environmentConditions: string[];
-  surfacePrep: string[];
+  industry: string;
+  environment: string[];
+  surfacePrep: string;
+  productionImpact: string;
   additionalContext: string;
 }
 
@@ -28,35 +29,51 @@ interface FailureFormProps {
   isLoading?: boolean;
 }
 
-const COMMON_ADHESIVES = [
-  'CA/Cyanoacrylate',
-  'Epoxy',
-  'Polyurethane',
-  'Silicone',
-  'Acrylic',
-  'Methacrylate',
-  'UV Cure',
-  'Hot Melt',
-  'Anaerobic',
-  'MS Polymer',
+const TIME_OPTIONS = [
+  { value: 'immediate', label: 'Immediate' },
+  { value: 'hours', label: 'Hours' },
+  { value: 'days', label: 'Days' },
+  { value: '1-4weeks', label: '1-4 weeks' },
+  { value: '1-6months', label: '1-6 months' },
+  { value: '>6months', label: '>6 months' },
 ];
 
-const TIME_TO_FAILURE_OPTIONS = [
-  { value: 'immediate', label: 'Immediate <1hr' },
-  { value: 'short', label: 'Short-term 1-72hr' },
-  { value: 'medium', label: 'Medium 1-4 weeks' },
-  { value: 'long', label: 'Long-term >1 month' },
-  { value: 'cyclical', label: 'Cyclical/intermittent' },
+const INDUSTRY_OPTIONS = [
+  { value: 'automotive', label: 'Automotive' },
+  { value: 'aerospace', label: 'Aerospace' },
+  { value: 'electronics', label: 'Electronics' },
+  { value: 'medical', label: 'Medical Device' },
+  { value: 'consumer', label: 'Consumer' },
+  { value: 'construction', label: 'Construction' },
+  { value: 'general_mfg', label: 'General Mfg' },
+  { value: 'other', label: 'Other' },
+];
+
+const ENVIRONMENT_CHIPS = [
+  'High humidity', 'Chemical exposure', 'UV/outdoor', 'Thermal cycling', 'Submersion', 'Vibration',
 ];
 
 const SURFACE_PREP_OPTIONS = [
-  { value: 'none', label: 'None' },
-  { value: 'wiped', label: 'Wiped clean' },
-  { value: 'solvent', label: 'Solvent degrease' },
+  { value: 'ipa', label: 'Solvent wipe (IPA)' },
+  { value: 'acetone', label: 'Solvent wipe (acetone)' },
   { value: 'abrasion', label: 'Abrasion' },
-  { value: 'primer', label: 'Primer' },
   { value: 'plasma', label: 'Plasma/corona' },
-  { value: 'unknown', label: 'Unknown' },
+  { value: 'primer', label: 'Primer' },
+  { value: 'none', label: 'None/unknown' },
+];
+
+const PRODUCTION_IMPACT_OPTIONS = [
+  { value: 'line_down', label: 'Line down' },
+  { value: 'reduced_output', label: 'Reduced output' },
+  { value: 'quality_hold', label: 'Quality hold' },
+  { value: 'field_failure', label: 'Field failure' },
+  { value: 'prototype', label: 'Prototype' },
+  { value: 'na', label: 'N/A' },
+];
+
+const COMMON_ADHESIVES = [
+  'Loctite 401', 'Loctite 480', 'Loctite E-120HP', '3M DP420', '3M DP460',
+  'Henkel EA 9394', 'Generic epoxy', 'Generic cyanoacrylate', 'Generic polyurethane', 'Unknown',
 ];
 
 export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
@@ -67,298 +84,191 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
     substrateB: '',
     failureMode: '',
     timeToFailure: '',
-    environmentConditions: ['indoor'],
-    surfacePrep: [],
+    industry: '',
+    environment: [],
+    surfacePrep: '',
+    productionImpact: '',
     additionalContext: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [adhesiveInput, setAdhesiveInput] = useState('');
-  const [showAdhesiveSuggestions, setShowAdhesiveSuggestions] = useState(false);
-  const adhesiveInputRef = useRef<HTMLInputElement>(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const adhesiveRef = useRef<HTMLDivElement>(null);
 
   const validate = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.failureDescription.trim() || formData.failureDescription.trim().length < 10) {
-      newErrors.failureDescription = 'Please provide at least 10 characters';
-    }
-
-    if (!formData.substrateA) {
-      newErrors.substrateA = 'Substrate A is required';
-    }
-
-    if (!formData.substrateB) {
-      newErrors.substrateB = 'Substrate B is required';
-    }
-
-    if (!formData.failureMode) {
-      newErrors.failureMode = 'Failure mode is required';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const errs: Record<string, string> = {};
+    if (!formData.failureDescription.trim() || formData.failureDescription.trim().length < 10) errs.failureDescription = 'Describe the failure (min 10 characters)';
+    if (!formData.substrateA) errs.substrateA = 'Substrate A is required';
+    if (!formData.substrateB) errs.substrateB = 'Substrate B is required';
+    if (!formData.failureMode) errs.failureMode = 'Select a failure mode';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      onSubmit(formData);
-    }
-  };
-
-  const handleClear = () => {
-    setFormData({
-      failureDescription: '',
-      adhesiveUsed: '',
-      substrateA: '',
-      substrateB: '',
-      failureMode: '',
-      timeToFailure: '',
-      environmentConditions: ['indoor'],
-      surfacePrep: [],
-      additionalContext: '',
-    });
-    setAdhesiveInput('');
-    setErrors({});
+    if (validate()) onSubmit(formData);
   };
 
   const updateField = <K extends keyof FailureFormData>(key: K, value: FailureFormData[K]) => {
     setFormData(prev => ({ ...prev, [key]: value }));
-    if (errors[key]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[key];
-        return newErrors;
-      });
-    }
+    if (errors[key]) setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
   };
 
-  const handleAdhesiveSelect = (adhesive: string) => {
-    updateField('adhesiveUsed', adhesive);
-    setAdhesiveInput(adhesive);
-    setShowAdhesiveSuggestions(false);
+  const toggleEnv = (chip: string) => {
+    updateField('environment', formData.environment.includes(chip)
+      ? formData.environment.filter(v => v !== chip)
+      : [...formData.environment, chip]
+    );
   };
 
-  const filteredAdhesives = COMMON_ADHESIVES.filter(a =>
-    a.toLowerCase().includes(adhesiveInput.toLowerCase())
-  );
+  const filtered = COMMON_ADHESIVES.filter(a => a.toLowerCase().includes(adhesiveInput.toLowerCase()));
 
-  const toggleSurfacePrep = (value: string) => {
-    if (formData.surfacePrep.includes(value)) {
-      updateField('surfacePrep', formData.surfacePrep.filter(v => v !== value));
-    } else {
-      updateField('surfacePrep', [...formData.surfacePrep, value]);
-    }
-  };
-
-  // Click outside handler for adhesive suggestions
   useEffect(() => {
-    if (!showAdhesiveSuggestions) return;
-    
-    const handleClickOutside = (e: MouseEvent) => {
-      if (adhesiveInputRef.current && !adhesiveInputRef.current.contains(e.target as Node)) {
-        setShowAdhesiveSuggestions(false);
-      }
+    if (!showSuggestions) return;
+    const handler = (e: MouseEvent) => {
+      if (adhesiveRef.current && !adhesiveRef.current.contains(e.target as Node)) setShowSuggestions(false);
     };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showAdhesiveSuggestions]);
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showSuggestions]);
 
   return (
     <div>
-      <h1 className="text-3xl font-bold font-heading mb-2">Failure Analysis Tool</h1>
-      <p className="text-text-secondary mb-8">
-        Diagnose adhesive failures and get actionable recommendations.
-      </p>
+      <h2 className="text-xl font-semibold text-white mb-6">Diagnose a Failure</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Failure Description */}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* 1. Failure Description */}
         <div>
-          <Label htmlFor="failureDescription" className="mb-2 block">
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">
             Failure Description <span className="text-danger">*</span>
           </Label>
           <Textarea
-            id="failureDescription"
             value={formData.failureDescription}
             onChange={(e) => updateField('failureDescription', e.target.value)}
-            placeholder="Describe what happened, when you noticed it, and any relevant observations..."
+            placeholder="Describe what happened…"
             rows={5}
             autoFocus
-            className={cn('resize-none', errors.failureDescription && 'border-danger')}
+            className={cn('bg-[#111827] border-[#374151] rounded text-sm resize-none', errors.failureDescription && 'border-danger')}
           />
-          {errors.failureDescription && (
-            <p className="mt-1 text-sm text-danger">{errors.failureDescription}</p>
-          )}
+          {errors.failureDescription && <p className="mt-1 text-xs text-danger">{errors.failureDescription}</p>}
         </div>
 
-        {/* Adhesive Used */}
-        <div className="relative" ref={adhesiveInputRef}>
-          <Label htmlFor="adhesiveUsed" className="mb-2 block">
-            Adhesive Used
-          </Label>
+        {/* 2. Adhesive Used — typeahead */}
+        <div ref={adhesiveRef} className="relative">
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Adhesive Used</Label>
           <Input
-            id="adhesiveUsed"
             value={adhesiveInput}
-            onChange={(e) => {
-              setAdhesiveInput(e.target.value);
-              updateField('adhesiveUsed', e.target.value);
-              setShowAdhesiveSuggestions(true);
-            }}
-            onFocus={() => setShowAdhesiveSuggestions(true)}
-            placeholder="Type adhesive type or product name"
-            className="h-11"
+            onChange={(e) => { setAdhesiveInput(e.target.value); updateField('adhesiveUsed', e.target.value); setShowSuggestions(true); }}
+            onFocus={() => setShowSuggestions(true)}
+            placeholder="e.g., Loctite 401, generic epoxy, unknown"
+            className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
           />
-
-          {/* Typeahead suggestions */}
-          {showAdhesiveSuggestions && filteredAdhesives.length > 0 && adhesiveInput && (
-            <div className="absolute z-50 w-full mt-1 bg-surface-2 border border-brand-600 rounded-md shadow-lg max-h-48 overflow-y-auto">
-              {filteredAdhesives.map((adhesive) => (
-                <button
-                  key={adhesive}
-                  type="button"
-                  onClick={() => handleAdhesiveSelect(adhesive)}
-                  className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-brand-600 transition-colors"
-                >
-                  {adhesive}
-                </button>
+          {showSuggestions && adhesiveInput && filtered.length > 0 && (
+            <div className="absolute z-50 w-full mt-1 bg-[#1F2937] border border-[#374151] rounded-md shadow-lg max-h-48 overflow-y-auto">
+              {filtered.map(a => (
+                <button key={a} type="button" onClick={() => { updateField('adhesiveUsed', a); setAdhesiveInput(a); setShowSuggestions(false); }}
+                  className="w-full text-left px-3 py-2 text-sm text-white hover:bg-[#374151] transition-colors">{a}</button>
               ))}
             </div>
           )}
         </div>
 
-        {/* Substrate A */}
+        {/* 3. Substrate A */}
         <div>
-          <Label htmlFor="substrateA" className="mb-2 block">
-            Substrate A <span className="text-danger">*</span>
-          </Label>
-          <SubstrateSelector
-            value={formData.substrateA}
-            onChange={(value) => updateField('substrateA', value)}
-            placeholder="Select first substrate"
-            error={errors.substrateA}
-          />
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Substrate A <span className="text-danger">*</span></Label>
+          <SubstrateSelector value={formData.substrateA} onChange={(v) => updateField('substrateA', v)} placeholder="Select first substrate" error={errors.substrateA} />
         </div>
 
-        {/* Substrate B */}
+        {/* 4. Substrate B */}
         <div>
-          <Label htmlFor="substrateB" className="mb-2 block">
-            Substrate B <span className="text-danger">*</span>
-          </Label>
-          <SubstrateSelector
-            value={formData.substrateB}
-            onChange={(value) => updateField('substrateB', value)}
-            placeholder="Select second substrate"
-            error={errors.substrateB}
-          />
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Substrate B <span className="text-danger">*</span></Label>
+          <SubstrateSelector value={formData.substrateB} onChange={(v) => updateField('substrateB', v)} placeholder="Select second substrate" error={errors.substrateB} />
         </div>
 
-        {/* Failure Mode */}
+        {/* 5. Failure Mode — 2×2 visual cards */}
         <div>
-          <Label className="mb-2 block">
-            Failure Mode <span className="text-danger">*</span>
-          </Label>
-          <FailureModeCards
-            value={formData.failureMode}
-            onChange={(value) => updateField('failureMode', value)}
-            error={errors.failureMode}
-          />
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Failure Mode <span className="text-danger">*</span></Label>
+          <FailureModeCards value={formData.failureMode} onChange={(v) => updateField('failureMode', v)} error={errors.failureMode} />
         </div>
 
-        {/* Time to Failure */}
+        {/* 6. Time to Failure */}
         <div>
-          <Label htmlFor="timeToFailure" className="mb-2 block">
-            Time to Failure
-          </Label>
-          <Select value={formData.timeToFailure} onValueChange={(value) => updateField('timeToFailure', value)}>
-            <SelectTrigger className="h-11">
-              <SelectValue placeholder="Select timeframe" />
-            </SelectTrigger>
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Time to Failure</Label>
+          <Select value={formData.timeToFailure} onValueChange={(v) => updateField('timeToFailure', v)}>
+            <SelectTrigger className="h-11 bg-[#111827] border-[#374151] rounded text-sm"><SelectValue placeholder="Select timeframe" /></SelectTrigger>
             <SelectContent>
-              {TIME_TO_FAILURE_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
+              {TIME_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
 
-        {/* Environment Conditions */}
+        {/* 7. Industry */}
         <div>
-          <Label className="mb-2 block">Environment Conditions</Label>
-          <EnvironmentChips
-            value={formData.environmentConditions}
-            onChange={(value) => updateField('environmentConditions', value)}
-          />
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Industry</Label>
+          <Select value={formData.industry} onValueChange={(v) => updateField('industry', v)}>
+            <SelectTrigger className="h-11 bg-[#111827] border-[#374151] rounded text-sm"><SelectValue placeholder="Select industry" /></SelectTrigger>
+            <SelectContent>
+              {INDUSTRY_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
         </div>
 
-        {/* Surface Prep */}
+        {/* 8. Environment — chips */}
         <div>
-          <Label className="mb-2 block">Surface Preparation Used</Label>
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Environment</Label>
           <div className="flex flex-wrap gap-2">
-            {SURFACE_PREP_OPTIONS.map((option) => {
-              const isSelected = formData.surfacePrep.includes(option.value);
-              
+            {ENVIRONMENT_CHIPS.map(env => {
+              const sel = formData.environment.includes(env);
               return (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => toggleSurfacePrep(option.value)}
-                  className={cn(
-                    'px-3 py-1.5 rounded-full text-sm font-medium transition-all border',
-                    isSelected
-                      ? 'bg-accent-500/15 border-accent-500 text-accent-500'
-                      : 'bg-surface-2 border-brand-600 text-text-secondary hover:border-accent-500 hover:text-text-primary'
-                  )}
-                >
-                  {option.label}
-                </button>
+                <button key={env} type="button" onClick={() => toggleEnv(env)}
+                  className={cn('px-3 py-1.5 rounded-full text-sm font-medium transition-all border',
+                    sel ? 'bg-accent-500/15 border-accent-500 text-accent-500' : 'bg-[#1F2937] border-[#374151] text-[#94A3B8] hover:border-accent-500'
+                  )}>{env}</button>
               );
             })}
           </div>
         </div>
 
-        {/* Additional Context */}
+        {/* 9. Surface Preparation */}
         <div>
-          <Label htmlFor="additionalContext" className="mb-2 block">
-            Additional Context
-          </Label>
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Surface Preparation</Label>
+          <Select value={formData.surfacePrep} onValueChange={(v) => updateField('surfacePrep', v)}>
+            <SelectTrigger className="h-11 bg-[#111827] border-[#374151] rounded text-sm"><SelectValue placeholder="Select surface prep" /></SelectTrigger>
+            <SelectContent>
+              {SURFACE_PREP_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* 10. Production Impact */}
+        <div>
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Production Impact</Label>
+          <Select value={formData.productionImpact} onValueChange={(v) => updateField('productionImpact', v)}>
+            <SelectTrigger className="h-11 bg-[#111827] border-[#374151] rounded text-sm"><SelectValue placeholder="Select impact" /></SelectTrigger>
+            <SelectContent>
+              {PRODUCTION_IMPACT_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* 11. Additional Context */}
+        <div>
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Additional Context</Label>
           <Textarea
-            id="additionalContext"
             value={formData.additionalContext}
             onChange={(e) => updateField('additionalContext', e.target.value)}
-            placeholder="Any other relevant details, observations, or questions..."
+            placeholder="Test results, batch info, previous fixes tried…"
             rows={3}
-            className="resize-none"
+            className="bg-[#111827] border-[#374151] rounded text-sm resize-none"
           />
         </div>
 
         {/* Submit */}
-        <div className="space-y-3 pt-2">
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Analyzing...' : 'Analyze Failure →'}
-          </Button>
-          
-          <button
-            type="button"
-            onClick={handleClear}
-            disabled={isLoading}
-            className="w-full text-sm text-text-tertiary hover:text-text-primary transition-colors"
-          >
-            Clear form
-          </button>
-          
-          <p className="text-center text-sm text-text-tertiary">
-            2 of 3 free analyses remaining
-          </p>
-        </div>
+        <Button type="submit" className="w-full h-12 bg-accent-500 hover:bg-accent-600 text-white text-base font-medium" disabled={isLoading}>
+          {isLoading ? 'Analyzing…' : 'Analyze Failure →'}
+        </Button>
       </form>
     </div>
   );

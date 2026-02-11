@@ -9,65 +9,41 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking, incrementUsage } from '@/hooks/useUsageTracking';
 import { api } from '@/lib/api';
 
-type Status = 'idle' | 'validating' | 'submitting' | 'processing' | 'complete' | 'error';
+type Status = 'idle' | 'loading' | 'complete' | 'error';
 
 export default function SpecToolPage() {
   const [status, setStatus] = useState<Status>('idle');
   const [resultData, setResultData] = useState<SpecResultData | null>(null);
-  const [, setError] = useState<string | null>(null);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
-  
+
   const { user } = useAuth();
   const { isExhausted } = useUsageTracking();
 
   const handleSubmit = async (formData: SpecFormData) => {
-    // Check usage limit
-    if (isExhausted) {
-      setUpgradeModalOpen(true);
-      return;
-    }
-    setStatus('validating');
-    setError(null);
-
-    // Brief validation delay
-    await new Promise(resolve => setTimeout(resolve, 300));
-
-    setStatus('submitting');
+    if (isExhausted) { setUpgradeModalOpen(true); return; }
+    setStatus('loading');
 
     try {
-      // Map form data to API request format
       const requestData: Record<string, unknown> = {
         material_category: 'adhesive',
         substrate_a: formData.substrateA,
         substrate_b: formData.substrateB,
         bond_requirements: {
-          ...(formData.gapFillEnabled && { gap_fill: `${formData.gapFillValue}mm` }),
-          other_requirements: formData.loadType,
+          load_type: formData.loadType,
+          gap_fill: formData.gapFill ? `${formData.gapFill}mm` : undefined,
         },
         environment: {
-          temp_min: `${formData.tempMin}°${formData.tempUnit}`,
-          temp_max: `${formData.tempMax}°${formData.tempUnit}`,
-          humidity: formData.environment.includes('humidity') ? 'high' : 'low',
-          ...(formData.environment.includes('chemical') && { chemical_exposure: ['general'] }),
-          uv_exposure: formData.environment.includes('uv'),
-          outdoor_use: formData.environment.includes('outdoor'),
+          temp_min: `${formData.tempMin}°C`,
+          temp_max: `${formData.tempMax}°C`,
+          conditions: formData.environment,
         },
-        cure_constraints: {
-          ...(formData.cureConstraint !== 'no_preference' && { max_cure_time: formData.cureConstraint }),
-        },
+        cure_constraints: formData.cureConstraint || undefined,
+        additional_requirements: formData.additionalContext || undefined,
       };
-      
-      if (formData.additionalContext) {
-        requestData.additional_requirements = formData.additionalContext;
-      }
 
-      setStatus('processing');
-
-      // Call API
       const response = await api.createSpecRequest(requestData);
 
-      // Map response to result data format
-      const mappedData: SpecResultData = {
+      const mapped: SpecResultData = {
         recommendedSpec: {
           materialType: response.recommendedSpec?.title || 'Unknown',
           chemistry: response.recommendedSpec?.chemistry || 'Unknown',
@@ -76,11 +52,9 @@ export default function SpecToolPage() {
         },
         productCharacteristics: {
           viscosityRange: response.productCharacteristics?.viscosity,
-          color: 'Varies',
           cureTime: response.productCharacteristics?.cureTime,
           expectedStrength: response.productCharacteristics?.shearStrength,
           temperatureResistance: response.productCharacteristics?.serviceTemperature,
-          flexibility: 'Varies',
           gapFillCapability: response.productCharacteristics?.gapFill,
         },
         applicationGuidance: {
@@ -90,71 +64,36 @@ export default function SpecToolPage() {
           commonMistakesToAvoid: response.applicationGuidance?.mistakesToAvoid || [],
         },
         warnings: response.warnings || [],
-        alternatives: (response.alternatives || []).map(alt => ({
+        alternatives: (response.alternatives || []).map((alt: any) => ({
           materialType: alt.name || '',
           chemistry: alt.name || '',
           advantages: alt.pros || [],
           disadvantages: alt.cons || [],
           whenToUse: 'See advantages/disadvantages',
         })),
-        confidenceScore: 0.85, // Mock confidence score
+        confidenceScore: 0.85,
       };
 
-      setResultData(mappedData);
+      setResultData(mapped);
       setStatus('complete');
-      
-      // Increment usage counter
       incrementUsage(user);
     } catch (err) {
       console.error('Spec generation error:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
       setStatus('error');
     }
   };
 
-  const handleUpgrade = () => {
-    // TODO: Navigate to pricing/checkout page
-    window.location.href = '/pricing';
-  };
+  const handleNewAnalysis = () => { setStatus('idle'); setResultData(null); };
 
-  const handleNewAnalysis = () => {
-    setStatus('idle');
-    setResultData(null);
-    setError(null);
-  };
-
-  // Map status to results panel status
-  const getResultsStatus = (): 'idle' | 'loading' | 'success' | 'error' => {
-    if (status === 'idle') return 'idle';
-    if (status === 'complete') return 'success';
-    if (status === 'error') return 'error';
-    return 'loading';
-  };
+  const resultsStatus = status === 'idle' ? 'idle' : status === 'complete' ? 'success' : status === 'error' ? 'error' : 'loading';
 
   return (
     <>
       <ToolLayout
-        formPanel={
-          <SpecForm
-            onSubmit={handleSubmit}
-            isLoading={status !== 'idle' && status !== 'complete' && status !== 'error'}
-          />
-        }
-        resultsPanel={
-          <SpecResults
-            status={getResultsStatus()}
-            data={resultData}
-            onNewAnalysis={handleNewAnalysis}
-            isFree={!user}
-          />
-        }
+        formPanel={<SpecForm onSubmit={handleSubmit} isLoading={status === 'loading'} />}
+        resultsPanel={<SpecResults status={resultsStatus} data={resultData} onNewAnalysis={handleNewAnalysis} isFree={!user} />}
       />
-      
-      <UpgradeModal 
-        open={upgradeModalOpen}
-        onOpenChange={setUpgradeModalOpen}
-        onUpgrade={handleUpgrade}
-      />
+      <UpgradeModal open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen} onUpgrade={() => window.location.href = '/pricing'} />
     </>
   );
 }

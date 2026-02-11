@@ -10,7 +10,7 @@ interface UsageData {
   isExhausted: boolean;
 }
 
-const FREE_TIER_LIMIT = 3;
+const FREE_TIER_LIMIT = 5;
 
 export function useUsageTracking(): UsageData {
   const { user } = useAuth();

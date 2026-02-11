@@ -1,16 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Search } from 'lucide-react';
-import { ConfidenceIndicator } from '../shared/ConfidenceIndicator';
-import { BlurOverlay } from '../shared/BlurOverlay';
+import { Search, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { ConfidenceBadge } from '../shared/ConfidenceBadge';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { generateAndDownloadPDF, generateExecutiveSummary } from '@/lib/pdfUtils';
-import type { FailurePDFData } from '@/components/shared/PDFReport';
-import { showToast } from '@/lib/toast';
 
 interface FailureResultsProps {
   status: 'idle' | 'loading' | 'success' | 'error';
@@ -33,390 +27,214 @@ interface FailureResultData {
     confidence: number;
     explanation: string;
     mechanism: string;
+    gravixData?: string;
   }>;
   contributingFactors: string[];
   immediateActions: string[];
   longTermSolutions: string[];
   preventionPlan: string[];
+  similarCases?: Array<{ id: string; title: string; industry: string }>;
   confidenceScore: number;
 }
 
-export function FailureResults({ status, data, onNewAnalysis, onRunSpecAnalysis, isFree = true }: FailureResultsProps) {
+export function FailureResults({ status, data, onNewAnalysis, onRunSpecAnalysis, isFree: _isFree = true }: FailureResultsProps) {
   const [loadingPhase, setLoadingPhase] = useState(1);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [checkedItems, setCheckedItems] = useState<Set<number>>(new Set());
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [feedbackExpanded, setFeedbackExpanded] = useState(false);
 
-  // Loading phase progression
   useEffect(() => {
-    if (status !== 'loading') {
-      setLoadingPhase(1);
-      setElapsedTime(0);
-      return;
-    }
-
-    const phaseTimers = [
-      setTimeout(() => setLoadingPhase(2), 2000),
-      setTimeout(() => setLoadingPhase(3), 5000),
-    ];
-
-    const interval = setInterval(() => {
-      setElapsedTime(t => t + 0.1);
-    }, 100);
-
-    return () => {
-      phaseTimers.forEach(clearTimeout);
-      clearInterval(interval);
-    };
+    if (status !== 'loading') { setLoadingPhase(1); setElapsedTime(0); return; }
+    const t1 = setTimeout(() => setLoadingPhase(2), 2000);
+    const t2 = setTimeout(() => setLoadingPhase(3), 5000);
+    const iv = setInterval(() => setElapsedTime(t => t + 0.1), 100);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearInterval(iv); };
   }, [status]);
 
-  const toggleCheck = (index: number) => {
-    setCheckedItems(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(index)) {
-        newSet.delete(index);
-      } else {
-        newSet.add(index);
-      }
-      return newSet;
-    });
-  };
-
-  const handleExportPDF = async () => {
-    if (!data) return;
-
-    setIsGeneratingPDF(true);
-    showToast({ message: 'Generating report...', type: 'info', duration: 2000 });
-
-    try {
-      // Map data to PDF format
-      const pdfData: FailurePDFData = {
-        type: 'failure',
-        inputs: {
-          failureMode: 'Failure Mode', // TODO: Get from form data
-          environmentConditions: [],
-          surfacePrep: [],
-          failureDescription: 'Failure description',
-        },
-        diagnosis: data.diagnosis,
-        rootCauses: data.rootCauses,
-        contributingFactors: data.contributingFactors,
-        immediateActions: data.immediateActions,
-        longTermSolutions: data.longTermSolutions,
-        preventionPlan: data.preventionPlan,
-        confidenceScore: data.confidenceScore,
-      };
-
-      // Generate executive summary for pro users
-      if (!isFree) {
-        pdfData.executiveSummary = generateExecutiveSummary(pdfData);
-      }
-
-      await generateAndDownloadPDF(pdfData, isFree);
-      showToast({ message: 'Report downloaded successfully!', type: 'success' });
-    } catch (error) {
-      console.error('PDF export failed:', error);
-      showToast({ message: 'Failed to generate PDF report', type: 'error' });
-    } finally {
-      setIsGeneratingPDF(false);
-    }
-  };
-
-  const handleUpgrade = () => {
-    // Trigger parent upgrade modal
-    window.location.href = '/pricing';
-  };
-
-  // Empty State
+  /* Empty State */
   if (status === 'idle') {
     return (
       <div className="h-full flex flex-col items-center justify-center text-center px-8">
-        <Search className="w-12 h-12 text-text-tertiary mb-4" strokeWidth={1.5} />
-        <h2 className="text-lg font-semibold text-text-secondary mb-2">
-          Your analysis will appear here
-        </h2>
-        <p className="text-sm text-text-tertiary">
-          Fill in the form and click Analyze
-        </p>
+        <Search className="w-12 h-12 text-brand-600 mb-4" strokeWidth={1.5} />
+        <h2 className="text-lg font-semibold text-[#94A3B8] mb-2">Your analysis will appear here</h2>
+        <p className="text-sm text-[#64748B]">Fill out the form to diagnose your adhesive failure with ranked root causes.</p>
       </div>
     );
   }
 
-  // Loading State
+  /* Loading State */
   if (status === 'loading') {
     return (
       <div className="h-full flex flex-col items-center justify-center px-8">
         <div className="w-full max-w-md space-y-6">
-          {/* Phase 1 */}
-          <div className="flex items-center gap-3">
-            <div
-              className={cn(
-                'w-3 h-3 rounded-full',
-                loadingPhase >= 1 ? 'bg-accent-500 animate-pulse' : 'bg-brand-600'
-              )}
-            />
-            <span className={cn('text-sm', loadingPhase >= 1 ? 'text-text-primary' : 'text-text-tertiary')}>
-              Analyzing failure patterns...
-            </span>
+          <LoadStep active={loadingPhase >= 1} done={loadingPhase > 1} label="Analyzing failure patterns..." />
+          <LoadStep active={loadingPhase >= 2} done={loadingPhase > 2} label="Cross-referencing failure modes..." />
+          <LoadStep active={loadingPhase >= 3} done={false} label="Generating recommendations..." />
+          <div className="w-full h-1 bg-[#1F2937] rounded-full overflow-hidden">
+            <div className="h-full bg-accent-500 transition-all duration-500" style={{ width: `${Math.min(loadingPhase * 33, 95)}%` }} />
           </div>
-
-          {/* Phase 2 */}
-          <div className="flex items-center gap-3">
-            <div
-              className={cn(
-                'w-3 h-3 rounded-full',
-                loadingPhase >= 2 ? 'bg-accent-500 animate-pulse' : 'bg-brand-600'
-              )}
-            />
-            <div className="flex-1">
-              <p className={cn('text-sm mb-2', loadingPhase >= 2 ? 'text-text-primary' : 'text-text-tertiary')}>
-                Cross-referencing failure modes...
-              </p>
-              {loadingPhase >= 2 && (
-                <div className="w-full h-1 bg-brand-700 rounded-full overflow-hidden">
-                  <div className="h-full bg-accent-500 animate-pulse" style={{ width: '60%' }} />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Phase 3 */}
-          <div className="flex items-center gap-3">
-            <div
-              className={cn(
-                'w-3 h-3 rounded-full',
-                loadingPhase >= 3 ? 'bg-accent-500 animate-pulse' : 'bg-brand-600'
-              )}
-            />
-            <span className={cn('text-sm', loadingPhase >= 3 ? 'text-text-primary' : 'text-text-tertiary')}>
-              Generating recommendations...
-            </span>
-          </div>
-
-          {/* Elapsed timer */}
-          <div className="text-right">
-            <span className="text-xs font-mono text-text-tertiary">
-              {elapsedTime.toFixed(1)}s
-            </span>
-          </div>
+          <div className="text-right"><span className="text-xs font-mono text-[#64748B]">{elapsedTime.toFixed(1)}s</span></div>
         </div>
       </div>
     );
   }
 
-  // Error State
+  /* Error State */
   if (status === 'error') {
     return (
       <div className="h-full flex flex-col items-center justify-center text-center px-8">
-        <div className="w-12 h-12 rounded-full bg-danger/20 flex items-center justify-center mb-4">
-          <span className="text-2xl">⚠️</span>
-        </div>
-        <h2 className="text-lg font-semibold text-text-primary mb-2">
-          Analysis Failed
-        </h2>
-        <p className="text-sm text-text-secondary mb-6">
-          We encountered an error while analyzing your failure. Please try again.
-        </p>
-        {onNewAnalysis && (
-          <Button onClick={onNewAnalysis} variant="outline">
-            Try Again
-          </Button>
-        )}
+        <div className="w-12 h-12 rounded-full bg-danger/20 flex items-center justify-center mb-4"><span className="text-2xl">⚠️</span></div>
+        <h2 className="text-lg font-semibold text-white mb-2">Analysis Failed</h2>
+        <p className="text-sm text-[#94A3B8] mb-6">Something went wrong. Please try again.</p>
+        {onNewAnalysis && <Button onClick={onNewAnalysis} variant="outline">Try Again</Button>}
       </div>
     );
   }
 
-  // Results State
+  /* Completed State (Component 3.2) */
   if (status === 'success' && data) {
-    const executiveSummary = (
-      <Card>
-        <CardHeader>
-          <CardTitle>Executive Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-text-secondary leading-relaxed">
-            The failure analysis indicates that {data.diagnosis.topRootCause.toLowerCase()} is
-            the primary root cause with {Math.round(data.rootCauses[0]?.confidence * 100 || 0)}%
-            confidence. {data.contributingFactors.length > 0 &&
-              `${data.contributingFactors.length} contributing factors have been identified that exacerbate the primary failure mode.`}
-            {' '}Immediate corrective actions are recommended to prevent recurrence, with
-            long-term solutions focusing on process improvements and preventive measures.
-            This analysis is based on the reported failure pattern, environmental conditions,
-            and material properties.
-          </p>
-        </CardContent>
-      </Card>
-    );
-
+    const pct = Math.round(data.confidenceScore * 100);
     return (
-      <div className="space-y-6 pb-20">
-        {/* Diagnosis Summary */}
+      <div className="space-y-6 pb-24">
+        {/* 1. Diagnosis summary */}
         <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold font-heading text-text-primary mb-1">
-              {data.diagnosis.topRootCause}
-            </h2>
-            <p className="text-sm text-text-secondary">
-              {data.diagnosis.explanation}
-            </p>
+          <div>
+            <div className="text-xs text-[#64748B] mb-1">Primary root cause</div>
+            <h2 className="text-2xl font-bold text-white">{data.diagnosis.topRootCause}</h2>
+            <p className="text-sm text-[#94A3B8] mt-2">{data.diagnosis.explanation}</p>
           </div>
-          <ConfidenceIndicator confidence={data.confidenceScore} />
+          <ConfidenceBadge score={pct} />
         </div>
 
-        {/* Executive Summary - Blurred for free tier */}
-        {isFree ? (
-          <BlurOverlay onUpgrade={handleUpgrade}>{executiveSummary}</BlurOverlay>
-        ) : (
-          executiveSummary
-        )}
-
-        {/* Root Cause Ranking */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Root Cause Analysis</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {data.rootCauses.map((cause) => (
-              <div
-                key={cause.rank}
-                className="p-4 bg-surface-2 rounded-md border border-brand-600"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-accent-500/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-sm font-bold text-accent-500">#{cause.rank}</span>
+        {/* 2. Root cause cards (ranked) */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold text-white">Root Causes (Ranked)</h3>
+          {data.rootCauses.map((rc) => (
+            <div key={rc.rank} className="bg-brand-800 border border-[#1F2937] rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className={cn(
+                  'w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold text-white',
+                  rc.rank === 1 ? 'bg-accent-500' : 'bg-[#374151]'
+                )}>{rc.rank}</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm font-semibold text-white">{rc.cause}</span>
+                    <span className={cn('text-xs font-mono px-2 py-0.5 rounded',
+                      rc.confidence >= 0.8 ? 'bg-success/10 text-success' :
+                      rc.confidence >= 0.6 ? 'bg-accent-500/10 text-accent-500' :
+                      'bg-warning/10 text-warning'
+                    )}>{Math.round(rc.confidence * 100)}%</span>
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="text-sm font-semibold text-text-primary">{cause.cause}</h4>
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          'text-xs',
-                          cause.confidence >= 0.8
-                            ? 'bg-success/10 text-success border-success'
-                            : cause.confidence >= 0.6
-                            ? 'bg-info/10 text-info border-info'
-                            : 'bg-warning/10 text-warning border-warning'
-                        )}
-                      >
-                        {Math.round(cause.confidence * 100)}% confidence
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-text-secondary mb-2">{cause.explanation}</p>
-                    <div className="mt-2 p-2 bg-brand-900/50 rounded border border-brand-700">
-                      <p className="text-xs font-mono text-text-tertiary">{cause.mechanism}</p>
-                    </div>
-                  </div>
+                  {rc.gravixData && (
+                    <p className="text-xs text-accent-500 mb-1">Gravix Data: {rc.gravixData}</p>
+                  )}
+                  <p className="text-xs text-[#94A3B8] mb-1">{rc.explanation}</p>
+                  <p className="text-xs text-[#64748B] font-mono">{rc.mechanism}</p>
                 </div>
               </div>
-            ))}
-          </CardContent>
-        </Card>
+            </div>
+          ))}
+        </div>
 
-        {/* Contributing Factors */}
+        {/* 3. Contributing factors */}
         {data.contributingFactors.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Contributing Factors</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {data.contributingFactors.map((factor, i) => (
-                  <li key={i} className="text-sm text-text-secondary flex items-start gap-2">
-                    <span className="text-accent-500">•</span>
-                    <span>{factor}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+          <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-4">
+            <h3 className="text-sm font-semibold text-white mb-3">Contributing Factors</h3>
+            <ul className="space-y-1">
+              {data.contributingFactors.map((f, i) => (
+                <li key={i} className="text-sm text-[#94A3B8] flex items-start gap-2">
+                  <span className="text-accent-500">•</span>{f}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
 
-        {/* Immediate Actions */}
+        {/* 4. Immediate actions (red border) */}
         {data.immediateActions.length > 0 && (
-          <Card className="border-danger/50">
-            <CardHeader>
-              <CardTitle className="text-danger">🚨 Immediate Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ol className="space-y-2">
-                {data.immediateActions.map((action, i) => (
-                  <li key={i} className="text-sm text-text-secondary flex items-start gap-2">
-                    <span className="text-danger font-semibold">{i + 1}.</span>
-                    <span>{action}</span>
-                  </li>
-                ))}
-              </ol>
-            </CardContent>
-          </Card>
+          <div className="border-l-[3px] border-l-danger bg-danger/5 rounded-r-lg p-4">
+            <h3 className="text-sm font-semibold text-danger mb-3">Do This Now</h3>
+            <ol className="space-y-2">
+              {data.immediateActions.map((a, i) => (
+                <li key={i} className="text-sm text-[#94A3B8] flex items-start gap-2">
+                  <span className="text-danger font-semibold">{i + 1}.</span>{a}
+                </li>
+              ))}
+            </ol>
+          </div>
         )}
 
-        {/* Long-term Solutions */}
+        {/* 5. Long-term solutions (blue border) */}
         {data.longTermSolutions.length > 0 && (
-          <Card className="border-info/50">
-            <CardHeader>
-              <CardTitle className="text-info">🔧 Long-term Solutions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {data.longTermSolutions.map((solution, i) => (
-                  <li key={i} className="text-sm text-text-secondary flex items-start gap-2">
-                    <span className="text-info">•</span>
-                    <span>{solution}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+          <div className="border-l-[3px] border-l-accent-500 bg-accent-500/5 rounded-r-lg p-4">
+            <h3 className="text-sm font-semibold text-accent-500 mb-3">Long-Term Fixes</h3>
+            <ul className="space-y-2">
+              {data.longTermSolutions.map((s, i) => (
+                <li key={i} className="text-sm text-[#94A3B8] flex items-start gap-2">
+                  <span className="text-accent-500">•</span>{s}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
 
-        {/* Prevention Plan */}
+        {/* 6. Prevention plan (green border) */}
         {data.preventionPlan.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Prevention Plan</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {data.preventionPlan.map((step, i) => (
-                  <label
-                    key={i}
-                    className="flex items-start gap-3 p-2 rounded hover:bg-surface-2 cursor-pointer transition-colors"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checkedItems.has(i)}
-                      onChange={() => toggleCheck(i)}
-                      className="mt-0.5 w-4 h-4 rounded border-brand-600 text-accent-500 focus:ring-2 focus:ring-accent-500"
-                    />
-                    <span className={cn('text-sm', checkedItems.has(i) ? 'text-text-tertiary line-through' : 'text-text-secondary')}>
-                      {step}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <div className="border-l-[3px] border-l-success bg-success/5 rounded-r-lg p-4">
+            <h3 className="text-sm font-semibold text-success mb-3">Prevention Plan</h3>
+            <ul className="space-y-2">
+              {data.preventionPlan.map((p, i) => (
+                <li key={i} className="text-sm text-[#94A3B8] flex items-start gap-2">
+                  <span className="text-success">•</span>{p}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
 
-        {/* Action Bar - Sticky bottom */}
-        <div className="fixed bottom-0 left-0 right-0 md:left-[45%] bg-brand-900 border-t border-brand-700 p-4 md:p-6 z-50">
+        {/* 7. Similar cases */}
+        {data.similarCases && data.similarCases.length > 0 && (
+          <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-4">
+            <h3 className="text-sm font-semibold text-white mb-3">Similar Cases</h3>
+            {data.similarCases.map((c, i) => (
+              <a key={i} href={`/cases/${c.id}`} className="block p-2 rounded hover:bg-[#1F2937] transition-colors">
+                <span className="text-sm text-accent-500">{c.title}</span>
+                <span className="text-xs text-[#64748B] ml-2">{c.industry}</span>
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* 8. Feedback prompt */}
+        <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-4">
+          {!feedbackExpanded ? (
+            <button onClick={() => setFeedbackExpanded(true)} className="w-full text-center text-sm text-[#94A3B8] hover:text-white transition-colors">
+              Was this analysis helpful?
+            </button>
+          ) : (
+            <div className="text-center space-y-3">
+              <p className="text-sm text-white">Was this analysis helpful?</p>
+              <div className="flex gap-4 justify-center">
+                <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-success/10 text-success hover:bg-success/20 transition-colors">
+                  <ThumbsUp className="w-4 h-4" /> Yes
+                </button>
+                <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-danger/10 text-danger hover:bg-danger/20 transition-colors">
+                  <ThumbsDown className="w-4 h-4" /> No
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 9. Action bar */}
+        <div className="fixed bottom-0 left-0 right-0 md:left-[45%] bg-[#0A1628] border-t border-[#1F2937] p-4 z-50">
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button 
-              variant="outline" 
-              className="flex-1 min-h-[44px]"
-              onClick={handleExportPDF}
-              disabled={isGeneratingPDF}
-            >
-              {isGeneratingPDF ? 'Generating...' : 'Export PDF'}
-            </Button>
-            <Button variant="outline" className="flex-1 min-h-[44px]">
-              Request Expert Review
-            </Button>
+            <Button variant="outline" className="flex-1 min-h-[44px]">Export PDF</Button>
+            <Button variant="outline" className="flex-1 min-h-[44px]">Request Expert Review</Button>
             {onRunSpecAnalysis && (
-              <Button onClick={onRunSpecAnalysis} className="flex-1 min-h-[44px]">
-                Run Spec Analysis
-              </Button>
+              <Button onClick={onRunSpecAnalysis} variant="outline" className="flex-1 min-h-[44px]">Run Spec Analysis →</Button>
+            )}
+            {onNewAnalysis && (
+              <Button onClick={onNewAnalysis} className="flex-1 min-h-[44px]">New Analysis</Button>
             )}
           </div>
         </div>
@@ -425,6 +243,15 @@ export function FailureResults({ status, data, onNewAnalysis, onRunSpecAnalysis,
   }
 
   return null;
+}
+
+function LoadStep({ active, done, label }: { active: boolean; done: boolean; label: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className={cn('w-3 h-3 rounded-full', done ? 'bg-success' : active ? 'bg-accent-500 animate-pulse' : 'bg-[#374151]')} />
+      <span className={cn('text-sm', active ? 'text-white' : 'text-[#64748B]')}>{label}</span>
+    </div>
+  );
 }
 
 export type { FailureResultData };

@@ -9,14 +9,12 @@ interface EnvironmentChipsProps {
 }
 
 const ENVIRONMENT_OPTIONS = [
-  { value: 'indoor', label: 'Indoor', default: true },
-  { value: 'outdoor', label: 'Outdoor', default: false },
-  { value: 'high_temp', label: 'High temp >120°C', default: false },
-  { value: 'low_temp', label: 'Low temp <-20°C', default: false },
-  { value: 'humidity', label: 'Humidity', default: false },
-  { value: 'chemical', label: 'Chemical exposure', default: false },
-  { value: 'uv', label: 'UV exposure', default: false },
-  { value: 'submersion', label: 'Submersion', default: false },
+  { value: 'high_humidity', label: 'High humidity' },
+  { value: 'chemical', label: 'Chemical exposure' },
+  { value: 'uv_outdoor', label: 'UV/outdoor' },
+  { value: 'thermal_cycling', label: 'Thermal cycling' },
+  { value: 'submersion', label: 'Submersion' },
+  { value: 'vibration', label: 'Vibration' },
 ];
 
 export function EnvironmentChips({ value, onChange, disabled = false }: EnvironmentChipsProps) {

@@ -40,7 +40,7 @@ export function BlurOverlay({ children, onUpgrade }: BlurOverlayProps) {
               Unlock Full Analysis
             </Button>
             <div className="text-sm text-text-tertiary">
-              $29/month • Unlimited analyses
+              $49/month • Unlimited analyses
             </div>
           </div>
         </Card>

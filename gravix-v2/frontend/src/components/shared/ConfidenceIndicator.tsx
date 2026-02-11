@@ -4,17 +4,21 @@ import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 
 interface ConfidenceIndicatorProps {
-  confidence: number; // 0-1 or 0-100
-  size?: 'default' | 'small';
+  confidence?: number; // 0-1 or 0-100
+  score?: number; // Alias for confidence
+  size?: 'default' | 'small' | 'large';
   className?: string;
 }
 
-export function ConfidenceIndicator({ confidence, size = 'default', className }: ConfidenceIndicatorProps) {
+export function ConfidenceIndicator({ confidence, score, size = 'default', className }: ConfidenceIndicatorProps) {
   const [animatedValue, setAnimatedValue] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   
+  // Use either confidence or score prop
+  const value = confidence ?? score ?? 0;
+  
   // Normalize to 0-100
-  const percentage = confidence > 1 ? confidence : confidence * 100;
+  const percentage = value > 1 ? value : value * 100;
   
   // Detect mobile for responsive sizing
   useEffect(() => {
@@ -42,8 +46,8 @@ export function ConfidenceIndicator({ confidence, size = 'default', className }:
     return () => clearTimeout(timer);
   }, [percentage]);
 
-  const diameter = size === 'small' ? 36 : (isMobile ? 36 : 48);
-  const strokeWidth = size === 'small' ? 3 : (isMobile ? 3 : 4);
+  const diameter = size === 'small' ? 36 : size === 'large' ? 64 : (isMobile ? 36 : 48);
+  const strokeWidth = size === 'small' ? 3 : size === 'large' ? 5 : (isMobile ? 3 : 4);
   const radius = (diameter - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (animatedValue / 100) * circumference;

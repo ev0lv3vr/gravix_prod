@@ -21,7 +21,7 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[560px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl">You've used your 3 free analyses this month</DialogTitle>
+          <DialogTitle className="text-2xl">You&apos;ve used your 5 free analyses this month</DialogTitle>
           <DialogDescription>
             Upgrade to Pro to unlock unlimited analyses, full executive summaries, and more.
           </DialogDescription>
@@ -37,7 +37,7 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">
                 <CheckCircle className="h-4 w-4 text-success shrink-0 mt-0.5" />
-                <span className="text-text-secondary">3 analyses/month</span>
+                <span className="text-text-secondary">5 analyses/month</span>
               </li>
               <li className="flex items-start gap-2">
                 <X className="h-4 w-4 text-danger shrink-0 mt-0.5" />
@@ -62,7 +62,7 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
                 POPULAR
               </div>
             </div>
-            <div className="text-2xl font-bold text-text-primary mb-1">$29</div>
+            <div className="text-2xl font-bold text-text-primary mb-1">$49</div>
             <div className="text-sm text-text-tertiary mb-4">per month</div>
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">
@@ -88,7 +88,7 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
         {/* Actions */}
         <div className="flex flex-col gap-3">
           <Button variant="primary" size="lg" onClick={onUpgrade} className="w-full">
-            Start Pro — $29/mo
+            Start Pro — $49/mo
           </Button>
           <Button variant="ghost" size="md" onClick={() => onOpenChange(false)} className="w-full">
             I'll wait
