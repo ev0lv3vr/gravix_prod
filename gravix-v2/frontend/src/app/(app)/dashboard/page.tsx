@@ -1,12 +1,23 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { FlaskConical, Search, ArrowRight, MessageSquare } from 'lucide-react';
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      window.location.href = '/';
+    }
+  }, [user, loading]);
+
+  if (loading || !user) {
+    return null;
+  }
   const { used, limit } = useUsageTracking();
 
   const greeting = user?.email

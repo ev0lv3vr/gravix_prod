@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { Search, Download, Lock } from 'lucide-react';
@@ -8,7 +8,17 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export default function HistoryPage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      window.location.href = '/';
+    }
+  }, [user, loading]);
+
+  if (loading || !user) {
+    return null;
+  }
   const [typeFilter, setTypeFilter] = useState('all');
   const [substrateFilter, setSubstrateFilter] = useState('all');
   const [outcomeFilter, setOutcomeFilter] = useState('all');
