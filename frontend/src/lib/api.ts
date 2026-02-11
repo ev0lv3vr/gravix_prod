@@ -1,7 +1,12 @@
 import { supabase } from './supabase';
 import type { FailureAnalysis, SpecRequest, Case, User } from './types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+
+/** True when the backend API URL is not configured */
+export function isApiConfigured(): boolean {
+  return Boolean(API_URL) && API_URL !== '';
+}
 
 export class ApiClient {
   private async getAuthHeaders(): Promise<Record<string, string>> {
@@ -20,6 +25,7 @@ export class ApiClient {
   async createFailureAnalysis(
     data: Partial<FailureAnalysis>
   ): Promise<FailureAnalysis> {
+    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/analyze`, {
       method: 'POST',
@@ -34,6 +40,7 @@ export class ApiClient {
   }
 
   async getFailureAnalysis(id: string): Promise<FailureAnalysis> {
+    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/analyze/${id}`, { headers });
     if (!response.ok) {
@@ -43,6 +50,7 @@ export class ApiClient {
   }
 
   async listFailureAnalyses(): Promise<FailureAnalysis[]> {
+    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/analyze`, { headers });
     if (!response.ok) {
@@ -53,6 +61,7 @@ export class ApiClient {
 
   // Spec Requests
   async createSpecRequest(data: Partial<SpecRequest>): Promise<SpecRequest> {
+    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/specify`, {
       method: 'POST',
@@ -67,6 +76,7 @@ export class ApiClient {
   }
 
   async getSpecRequest(id: string): Promise<SpecRequest> {
+    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/specify/${id}`, { headers });
     if (!response.ok) {
@@ -76,6 +86,7 @@ export class ApiClient {
   }
 
   async listSpecRequests(): Promise<SpecRequest[]> {
+    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/specify`, { headers });
     if (!response.ok) {
@@ -89,6 +100,7 @@ export class ApiClient {
     materialCategory?: string;
     failureMode?: string;
   }): Promise<Case[]> {
+    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const params = new URLSearchParams(filters as Record<string, string>);
     const response = await fetch(`${API_URL}/cases?${params}`);
     if (!response.ok) {
@@ -98,6 +110,7 @@ export class ApiClient {
   }
 
   async getCase(id: string): Promise<Case> {
+    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const response = await fetch(`${API_URL}/cases/${id}`);
     if (!response.ok) {
       throw new Error('Failed to fetch case');
@@ -107,6 +120,7 @@ export class ApiClient {
 
   // User
   async getCurrentUser(): Promise<User | null> {
+    if (!isApiConfigured()) return null;
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/users/me`, { headers });
     if (!response.ok) return null;
