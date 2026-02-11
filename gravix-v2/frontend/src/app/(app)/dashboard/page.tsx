@@ -69,12 +69,14 @@ export default function DashboardPage() {
 
       {/* Component 6.4: Pending Feedback Banner */}
       {pendingFeedback > 0 && (
-        <div className="bg-accent-500/10 border border-accent-500/20 rounded-lg p-4 mb-8 flex items-center gap-3">
-          <MessageSquare className="w-5 h-5 text-accent-500 flex-shrink-0" />
-          <p className="text-sm text-[#94A3B8]">
-            You have <strong className="text-white">{pendingFeedback} analyses</strong> waiting for feedback.
-          </p>
-        </div>
+        <Link href="/history" className="block bg-accent-500/10 border border-accent-500/20 rounded-lg p-4 mb-8 hover:border-accent-500/40 transition-colors">
+          <div className="flex items-center gap-3">
+            <MessageSquare className="w-5 h-5 text-accent-500 flex-shrink-0" />
+            <p className="text-sm text-[#94A3B8]">
+              You have <strong className="text-white">{pendingFeedback} analyses</strong> waiting for feedback.
+            </p>
+          </div>
+        </Link>
       )}
 
       {/* Component 6.3: Recent Analyses */}
@@ -96,7 +98,11 @@ export default function DashboardPage() {
             </thead>
             <tbody>
               {recentAnalyses.map((a) => (
-                <tr key={a.id} className="border-b border-[#1F2937] last:border-0 hover:bg-[#1F2937] transition-colors cursor-pointer">
+                <tr
+                  key={a.id}
+                  className="border-b border-[#1F2937] last:border-0 hover:bg-[#1F2937] transition-colors cursor-pointer"
+                  onClick={() => window.location.href = `/history`}
+                >
                   <td className="p-4">
                     <span className={`px-2 py-0.5 rounded text-xs font-medium ${
                       a.type === 'spec' ? 'bg-accent-500/10 text-accent-500' : 'bg-warning/10 text-warning'
