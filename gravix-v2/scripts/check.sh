@@ -22,6 +22,9 @@ echo "========================================="
 echo ""
 
 # --- Gate 1: TypeScript type checking ---
+# Avoid stale Next build artifacts affecting tsc (e.g., .next/types/*)
+rm -rf .next >/dev/null 2>&1 || true
+
 echo -n "⏳ [1/5] Type checking (tsc --noEmit)... "
 if npx tsc --noEmit 2>/dev/null; then
   echo -e "${GREEN}✅ PASS${NC}"
