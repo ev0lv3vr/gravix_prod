@@ -103,9 +103,14 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender
 
 export class ApiClient {
   private async getAuthHeaders(): Promise<Record<string, string>> {
+    if (!supabase) {
+      console.error('[API] supabase client is null — NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY missing at build time');
+      return { 'Content-Type': 'application/json' };
+    }
     const {
       data: { session },
     } = await supabase.auth.getSession();
+    console.debug('[API] getAuthHeaders — session exists:', !!session, 'token exists:', !!session?.access_token);
     return {
       'Content-Type': 'application/json',
       ...(session?.access_token && {
