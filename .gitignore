@@ -24,6 +24,8 @@ TOOLS.md
 HEARTBEAT.md
 BOOTSTRAP.md
 memory/
+# Explicit (redundant) ignore to ensure local-only logs never get committed
+memory/error-log.md
 tools/
 avatars/
 moneysamurai/
