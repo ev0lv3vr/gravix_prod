@@ -1,152 +1,119 @@
-"""
-AI Engine service for calling Claude API and parsing structured responses.
-"""
-import httpx
+"""Claude API integration using httpx (direct API, not SDK)."""
+
 import json
-from typing import Dict, Any
+import logging
+import time
+from typing import Optional
+
+import httpx
+
 from config import settings
-from prompts.failure_analysis import SYSTEM_PROMPT as FAILURE_SYSTEM_PROMPT, build_user_prompt as build_failure_prompt
-from prompts.spec_engine import SYSTEM_PROMPT as SPEC_SYSTEM_PROMPT, build_user_prompt as build_spec_prompt
-import asyncio
+
+logger = logging.getLogger(__name__)
+
+CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
 
 
-class AIEngine:
-    """Service for interacting with Claude API."""
-    
-    def __init__(self):
-        self.api_key = settings.anthropic_api_key
-        self.model = settings.anthropic_model
-        self.base_url = "https://api.anthropic.com/v1/messages"
-        self.max_retries = settings.max_retries_ai
-        self.timeout = settings.ai_timeout_seconds
-    
-    async def analyze_failure(self, analysis_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Generate failure analysis using Claude API.
-        
-        Args:
-            analysis_data: Dictionary containing failure analysis input fields
-            
-        Returns:
-            Parsed JSON response from Claude
-            
-        Raises:
-            Exception: If API call fails or response cannot be parsed
-        """
-        system_prompt = FAILURE_SYSTEM_PROMPT
-        user_prompt = build_failure_prompt(analysis_data)
-        
-        return await self._call_claude_api(system_prompt, user_prompt)
-    
-    async def generate_spec(self, spec_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Generate material specification using Claude API.
-        
-        Args:
-            spec_data: Dictionary containing spec request input fields
-            
-        Returns:
-            Parsed JSON response from Claude
-            
-        Raises:
-            Exception: If API call fails or response cannot be parsed
-        """
-        system_prompt = SPEC_SYSTEM_PROMPT
-        user_prompt = build_spec_prompt(spec_data)
-        
-        return await self._call_claude_api(system_prompt, user_prompt)
-    
-    async def _call_claude_api(self, system_prompt: str, user_prompt: str) -> Dict[str, Any]:
-        """
-        Make API call to Claude with retry logic.
-        
-        Args:
-            system_prompt: System-level instructions
-            user_prompt: User-specific query
-            
-        Returns:
-            Parsed JSON response
-            
-        Raises:
-            Exception: If all retries fail or response is invalid
-        """
-        headers = {
-            "x-api-key": self.api_key,
-            "anthropic-version": "2023-06-01",
-            "content-type": "application/json"
-        }
-        
-        payload = {
-            "model": self.model,
-            "max_tokens": 4096,
-            "temperature": 0.3,  # Lower temperature for more consistent structured output
-            "system": system_prompt,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": user_prompt
-                }
-            ]
-        }
-        
-        last_error = None
-        
-        for attempt in range(self.max_retries):
-            try:
-                async with httpx.AsyncClient(timeout=self.timeout) as client:
-                    response = await client.post(
-                        self.base_url,
-                        headers=headers,
-                        json=payload
-                    )
-                    
-                    response.raise_for_status()
-                    
-                    data = response.json()
-                    
-                    # Extract text content from response
-                    if 'content' in data and len(data['content']) > 0:
-                        text_content = data['content'][0].get('text', '')
-                        
-                        # Parse JSON from response
-                        # Claude sometimes wraps JSON in markdown code blocks
-                        text_content = text_content.strip()
-                        if text_content.startswith('```json'):
-                            text_content = text_content[7:]  # Remove ```json
-                        if text_content.startswith('```'):
-                            text_content = text_content[3:]  # Remove ```
-                        if text_content.endswith('```'):
-                            text_content = text_content[:-3]  # Remove trailing ```
-                        
-                        text_content = text_content.strip()
-                        
-                        try:
-                            parsed_json = json.loads(text_content)
-                            return parsed_json
-                        except json.JSONDecodeError as e:
-                            raise Exception(f"Failed to parse Claude response as JSON: {e}\nResponse: {text_content}")
-                    else:
-                        raise Exception(f"Unexpected response format from Claude API: {data}")
-            
-            except httpx.HTTPStatusError as e:
-                last_error = f"HTTP error: {e.response.status_code} - {e.response.text}"
-                if e.response.status_code == 429:  # Rate limit
-                    await asyncio.sleep(2 ** attempt)  # Exponential backoff
-                else:
-                    raise Exception(last_error)
-            
-            except httpx.TimeoutException:
-                last_error = "Request timed out"
-                await asyncio.sleep(1 * attempt)  # Brief retry delay
-            
-            except Exception as e:
-                last_error = str(e)
-                if attempt == self.max_retries - 1:
-                    raise
-                await asyncio.sleep(1 * attempt)
-        
-        raise Exception(f"Failed to get response from Claude API after {self.max_retries} attempts. Last error: {last_error}")
+async def _call_claude(
+    system_prompt: str,
+    user_prompt: str,
+    max_tokens: int = 4096,
+) -> dict:
+    """Call Claude API directly via httpx with retry logic."""
+    headers = {
+        "x-api-key": settings.anthropic_api_key,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+    }
+
+    payload = {
+        "model": settings.anthropic_model,
+        "max_tokens": max_tokens,
+        "system": system_prompt,
+        "messages": [{"role": "user", "content": user_prompt}],
+    }
+
+    last_error = None
+    for attempt in range(settings.max_retries_ai):
+        try:
+            async with httpx.AsyncClient(
+                timeout=settings.ai_timeout_seconds
+            ) as client:
+                response = await client.post(
+                    CLAUDE_API_URL, headers=headers, json=payload
+                )
+                response.raise_for_status()
+                data = response.json()
+
+                # Extract text content
+                content = data.get("content", [])
+                if content and content[0].get("type") == "text":
+                    text = content[0]["text"]
+                    # Try to parse as JSON
+                    try:
+                        return json.loads(text)
+                    except json.JSONDecodeError:
+                        # Try to extract JSON from markdown code blocks
+                        if "```json" in text:
+                            json_str = text.split("```json")[1].split("```")[0].strip()
+                            return json.loads(json_str)
+                        elif "```" in text:
+                            json_str = text.split("```")[1].split("```")[0].strip()
+                            return json.loads(json_str)
+                        return {"raw_text": text}
+
+                return {"error": "No content in response"}
+
+        except httpx.HTTPStatusError as e:
+            last_error = e
+            logger.warning(
+                f"Claude API HTTP error (attempt {attempt + 1}): {e.response.status_code}"
+            )
+            if e.response.status_code == 429:
+                # Rate limited — wait longer
+                await _async_sleep(2 ** attempt * 2)
+            elif e.response.status_code >= 500:
+                await _async_sleep(2 ** attempt)
+            else:
+                raise
+        except (httpx.TimeoutException, httpx.ConnectError) as e:
+            last_error = e
+            logger.warning(f"Claude API connection error (attempt {attempt + 1}): {e}")
+            await _async_sleep(2 ** attempt)
+
+    raise Exception(f"Claude API failed after {settings.max_retries_ai} attempts: {last_error}")
 
 
-# Global instance
-ai_engine = AIEngine()
+async def _async_sleep(seconds: float):
+    import asyncio
+    await asyncio.sleep(seconds)
+
+
+async def analyze_failure(analysis_data: dict) -> dict:
+    """Run failure analysis using Claude."""
+    from prompts.failure_analysis import get_system_prompt, build_user_prompt
+
+    system_prompt = get_system_prompt()
+    user_prompt = build_user_prompt(analysis_data)
+
+    start_time = time.time()
+    result = await _call_claude(system_prompt, user_prompt)
+    processing_time_ms = int((time.time() - start_time) * 1000)
+
+    result["processing_time_ms"] = processing_time_ms
+    return result
+
+
+async def generate_spec(spec_data: dict) -> dict:
+    """Generate material specification using Claude."""
+    from prompts.spec_engine import get_system_prompt, build_user_prompt
+
+    system_prompt = get_system_prompt()
+    user_prompt = build_user_prompt(spec_data)
+
+    start_time = time.time()
+    result = await _call_claude(system_prompt, user_prompt)
+    processing_time_ms = int((time.time() - start_time) * 1000)
+
+    result["processing_time_ms"] = processing_time_ms
+    return result

@@ -1,12 +1,105 @@
 import { supabase } from './supabase';
 import type { FailureAnalysis, SpecRequest, Case, User } from './types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+// Feedback types
+export type FeedbackSubmitData = {
+  analysis_id?: string;
+  spec_id?: string;
+  was_helpful: boolean;
+  root_cause_confirmed?: number;
+  outcome?: string;
+  recommendation_implemented?: string[];
+  actual_root_cause?: string;
+  what_worked?: string;
+  what_didnt_work?: string;
+  time_to_resolution?: string;
+  estimated_cost_saved?: number;
+  substrate_corrections?: { field: string; original?: string; corrected: string }[];
+  feedback_source?: string;
+};
 
-/** True when the backend API URL is not configured */
-export function isApiConfigured(): boolean {
-  return Boolean(API_URL) && API_URL !== '';
+export type FeedbackCreateResponse = {
+  id: string;
+  message: string;
+  cases_improved: number;
+};
+
+export type FeedbackResponse = {
+  id: string;
+  analysis_id?: string;
+  spec_id?: string;
+  user_id: string;
+  was_helpful: boolean;
+  root_cause_confirmed: number;
+  outcome?: string;
+  recommendation_implemented: string[];
+  actual_root_cause?: string;
+  what_worked?: string;
+  what_didnt_work?: string;
+  time_to_resolution?: string;
+  estimated_cost_saved?: number;
+  substrate_corrections: Record<string, unknown>[];
+  feedback_source?: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type PendingFeedbackItem = {
+  analysis_id: string;
+  material_category?: string;
+  failure_mode?: string;
+  substrate_a?: string;
+  substrate_b?: string;
+  created_at?: string;
+  status?: string;
+};
+
+type ApiUserProfile = {
+  id: string;
+  email: string;
+  name?: string | null;
+  company?: string | null;
+  role?: string | null;
+  plan?: string;
+  analyses_this_month?: number;
+  specs_this_month?: number;
+  analyses_reset_date?: string | null;
+  specs_reset_date?: string | null;
+  stripe_customer_id?: string | null;
+  avatar_url?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+};
+
+export type UsageResponse = {
+  analyses_used: number;
+  analyses_limit: number;
+  specs_used: number;
+  specs_limit: number;
+  plan: string;
+  reset_date?: string | null;
+};
+
+function mapUserProfile(u: ApiUserProfile): User {
+  return {
+    id: u.id,
+    email: u.email,
+    name: u.name ?? undefined,
+    company: u.company ?? undefined,
+    role: u.role ?? undefined,
+    plan: (u.plan as User['plan']) ?? 'free',
+    analysesThisMonth: u.analyses_this_month ?? 0,
+    specsThisMonth: u.specs_this_month ?? 0,
+    analysesResetDate: u.analyses_reset_date ?? null,
+    specsResetDate: u.specs_reset_date ?? null,
+    stripeCustomerId: u.stripe_customer_id ?? undefined,
+    avatarUrl: u.avatar_url ?? undefined,
+    createdAt: u.created_at ?? null,
+    updatedAt: u.updated_at ?? null,
+  };
 }
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
 
 export class ApiClient {
   private async getAuthHeaders(): Promise<Record<string, string>> {
@@ -25,7 +118,6 @@ export class ApiClient {
   async createFailureAnalysis(
     data: Partial<FailureAnalysis>
   ): Promise<FailureAnalysis> {
-    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/analyze`, {
       method: 'POST',
@@ -40,7 +132,6 @@ export class ApiClient {
   }
 
   async getFailureAnalysis(id: string): Promise<FailureAnalysis> {
-    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/analyze/${id}`, { headers });
     if (!response.ok) {
@@ -50,7 +141,6 @@ export class ApiClient {
   }
 
   async listFailureAnalyses(): Promise<FailureAnalysis[]> {
-    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/analyze`, { headers });
     if (!response.ok) {
@@ -61,7 +151,6 @@ export class ApiClient {
 
   // Spec Requests
   async createSpecRequest(data: Partial<SpecRequest>): Promise<SpecRequest> {
-    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/specify`, {
       method: 'POST',
@@ -76,7 +165,6 @@ export class ApiClient {
   }
 
   async getSpecRequest(id: string): Promise<SpecRequest> {
-    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/specify/${id}`, { headers });
     if (!response.ok) {
@@ -86,7 +174,6 @@ export class ApiClient {
   }
 
   async listSpecRequests(): Promise<SpecRequest[]> {
-    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/specify`, { headers });
     if (!response.ok) {
@@ -100,7 +187,6 @@ export class ApiClient {
     materialCategory?: string;
     failureMode?: string;
   }): Promise<Case[]> {
-    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const params = new URLSearchParams(filters as Record<string, string>);
     const response = await fetch(`${API_URL}/cases?${params}`);
     if (!response.ok) {
@@ -110,7 +196,6 @@ export class ApiClient {
   }
 
   async getCase(id: string): Promise<Case> {
-    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
     const response = await fetch(`${API_URL}/cases/${id}`);
     if (!response.ok) {
       throw new Error('Failed to fetch case');
@@ -120,56 +205,67 @@ export class ApiClient {
 
   // User
   async getCurrentUser(): Promise<User | null> {
-    if (!isApiConfigured()) return null;
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/users/me`, { headers });
+    if (!response.ok) return null;
+    const json = (await response.json()) as ApiUserProfile;
+    return mapUserProfile(json);
+  }
+
+  async getCurrentUserUsage(): Promise<UsageResponse | null> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/users/me/usage`, { headers });
     if (!response.ok) return null;
     return response.json();
   }
 
-  // Usage
-  async getUserUsage(): Promise<Record<string, number>> {
-    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
-    const headers = await this.getAuthHeaders();
-    const response = await fetch(`${API_URL}/users/me/usage`, { headers });
-    if (!response.ok) throw new Error('Failed to fetch usage');
-    return response.json();
-  }
-
-  // User profile update
-  async updateUser(data: { name?: string; company?: string; role?: string }): Promise<unknown> {
-    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
+  async updateProfile(data: {
+    name?: string;
+    company?: string;
+    role?: string;
+  }): Promise<User | null> {
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/users/me`, {
       method: 'PATCH',
       headers,
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error('Failed to update profile');
-    return response.json();
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(
+        (error as { detail?: string }).detail || 'Failed to update profile'
+      );
+    }
+    const json = (await response.json()) as ApiUserProfile;
+    return mapUserProfile(json);
   }
 
-  // Feedback
-  async submitFeedback(
-    analysisId: string,
-    data: { outcome: string; details?: string }
-  ): Promise<unknown> {
-    if (!isApiConfigured()) throw new Error('API not configured — demo mode');
+  async createBillingPortalSession(): Promise<{ portal_url: string }> {
     const headers = await this.getAuthHeaders();
-    const response = await fetch(`${API_URL}/feedback/${analysisId}`, {
+    const response = await fetch(`${API_URL}/billing/portal`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error('Failed to submit feedback');
+    if (!response.ok) {
+      throw new Error('Failed to create billing portal session');
+    }
     return response.json();
   }
 
-  // Public stats
-  async getPublicStats(): Promise<Record<string, number>> {
-    const url = isApiConfigured() ? `${API_URL}/stats/public` : '/api/stats/public';
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Failed to fetch stats');
+  async createCheckoutSession(params: {
+    price_id?: string;
+    success_url: string;
+    cancel_url: string;
+  }): Promise<{ checkout_url: string }> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/billing/checkout`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(params),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to create checkout session');
+    }
     return response.json();
   }
 
@@ -180,6 +276,159 @@ export class ApiClient {
 
   getSpecPdfUrl(id: string): string {
     return `${API_URL}/reports/spec/${id}/pdf`;
+  }
+
+  // Feedback
+  async submitFeedback(
+    data: FeedbackSubmitData
+  ): Promise<FeedbackCreateResponse> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/v1/feedback`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(
+        (error as { detail?: string }).detail || 'Failed to submit feedback'
+      );
+    }
+    return response.json();
+  }
+
+  async getFeedback(analysisId: string): Promise<FeedbackResponse> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(
+      `${API_URL}/v1/feedback/${analysisId}`,
+      { headers }
+    );
+    if (!response.ok) {
+      throw new Error('Failed to fetch feedback');
+    }
+    return response.json();
+  }
+
+  async getPendingFeedback(): Promise<PendingFeedbackItem[]> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/v1/feedback/pending/list`, {
+      headers,
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch pending feedback');
+    }
+    return response.json();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Admin endpoints
+  // ---------------------------------------------------------------------------
+
+  async getAdminOverview(): Promise<{
+    total_users: number;
+    users_by_plan: Record<string, number>;
+    total_analyses: number;
+    total_specs: number;
+    analyses_today: number;
+    analyses_this_week: number;
+    signups_today: number;
+    signups_this_week: number;
+  }> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/v1/admin/overview`, { headers });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error((error as { detail?: string }).detail || 'Failed to fetch admin overview');
+    }
+    return response.json();
+  }
+
+  async getAdminUsers(search?: string): Promise<
+    {
+      id: string;
+      email: string;
+      name?: string | null;
+      company?: string | null;
+      role?: string | null;
+      plan: string;
+      analyses_this_month: number;
+      specs_this_month: number;
+      stripe_customer_id?: string | null;
+      created_at?: string | null;
+    }[]
+  > {
+    const headers = await this.getAuthHeaders();
+    const params = search ? `?search=${encodeURIComponent(search)}` : '';
+    const response = await fetch(`${API_URL}/v1/admin/users${params}`, { headers });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error((error as { detail?: string }).detail || 'Failed to fetch admin users');
+    }
+    return response.json();
+  }
+
+  async updateAdminUser(
+    userId: string,
+    data: { plan?: string; role?: string }
+  ): Promise<{
+    id: string;
+    email: string;
+    plan: string;
+    role?: string | null;
+  }> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/v1/admin/users/${userId}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error((error as { detail?: string }).detail || 'Failed to update user');
+    }
+    return response.json();
+  }
+
+  async getAdminActivity(): Promise<
+    {
+      id: string;
+      type: string;
+      user_email?: string | null;
+      substrates?: string | null;
+      status?: string | null;
+      confidence_score?: number | null;
+      created_at?: string | null;
+    }[]
+  > {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/v1/admin/activity`, { headers });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error((error as { detail?: string }).detail || 'Failed to fetch admin activity');
+    }
+    return response.json();
+  }
+
+  async getAdminRequestLogs(path?: string): Promise<
+    {
+      id?: string | null;
+      method?: string | null;
+      path?: string | null;
+      status_code?: number | null;
+      duration_ms?: number | null;
+      user_id?: string | null;
+      user_email?: string | null;
+      created_at?: string | null;
+    }[]
+  > {
+    const headers = await this.getAuthHeaders();
+    const params = path ? `?path=${encodeURIComponent(path)}` : '';
+    const response = await fetch(`${API_URL}/v1/admin/request-logs${params}`, { headers });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error((error as { detail?: string }).detail || 'Failed to fetch request logs');
+    }
+    return response.json();
   }
 }
 

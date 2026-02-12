@@ -1,68 +1,59 @@
-"""
-Gravix API - FastAPI application entry point.
-"""
-from fastapi import FastAPI
+"""FastAPI application entry point."""
+
+import logging
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from contextlib import asynccontextmanager
-from config import settings
 
-# Import routers
-from routers import health, analyze, specify, users, cases, reports, billing
-from routers import feedback
+from config import settings
+from routers import health, analyze, specify, users, cases, reports, billing, stats, feedback, cron, admin
+from middleware.request_logger import RequestLoggerMiddleware
+
+logging.basicConfig(
+    level=logging.DEBUG if settings.debug else logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Lifespan context manager for startup and shutdown events.
-    """
-    # Startup
-    print("🚀 Gravix API starting up...")
-    print(f"Environment: {settings.environment}")
-    print(f"Frontend URL: {settings.frontend_url}")
-    
+    """Application lifespan — startup and shutdown."""
+    logger.info(f"Starting Gravix API ({settings.environment})")
+    logger.info(f"CORS origins: {settings.cors_origins}")
     yield
-    
-    # Shutdown
-    print("👋 Gravix API shutting down...")
+    logger.info("Shutting down Gravix API")
 
 
-# Create FastAPI app
 app = FastAPI(
     title="Gravix API",
-    description="AI-Powered Industrial Materials Intelligence Platform",
-    version="1.0.0",
+    description="Industrial materials intelligence API",
+    version="2.0.0",
     lifespan=lifespan,
-    docs_url="/docs" if settings.debug else None,
-    redoc_url="/redoc" if settings.debug else None
 )
-
 
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url] if not settings.debug else ["*"],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Request logging middleware (best-effort; never blocks requests)
+app.add_middleware(RequestLoggerMiddleware)
 
-# Global exception handler
+
 @app.exception_handler(Exception)
-async def global_exception_handler(request, exc):
-    """
-    Catch-all exception handler for unhandled errors.
-    """
-    print(f"Unhandled exception: {str(exc)}")
-    
+async def global_exception_handler(request: Request, exc: Exception):
+    """Global exception handler for unhandled errors."""
+    logger.exception(f"Unhandled exception: {exc}")
     return JSONResponse(
         status_code=500,
-        content={
-            "error": "Internal server error",
-            "detail": str(exc) if settings.debug else "An unexpected error occurred"
-        }
+        content={"detail": "Internal server error"},
     )
 
 
@@ -74,30 +65,18 @@ app.include_router(users.router)
 app.include_router(cases.router)
 app.include_router(reports.router)
 app.include_router(billing.router)
-app.include_router(feedback.router)
-
-
-# Root endpoint
-@app.get("/")
-async def root():
-    """
-    API root endpoint.
-    """
-    return {
-        "name": "Gravix API",
-        "version": "1.0.0",
-        "description": "AI-Powered Industrial Materials Intelligence Platform",
-        "docs": "/docs" if settings.debug else "Documentation disabled in production",
-        "health": "/health"
-    }
+app.include_router(stats.router)
+app.include_router(feedback.router, prefix="/v1/feedback")
+app.include_router(cron.router, prefix="/v1/cron")
+app.include_router(admin.router)
 
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(
         "main:app",
         host=settings.api_host,
         port=settings.api_port,
-        reload=settings.debug
+        reload=settings.debug,
     )

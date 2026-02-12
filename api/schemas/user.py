@@ -1,42 +1,37 @@
-"""
-User-related Pydantic schemas.
-"""
-from pydantic import BaseModel, EmailStr, Field
+"""Schemas for user profile and usage."""
+
+from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime, date
+from datetime import datetime
 
 
 class UserProfile(BaseModel):
-    """User profile response."""
     id: str
-    email: EmailStr
+    email: str
     name: Optional[str] = None
     company: Optional[str] = None
     role: Optional[str] = None
     plan: str = "free"
     analyses_this_month: int = 0
     specs_this_month: int = 0
-    analyses_reset_date: Optional[date] = None
-    specs_reset_date: Optional[date] = None
+    analyses_reset_date: Optional[datetime] = None
+    specs_reset_date: Optional[datetime] = None
+    stripe_customer_id: Optional[str] = None
     avatar_url: Optional[str] = None
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class UserUpdate(BaseModel):
-    """User profile update request."""
-    name: Optional[str] = Field(None, max_length=255)
-    company: Optional[str] = Field(None, max_length=255)
-    role: Optional[str] = Field(None, max_length=255)
+    name: Optional[str] = None
+    company: Optional[str] = None
+    role: Optional[str] = None
 
 
 class UsageResponse(BaseModel):
-    """User usage statistics response."""
-    plan: str
     analyses_used: int
     analyses_limit: int
-    analyses_remaining: int
     specs_used: int
     specs_limit: int
-    specs_remaining: int
-    reset_date: date
+    plan: str
+    reset_date: Optional[datetime] = None

@@ -1,41 +1,160 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { useUsageTracking } from '@/hooks/useUsageTracking';
-import { api, isApiConfigured } from '@/lib/api';
+import { api, type UsageResponse } from '@/lib/api';
+import type { User } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Download, ExternalLink, CheckCircle } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { user } = useAuth();
-  const { used, limit } = useUsageTracking();
-
+  const { user, loading } = useAuth();
   const [name, setName] = useState('');
   const [company, setCompany] = useState('');
   const [role, setRole] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Profile / plan / usage from API
+  const [profile, setProfile] = useState<User | null>(null);
+  const [usage, setUsage] = useState<UsageResponse | null>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+
+  // Billing actions
+  const [billingLoading, setBillingLoading] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      window.location.href = '/';
+    }
+  }, [user, loading]);
+
+  // Load profile + usage on mount
+  useEffect(() => {
+    if (loading || !user) return;
+    let cancelled = false;
+
+    async function loadProfile() {
+      setProfileLoading(true);
+      try {
+        const [profileData, usageData] = await Promise.all([
+          api.getCurrentUser(),
+          api.getCurrentUserUsage(),
+        ]);
+        if (cancelled) return;
+
+        setProfile(profileData);
+        setUsage(usageData);
+
+        // Populate form fields
+        if (profileData) {
+          setName(profileData.name || '');
+          setCompany(profileData.company || '');
+          setRole(profileData.role || '');
+        }
+      } catch {
+        // Silently fail; form fields stay empty
+      } finally {
+        if (!cancelled) setProfileLoading(false);
+      }
+    }
+
+    loadProfile();
+    return () => { cancelled = true; };
+  }, [loading, user]);
+
+  const plan = profile?.plan ?? 'free';
+  const isFreeUser = plan === 'free';
+
+  const usedAnalyses = usage?.analyses_used ?? 0;
+  const limitAnalyses = usage?.analyses_limit ?? 5;
+  const usagePct = Math.min((usedAnalyses / limitAnalyses) * 100, 100);
 
   const handleSaveProfile = async () => {
     setIsSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
+
     try {
-      if (isApiConfigured() && user) {
-        await api.updateUser({ name, company, role });
-      } else {
-        // Demo mode — simulate save
-        await new Promise(r => setTimeout(r, 500));
-      }
+      const updated = await api.updateProfile({ name, company, role });
+      if (updated) setProfile(updated);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
-      console.error('Failed to save profile:', err);
+      setSaveError(err instanceof Error ? err.message : 'Failed to save profile');
     } finally {
       setIsSaving(false);
     }
   };
 
-  const usagePct = Math.min((used / limit) * 100, 100);
+  const handleManageSubscription = useCallback(async () => {
+    if (isFreeUser) {
+      window.location.href = '/pricing';
+      return;
+    }
+    setBillingLoading(true);
+    try {
+      const data = await api.createBillingPortalSession();
+      if (data.portal_url) window.location.href = data.portal_url;
+    } catch {
+      alert('Failed to open billing portal. Please try again.');
+    } finally {
+      setBillingLoading(false);
+    }
+  }, [isFreeUser]);
+
+  const handleExportData = useCallback(async () => {
+    setExportLoading(true);
+    try {
+      const [specs, failures] = await Promise.all([
+        api.listSpecRequests(),
+        api.listFailureAnalyses(),
+      ]);
+
+      const exportPayload = {
+        exported_at: new Date().toISOString(),
+        user_email: user?.email,
+        spec_requests: specs,
+        failure_analyses: failures,
+      };
+
+      const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `gravix-export-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      alert('Failed to export data. Please try again.');
+    } finally {
+      setExportLoading(false);
+    }
+  }, [user]);
+
+  const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
+  const planBadgeColor =
+    plan === 'pro'
+      ? 'bg-accent-500/10 text-accent-500'
+      : plan === 'team'
+        ? 'bg-success/10 text-success'
+        : plan === 'enterprise'
+          ? 'bg-warning/10 text-warning'
+          : 'bg-[#374151]/50 text-[#94A3B8]';
+
+  if (loading || !user) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto px-6 py-10 max-w-[640px]">
@@ -50,7 +169,8 @@ export default function SettingsPage() {
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Your name"
+              placeholder={profileLoading ? 'Loading…' : 'Your name'}
+              disabled={profileLoading}
               className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
             />
           </div>
@@ -68,7 +188,8 @@ export default function SettingsPage() {
             <Input
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              placeholder="Your company"
+              placeholder={profileLoading ? 'Loading…' : 'Your company'}
+              disabled={profileLoading}
               className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
             />
           </div>
@@ -77,11 +198,29 @@ export default function SettingsPage() {
             <Input
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              placeholder="e.g., Manufacturing Engineer"
+              placeholder={profileLoading ? 'Loading…' : 'e.g., Manufacturing Engineer'}
+              disabled={profileLoading}
               className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
             />
           </div>
-          <Button onClick={handleSaveProfile} disabled={isSaving} className="bg-accent-500 hover:bg-accent-600 text-white">
+
+          {saveError && (
+            <div className="text-sm text-danger bg-danger/10 border border-danger/20 rounded p-3">
+              {saveError}
+            </div>
+          )}
+          {saveSuccess && (
+            <div className="text-sm text-success bg-success/10 border border-success/20 rounded p-3 flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              Profile saved successfully
+            </div>
+          )}
+
+          <Button
+            onClick={handleSaveProfile}
+            disabled={isSaving || profileLoading}
+            className="bg-accent-500 hover:bg-accent-600 text-white"
+          >
             {isSaving ? 'Saving…' : 'Save Changes'}
           </Button>
         </div>
@@ -94,32 +233,61 @@ export default function SettingsPage() {
         <h2 className="text-lg font-semibold text-white mb-6">Subscription</h2>
         <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
-            <span className="px-3 py-1 bg-accent-500/10 text-accent-500 text-xs font-semibold rounded-full uppercase">
-              Free Plan
+            <span
+              className={`px-3 py-1 text-xs font-semibold rounded-full uppercase ${planBadgeColor}`}
+            >
+              {planLabel} Plan
             </span>
-            <Link href="/pricing" className="text-sm text-accent-500 hover:underline">Upgrade</Link>
+            {isFreeUser && (
+              <Link href="/pricing" className="text-sm text-accent-500 hover:underline">
+                Upgrade
+              </Link>
+            )}
           </div>
 
           {/* Usage bar */}
           <div className="mb-4">
             <div className="flex justify-between text-xs text-[#94A3B8] mb-1">
-              <span>Usage this month</span>
-              <span className="font-mono">{used} / {limit}</span>
+              <span>Analyses this month</span>
+              <span className="font-mono">
+                {usedAnalyses} / {limitAnalyses === -1 ? '∞' : limitAnalyses}
+              </span>
             </div>
-            <div className="w-full h-2 bg-[#1F2937] rounded-full overflow-hidden">
-              <div
-                className="h-full bg-accent-500 rounded-full transition-all"
-                style={{ width: `${usagePct}%` }}
-              />
-            </div>
+            {limitAnalyses !== -1 && (
+              <div className="w-full h-2 bg-[#1F2937] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-accent-500 rounded-full transition-all"
+                  style={{ width: `${usagePct}%` }}
+                />
+              </div>
+            )}
           </div>
 
-          <Button variant="outline" className="w-full" disabled>
-            Manage Subscription
+          <Button
+            variant="outline"
+            className="w-full"
+            disabled={billingLoading}
+            onClick={handleManageSubscription}
+          >
+            {billingLoading ? (
+              'Loading…'
+            ) : isFreeUser ? (
+              <>
+                Upgrade to Pro
+                <ExternalLink className="w-3.5 h-3.5 ml-2" />
+              </>
+            ) : (
+              <>
+                Manage Subscription
+                <ExternalLink className="w-3.5 h-3.5 ml-2" />
+              </>
+            )}
           </Button>
-          <p className="text-xs text-[#64748B] mt-2 text-center">
-            Stripe billing portal available for Pro and Team plans
-          </p>
+          {!isFreeUser && (
+            <p className="text-xs text-[#64748B] mt-2 text-center">
+              Opens Stripe billing portal
+            </p>
+          )}
         </div>
       </section>
 
@@ -129,8 +297,14 @@ export default function SettingsPage() {
       <section>
         <h2 className="text-lg font-semibold text-white mb-6">Data</h2>
         <div className="space-y-4">
-          <Button variant="outline" className="w-full justify-start">
-            Export My Data (JSON)
+          <Button
+            variant="outline"
+            className="w-full justify-start"
+            disabled={exportLoading}
+            onClick={handleExportData}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            {exportLoading ? 'Exporting…' : 'Export My Data (JSON)'}
           </Button>
 
           {!showDeleteConfirm ? (

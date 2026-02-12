@@ -1,1 +1,1 @@
-"""AI prompt templates for failure analysis and spec generation."""
+"""AI prompt templates for Gravix engines."""

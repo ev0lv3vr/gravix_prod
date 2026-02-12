@@ -1,358 +1,211 @@
-"""
-PDF report generation service using ReportLab.
-"""
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter, A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
-from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
-from io import BytesIO
+"""PDF generation using WeasyPrint (HTML → PDF)."""
+
+import io
+import logging
 from datetime import datetime
-from typing import Dict, Any, List
+
+logger = logging.getLogger(__name__)
 
 
-class PDFGenerator:
-    """Service for generating professional PDF reports."""
-    
-    @staticmethod
-    def generate_failure_analysis_report(analysis: Dict[str, Any]) -> BytesIO:
-        """
-        Generate PDF report for failure analysis.
-        
-        Args:
-            analysis: Complete failure analysis data
-            
-        Returns:
-            BytesIO buffer containing PDF
-        """
-        buffer = BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=0.75*inch, bottomMargin=0.75*inch)
-        
-        story = []
-        styles = getSampleStyleSheet()
-        
-        # Custom styles
-        title_style = ParagraphStyle(
-            'CustomTitle',
-            parent=styles['Heading1'],
-            fontSize=24,
-            textColor=colors.HexColor('#1a1a1a'),
-            spaceAfter=30,
-            alignment=TA_CENTER
-        )
-        
-        heading_style = ParagraphStyle(
-            'CustomHeading',
-            parent=styles['Heading2'],
-            fontSize=16,
-            textColor=colors.HexColor('#2563eb'),
-            spaceAfter=12,
-            spaceBefore=20
-        )
-        
-        subheading_style = ParagraphStyle(
-            'CustomSubheading',
-            parent=styles['Heading3'],
-            fontSize=14,
-            textColor=colors.HexColor('#1e40af'),
-            spaceAfter=10,
-            spaceBefore=15
-        )
-        
-        normal_style = styles['Normal']
-        normal_style.fontSize = 10
-        normal_style.leading = 14
-        
-        # Header
-        story.append(Paragraph("GRAVIX", title_style))
-        story.append(Paragraph("Failure Analysis Report", heading_style))
-        story.append(Paragraph(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M UTC')}", normal_style))
-        story.append(Spacer(1, 0.3*inch))
-        
-        # Material Information Section
-        story.append(Paragraph("MATERIAL INFORMATION", heading_style))
-        material_data = [
-            ["Category:", analysis.get('material_category', 'N/A')],
-            ["Subcategory:", analysis.get('material_subcategory', 'N/A')],
-            ["Product:", analysis.get('material_product', 'N/A')],
-            ["Failure Mode:", analysis.get('failure_mode', 'N/A')]
-        ]
-        material_table = Table(material_data, colWidths=[2*inch, 4.5*inch])
-        material_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f3f4f6')),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey)
-        ]))
-        story.append(material_table)
-        story.append(Spacer(1, 0.2*inch))
-        
-        # Failure Description
-        story.append(Paragraph("FAILURE DESCRIPTION", heading_style))
-        story.append(Paragraph(analysis.get('failure_description', 'N/A'), normal_style))
-        story.append(Spacer(1, 0.2*inch))
-        
-        # Substrates
-        story.append(Paragraph("SUBSTRATES", heading_style))
-        substrate_data = [
-            ["Substrate A:", analysis.get('substrate_a', 'N/A')],
-            ["Substrate B:", analysis.get('substrate_b', 'N/A')]
-        ]
-        substrate_table = Table(substrate_data, colWidths=[2*inch, 4.5*inch])
-        substrate_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f3f4f6')),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey)
-        ]))
-        story.append(substrate_table)
-        story.append(Spacer(1, 0.2*inch))
-        
-        # Environmental Conditions
-        story.append(Paragraph("ENVIRONMENTAL CONDITIONS", heading_style))
-        env_data = [
-            ["Temperature Range:", analysis.get('temperature_range', 'N/A')],
-            ["Humidity:", analysis.get('humidity', 'N/A')],
-            ["Chemical Exposure:", analysis.get('chemical_exposure', 'N/A')],
-            ["Time to Failure:", analysis.get('time_to_failure', 'N/A')]
-        ]
-        env_table = Table(env_data, colWidths=[2*inch, 4.5*inch])
-        env_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f3f4f6')),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey)
-        ]))
-        story.append(env_table)
-        story.append(Spacer(1, 0.3*inch))
-        
-        # ROOT CAUSES ANALYSIS
-        story.append(Paragraph("ROOT CAUSE ANALYSIS", heading_style))
-        root_causes = analysis.get('root_causes', [])
-        
-        for i, cause in enumerate(root_causes, 1):
-            confidence = cause.get('confidence', 0) * 100
-            story.append(Paragraph(f"<b>Root Cause #{i} - {cause.get('cause', 'Unknown')} (Confidence: {confidence:.0f}%)</b>", subheading_style))
-            story.append(Paragraph(f"<b>Category:</b> {cause.get('category', 'N/A').replace('_', ' ').title()}", normal_style))
-            story.append(Spacer(1, 0.1*inch))
-            story.append(Paragraph(f"<b>Explanation:</b> {cause.get('explanation', 'N/A')}", normal_style))
-            
-            if cause.get('evidence'):
-                story.append(Spacer(1, 0.1*inch))
-                story.append(Paragraph("<b>Evidence:</b>", normal_style))
-                for evidence in cause.get('evidence', []):
-                    story.append(Paragraph(f"• {evidence}", normal_style))
-            
-            story.append(Spacer(1, 0.15*inch))
-        
-        # Contributing Factors
-        if analysis.get('contributing_factors'):
-            story.append(Paragraph("CONTRIBUTING FACTORS", heading_style))
-            for factor in analysis.get('contributing_factors', []):
-                story.append(Paragraph(f"• {factor}", normal_style))
-            story.append(Spacer(1, 0.2*inch))
-        
-        # RECOMMENDATIONS
-        story.append(Paragraph("RECOMMENDATIONS", heading_style))
-        recommendations = analysis.get('recommendations', [])
-        
-        for i, rec in enumerate(recommendations, 1):
-            priority = rec.get('priority', 'unknown').replace('_', ' ').title()
-            story.append(Paragraph(f"<b>{i}. {rec.get('title', 'Untitled')} [{priority}]</b>", subheading_style))
-            story.append(Paragraph(rec.get('description', 'N/A'), normal_style))
-            
-            if rec.get('implementation_steps'):
-                story.append(Spacer(1, 0.1*inch))
-                story.append(Paragraph("<b>Implementation Steps:</b>", normal_style))
-                for step in rec.get('implementation_steps', []):
-                    story.append(Paragraph(f"• {step}", normal_style))
-            
-            story.append(Spacer(1, 0.15*inch))
-        
-        # Prevention Plan
-        if analysis.get('prevention_plan'):
-            story.append(Paragraph("PREVENTION PLAN", heading_style))
-            story.append(Paragraph(analysis.get('prevention_plan', 'N/A'), normal_style))
-            story.append(Spacer(1, 0.2*inch))
-        
-        # Footer
-        story.append(Spacer(1, 0.5*inch))
-        footer_style = ParagraphStyle('Footer', parent=styles['Normal'], fontSize=8, textColor=colors.grey, alignment=TA_CENTER)
-        story.append(Paragraph(f"Report ID: {analysis.get('id', 'N/A')}", footer_style))
-        story.append(Paragraph("Generated by Gravix AI-Powered Materials Intelligence Platform", footer_style))
-        story.append(Paragraph("© 2026 Gravix. All rights reserved.", footer_style))
-        
-        # Build PDF
-        doc.build(story)
-        buffer.seek(0)
-        return buffer
-    
-    @staticmethod
-    def generate_spec_report(spec: Dict[str, Any]) -> BytesIO:
-        """
-        Generate PDF report for material specification.
-        
-        Args:
-            spec: Complete spec request data
-            
-        Returns:
-            BytesIO buffer containing PDF
-        """
-        buffer = BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=0.75*inch, bottomMargin=0.75*inch)
-        
-        story = []
-        styles = getSampleStyleSheet()
-        
-        # Custom styles (same as failure report)
-        title_style = ParagraphStyle('CustomTitle', parent=styles['Heading1'], fontSize=24, textColor=colors.HexColor('#1a1a1a'), spaceAfter=30, alignment=TA_CENTER)
-        heading_style = ParagraphStyle('CustomHeading', parent=styles['Heading2'], fontSize=16, textColor=colors.HexColor('#2563eb'), spaceAfter=12, spaceBefore=20)
-        subheading_style = ParagraphStyle('CustomSubheading', parent=styles['Heading3'], fontSize=14, textColor=colors.HexColor('#1e40af'), spaceAfter=10, spaceBefore=15)
-        normal_style = styles['Normal']
-        normal_style.fontSize = 10
-        normal_style.leading = 14
-        
-        # Header
-        story.append(Paragraph("GRAVIX", title_style))
-        story.append(Paragraph("Material Specification", heading_style))
-        story.append(Paragraph(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M UTC')}", normal_style))
-        story.append(Spacer(1, 0.3*inch))
-        
-        # Application Information
-        story.append(Paragraph("APPLICATION REQUIREMENTS", heading_style))
-        app_data = [
-            ["Material Category:", spec.get('material_category', 'N/A')],
-            ["Substrate A:", spec.get('substrate_a', 'N/A')],
-            ["Substrate B:", spec.get('substrate_b', 'N/A')],
-            ["Production Volume:", spec.get('production_volume', 'N/A')],
-            ["Application Method:", spec.get('application_method', 'N/A')]
-        ]
-        app_table = Table(app_data, colWidths=[2*inch, 4.5*inch])
-        app_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f3f4f6')),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey)
-        ]))
-        story.append(app_table)
-        story.append(Spacer(1, 0.3*inch))
-        
-        # Recommended Specification
-        recommended = spec.get('recommended_spec', {})
-        story.append(Paragraph("RECOMMENDED SPECIFICATION", heading_style))
-        story.append(Paragraph(f"<b>Material Type:</b> {recommended.get('material_type', 'N/A')}", normal_style))
-        story.append(Paragraph(f"<b>Chemistry:</b> {recommended.get('chemistry', 'N/A')}", normal_style))
-        story.append(Paragraph(f"<b>Subcategory:</b> {recommended.get('subcategory', 'N/A')}", normal_style))
-        story.append(Spacer(1, 0.15*inch))
-        story.append(Paragraph(f"<b>Rationale:</b> {recommended.get('rationale', 'N/A')}", normal_style))
-        story.append(Spacer(1, 0.3*inch))
-        
-        # Product Characteristics
-        chars = spec.get('product_characteristics', {})
-        story.append(Paragraph("PRODUCT CHARACTERISTICS", heading_style))
-        char_data = [
-            ["Viscosity Range:", chars.get('viscosity_range', 'N/A')],
-            ["Color:", chars.get('color', 'N/A')],
-            ["Cure Time:", chars.get('cure_time', 'N/A')],
-            ["Expected Strength:", chars.get('expected_strength', 'N/A')],
-            ["Temperature Resistance:", chars.get('temperature_resistance', 'N/A')],
-            ["Flexibility:", chars.get('flexibility', 'N/A')],
-            ["Gap Fill Capability:", chars.get('gap_fill_capability', 'N/A')]
-        ]
-        char_table = Table(char_data, colWidths=[2.5*inch, 4*inch])
-        char_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f3f4f6')),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey)
-        ]))
-        story.append(char_table)
-        story.append(Spacer(1, 0.3*inch))
-        
-        # Application Guidance
-        guidance = spec.get('application_guidance', {})
-        story.append(Paragraph("APPLICATION GUIDANCE", heading_style))
-        
-        if guidance.get('surface_preparation'):
-            story.append(Paragraph("<b>Surface Preparation:</b>", subheading_style))
-            for prep in guidance.get('surface_preparation', []):
-                story.append(Paragraph(f"• {prep}", normal_style))
-            story.append(Spacer(1, 0.15*inch))
-        
-        if guidance.get('application_tips'):
-            story.append(Paragraph("<b>Application Tips:</b>", subheading_style))
-            for tip in guidance.get('application_tips', []):
-                story.append(Paragraph(f"• {tip}", normal_style))
-            story.append(Spacer(1, 0.15*inch))
-        
-        if guidance.get('curing_notes'):
-            story.append(Paragraph("<b>Curing Notes:</b>", subheading_style))
-            for note in guidance.get('curing_notes', []):
-                story.append(Paragraph(f"• {note}", normal_style))
-            story.append(Spacer(1, 0.15*inch))
-        
-        if guidance.get('common_mistakes_to_avoid'):
-            story.append(Paragraph("<b>Common Mistakes to Avoid:</b>", subheading_style))
-            for mistake in guidance.get('common_mistakes_to_avoid', []):
-                story.append(Paragraph(f"• {mistake}", normal_style))
-            story.append(Spacer(1, 0.2*inch))
-        
-        # Warnings
-        if spec.get('warnings'):
-            story.append(Paragraph("WARNINGS & CONSIDERATIONS", heading_style))
-            for warning in spec.get('warnings', []):
-                story.append(Paragraph(f"⚠ {warning}", normal_style))
-            story.append(Spacer(1, 0.3*inch))
-        
-        # Alternatives
-        if spec.get('alternatives'):
-            story.append(Paragraph("ALTERNATIVE APPROACHES", heading_style))
-            for alt in spec.get('alternatives', []):
-                story.append(Paragraph(f"<b>{alt.get('material_type', 'N/A')} - {alt.get('chemistry', 'N/A')}</b>", subheading_style))
-                story.append(Paragraph(f"<b>When to Use:</b> {alt.get('when_to_use', 'N/A')}", normal_style))
-                story.append(Spacer(1, 0.1*inch))
-                
-                if alt.get('advantages'):
-                    story.append(Paragraph("<b>Advantages:</b>", normal_style))
-                    for adv in alt.get('advantages', []):
-                        story.append(Paragraph(f"• {adv}", normal_style))
-                
-                if alt.get('disadvantages'):
-                    story.append(Paragraph("<b>Disadvantages:</b>", normal_style))
-                    for dis in alt.get('disadvantages', []):
-                        story.append(Paragraph(f"• {dis}", normal_style))
-                
-                story.append(Spacer(1, 0.2*inch))
-        
-        # Footer
-        story.append(Spacer(1, 0.5*inch))
-        footer_style = ParagraphStyle('Footer', parent=styles['Normal'], fontSize=8, textColor=colors.grey, alignment=TA_CENTER)
-        story.append(Paragraph(f"Specification ID: {spec.get('id', 'N/A')}", footer_style))
-        story.append(Paragraph("Generated by Gravix AI-Powered Materials Intelligence Platform", footer_style))
-        story.append(Paragraph("This is a vendor-neutral specification. Consult with material suppliers for specific product recommendations.", footer_style))
-        story.append(Paragraph("© 2026 Gravix. All rights reserved.", footer_style))
-        
-        # Build PDF
-        doc.build(story)
-        buffer.seek(0)
-        return buffer
+def _generate_html_report(title: str, sections: list[dict]) -> str:
+    """Generate a simple HTML report."""
+    html = f"""<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body {{ font-family: 'Helvetica Neue', Arial, sans-serif; margin: 40px; color: #1a1a1a; }}
+  h1 {{ color: #0A1628; border-bottom: 2px solid #3B82F6; padding-bottom: 10px; }}
+  h2 {{ color: #1F2937; margin-top: 30px; }}
+  h3 {{ color: #374151; }}
+  .meta {{ color: #64748B; font-size: 12px; margin-bottom: 20px; }}
+  .section {{ margin-bottom: 24px; }}
+  .confidence {{ display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; }}
+  .high {{ background: #DCFCE7; color: #166534; }}
+  .medium {{ background: #FEF9C3; color: #854D0E; }}
+  .low {{ background: #FEE2E2; color: #991B1B; }}
+  ul {{ padding-left: 20px; }}
+  li {{ margin-bottom: 6px; }}
+  .footer {{ margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5E7EB; color: #9CA3AF; font-size: 11px; text-align: center; }}
+  .watermark {{ position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 80px; color: rgba(0,0,0,0.03); z-index: -1; }}
+</style>
+</head>
+<body>
+<h1>{title}</h1>
+<div class="meta">Generated by Gravix • {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}</div>
+"""
+    for section in sections:
+        html += f'<div class="section">'
+        if section.get("heading"):
+            html += f'<h2>{section["heading"]}</h2>'
+        if section.get("content"):
+            html += f'<p>{section["content"]}</p>'
+        if section.get("items"):
+            html += "<ul>"
+            for item in section["items"]:
+                html += f"<li>{item}</li>"
+            html += "</ul>"
+        html += "</div>"
+
+    html += '<div class="footer">© Gravix — Industrial Materials Intelligence</div>'
+    html += "</body></html>"
+    return html
 
 
-# Global instance
-pdf_generator = PDFGenerator()
+def generate_analysis_pdf(analysis: dict, is_free: bool = True) -> bytes:
+    """Generate a PDF report for a failure analysis."""
+    try:
+        from weasyprint import HTML
+    except ImportError:
+        logger.warning("WeasyPrint not available, generating placeholder PDF")
+        return _placeholder_pdf("Failure Analysis Report")
+
+    sections = []
+
+    # Summary
+    confidence = analysis.get("confidence_score", 0)
+    sections.append({
+        "heading": "Analysis Summary",
+        "content": f"Material: {analysis.get('material_category', 'N/A')} | "
+                   f"Failure Mode: {analysis.get('failure_mode', 'N/A')} | "
+                   f"Confidence: {int(confidence * 100) if confidence else 'N/A'}%",
+    })
+
+    # Root causes
+    root_causes = analysis.get("root_causes", [])
+    if root_causes:
+        sections.append({
+            "heading": "Root Causes",
+            "items": [
+                f"{rc.get('cause', 'Unknown')} ({int(rc.get('confidence', 0) * 100)}%) — {rc.get('explanation', '')}"
+                for rc in root_causes
+            ],
+        })
+
+    # Contributing factors
+    factors = analysis.get("contributing_factors", [])
+    if factors:
+        sections.append({"heading": "Contributing Factors", "items": factors})
+
+    # Recommendations
+    recs = analysis.get("recommendations", [])
+    if recs:
+        sections.append({
+            "heading": "Recommendations",
+            "items": [
+                f"[{r.get('priority', 'medium')}] {r.get('title', '')}: {r.get('description', '')}"
+                for r in recs
+            ],
+        })
+
+    # Prevention plan
+    plan = analysis.get("prevention_plan")
+    if plan:
+        sections.append({"heading": "Prevention Plan", "content": plan})
+
+    title = "Failure Analysis Report"
+    if is_free:
+        title += " (Free Tier)"
+
+    html = _generate_html_report(title, sections)
+
+    pdf_bytes = HTML(string=html).write_pdf()
+    return pdf_bytes
+
+
+def generate_spec_pdf(spec: dict, is_free: bool = True) -> bytes:
+    """Generate a PDF report for a material spec."""
+    try:
+        from weasyprint import HTML
+    except ImportError:
+        logger.warning("WeasyPrint not available, generating placeholder PDF")
+        return _placeholder_pdf("Material Specification Report")
+
+    sections = []
+
+    # Summary
+    rec_spec = spec.get("recommended_spec", {})
+    sections.append({
+        "heading": "Recommended Specification",
+        "content": f"{rec_spec.get('title', 'N/A')} — {rec_spec.get('chemistry', 'N/A')}",
+    })
+
+    if rec_spec.get("rationale"):
+        sections.append({"heading": "Rationale", "content": rec_spec["rationale"]})
+
+    # Product characteristics
+    chars = spec.get("product_characteristics", {})
+    if chars:
+        sections.append({
+            "heading": "Key Properties",
+            "items": [f"{k}: {v}" for k, v in chars.items() if v],
+        })
+
+    # Application guidance
+    guidance = spec.get("application_guidance", {})
+    if guidance.get("surface_prep"):
+        sections.append({"heading": "Surface Preparation", "items": guidance["surface_prep"]})
+    if guidance.get("application_tips"):
+        sections.append({"heading": "Application Tips", "items": guidance["application_tips"]})
+
+    # Warnings
+    warnings = spec.get("warnings", [])
+    if warnings:
+        sections.append({"heading": "⚠ Warnings", "items": warnings})
+
+    # Alternatives
+    alts = spec.get("alternatives", [])
+    if alts:
+        sections.append({
+            "heading": "Alternative Materials",
+            "items": [
+                f"{a.get('name', 'N/A')}: Pros: {', '.join(a.get('pros', []))} | Cons: {', '.join(a.get('cons', []))}"
+                for a in alts
+            ],
+        })
+
+    title = "Material Specification Report"
+    if is_free:
+        title += " (Free Tier)"
+
+    html = _generate_html_report(title, sections)
+
+    pdf_bytes = HTML(string=html).write_pdf()
+    return pdf_bytes
+
+
+def _placeholder_pdf(title: str) -> bytes:
+    """Generate a minimal placeholder PDF when WeasyPrint is unavailable."""
+    # Minimal valid PDF
+    content = f"""%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 44 >>
+stream
+BT /F1 24 Tf 72 720 Td ({title}) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000266 00000 n 
+0000000360 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+441
+%%EOF"""
+    return content.encode("latin-1")

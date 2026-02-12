@@ -1,15 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Search, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { ConfidenceBadge } from '../shared/ConfidenceBadge';
+import { FeedbackPrompt } from '../results/FeedbackPrompt';
 import { Button } from '@/components/ui/button';
-import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
 interface FailureResultsProps {
   status: 'idle' | 'loading' | 'success' | 'error';
   data?: FailureResultData | null;
+  analysisId?: string | null;
+  errorMessage?: string | null;
   onNewAnalysis?: () => void;
   onRunSpecAnalysis?: () => void;
   isFree?: boolean;
@@ -38,10 +40,9 @@ interface FailureResultData {
   confidenceScore: number;
 }
 
-export function FailureResults({ status, data, onNewAnalysis, onRunSpecAnalysis, isFree: _isFree = true, analysisId }: FailureResultsProps & { analysisId?: string }) {
+export function FailureResults({ status, data, analysisId, errorMessage, onNewAnalysis, onRunSpecAnalysis, isFree: _isFree = true }: FailureResultsProps) {
   const [loadingPhase, setLoadingPhase] = useState(1);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [feedbackExpanded, setFeedbackExpanded] = useState(false);
 
   useEffect(() => {
     if (status !== 'loading') { setLoadingPhase(1); setElapsedTime(0); return; }
@@ -83,10 +84,22 @@ export function FailureResults({ status, data, onNewAnalysis, onRunSpecAnalysis,
   if (status === 'error') {
     return (
       <div className="h-full flex flex-col items-center justify-center text-center px-8">
-        <div className="w-12 h-12 rounded-full bg-danger/20 flex items-center justify-center mb-4"><span className="text-2xl">⚠️</span></div>
-        <h2 className="text-lg font-semibold text-white mb-2">Analysis Failed</h2>
-        <p className="text-sm text-[#94A3B8] mb-6">Something went wrong. Please try again.</p>
-        {onNewAnalysis && <Button onClick={onNewAnalysis} variant="outline">Try Again</Button>}
+        <div className="w-full max-w-md space-y-4">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg">⚠️</span>
+              <h2 className="text-base font-semibold text-red-400">Analysis Failed</h2>
+            </div>
+            <p className="text-sm text-[#94A3B8]">
+              {errorMessage || 'Something went wrong. Please try again.'}
+            </p>
+          </div>
+          {onNewAnalysis && (
+            <Button onClick={onNewAnalysis} variant="outline" className="w-full">
+              Try Again
+            </Button>
+          )}
+        </div>
       </div>
     );
   }
@@ -206,36 +219,12 @@ export function FailureResults({ status, data, onNewAnalysis, onRunSpecAnalysis,
         )}
 
         {/* 8. Feedback prompt */}
-        <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-4">
-          {!feedbackExpanded ? (
-            <button onClick={() => setFeedbackExpanded(true)} className="w-full text-center text-sm text-[#94A3B8] hover:text-white transition-colors">
-              Was this analysis helpful?
-            </button>
-          ) : (
-            <div className="text-center space-y-3">
-              <p className="text-sm text-white">Was this analysis helpful?</p>
-              <div className="flex gap-4 justify-center">
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-success/10 text-success hover:bg-success/20 transition-colors">
-                  <ThumbsUp className="w-4 h-4" /> Yes
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-danger/10 text-danger hover:bg-danger/20 transition-colors">
-                  <ThumbsDown className="w-4 h-4" /> No
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+        {analysisId && <FeedbackPrompt analysisId={analysisId} />}
 
         {/* 9. Action bar */}
         <div className="fixed bottom-0 left-0 right-0 md:left-[45%] bg-[#0A1628] border-t border-[#1F2937] p-4 z-50">
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button
-              variant="outline"
-              className="flex-1 min-h-[44px]"
-              onClick={() => {
-                if (analysisId) window.open(api.getAnalysisPdfUrl(analysisId), '_blank');
-              }}
-            >Export PDF</Button>
+            <Button variant="outline" className="flex-1 min-h-[44px]">Export PDF</Button>
             <Button variant="outline" className="flex-1 min-h-[44px]">Request Expert Review</Button>
             {onRunSpecAnalysis && (
               <Button onClick={onRunSpecAnalysis} variant="outline" className="flex-1 min-h-[44px]">Run Spec Analysis →</Button>

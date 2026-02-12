@@ -1,1 +1,1 @@
-"""Business logic services for Gravix API."""
+"""Backend services."""

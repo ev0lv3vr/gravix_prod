@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
-import { api, isApiConfigured } from '@/lib/api';
 
-// Mock data (fallback)
+// Mock data
 const CASES = [
   { id: 'ca-debonding-aluminum-abs', title: 'Cyanoacrylate Debonding on Aluminum-ABS Assembly', summary: 'Production failure where CA bonds failed within 2 weeks. Root cause: surface contamination combined with thermal cycling.', material: 'Cyanoacrylate', failureMode: 'Adhesive Failure', industry: 'Automotive', tags: ['CA', 'aluminum', 'ABS', 'thermal cycling'] },
   { id: 'epoxy-cracking-electronics', title: 'Epoxy Cracking in High-Temperature Electronics', summary: 'Structural epoxy developed cracks after thermal cycling. CTE mismatch between ceramic substrate and rigid epoxy caused stress fractures.', material: 'Epoxy', failureMode: 'Cohesive Failure', industry: 'Electronics', tags: ['epoxy', 'CTE', 'electronics'] },
@@ -19,50 +18,13 @@ const MATERIALS = ['All Materials', 'Cyanoacrylate', 'Epoxy', 'Polyurethane', 'S
 const FAILURE_MODES = ['All Failure Modes', 'Adhesive Failure', 'Cohesive Failure', 'Mixed Mode', 'Substrate Failure'];
 const INDUSTRIES = ['All Industries', 'Automotive', 'Aerospace', 'Electronics', 'Medical Device', 'Construction'];
 
-interface CaseItem {
-  id: string;
-  title: string;
-  summary: string;
-  material: string;
-  failureMode: string;
-  industry: string;
-  tags: string[];
-}
-
 export default function CasesPage() {
   const [materialFilter, setMaterialFilter] = useState('All Materials');
   const [failureModeFilter, setFailureModeFilter] = useState('All Failure Modes');
   const [industryFilter, setIndustryFilter] = useState('All Industries');
   const [searchQuery, setSearchQuery] = useState('');
-  const [cases, setCases] = useState<CaseItem[]>(CASES);
 
-  useEffect(() => {
-    if (!isApiConfigured()) return;
-    api
-      .listCases()
-      .then((data) => {
-        // Handle paginated response
-        const items = Array.isArray(data) ? data : ((data as unknown as Record<string, unknown>)?.items as unknown[]) || [];
-        if ((items as Record<string, unknown>[]).length > 0) {
-          setCases(
-            (items as Record<string, unknown>[]).map((c) => ({
-              id: (c.slug as string) || (c.id as string),
-              title: (c.title as string) || '',
-              summary: (c.summary as string) || '',
-              material: (c.material_category as string) || (c.material_subcategory as string) || '',
-              failureMode: (c.failure_mode as string) || '',
-              industry: (c.industry as string) || '',
-              tags: (c.tags as string[]) || [],
-            }))
-          );
-        }
-      })
-      .catch(() => {
-        // Keep mock data as fallback
-      });
-  }, []);
-
-  const filtered = cases.filter(c => {
+  const filtered = CASES.filter(c => {
     if (materialFilter !== 'All Materials' && c.material !== materialFilter) return false;
     if (failureModeFilter !== 'All Failure Modes' && c.failureMode !== failureModeFilter) return false;
     if (industryFilter !== 'All Industries' && c.industry !== industryFilter) return false;

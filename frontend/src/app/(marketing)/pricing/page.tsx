@@ -7,7 +7,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Check, ChevronDown, ChevronUp, Star } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
 
 export default function PricingPage() {
   const { session } = useAuth();
@@ -24,7 +24,7 @@ export default function PricingPage() {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
-          tier: 'pro',
+          price_id: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || undefined,
           success_url: `${window.location.origin}/dashboard?checkout=success`,
           cancel_url: `${window.location.origin}/pricing?checkout=cancel`,
         }),
@@ -80,7 +80,7 @@ export default function PricingPage() {
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Pro</h3>
             <div className="mb-6">
-              <span className="text-4xl font-bold text-white">$49</span>
+              <span className="text-4xl font-bold text-white">$79</span>
               <span className="text-sm text-[#64748B] ml-1">/mo</span>
             </div>
             <p className="text-sm text-[#94A3B8] mb-6">Unlimited analyses</p>
@@ -105,7 +105,7 @@ export default function PricingPage() {
           <div className="bg-brand-800 border border-[#1F2937] rounded-xl p-8">
             <h3 className="text-xl font-bold text-white mb-2">Team</h3>
             <div className="mb-6">
-              <span className="text-4xl font-bold text-white">$149</span>
+              <span className="text-4xl font-bold text-white">$199</span>
               <span className="text-sm text-[#64748B] ml-1">/mo</span>
             </div>
             <p className="text-sm text-[#94A3B8] mb-6">Unlimited analyses</p>
@@ -116,7 +116,7 @@ export default function PricingPage() {
               <PricingFeature included text="API access" />
               <PricingFeature included text="Branded reports" />
             </ul>
-            <a href="mailto:sales@gravix.ai" className="block w-full text-center border border-[#374151] text-[#94A3B8] hover:text-white hover:border-accent-500 py-3 rounded-lg text-sm font-medium transition-colors">
+            <a href="mailto:sales@gravix.com" className="block w-full text-center border border-[#374151] text-[#94A3B8] hover:text-white hover:border-accent-500 py-3 rounded-lg text-sm font-medium transition-colors">
               Contact Sales
             </a>
           </div>
@@ -126,7 +126,7 @@ export default function PricingPage() {
         <div className="text-center mb-20">
           <p className="text-base text-[#94A3B8]">
             Need unlimited access, SSO, or dedicated support?{' '}
-            <a href="mailto:enterprise@gravix.ai" className="text-accent-500 hover:underline">Contact us for Enterprise pricing →</a>
+            <a href="mailto:enterprise@gravix.com" className="text-accent-500 hover:underline">Contact us for Enterprise pricing →</a>
           </p>
         </div>
 

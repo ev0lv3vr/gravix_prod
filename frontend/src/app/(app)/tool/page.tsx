@@ -8,150 +8,124 @@ import { UpgradeModal } from '@/components/shared/UpgradeModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking, incrementUsage } from '@/hooks/useUsageTracking';
 import { api } from '@/lib/api';
-import { generateMockSpecResult, simulateLatency } from '@/lib/demo';
 
 type Status = 'idle' | 'loading' | 'complete' | 'error';
 
 export default function SpecToolPage() {
   const [status, setStatus] = useState<Status>('idle');
   const [resultData, setResultData] = useState<SpecResultData | null>(null);
+  const [specId, setSpecId] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   const { user } = useAuth();
   const { isExhausted } = useUsageTracking();
 
   const handleSubmit = async (formData: SpecFormData) => {
-    if (isExhausted) {
-      setUpgradeModalOpen(true);
-      return;
-    }
+    if (isExhausted) { setUpgradeModalOpen(true); return; }
     setStatus('loading');
 
     try {
-      // Attempt real API call first
+      // Map frontend form data to backend SpecRequestCreate schema
+      const envConditions: string[] = formData.environment || [];
       const requestData: Record<string, unknown> = {
         material_category: 'adhesive',
         substrate_a: formData.substrateA,
         substrate_b: formData.substrateB,
         bond_requirements: {
-          load_type: formData.loadType,
+          shear_strength: formData.loadType === 'structural' ? 'High (>3000 psi)' :
+                          formData.loadType === 'semi-structural' ? 'Medium (1000-3000 psi)' :
+                          formData.loadType === 'non-structural' ? 'Low (<1000 psi)' : undefined,
           gap_fill: formData.gapFill ? `${formData.gapFill}mm` : undefined,
+          flexibility_required: formData.loadType === 'sealing',
+          other_requirements: formData.loadType || undefined,
         },
         environment: {
           temp_min: `${formData.tempMin}°C`,
           temp_max: `${formData.tempMax}°C`,
-          conditions: formData.environment,
+          chemical_exposure: envConditions.filter(e => e.includes('Chemical')).length > 0
+            ? envConditions.filter(e => e.includes('Chemical'))
+            : undefined,
+          uv_exposure: envConditions.includes('UV/outdoor'),
+          outdoor_use: envConditions.includes('UV/outdoor'),
+          humidity: envConditions.includes('High humidity') ? 'High' : undefined,
         },
-        cure_constraints: formData.cureConstraint || undefined,
+        cure_constraints: {
+          preferred_method: formData.cureConstraint === 'room_temp' ? 'Room temperature' :
+                           formData.cureConstraint === 'heat_available' ? 'Heat cure' :
+                           formData.cureConstraint === 'uv_available' ? 'UV cure' :
+                           formData.cureConstraint === 'fast_fixture' ? 'Fast fixture (<5 min)' : undefined,
+          heat_available: formData.cureConstraint === 'heat_available',
+          uv_available: formData.cureConstraint === 'uv_available',
+        },
         additional_requirements: formData.additionalContext || undefined,
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response: any = await api.createSpecRequest(requestData);
+      const response = await api.createSpecRequest(requestData);
 
-      // Map API response (snake_case) to display format (camelCase)
-      // Backend returns recommended_spec, product_characteristics, etc.
-      const rec = response.recommended_spec || response.recommendedSpec;
-      const chars = response.product_characteristics || response.productCharacteristics;
-      const guidance = response.application_guidance || response.applicationGuidance;
-      const alts = response.alternatives || [];
+      // Capture the record ID for feedback
+      const recordId = (response as any).id;
+      if (recordId) setSpecId(recordId);
+
+      // Map backend snake_case response to frontend SpecResultData
+      const recSpec = response.recommendedSpec || (response as any).recommended_spec || {};
+      const prodChars = response.productCharacteristics || (response as any).product_characteristics || {};
+      const appGuidance = response.applicationGuidance || (response as any).application_guidance || {};
+      const responseWarnings = response.warnings || (response as any).warnings || [];
+      const responseAlts = response.alternatives || (response as any).alternatives || [];
 
       const mapped: SpecResultData = {
         recommendedSpec: {
-          materialType: rec?.material_type || rec?.title || 'Unknown',
-          chemistry: rec?.chemistry || 'Unknown',
-          subcategory: rec?.subcategory || 'General',
-          rationale: rec?.rationale || '',
+          materialType: recSpec.title || 'Unknown',
+          chemistry: recSpec.chemistry || 'Unknown',
+          subcategory: 'General',
+          rationale: recSpec.rationale || '',
         },
         productCharacteristics: {
-          viscosityRange: chars?.viscosity_range || chars?.viscosity,
-          cureTime: chars?.cure_time || chars?.cureTime,
-          expectedStrength: chars?.expected_strength || chars?.shearStrength,
-          temperatureResistance:
-            chars?.temperature_resistance || chars?.serviceTemperature,
-          gapFillCapability: chars?.gap_fill_capability || chars?.gapFill,
+          viscosityRange: prodChars.viscosity || prodChars.viscosity_range,
+          cureTime: prodChars.cure_time || prodChars.cureTime,
+          expectedStrength: prodChars.shear_strength || prodChars.shearStrength,
+          temperatureResistance: prodChars.service_temperature || prodChars.serviceTemperature,
+          gapFillCapability: prodChars.gap_fill || prodChars.gapFill,
         },
         applicationGuidance: {
-          surfacePreparation:
-            guidance?.surface_preparation || guidance?.surfacePrep || [],
-          applicationTips:
-            guidance?.application_tips || guidance?.applicationTips || [],
-          curingNotes: guidance?.curing_notes || guidance?.curingNotes || [],
-          commonMistakesToAvoid:
-            guidance?.common_mistakes_to_avoid || guidance?.mistakesToAvoid || [],
+          surfacePreparation: appGuidance.surface_prep || appGuidance.surfacePrep || [],
+          applicationTips: appGuidance.application_tips || appGuidance.applicationTips || [],
+          curingNotes: appGuidance.curing_notes || appGuidance.curingNotes || [],
+          commonMistakesToAvoid: appGuidance.mistakes_to_avoid || appGuidance.mistakesToAvoid || [],
         },
-        warnings: response.warnings || [],
-        alternatives: alts.map(
-          (alt: Record<string, unknown>) => ({
-            materialType: (alt.material_type as string) || (alt.name as string) || '',
-            chemistry: (alt.chemistry as string) || (alt.name as string) || '',
-            advantages: (alt.advantages as string[]) || (alt.pros as string[]) || [],
-            disadvantages: (alt.disadvantages as string[]) || (alt.cons as string[]) || [],
-            whenToUse: (alt.when_to_use as string) || 'See advantages/disadvantages',
-          })
-        ),
-        confidenceScore: 0.85,
+        warnings: responseWarnings,
+        alternatives: (responseAlts).map((alt: any) => ({
+          materialType: alt.name || '',
+          chemistry: alt.name || '',
+          advantages: alt.pros || [],
+          disadvantages: alt.cons || [],
+          whenToUse: 'See advantages/disadvantages',
+        })),
+        confidenceScore: (response as any).confidence_score || (response as any).confidenceScore || 0.85,
       };
 
       setResultData(mapped);
       setStatus('complete');
       incrementUsage(user);
-    } catch {
-      // API unreachable or errored → fall back to demo mode
-      try {
-        await simulateLatency();
-        const demoResult = generateMockSpecResult({
-          substrateA: formData.substrateA,
-          substrateB: formData.substrateB,
-          loadType: formData.loadType,
-          environment: formData.environment,
-          tempMin: formData.tempMin,
-          tempMax: formData.tempMax,
-        });
-        setResultData(demoResult);
-        setStatus('complete');
-        incrementUsage(user);
-      } catch (demoErr) {
-        console.error('Demo fallback error:', demoErr);
-        setStatus('error');
-      }
+    } catch (err) {
+      console.error('Spec generation error:', err);
+      setErrorMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      setStatus('error');
     }
   };
 
-  const handleNewAnalysis = () => {
-    setStatus('idle');
-    setResultData(null);
-  };
+  const handleNewAnalysis = () => { setStatus('idle'); setResultData(null); setSpecId(null); setErrorMessage(null); };
 
-  const resultsStatus =
-    status === 'idle'
-      ? 'idle'
-      : status === 'complete'
-        ? 'success'
-        : status === 'error'
-          ? 'error'
-          : 'loading';
+  const resultsStatus = status === 'idle' ? 'idle' : status === 'complete' ? 'success' : status === 'error' ? 'error' : 'loading';
 
   return (
     <>
       <ToolLayout
-        formPanel={
-          <SpecForm onSubmit={handleSubmit} isLoading={status === 'loading'} />
-        }
-        resultsPanel={
-          <SpecResults
-            status={resultsStatus}
-            data={resultData}
-            onNewAnalysis={handleNewAnalysis}
-            isFree={!user}
-          />
-        }
+        formPanel={<SpecForm onSubmit={handleSubmit} isLoading={status === 'loading'} />}
+        resultsPanel={<SpecResults status={resultsStatus} data={resultData} specId={specId} errorMessage={errorMessage} onNewAnalysis={handleNewAnalysis} isFree={!user} />}
       />
-      <UpgradeModal
-        open={upgradeModalOpen}
-        onOpenChange={setUpgradeModalOpen}
-        onUpgrade={() => (window.location.href = '/pricing')}
-      />
+      <UpgradeModal open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen} onUpgrade={() => window.location.href = '/pricing'} />
     </>
   );
 }

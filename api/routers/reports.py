@@ -1,105 +1,82 @@
-"""
-PDF report generation endpoints.
-"""
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.responses import StreamingResponse
-from supabase import Client
-from typing import Dict, Any
-from database import get_db
-from dependencies import get_current_user
-from services.pdf_generator import pdf_generator
+"""PDF report generation router."""
 
+import logging
+
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
+
+from dependencies import get_current_user
+from database import get_supabase
+from services.pdf_generator import generate_analysis_pdf, generate_spec_pdf
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
 
 @router.get("/analysis/{analysis_id}/pdf")
-@router.get("/analysis/{analysis_id}")
-async def generate_analysis_report(
+async def download_analysis_pdf(
     analysis_id: str,
-    current_user: Dict[str, Any] = Depends(get_current_user),
-    db: Client = Depends(get_db)
+    user: dict = Depends(get_current_user),
 ):
-    """
-    Generate PDF report for failure analysis.
-    
-    Returns PDF file as downloadable attachment.
-    """
-    user_id = current_user['id']
-    
-    # Fetch analysis
-    result = db.table("failure_analyses").select("*").eq("id", analysis_id).eq("user_id", user_id).execute()
-    
-    if not result.data or len(result.data) == 0:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Analysis not found"
-        )
-    
+    """Generate and download a PDF report for a failure analysis."""
+    db = get_supabase()
+    result = (
+        db.table("failure_analyses")
+        .select("*")
+        .eq("id", analysis_id)
+        .eq("user_id", user["id"])
+        .execute()
+    )
+
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+
     analysis = result.data[0]
-    
-    # Generate PDF
-    try:
-        pdf_buffer = pdf_generator.generate_failure_analysis_report(analysis)
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to generate PDF: {str(e)}"
-        )
-    
-    # Return as downloadable file
-    filename = f"gravix_failure_analysis_{analysis_id[:8]}.pdf"
-    
-    return StreamingResponse(
-        pdf_buffer,
+    if analysis.get("status") != "completed":
+        raise HTTPException(status_code=400, detail="Analysis is not yet completed")
+
+    is_free = user.get("plan", "free") == "free"
+    pdf_bytes = generate_analysis_pdf(analysis, is_free=is_free)
+
+    return Response(
+        content=pdf_bytes,
         media_type="application/pdf",
         headers={
-            "Content-Disposition": f"attachment; filename={filename}"
-        }
+            "Content-Disposition": f'attachment; filename="gravix-analysis-{analysis_id[:8]}.pdf"'
+        },
     )
 
 
 @router.get("/spec/{spec_id}/pdf")
-@router.get("/spec/{spec_id}")
-async def generate_spec_report(
+async def download_spec_pdf(
     spec_id: str,
-    current_user: Dict[str, Any] = Depends(get_current_user),
-    db: Client = Depends(get_db)
+    user: dict = Depends(get_current_user),
 ):
-    """
-    Generate PDF report for material specification.
-    
-    Returns PDF file as downloadable attachment.
-    """
-    user_id = current_user['id']
-    
-    # Fetch spec
-    result = db.table("spec_requests").select("*").eq("id", spec_id).eq("user_id", user_id).execute()
-    
-    if not result.data or len(result.data) == 0:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Specification not found"
-        )
-    
+    """Generate and download a PDF report for a spec request."""
+    db = get_supabase()
+    result = (
+        db.table("spec_requests")
+        .select("*")
+        .eq("id", spec_id)
+        .eq("user_id", user["id"])
+        .execute()
+    )
+
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Spec request not found")
+
     spec = result.data[0]
-    
-    # Generate PDF
-    try:
-        pdf_buffer = pdf_generator.generate_spec_report(spec)
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to generate PDF: {str(e)}"
-        )
-    
-    # Return as downloadable file
-    filename = f"gravix_material_spec_{spec_id[:8]}.pdf"
-    
-    return StreamingResponse(
-        pdf_buffer,
+    if spec.get("status") != "completed":
+        raise HTTPException(status_code=400, detail="Spec is not yet completed")
+
+    is_free = user.get("plan", "free") == "free"
+    pdf_bytes = generate_spec_pdf(spec, is_free=is_free)
+
+    return Response(
+        content=pdf_bytes,
         media_type="application/pdf",
         headers={
-            "Content-Disposition": f"attachment; filename={filename}"
-        }
+            "Content-Disposition": f'attachment; filename="gravix-spec-{spec_id[:8]}.pdf"'
+        },
     )

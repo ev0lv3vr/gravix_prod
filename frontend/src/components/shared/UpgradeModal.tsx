@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -9,6 +10,9 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, X } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUsageTracking } from '@/hooks/useUsageTracking';
+import { api } from '@/lib/api';
 
 interface UpgradeModalProps {
   open: boolean;
@@ -17,15 +21,57 @@ interface UpgradeModalProps {
 }
 
 export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProps) {
+  const { session } = useAuth();
+  const { used, limit } = useUsageTracking();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleUpgrade = async () => {
+    // If logged in, trigger checkout directly
+    if (session?.access_token) {
+      setIsLoading(true);
+      try {
+        const data = await api.createCheckoutSession({
+          price_id: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || undefined,
+          success_url: `${window.location.origin}/dashboard?checkout=success`,
+          cancel_url: `${window.location.origin}/dashboard?checkout=cancel`,
+        });
+        if (data.checkout_url) {
+          window.location.href = data.checkout_url;
+          return;
+        }
+      } catch {
+        // Fall through to onUpgrade (navigate to /pricing)
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    // Fallback: not logged in or checkout failed
+    onUpgrade();
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[560px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl">You&apos;ve used your 5 free analyses this month</DialogTitle>
+          <DialogTitle className="text-2xl">You&apos;ve reached your free limit</DialogTitle>
           <DialogDescription>
-            Upgrade to Pro to unlock unlimited analyses, full executive summaries, and more.
+            You&apos;ve used {used}/{limit} free analyses this month. Upgrade to Pro to unlock unlimited analyses, full executive summaries, and more.
           </DialogDescription>
         </DialogHeader>
+
+        {/* Usage indicator */}
+        <div className="my-2">
+          <div className="w-full h-2 bg-[#1F2937] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-accent-500 rounded-full transition-all"
+              style={{ width: '100%' }}
+            />
+          </div>
+          <p className="text-xs text-[#94A3B8] mt-1.5 text-center font-mono">
+            {used} / {limit} analyses used
+          </p>
+        </div>
 
         {/* Comparison Table */}
         <div className="grid grid-cols-2 gap-4 my-6">
@@ -87,11 +133,17 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
 
         {/* Actions */}
         <div className="flex flex-col gap-3">
-          <Button variant="primary" size="lg" onClick={onUpgrade} className="w-full">
-            Start Pro — $49/mo
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={handleUpgrade}
+            disabled={isLoading}
+            className="w-full"
+          >
+            {isLoading ? 'Loading…' : 'Start Pro — $49/mo'}
           </Button>
           <Button variant="ghost" size="md" onClick={() => onOpenChange(false)} className="w-full">
-            I'll wait
+            I&apos;ll wait
           </Button>
         </div>
       </DialogContent>

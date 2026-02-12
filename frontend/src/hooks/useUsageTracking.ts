@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { api, isApiConfigured } from '@/lib/api';
 
 interface UsageData {
   used: number;
@@ -16,42 +15,52 @@ const FREE_TIER_LIMIT = 5;
 export function useUsageTracking(): UsageData {
   const { user } = useAuth();
   const [used, setUsed] = useState(0);
-  const [limit, setLimit] = useState(FREE_TIER_LIMIT);
 
   useEffect(() => {
-    if (user && isApiConfigured()) {
-      // Authenticated user: fetch real usage from the API
-      api
-        .getUserUsage()
-        .then((usage) => {
-          const totalUsed = (usage.analyses_used ?? 0) + (usage.specs_used ?? 0);
-          const totalLimit = (usage.analyses_limit ?? FREE_TIER_LIMIT) + (usage.specs_limit ?? FREE_TIER_LIMIT);
-          setUsed(totalUsed);
-          setLimit(totalLimit);
-        })
-        .catch(() => {
-          // API failed — fall back to localStorage
-          loadLocalStorage(user.id);
-        });
-    } else if (user) {
-      // Authenticated but no API — use user-scoped localStorage
-      loadLocalStorage(user.id);
-    } else {
+    if (!user) {
       // Anonymous user: use localStorage
-      loadLocalStorage(null);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
-  const loadLocalStorage = useCallback(
-    (userId: string | null) => {
-      const storageKey = userId ? `gravix_usage_${userId}` : 'gravix_usage';
+      const storageKey = 'gravix_usage';
       const stored = localStorage.getItem(storageKey);
-      const currentMonth = new Date().toISOString().slice(0, 7);
-
+      
       if (stored) {
         try {
           const data = JSON.parse(stored);
+          const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+          
+          if (data.month === currentMonth) {
+            setUsed(data.count || 0);
+          } else {
+            // New month, reset
+            localStorage.setItem(
+              storageKey,
+              JSON.stringify({ month: currentMonth, count: 0 })
+            );
+            setUsed(0);
+          }
+        } catch {
+          setUsed(0);
+        }
+      } else {
+        // Initialize
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({ month: currentMonth, count: 0 })
+        );
+        setUsed(0);
+      }
+    } else {
+      // Authenticated user: fetch from Supabase
+      // TODO: Implement Supabase usage tracking
+      // For now, use localStorage as fallback
+      const storageKey = `gravix_usage_${user.id}`;
+      const stored = localStorage.getItem(storageKey);
+      
+      if (stored) {
+        try {
+          const data = JSON.parse(stored);
+          const currentMonth = new Date().toISOString().slice(0, 7);
+          
           if (data.month === currentMonth) {
             setUsed(data.count || 0);
           } else {
@@ -65,23 +74,22 @@ export function useUsageTracking(): UsageData {
           setUsed(0);
         }
       } else {
+        const currentMonth = new Date().toISOString().slice(0, 7);
         localStorage.setItem(
           storageKey,
           JSON.stringify({ month: currentMonth, count: 0 })
         );
         setUsed(0);
       }
-      setLimit(FREE_TIER_LIMIT); // free tier: 5 analyses/month
-    },
-    []
-  );
+    }
+  }, [user]);
 
-  const remaining = Math.max(0, limit - used);
-  const isExhausted = used >= limit;
+  const remaining = Math.max(0, FREE_TIER_LIMIT - used);
+  const isExhausted = used >= FREE_TIER_LIMIT;
 
   return {
     used,
-    limit,
+    limit: FREE_TIER_LIMIT,
     remaining,
     isExhausted,
   };
@@ -101,6 +109,7 @@ export function incrementUsage(user: { id: string } | null): void {
           JSON.stringify({ month: currentMonth, count: (data.count || 0) + 1 })
         );
       } else {
+        // New month
         localStorage.setItem(
           storageKey,
           JSON.stringify({ month: currentMonth, count: 1 })

@@ -1,244 +1,127 @@
-"""
-Failure analysis endpoints.
-"""
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from supabase import Client
-from typing import Dict, Any, List, Optional
-from database import get_db
+"""Failure analysis CRUD router."""
+
+import logging
+import uuid
+from datetime import datetime, timezone
+
+from fastapi import APIRouter, Depends, HTTPException, status
+
 from dependencies import get_current_user
+from database import get_supabase
 from schemas.analyze import (
     FailureAnalysisCreate,
     FailureAnalysisResponse,
     FailureAnalysisListItem,
-    RootCause,
-    Recommendation
 )
-from schemas.common import PaginatedResponse
-from services.ai_engine import ai_engine
-from services.usage_service import UsageService
-from datetime import datetime
-import time
+from services.ai_engine import analyze_failure
+from services.usage_service import can_use_analysis, increment_analysis_usage
+from utils.normalizer import normalize_substrate
+from utils.classifier import classify_root_cause_category
+
+logger = logging.getLogger(__name__)
+
+router = APIRouter(prefix="/analyze", tags=["analysis"])
 
 
-router = APIRouter(prefix="/analyze", tags=["analyze"])
-
-
-@router.post("", response_model=FailureAnalysisResponse, status_code=status.HTTP_201_CREATED)
-async def create_failure_analysis(
-    analysis_input: FailureAnalysisCreate,
-    current_user: Dict[str, Any] = Depends(get_current_user),
-    db: Client = Depends(get_db)
+@router.post("", response_model=FailureAnalysisResponse)
+async def create_analysis(
+    data: FailureAnalysisCreate,
+    user: dict = Depends(get_current_user),
 ):
-    """
-    Create new failure analysis.
-    
-    Checks usage limits, calls AI engine, stores results in database.
-    """
-    user_id = current_user['id']
-    
-    # Check and increment usage
-    await UsageService.check_and_increment_usage(db, user_id, 'analyses')
-    
-    # Prepare analysis data for AI engine
-    analysis_data = analysis_input.model_dump()
-    
-    # Call AI engine
-    start_time = time.time()
-    
-    try:
-        ai_result = await ai_engine.analyze_failure(analysis_data)
-    except Exception as e:
+    """Create a new failure analysis."""
+    # Check usage limits
+    if not can_use_analysis(user):
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"AI analysis failed: {str(e)}"
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Monthly analysis limit reached. Upgrade your plan for unlimited analyses.",
         )
-    
-    processing_time_ms = int((time.time() - start_time) * 1000)
-    
-    # Extract root causes from AI response
-    root_causes_data = ai_result.get('root_causes', [])
-    contributing_factors = ai_result.get('contributing_factors', [])
-    recommendations_data = ai_result.get('recommendations', [])
-    prevention_plan = ai_result.get('prevention_plan', '')
-    confidence_score = ai_result.get('confidence_score', 0.5)
-    
-    # Merge additional_context into additional_notes if provided
-    additional_notes = analysis_input.additional_notes or ''
-    if analysis_input.additional_context:
-        additional_notes = f"{additional_notes}\n{analysis_input.additional_context}".strip()
-    
-    # Store in database
-    db_record = {
-        "user_id": user_id,
-        "material_category": analysis_input.material_category,
-        "material_subcategory": analysis_input.material_subcategory,
-        "material_product": analysis_input.material_product,
-        "failure_mode": analysis_input.failure_mode,
-        "failure_description": analysis_input.failure_description,
-        "substrate_a": analysis_input.substrate_a,
-        "substrate_b": analysis_input.substrate_b,
-        "temperature_range": analysis_input.temperature_range,
-        "humidity": analysis_input.humidity,
-        "chemical_exposure": analysis_input.chemical_exposure,
-        "time_to_failure": analysis_input.time_to_failure,
-        "application_method": analysis_input.application_method,
-        "surface_preparation": analysis_input.surface_preparation,
-        "cure_conditions": analysis_input.cure_conditions,
-        "additional_notes": additional_notes or None,
-        "test_results": analysis_input.test_results,
-        "analysis_result": ai_result,
-        "root_causes": root_causes_data,
-        "contributing_factors": contributing_factors,
-        "recommendations": recommendations_data,
-        "prevention_plan": prevention_plan,
-        "confidence_score": confidence_score,
-        "status": "completed",
-        "ai_model_version": ai_engine.model,
-        "processing_time_ms": processing_time_ms
+
+    db = get_supabase()
+    analysis_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+
+    payload = data.model_dump(exclude_none=True)
+
+    # Create record
+    record = {
+        "id": analysis_id,
+        "user_id": user["id"],
+        "status": "processing",
+        "created_at": now,
+        "updated_at": now,
+        **payload,
+        # Structured fields populated on insert (Sprint 1)
+        "substrate_a_normalized": normalize_substrate(payload.get("substrate_a")),
+        "substrate_b_normalized": normalize_substrate(payload.get("substrate_b")),
     }
-    
-    result = db.table("failure_analyses").insert(db_record).execute()
-    
-    if not result.data or len(result.data) == 0:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to save analysis to database"
-        )
-    
-    saved_record = result.data[0]
-    
-    # Parse root causes for response
-    root_causes = [RootCause(**rc) for rc in root_causes_data]
-    recommendations = [Recommendation(**rec) for rec in recommendations_data]
-    
-    return FailureAnalysisResponse(
-        id=saved_record['id'],
-        user_id=saved_record['user_id'],
-        material_category=saved_record['material_category'],
-        material_subcategory=saved_record.get('material_subcategory'),
-        material_product=saved_record.get('material_product'),
-        failure_mode=saved_record['failure_mode'],
-        failure_description=saved_record['failure_description'],
-        substrate_a=saved_record.get('substrate_a'),
-        substrate_b=saved_record.get('substrate_b'),
-        temperature_range=saved_record.get('temperature_range'),
-        humidity=saved_record.get('humidity'),
-        chemical_exposure=saved_record.get('chemical_exposure'),
-        time_to_failure=saved_record.get('time_to_failure'),
-        application_method=saved_record.get('application_method'),
-        surface_preparation=saved_record.get('surface_preparation'),
-        cure_conditions=saved_record.get('cure_conditions'),
-        additional_notes=saved_record.get('additional_notes'),
-        test_results=saved_record.get('test_results'),
-        root_causes=root_causes,
-        contributing_factors=contributing_factors,
-        recommendations=recommendations,
-        prevention_plan=prevention_plan,
-        similar_cases=saved_record.get('similar_cases', []),
-        confidence_score=confidence_score,
-        status=saved_record['status'],
-        ai_model_version=saved_record.get('ai_model_version'),
-        processing_time_ms=saved_record.get('processing_time_ms'),
-        created_at=datetime.fromisoformat(saved_record['created_at'].replace('Z', '+00:00')),
-        updated_at=datetime.fromisoformat(saved_record['updated_at'].replace('Z', '+00:00'))
+
+    db.table("failure_analyses").insert(record).execute()
+
+    # Run AI analysis
+    try:
+        ai_result = await analyze_failure(payload)
+
+        # Update record with results
+        root_causes = ai_result.get("root_causes", [])
+        update_data = {
+            "root_causes": root_causes,
+            "contributing_factors": ai_result.get("contributing_factors", []),
+            "recommendations": ai_result.get("recommendations", []),
+            "prevention_plan": ai_result.get("prevention_plan", ""),
+            "confidence_score": ai_result.get("confidence_score", 0.0),
+            "root_cause_category": classify_root_cause_category(root_causes),
+            "status": "completed",
+            "processing_time_ms": ai_result.get("processing_time_ms"),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }
+
+        db.table("failure_analyses").update(update_data).eq("id", analysis_id).execute()
+        record.update(update_data)
+
+        # Increment usage
+        increment_analysis_usage(user["id"])
+
+    except Exception as e:
+        logger.exception(f"Analysis failed: {e}")
+        db.table("failure_analyses").update(
+            {"status": "failed", "updated_at": datetime.now(timezone.utc).isoformat()}
+        ).eq("id", analysis_id).execute()
+        record["status"] = "failed"
+
+    return FailureAnalysisResponse(**record)
+
+
+@router.get("", response_model=list[FailureAnalysisListItem])
+async def list_analyses(user: dict = Depends(get_current_user)):
+    """List all analyses for the current user."""
+    db = get_supabase()
+    result = (
+        db.table("failure_analyses")
+        .select("id, material_category, material_subcategory, failure_mode, confidence_score, status, created_at")
+        .eq("user_id", user["id"])
+        .order("created_at", desc=True)
+        .limit(50)
+        .execute()
     )
-
-
-@router.get("", response_model=PaginatedResponse[FailureAnalysisListItem])
-async def list_failure_analyses(
-    page: int = Query(1, ge=1),
-    page_size: int = Query(20, ge=1, le=100),
-    current_user: Dict[str, Any] = Depends(get_current_user),
-    db: Client = Depends(get_db)
-):
-    """
-    List user's failure analyses.
-    
-    Returns paginated list of analyses ordered by creation date (newest first).
-    """
-    user_id = current_user['id']
-    
-    # Get total count
-    count_result = db.table("failure_analyses").select("id", count="exact").eq("user_id", user_id).execute()
-    total = count_result.count if count_result.count is not None else 0
-    
-    # Get paginated results
-    offset = (page - 1) * page_size
-    result = db.table("failure_analyses").select(
-        "id, material_category, material_subcategory, failure_mode, confidence_score, status, created_at"
-    ).eq("user_id", user_id).order("created_at", desc=True).range(offset, offset + page_size - 1).execute()
-    
-    items = [
-        FailureAnalysisListItem(
-            id=item['id'],
-            material_category=item['material_category'],
-            material_subcategory=item.get('material_subcategory'),
-            failure_mode=item['failure_mode'],
-            confidence_score=item['confidence_score'],
-            status=item['status'],
-            created_at=datetime.fromisoformat(item['created_at'].replace('Z', '+00:00'))
-        )
-        for item in result.data
-    ]
-    
-    return PaginatedResponse.create(items, total, page, page_size)
+    return [FailureAnalysisListItem(**item) for item in result.data]
 
 
 @router.get("/{analysis_id}", response_model=FailureAnalysisResponse)
-async def get_failure_analysis(
+async def get_analysis(
     analysis_id: str,
-    current_user: Dict[str, Any] = Depends(get_current_user),
-    db: Client = Depends(get_db)
+    user: dict = Depends(get_current_user),
 ):
-    """
-    Get specific failure analysis by ID.
-    
-    Returns full analysis details including root causes and recommendations.
-    """
-    user_id = current_user['id']
-    
-    result = db.table("failure_analyses").select("*").eq("id", analysis_id).eq("user_id", user_id).execute()
-    
-    if not result.data or len(result.data) == 0:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Analysis not found"
-        )
-    
-    record = result.data[0]
-    
-    # Parse structured data
-    root_causes = [RootCause(**rc) for rc in record.get('root_causes', [])]
-    recommendations = [Recommendation(**rec) for rec in record.get('recommendations', [])]
-    
-    return FailureAnalysisResponse(
-        id=record['id'],
-        user_id=record['user_id'],
-        material_category=record['material_category'],
-        material_subcategory=record.get('material_subcategory'),
-        material_product=record.get('material_product'),
-        failure_mode=record['failure_mode'],
-        failure_description=record['failure_description'],
-        substrate_a=record.get('substrate_a'),
-        substrate_b=record.get('substrate_b'),
-        temperature_range=record.get('temperature_range'),
-        humidity=record.get('humidity'),
-        chemical_exposure=record.get('chemical_exposure'),
-        time_to_failure=record.get('time_to_failure'),
-        application_method=record.get('application_method'),
-        surface_preparation=record.get('surface_preparation'),
-        cure_conditions=record.get('cure_conditions'),
-        additional_notes=record.get('additional_notes'),
-        test_results=record.get('test_results'),
-        root_causes=root_causes,
-        contributing_factors=record.get('contributing_factors', []),
-        recommendations=recommendations,
-        prevention_plan=record.get('prevention_plan', ''),
-        similar_cases=record.get('similar_cases', []),
-        confidence_score=record['confidence_score'],
-        status=record['status'],
-        ai_model_version=record.get('ai_model_version'),
-        processing_time_ms=record.get('processing_time_ms'),
-        created_at=datetime.fromisoformat(record['created_at'].replace('Z', '+00:00')),
-        updated_at=datetime.fromisoformat(record['updated_at'].replace('Z', '+00:00'))
+    """Get a specific analysis by ID."""
+    db = get_supabase()
+    result = (
+        db.table("failure_analyses")
+        .select("*")
+        .eq("id", analysis_id)
+        .eq("user_id", user["id"])
+        .execute()
     )
+
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+
+    return FailureAnalysisResponse(**result.data[0])
