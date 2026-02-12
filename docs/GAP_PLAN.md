@@ -6,9 +6,9 @@
 
 ---
 
-## Sprint 6 — Knowledge Engine (THE DIFFERENTIATOR)
+## Sprint 6 — Knowledge Engine (THE DIFFERENTIATOR) ✅ COMPLETE (2/11 nightly)
 
-The self-learning AI loop is the #1 thing we sell and the #1 thing we haven't built.
+The self-learning AI loop is the #1 thing we sell — **now built.**
 
 ### 6.1 Knowledge Aggregation Job
 **What:** Cron job that reads `analysis_feedback` + completed analyses, groups by substrate pair + root cause + adhesive family, computes success rates, writes/upserts to `knowledge_patterns`.
