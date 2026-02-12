@@ -12,6 +12,39 @@ logger = logging.getLogger(__name__)
 stripe.api_key = settings.stripe_secret_key
 
 
+def cancel_active_subscriptions(user: dict) -> list[str]:
+    """Cancel any active Stripe subscriptions for a user.
+
+    Returns a list of cancelled subscription IDs.
+
+    Best-effort: if Stripe isn't configured or the user has no customer,
+    returns an empty list.
+    """
+
+    if not settings.stripe_secret_key:
+        return []
+
+    customer_id = user.get("stripe_customer_id")
+    if not customer_id:
+        return []
+
+    cancelled: list[str] = []
+
+    subs = stripe.Subscription.list(customer=customer_id, status="all", limit=20)
+    for sub in subs.data or []:
+        status = (sub.get("status") if isinstance(sub, dict) else getattr(sub, "status", None))
+        sub_id = (sub.get("id") if isinstance(sub, dict) else getattr(sub, "id", None))
+        if not sub_id:
+            continue
+
+        # Cancel only active-ish subscriptions
+        if status in ("active", "trialing", "past_due", "unpaid"):
+            stripe.Subscription.delete(sub_id)
+            cancelled.append(sub_id)
+
+    return cancelled
+
+
 def create_checkout_session(
     user: dict,
     price_id: str | None = None,

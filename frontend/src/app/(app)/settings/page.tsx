@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Download, ExternalLink, CheckCircle } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const [name, setName] = useState('');
   const [company, setCompany] = useState('');
   const [role, setRole] = useState('');
@@ -19,6 +19,7 @@ export default function SettingsPage() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Profile / plan / usage from API
   const [profile, setProfile] = useState<User | null>(null);
@@ -141,6 +142,25 @@ export default function SettingsPage() {
       setExportLoading(false);
     }
   }, [user]);
+
+  const handleDeleteAccount = useCallback(async () => {
+    const confirmed = window.confirm(
+      'This will permanently delete your account and all data. This cannot be undone. Continue?'
+    );
+    if (!confirmed) return;
+
+    setIsDeleting(true);
+    try {
+      await api.deleteMyAccount();
+      // End local session and return home
+      await signOut();
+    } catch {
+      alert('Failed to delete account. Please try again or contact support.');
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  }, [signOut]);
 
   const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
   const planBadgeColor =
@@ -329,8 +349,13 @@ export default function SettingsPage() {
                 >
                   Cancel
                 </Button>
-                <Button variant="danger" size="sm">
-                  Delete My Account
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={handleDeleteAccount}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? 'Deleting…' : 'Delete My Account'}
                 </Button>
               </div>
             </div>

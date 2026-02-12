@@ -4,8 +4,14 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from dependencies import get_current_user
 from database import get_supabase
-from schemas.user import UserProfile, UserUpdate, UsageResponse
+from schemas.user import UserProfile, UserUpdate, UsageResponse, DeleteAccountResponse
 from services.usage_service import get_usage
+from services.account_deletion_service import delete_account_and_data
+
+import logging
+from datetime import datetime, timezone
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -45,3 +51,33 @@ async def get_current_user_usage(user: dict = Depends(get_current_user)):
     """Get the current user's usage stats."""
     usage = get_usage(user)
     return UsageResponse(**usage)
+
+
+@router.delete("/me", response_model=DeleteAccountResponse)
+async def delete_my_account(user: dict = Depends(get_current_user)):
+    """Delete the current user's account and all associated data."""
+
+    db = get_supabase()
+    user_id = user["id"]
+
+    summary = delete_account_and_data(user)
+
+    # Audit log (best-effort)
+    try:
+        db.table("admin_audit_log").insert(
+            {
+                "actor_user_id": user_id,
+                "action": "delete_account",
+                "target_table": "users",
+                "target_id": user_id,
+                "details": {
+                    **summary,
+                    "email": user.get("email"),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                },
+            }
+        ).execute()
+    except Exception as e:
+        logger.warning(f"Failed to write audit log for delete_account {user_id}: {e}")
+
+    return DeleteAccountResponse(status="deleted")

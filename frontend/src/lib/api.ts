@@ -251,6 +251,21 @@ export class ApiClient {
     return mapUserProfile(json);
   }
 
+  async deleteMyAccount(): Promise<{ status: string }> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/users/me`, {
+      method: 'DELETE',
+      headers,
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(
+        (error as { detail?: string }).detail || 'Failed to delete account'
+      );
+    }
+    return response.json();
+  }
+
   async createBillingPortalSession(): Promise<{ portal_url: string }> {
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/billing/portal`, {

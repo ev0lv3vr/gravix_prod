@@ -35,3 +35,7 @@ class UsageResponse(BaseModel):
     specs_limit: int
     plan: str
     reset_date: Optional[datetime] = None
+
+
+class DeleteAccountResponse(BaseModel):
+    status: str = "deleted"
