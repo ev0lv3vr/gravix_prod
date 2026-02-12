@@ -28,6 +28,10 @@ class FailureAnalysisCreate(BaseModel):
     failure_description: Optional[str] = None
     substrate_a: Optional[str] = None
     substrate_b: Optional[str] = None
+    # New structured fields (optional)
+    industry: Optional[str] = None
+    production_impact: Optional[str] = None
+
     temperature_range: Optional[str] = None
     humidity: Optional[str] = None
     chemical_exposure: Optional[str] = None
@@ -50,6 +54,14 @@ class FailureAnalysisResponse(BaseModel):
     failure_description: Optional[str] = None
     substrate_a: Optional[str] = None
     substrate_b: Optional[str] = None
+
+    # Structured + derived fields
+    substrate_a_normalized: Optional[str] = None
+    substrate_b_normalized: Optional[str] = None
+    industry: Optional[str] = None
+    production_impact: Optional[str] = None
+    root_cause_category: Optional[str] = None
+
     temperature_range: Optional[str] = None
     humidity: Optional[str] = None
     chemical_exposure: Optional[str] = None
@@ -77,6 +89,7 @@ class FailureAnalysisListItem(BaseModel):
     material_category: str
     material_subcategory: Optional[str] = None
     failure_mode: str
+    root_cause_category: Optional[str] = None
     confidence_score: Optional[float] = None
     status: str
     created_at: Optional[datetime] = None

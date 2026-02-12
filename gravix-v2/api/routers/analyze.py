@@ -15,6 +15,8 @@ from schemas.analyze import (
 )
 from services.ai_engine import analyze_failure
 from services.usage_service import can_use_analysis, increment_analysis_usage
+from utils.normalizer import normalize_substrate
+from utils.classifier import classify_root_cause_category
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +40,8 @@ async def create_analysis(
     analysis_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc).isoformat()
 
+    payload = data.model_dump(exclude_none=True)
+
     # Create record
     record = {
         "id": analysis_id,
@@ -45,22 +49,27 @@ async def create_analysis(
         "status": "processing",
         "created_at": now,
         "updated_at": now,
-        **data.model_dump(exclude_none=True),
+        **payload,
+        # Structured fields populated on insert (Sprint 1)
+        "substrate_a_normalized": normalize_substrate(payload.get("substrate_a")),
+        "substrate_b_normalized": normalize_substrate(payload.get("substrate_b")),
     }
 
     db.table("failure_analyses").insert(record).execute()
 
     # Run AI analysis
     try:
-        ai_result = await analyze_failure(data.model_dump(exclude_none=True))
+        ai_result = await analyze_failure(payload)
 
         # Update record with results
+        root_causes = ai_result.get("root_causes", [])
         update_data = {
-            "root_causes": ai_result.get("root_causes", []),
+            "root_causes": root_causes,
             "contributing_factors": ai_result.get("contributing_factors", []),
             "recommendations": ai_result.get("recommendations", []),
             "prevention_plan": ai_result.get("prevention_plan", ""),
             "confidence_score": ai_result.get("confidence_score", 0.0),
+            "root_cause_category": classify_root_cause_category(root_causes),
             "status": "completed",
             "processing_time_ms": ai_result.get("processing_time_ms"),
             "updated_at": datetime.now(timezone.utc).isoformat(),

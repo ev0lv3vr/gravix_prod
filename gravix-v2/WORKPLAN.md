@@ -32,6 +32,15 @@ This file tracks the “big remaining work” and the order we’re executing it
 - Branch/worktree: `feat/history-wiring` → `/tmp/gravix-history-wiring`
 - Owner: Sonnet coder + Sonnet reviewer + Opus orchestrator
 
+## Sprint 1 (V2) — Backend schema + observability
+
+Status: complete.
+
+- [x] Migrations 001–004 added (structured fields, feedback/knowledge, observability, seed placeholder)
+- [x] Structured analysis fields persisted (normalized substrates, root_cause_category)
+- [x] Request logging middleware writes to `api_request_logs` (best-effort; skips /health and /v1/stats/public)
+- [x] Public stats endpoint: `GET /v1/stats/public`
+
 ## Notes / gotchas
 - ApiClient already exists: `frontend/src/lib/api.ts`
 - Backend endpoints exist:
