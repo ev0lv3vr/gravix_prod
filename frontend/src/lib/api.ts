@@ -110,7 +110,7 @@ export class ApiClient {
     const {
       data: { session },
     } = await supabase.auth.getSession();
-    console.debug('[API] getAuthHeaders — session exists:', !!session, 'token exists:', !!session?.access_token);
+    console.error('[API-DEBUG] getAuthHeaders — session exists:', !!session, 'token exists:', !!session?.access_token, 'supabase:', !!supabase);
     return {
       'Content-Type': 'application/json',
       ...(session?.access_token && {
