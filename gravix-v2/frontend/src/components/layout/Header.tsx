@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -14,13 +14,25 @@ import { AuthModal } from '@/components/auth/AuthModal';
 import { Menu, X, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
+import { api } from '@/lib/api';
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const { user, signOut } = useAuth();
   const { used, limit } = useUsageTracking();
+
+  useEffect(() => {
+    if (!user) {
+      setIsAdmin(false);
+      return;
+    }
+    api.getCurrentUser().then((u) => {
+      setIsAdmin(u?.role === 'admin');
+    });
+  }, [user]);
 
   const navLinks = [
     ...(user ? [{ href: '/dashboard', label: 'Dashboard' }] : []),
@@ -104,6 +116,11 @@ export function Header() {
                     <DropdownMenuItem asChild>
                       <Link href="/settings">Settings</Link>
                     </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin">Admin</Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={handleSignOut}>
                       Sign Out
                     </DropdownMenuItem>

@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from config import settings
-from routers import health, analyze, specify, users, cases, reports, billing, stats, feedback, cron
+from routers import health, analyze, specify, users, cases, reports, billing, stats, feedback, cron, admin
 from middleware.request_logger import RequestLoggerMiddleware
 
 logging.basicConfig(
@@ -68,6 +68,7 @@ app.include_router(billing.router)
 app.include_router(stats.router)
 app.include_router(feedback.router, prefix="/v1/feedback")
 app.include_router(cron.router, prefix="/v1/cron")
+app.include_router(admin.router)
 
 
 if __name__ == "__main__":

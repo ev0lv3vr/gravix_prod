@@ -319,6 +319,117 @@ export class ApiClient {
     }
     return response.json();
   }
+
+  // ---------------------------------------------------------------------------
+  // Admin endpoints
+  // ---------------------------------------------------------------------------
+
+  async getAdminOverview(): Promise<{
+    total_users: number;
+    users_by_plan: Record<string, number>;
+    total_analyses: number;
+    total_specs: number;
+    analyses_today: number;
+    analyses_this_week: number;
+    signups_today: number;
+    signups_this_week: number;
+  }> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/v1/admin/overview`, { headers });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error((error as { detail?: string }).detail || 'Failed to fetch admin overview');
+    }
+    return response.json();
+  }
+
+  async getAdminUsers(search?: string): Promise<
+    {
+      id: string;
+      email: string;
+      name?: string | null;
+      company?: string | null;
+      role?: string | null;
+      plan: string;
+      analyses_this_month: number;
+      specs_this_month: number;
+      stripe_customer_id?: string | null;
+      created_at?: string | null;
+    }[]
+  > {
+    const headers = await this.getAuthHeaders();
+    const params = search ? `?search=${encodeURIComponent(search)}` : '';
+    const response = await fetch(`${API_URL}/v1/admin/users${params}`, { headers });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error((error as { detail?: string }).detail || 'Failed to fetch admin users');
+    }
+    return response.json();
+  }
+
+  async updateAdminUser(
+    userId: string,
+    data: { plan?: string; role?: string }
+  ): Promise<{
+    id: string;
+    email: string;
+    plan: string;
+    role?: string | null;
+  }> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/v1/admin/users/${userId}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error((error as { detail?: string }).detail || 'Failed to update user');
+    }
+    return response.json();
+  }
+
+  async getAdminActivity(): Promise<
+    {
+      id: string;
+      type: string;
+      user_email?: string | null;
+      substrates?: string | null;
+      status?: string | null;
+      confidence_score?: number | null;
+      created_at?: string | null;
+    }[]
+  > {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/v1/admin/activity`, { headers });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error((error as { detail?: string }).detail || 'Failed to fetch admin activity');
+    }
+    return response.json();
+  }
+
+  async getAdminRequestLogs(path?: string): Promise<
+    {
+      id?: string | null;
+      method?: string | null;
+      path?: string | null;
+      status_code?: number | null;
+      duration_ms?: number | null;
+      user_id?: string | null;
+      user_email?: string | null;
+      created_at?: string | null;
+    }[]
+  > {
+    const headers = await this.getAuthHeaders();
+    const params = path ? `?path=${encodeURIComponent(path)}` : '';
+    const response = await fetch(`${API_URL}/v1/admin/request-logs${params}`, { headers });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error((error as { detail?: string }).detail || 'Failed to fetch request logs');
+    }
+    return response.json();
+  }
 }
 
 export const api = new ApiClient();
