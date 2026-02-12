@@ -8,12 +8,12 @@ export interface User {
   plan: 'free' | 'pro' | 'team' | 'enterprise';
   analysesThisMonth: number;
   specsThisMonth: number;
-  analysesResetDate: string;
-  specsResetDate: string;
+  analysesResetDate: string | null;
+  specsResetDate: string | null;
   stripeCustomerId?: string;
   avatarUrl?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 // Failure Analysis
