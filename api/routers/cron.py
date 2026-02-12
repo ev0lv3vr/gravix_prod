@@ -6,6 +6,7 @@ from fastapi import APIRouter, Header, HTTPException, status
 
 from config import settings
 from services.feedback_email import send_pending_followups
+from services.knowledge_aggregator import run_knowledge_aggregation, run_metrics_aggregation
 
 logger = logging.getLogger(__name__)
 
@@ -31,13 +32,24 @@ async def send_followups(x_cron_secret: str = Header(...)):
 
 @router.post("/aggregate-knowledge")
 async def aggregate_knowledge(x_cron_secret: str = Header(...)):
-    """Aggregate feedback into knowledge base (placeholder)."""
+    """Aggregate feedback into knowledge base patterns.
+
+    Reads all completed analyses + their feedback entries,
+    groups by substrate pair + root cause category,
+    computes success rates, and upserts into knowledge_patterns.
+    """
     _verify_cron_secret(x_cron_secret)
-    return {"status": "not_implemented"}
+    result = await run_knowledge_aggregation()
+    return result
 
 
 @router.post("/aggregate-metrics")
 async def aggregate_metrics(x_cron_secret: str = Header(...)):
-    """Aggregate feedback metrics (placeholder)."""
+    """Aggregate daily metrics for public stats / Social Proof Bar.
+
+    Counts total analyses, specs, resolution rate, substrate combos,
+    adhesive families. Upserts into daily_metrics.
+    """
     _verify_cron_secret(x_cron_secret)
-    return {"status": "not_implemented"}
+    result = await run_metrics_aggregation()
+    return result

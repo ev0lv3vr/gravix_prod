@@ -61,6 +61,8 @@ class SpecRequestResponse(BaseModel):
     warnings: Optional[List[str]] = None
     alternatives: Optional[List[dict]] = None
     confidence_score: Optional[float] = None
+    knowledge_evidence_count: Optional[int] = None
+    similar_cases: Optional[List[dict]] = None
     status: str = "pending"
     processing_time_ms: Optional[int] = None
     created_at: Optional[datetime] = None

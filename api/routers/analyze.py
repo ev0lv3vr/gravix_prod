@@ -75,6 +75,15 @@ async def create_analysis(
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
 
+        # Sprint 6: Store similar cases and knowledge evidence count
+        similar_cases = ai_result.get("similar_cases")
+        if similar_cases:
+            update_data["similar_cases"] = similar_cases
+
+        knowledge_evidence_count = ai_result.get("knowledge_evidence_count")
+        if knowledge_evidence_count is not None:
+            update_data["knowledge_evidence_count"] = knowledge_evidence_count
+
         db.table("failure_analyses").update(update_data).eq("id", analysis_id).execute()
         record.update(update_data)
 

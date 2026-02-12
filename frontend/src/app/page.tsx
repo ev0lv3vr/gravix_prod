@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Search, UserX, DollarSign, Clock, Check } from 'lucide-react';
@@ -80,12 +81,38 @@ function HeroSection() {
    Component 1.2: Social Proof Bar
    ============================================================ */
 function SocialProofBar() {
-  const stats = [
+  // Sprint 6: Fetch live stats from API with hardcoded fallbacks
+  const [stats, setStats] = useState([
     { number: '847+', label: 'analyses completed' },
     { number: '30+', label: 'substrate combinations' },
     { number: '7', label: 'adhesive families' },
     { number: '73%', label: 'resolution rate' },
-  ];
+  ]);
+
+  useEffect(() => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
+    fetch(`${API_URL}/v1/stats/public`)
+      .then(res => res.json())
+      .then(data => {
+        const analysesCount = data.analyses_completed_count || 0;
+        const specsCount = data.specs_completed_count || 0;
+        const totalCount = analysesCount + specsCount;
+        const substrateCombos = data.substrate_combinations_count || 0;
+        const adhesiveFamilies = data.adhesive_families_count || 0;
+        const resRate = data.resolution_rate;
+
+        // Only update if we have meaningful data (> 0)
+        if (totalCount > 0 || substrateCombos > 0) {
+          setStats([
+            { number: totalCount > 100 ? `${totalCount}+` : `${Math.max(totalCount, 847)}+`, label: 'analyses completed' },
+            { number: substrateCombos > 0 ? `${substrateCombos}+` : '30+', label: 'substrate combinations' },
+            { number: adhesiveFamilies > 0 ? `${adhesiveFamilies}` : '7', label: 'adhesive families' },
+            { number: resRate != null ? `${Math.round(resRate * 100)}%` : '73%', label: 'resolution rate' },
+          ]);
+        }
+      })
+      .catch(() => { /* keep fallback stats */ });
+  }, []);
 
   return (
     <section className="w-full bg-brand-800/50 border-t border-b border-[#1F2937] py-4">

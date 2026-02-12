@@ -77,6 +77,7 @@ class FailureAnalysisResponse(BaseModel):
     recommendations: List[Recommendation] = []
     prevention_plan: Optional[str] = None
     confidence_score: Optional[float] = None
+    knowledge_evidence_count: Optional[int] = None
     status: str = "pending"
     processing_time_ms: Optional[int] = None
     similar_cases: Optional[List[dict]] = None

@@ -47,6 +47,7 @@ interface SpecResultData {
     whenToUse: string;
   }>;
   confidenceScore: number;
+  knowledgeEvidenceCount?: number;
 }
 
 export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis, isFree: _isFree = true }: SpecResultsProps) {
@@ -137,7 +138,7 @@ export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis,
             <h2 className="text-2xl font-bold text-white">{data.recommendedSpec.materialType}</h2>
             <p className="text-sm text-[#94A3B8] mt-1">{data.recommendedSpec.chemistry}</p>
           </div>
-          <ConfidenceBadge score={pct} />
+          <ConfidenceBadge score={pct} caseCount={data.knowledgeEvidenceCount} />
         </div>
 
         {/* 2. Key properties */}

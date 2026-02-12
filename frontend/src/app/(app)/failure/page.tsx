@@ -62,6 +62,7 @@ export default function FailureAnalysisPage() {
       const prevPlan = (response as any).prevention_plan || (response as any).preventionPlan || '';
       const confScore = (response as any).confidence_score || (response as any).confidenceScore || 0.85;
       const simCases = (response as any).similar_cases || (response as any).similarCases || [];
+      const knowledgeEvidenceCount = (response as any).knowledge_evidence_count ?? (response as any).knowledgeEvidenceCount ?? undefined;
 
       // Recommendations can come as array of objects or as {immediate, longTerm}
       let immediateActions: string[] = [];
@@ -107,6 +108,7 @@ export default function FailureAnalysisPage() {
           : Array.isArray(prevPlan) ? prevPlan : [],
         similarCases: simCases,
         confidenceScore: confScore,
+        knowledgeEvidenceCount: knowledgeEvidenceCount,
       };
 
       setResultData(mapped);

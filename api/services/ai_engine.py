@@ -1,4 +1,8 @@
-"""Claude API integration using httpx (direct API, not SDK)."""
+"""Claude API integration using httpx (direct API, not SDK).
+
+Sprint 6: Knowledge injection — before calling Claude, query knowledge_patterns
+for matching substrate pair / adhesive family and inject empirical data into the prompt.
+"""
 
 import json
 import logging
@@ -90,30 +94,129 @@ async def _async_sleep(seconds: float):
 
 
 async def analyze_failure(analysis_data: dict) -> dict:
-    """Run failure analysis using Claude."""
+    """Run failure analysis using Claude, with knowledge injection.
+
+    Sprint 6: Before calling Claude, we:
+    1. Query knowledge_patterns for matching substrate pairs
+    2. Inject empirical data into the user prompt
+    3. After getting results, look up similar cases
+    4. Calibrate confidence score against empirical evidence
+    """
     from prompts.failure_analysis import get_system_prompt, build_user_prompt
+    from services.knowledge_service import (
+        get_relevant_patterns,
+        format_knowledge_for_prompt,
+        find_similar_cases,
+        calibrate_confidence,
+    )
 
     system_prompt = get_system_prompt()
     user_prompt = build_user_prompt(analysis_data)
 
+    # 6.2 — Knowledge injection
+    knowledge_text = ""
+    patterns = []
+    try:
+        patterns = await get_relevant_patterns(
+            substrate_a=analysis_data.get("substrate_a"),
+            substrate_b=analysis_data.get("substrate_b"),
+            root_cause_category=None,  # Don't filter — we want all matching patterns
+            adhesive_family=analysis_data.get("material_subcategory"),
+        )
+        knowledge_text = format_knowledge_for_prompt(patterns)
+    except Exception as exc:
+        logger.warning(f"Knowledge injection failed (non-fatal): {exc}")
+
+    if knowledge_text:
+        user_prompt = user_prompt + "\n\n" + knowledge_text
+        logger.info(f"Injected {len(patterns)} knowledge patterns into failure analysis prompt")
+
     start_time = time.time()
     result = await _call_claude(system_prompt, user_prompt)
     processing_time_ms = int((time.time() - start_time) * 1000)
 
     result["processing_time_ms"] = processing_time_ms
+
+    # 6.4 — Confidence calibration
+    try:
+        ai_confidence = result.get("confidence_score", 0.0)
+        if isinstance(ai_confidence, (int, float)) and patterns:
+            calibrated, evidence_count = calibrate_confidence(ai_confidence, patterns)
+            result["confidence_score"] = calibrated
+            if evidence_count is not None:
+                result["knowledge_evidence_count"] = evidence_count
+                logger.info(
+                    f"Calibrated confidence: {ai_confidence:.2f} → {calibrated:.2f} "
+                    f"(evidence_count={evidence_count})"
+                )
+    except Exception as exc:
+        logger.warning(f"Confidence calibration failed (non-fatal): {exc}")
+
+    # 6.3 — Similar cases lookup
+    try:
+        similar = await find_similar_cases(
+            substrate_a=analysis_data.get("substrate_a"),
+            substrate_b=analysis_data.get("substrate_b"),
+            failure_mode=analysis_data.get("failure_mode"),
+            adhesive_family=analysis_data.get("material_subcategory"),
+        )
+        if similar:
+            result["similar_cases"] = similar
+            logger.info(f"Found {len(similar)} similar cases for failure analysis")
+    except Exception as exc:
+        logger.warning(f"Similar cases lookup failed (non-fatal): {exc}")
+
     return result
 
 
 async def generate_spec(spec_data: dict) -> dict:
-    """Generate material specification using Claude."""
+    """Generate material specification using Claude, with knowledge injection.
+
+    Sprint 6: Same knowledge injection pattern as failure analysis —
+    query patterns for substrate pair and inject into prompt.
+    """
     from prompts.spec_engine import get_system_prompt, build_user_prompt
+    from services.knowledge_service import (
+        get_relevant_patterns,
+        format_knowledge_for_prompt,
+        find_similar_cases,
+        calibrate_confidence,
+    )
 
     system_prompt = get_system_prompt()
     user_prompt = build_user_prompt(spec_data)
+
+    # 6.2 — Knowledge injection
+    knowledge_text = ""
+    patterns = []
+    try:
+        patterns = await get_relevant_patterns(
+            substrate_a=spec_data.get("substrate_a"),
+            substrate_b=spec_data.get("substrate_b"),
+        )
+        knowledge_text = format_knowledge_for_prompt(patterns)
+    except Exception as exc:
+        logger.warning(f"Knowledge injection failed (non-fatal): {exc}")
+
+    if knowledge_text:
+        user_prompt = user_prompt + "\n\n" + knowledge_text
+        logger.info(f"Injected {len(patterns)} knowledge patterns into spec prompt")
 
     start_time = time.time()
     result = await _call_claude(system_prompt, user_prompt)
     processing_time_ms = int((time.time() - start_time) * 1000)
 
     result["processing_time_ms"] = processing_time_ms
+
+    # 6.4 — Confidence calibration for specs
+    try:
+        ai_confidence = result.get("confidence_score", 0.0)
+        if isinstance(ai_confidence, (int, float)) and patterns:
+            calibrated, evidence_count = calibrate_confidence(ai_confidence, patterns)
+            result["confidence_score"] = calibrated
+            if evidence_count is not None:
+                result["knowledge_evidence_count"] = evidence_count
+    except Exception as exc:
+        logger.warning(f"Confidence calibration failed (non-fatal): {exc}")
+
     return result

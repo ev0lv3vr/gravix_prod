@@ -17,6 +17,18 @@ interface FailureResultsProps {
   isFree?: boolean;
 }
 
+interface SimilarCaseItem {
+  id: string;
+  title?: string;
+  industry?: string;
+  substrate_a?: string;
+  substrate_b?: string;
+  failure_mode?: string;
+  root_cause_category?: string;
+  confidence_score?: number;
+  outcome?: string;
+}
+
 interface FailureResultData {
   diagnosis: {
     topRootCause: string;
@@ -36,8 +48,9 @@ interface FailureResultData {
   immediateActions: string[];
   longTermSolutions: string[];
   preventionPlan: string[];
-  similarCases?: Array<{ id: string; title: string; industry: string }>;
+  similarCases?: SimilarCaseItem[];
   confidenceScore: number;
+  knowledgeEvidenceCount?: number;
 }
 
 export function FailureResults({ status, data, analysisId, errorMessage, onNewAnalysis, onRunSpecAnalysis, isFree: _isFree = true }: FailureResultsProps) {
@@ -116,7 +129,7 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
             <h2 className="text-2xl font-bold text-white">{data.diagnosis.topRootCause}</h2>
             <p className="text-sm text-[#94A3B8] mt-2">{data.diagnosis.explanation}</p>
           </div>
-          <ConfidenceBadge score={pct} />
+          <ConfidenceBadge score={pct} caseCount={data.knowledgeEvidenceCount} />
         </div>
 
         {/* 2. Root cause cards (ranked) */}
@@ -205,16 +218,36 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
           </div>
         )}
 
-        {/* 7. Similar cases */}
+        {/* 7. Similar cases (Sprint 6: enriched from knowledge engine) */}
         {data.similarCases && data.similarCases.length > 0 && (
           <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-4">
-            <h3 className="text-sm font-semibold text-white mb-3">Similar Cases</h3>
-            {data.similarCases.map((c, i) => (
-              <a key={i} href={`/cases/${c.id}`} className="block p-2 rounded hover:bg-[#1F2937] transition-colors">
-                <span className="text-sm text-accent-500">{c.title}</span>
-                <span className="text-xs text-[#64748B] ml-2">{c.industry}</span>
-              </a>
-            ))}
+            <h3 className="text-sm font-semibold text-white mb-3">
+              Similar Cases
+              <span className="text-xs text-[#64748B] ml-2 font-normal">from Gravix knowledge base</span>
+            </h3>
+            <div className="space-y-2">
+              {data.similarCases.map((c, i) => {
+                const displayTitle = c.title || [c.substrate_a, c.substrate_b].filter(Boolean).join(' → ') || 'Related Case';
+                const displayMeta = c.industry || c.failure_mode || c.root_cause_category || '';
+                const outcomeLabel = c.outcome === 'resolved' ? '✅ Resolved'
+                  : c.outcome === 'partially_resolved' ? '🔶 Partial'
+                  : c.outcome ? `📋 ${c.outcome}` : null;
+                return (
+                  <a key={i} href={`/history/failure/${c.id}`} className="block p-3 rounded-lg hover:bg-[#1F2937] transition-colors border border-transparent hover:border-[#374151]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-accent-500 font-medium">{displayTitle}</span>
+                      {c.confidence_score != null && (
+                        <span className="text-xs font-mono text-[#64748B]">{Math.round(c.confidence_score * 100)}%</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 mt-1">
+                      {displayMeta && <span className="text-xs text-[#64748B]">{displayMeta}</span>}
+                      {outcomeLabel && <span className="text-xs text-[#94A3B8]">{outcomeLabel}</span>}
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
           </div>
         )}
 

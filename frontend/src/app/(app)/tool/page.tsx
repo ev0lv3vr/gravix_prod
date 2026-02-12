@@ -103,6 +103,7 @@ export default function SpecToolPage() {
           whenToUse: 'See advantages/disadvantages',
         })),
         confidenceScore: (response as any).confidence_score || (response as any).confidenceScore || 0.85,
+        knowledgeEvidenceCount: (response as any).knowledge_evidence_count ?? (response as any).knowledgeEvidenceCount ?? undefined,
       };
 
       setResultData(mapped);

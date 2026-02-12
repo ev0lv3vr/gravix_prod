@@ -75,6 +75,7 @@ export default function FailureHistoryDetailPage({ params }: { params: { id: str
   const similarCases = useMemo(() => {
     return (analysis?.similar_cases ?? analysis?.similarCases ?? []) as any[];
   }, [analysis]);
+  const knowledgeEvidenceCount = analysis?.knowledge_evidence_count ?? analysis?.knowledgeEvidenceCount ?? undefined;
 
   // Split recommendations into immediate and long-term
   const immediateRecs = useMemo(() => {
@@ -147,7 +148,17 @@ export default function FailureHistoryDetailPage({ params }: { params: { id: str
               </div>
               <div>
                 <div className="text-xs text-[#64748B]">Confidence</div>
-                <div className="text-sm text-white mt-1">{typeof confidence === 'number' ? `${Math.round(confidence * 100)}%` : '—'}</div>
+                <div className="text-sm text-white mt-1">
+                  {typeof confidence === 'number' ? `${Math.round(confidence * 100)}%` : '—'}
+                  {knowledgeEvidenceCount != null && knowledgeEvidenceCount > 0 && (
+                    <span className="ml-2 text-xs text-accent-500">
+                      Empirically Validated ({knowledgeEvidenceCount})
+                    </span>
+                  )}
+                  {(knowledgeEvidenceCount == null || knowledgeEvidenceCount === 0) && typeof confidence === 'number' && (
+                    <span className="ml-2 text-xs text-[#64748B]">AI Estimated</span>
+                  )}
+                </div>
               </div>
               <div>
                 <div className="text-xs text-[#64748B]">Created</div>
