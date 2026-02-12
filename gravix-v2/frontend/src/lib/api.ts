@@ -1,6 +1,59 @@
 import { supabase } from './supabase';
 import type { FailureAnalysis, SpecRequest, Case, User } from './types';
 
+// Feedback types
+export type FeedbackSubmitData = {
+  analysis_id?: string;
+  spec_id?: string;
+  was_helpful: boolean;
+  root_cause_confirmed?: number;
+  outcome?: string;
+  recommendation_implemented?: string[];
+  actual_root_cause?: string;
+  what_worked?: string;
+  what_didnt_work?: string;
+  time_to_resolution?: string;
+  estimated_cost_saved?: number;
+  substrate_corrections?: { field: string; original?: string; corrected: string }[];
+  feedback_source?: string;
+};
+
+export type FeedbackCreateResponse = {
+  id: string;
+  message: string;
+  cases_improved: number;
+};
+
+export type FeedbackResponse = {
+  id: string;
+  analysis_id?: string;
+  spec_id?: string;
+  user_id: string;
+  was_helpful: boolean;
+  root_cause_confirmed: number;
+  outcome?: string;
+  recommendation_implemented: string[];
+  actual_root_cause?: string;
+  what_worked?: string;
+  what_didnt_work?: string;
+  time_to_resolution?: string;
+  estimated_cost_saved?: number;
+  substrate_corrections: Record<string, unknown>[];
+  feedback_source?: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type PendingFeedbackItem = {
+  analysis_id: string;
+  material_category?: string;
+  failure_mode?: string;
+  substrate_a?: string;
+  substrate_b?: string;
+  created_at?: string;
+  status?: string;
+};
+
 type ApiUserProfile = {
   id: string;
   email: string;
@@ -173,6 +226,48 @@ export class ApiClient {
 
   getSpecPdfUrl(id: string): string {
     return `${API_URL}/reports/spec/${id}/pdf`;
+  }
+
+  // Feedback
+  async submitFeedback(
+    data: FeedbackSubmitData
+  ): Promise<FeedbackCreateResponse> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/v1/feedback`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(
+        (error as { detail?: string }).detail || 'Failed to submit feedback'
+      );
+    }
+    return response.json();
+  }
+
+  async getFeedback(analysisId: string): Promise<FeedbackResponse> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(
+      `${API_URL}/v1/feedback/${analysisId}`,
+      { headers }
+    );
+    if (!response.ok) {
+      throw new Error('Failed to fetch feedback');
+    }
+    return response.json();
+  }
+
+  async getPendingFeedback(): Promise<PendingFeedbackItem[]> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/v1/feedback/pending/list`, {
+      headers,
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch pending feedback');
+    }
+    return response.json();
   }
 }
 

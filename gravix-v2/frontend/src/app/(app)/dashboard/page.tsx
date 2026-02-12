@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { api, type UsageResponse } from '@/lib/api';
-import { FlaskConical, Search, ArrowRight, MessageSquare } from 'lucide-react';
+import { FlaskConical, Search, ArrowRight } from 'lucide-react';
+import { PendingFeedbackBanner } from '@/components/dashboard/PendingFeedbackBanner';
 
 type HistoryType = 'spec' | 'failure';
 
@@ -124,10 +125,7 @@ export default function DashboardPage() {
     return `${usageFallback.used}/${usageFallback.limit} analyses used`;
   }, [usage, usageFallback.limit, usageFallback.used]);
 
-  // No feedback endpoint currently; treat completed items as needing feedback.
-  const pendingFeedback = useMemo(() => {
-    return recentAnalyses.filter((a) => a.status === 'completed').length;
-  }, [recentAnalyses]);
+  // pendingFeedback is now handled by PendingFeedbackBanner component
 
   if (authLoading || !authUser) {
     return null;
@@ -167,16 +165,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Component 6.4: Pending Feedback Banner */}
-      {pendingFeedback > 0 && (
-        <Link href="/history" className="block bg-accent-500/10 border border-accent-500/20 rounded-lg p-4 mb-8 hover:border-accent-500/40 transition-colors">
-          <div className="flex items-center gap-3">
-            <MessageSquare className="w-5 h-5 text-accent-500 flex-shrink-0" />
-            <p className="text-sm text-[#94A3B8]">
-              You have <strong className="text-white">{pendingFeedback} analyses</strong> waiting for feedback.
-            </p>
-          </div>
-        </Link>
-      )}
+      <PendingFeedbackBanner />
 
       {/* Component 6.3: Recent Analyses */}
       <div>

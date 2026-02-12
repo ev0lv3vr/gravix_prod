@@ -27,6 +27,10 @@ class Settings(BaseSettings):
 
     # Email
     from_email: str = "noreply@gravix.com"
+    resend_api_key: str = ""
+
+    # Cron
+    cron_secret: str = ""
 
     # Database
     database_url: str = ""
