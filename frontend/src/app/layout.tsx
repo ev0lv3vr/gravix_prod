@@ -45,10 +45,10 @@ export const metadata: Metadata = {
       'AI-powered platform for precise adhesive specification and failure analysis. Trusted by manufacturing engineers worldwide.',
     images: [
       {
-        url: '/og-image.png', // Placeholder - will need to create
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'GRAVIX Platform',
+        alt: 'GRAVIX — AI-Powered Adhesive Intelligence',
       },
     ],
   },

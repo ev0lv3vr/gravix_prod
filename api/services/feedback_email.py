@@ -70,7 +70,7 @@ async def send_pending_followups() -> dict:
     # Filter out analyses that already have feedback
     analysis_ids = [a["id"] for a in analyses_result.data]
     feedback_result = (
-        db.table("feedback")
+        db.table("analysis_feedback")
         .select("analysis_id")
         .in_("analysis_id", analysis_ids)
         .execute()

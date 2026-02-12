@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 USER_OWNED_TABLES: list[dict[str, Any]] = [
     # Delete child/side tables first
-    {"table": "feedback", "column": "user_id"},
     {"table": "analysis_feedback", "column": "user_id"},
     {"table": "api_request_logs", "column": "user_id"},
     {"table": "ai_engine_logs", "column": "user_id"},

@@ -152,7 +152,7 @@ async def get_public_stats(response: Response) -> dict:
     # 5) Resolution rate from feedback
     try:
         total = (
-            db.table("feedback")
+            db.table("analysis_feedback")
             .select("id", count="exact")
             .execute()
         )
@@ -160,7 +160,7 @@ async def get_public_stats(response: Response) -> dict:
 
         if total_count > 0:
             resolved = (
-                db.table("feedback")
+                db.table("analysis_feedback")
                 .select("id", count="exact")
                 .eq("was_helpful", True)
                 .execute()

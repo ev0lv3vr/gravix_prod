@@ -214,7 +214,7 @@ async def find_similar_cases(
             outcome = None
             try:
                 fb = (
-                    db.table("feedback")
+                    db.table("analysis_feedback")
                     .select("outcome, was_helpful")
                     .eq("analysis_id", row["id"])
                     .limit(1)

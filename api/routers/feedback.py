@@ -58,7 +58,7 @@ async def create_or_update_feedback(
     payload.pop("feedback_source", None)
 
     # Check for existing feedback (upsert)
-    existing_q = db.table("feedback").select("id").eq("user_id", user_id)
+    existing_q = db.table("analysis_feedback").select("id").eq("user_id", user_id)
     if data.analysis_id:
         existing_q = existing_q.eq("analysis_id", data.analysis_id)
     else:
@@ -67,7 +67,7 @@ async def create_or_update_feedback(
 
     if existing.data:
         feedback_id = existing.data[0]["id"]
-        db.table("feedback").update({
+        db.table("analysis_feedback").update({
             **payload,
             "feedback_source": data.feedback_source.value if data.feedback_source else "in_app",
             "updated_at": now,
@@ -82,13 +82,13 @@ async def create_or_update_feedback(
             "created_at": now,
             "updated_at": now,
         }
-        db.table("feedback").insert(record).execute()
+        db.table("analysis_feedback").insert(record).execute()
 
     # Count how many feedback entries exist for similar analyses (cases_improved)
     cases_improved = 0
     try:
         count_result = (
-            db.table("feedback")
+            db.table("analysis_feedback")
             .select("id", count="exact")
             .eq("was_helpful", True)
             .execute()
@@ -131,7 +131,7 @@ async def list_pending_feedback(
     # Get all feedback for this user's analyses
     analysis_ids = [a["id"] for a in analyses_result.data]
     feedback_result = (
-        db.table("feedback")
+        db.table("analysis_feedback")
         .select("analysis_id")
         .eq("user_id", user_id)
         .in_("analysis_id", analysis_ids)
@@ -168,7 +168,7 @@ async def get_feedback(
     db = get_supabase()
 
     result = (
-        db.table("feedback")
+        db.table("analysis_feedback")
         .select("*")
         .eq("analysis_id", analysis_id)
         .eq("user_id", user["id"])

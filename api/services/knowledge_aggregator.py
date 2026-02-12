@@ -46,7 +46,7 @@ async def run_knowledge_aggregation() -> dict:
         # Fetch all feedback entries joined with their analyses
         # We get feedback first, then look up the parent analysis
         feedback_result = (
-            db.table("feedback")
+            db.table("analysis_feedback")
             .select("id, analysis_id, spec_id, was_helpful, outcome, "
                     "actual_root_cause, what_worked, what_didnt_work, "
                     "root_cause_confirmed, created_at")
@@ -271,7 +271,7 @@ async def run_metrics_aggregation() -> dict:
         resolution_rate = None
         try:
             total_fb = (
-                db.table("feedback")
+                db.table("analysis_feedback")
                 .select("id", count="exact")
                 .execute()
             )
@@ -279,7 +279,7 @@ async def run_metrics_aggregation() -> dict:
 
             if total_count > 0:
                 resolved_fb = (
-                    db.table("feedback")
+                    db.table("analysis_feedback")
                     .select("id", count="exact")
                     .eq("was_helpful", True)
                     .execute()
