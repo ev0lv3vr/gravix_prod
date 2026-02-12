@@ -69,7 +69,7 @@ export default function TermsPage() {
           <h2 className="text-xl font-semibold text-white mt-8">8. Contact</h2>
           <p className="text-[#94A3B8] leading-relaxed">
             For questions about these terms, contact us at{' '}
-            <a href="mailto:legal@gravix.ai" className="text-accent-500 hover:underline">legal@gravix.ai</a>.
+            <a href="mailto:legal@gravix.com" className="text-accent-500 hover:underline">legal@gravix.com</a>.
           </p>
         </div>
       </div>

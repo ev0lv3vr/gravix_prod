@@ -59,7 +59,7 @@ export default function AboutPage() {
           <div className="mt-12 pt-8 border-t border-[#1F2937]">
             <p className="text-[#94A3B8] leading-relaxed">
               Questions? Reach out at{' '}
-              <a href="mailto:hello@gravix.ai" className="text-accent-500 hover:underline">hello@gravix.ai</a>
+              <a href="mailto:hello@gravix.com" className="text-accent-500 hover:underline">hello@gravix.com</a>
             </p>
           </div>
         </div>

@@ -51,13 +51,13 @@ export default function PrivacyPage() {
           <h2 className="text-xl font-semibold text-white mt-8">6. Your Rights</h2>
           <p className="text-[#94A3B8] leading-relaxed">
             You have the right to access, correct, or delete your personal data. You can manage your account
-            settings or contact us at privacy@gravix.ai for data requests.
+            settings or contact us at privacy@gravix.com for data requests.
           </p>
 
           <h2 className="text-xl font-semibold text-white mt-8">7. Contact Us</h2>
           <p className="text-[#94A3B8] leading-relaxed">
             For questions about this privacy policy, please contact us at{' '}
-            <a href="mailto:privacy@gravix.ai" className="text-accent-500 hover:underline">privacy@gravix.ai</a>.
+            <a href="mailto:privacy@gravix.com" className="text-accent-500 hover:underline">privacy@gravix.com</a>.
           </p>
         </div>
       </div>

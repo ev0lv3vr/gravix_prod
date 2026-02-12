@@ -116,7 +116,7 @@ export default function PricingPage() {
               <PricingFeature included text="API access" />
               <PricingFeature included text="Branded reports" />
             </ul>
-            <a href="mailto:sales@gravix.ai" className="block w-full text-center border border-[#374151] text-[#94A3B8] hover:text-white hover:border-accent-500 py-3 rounded-lg text-sm font-medium transition-colors">
+            <a href="mailto:sales@gravix.com" className="block w-full text-center border border-[#374151] text-[#94A3B8] hover:text-white hover:border-accent-500 py-3 rounded-lg text-sm font-medium transition-colors">
               Contact Sales
             </a>
           </div>
@@ -126,7 +126,7 @@ export default function PricingPage() {
         <div className="text-center mb-20">
           <p className="text-base text-[#94A3B8]">
             Need unlimited access, SSO, or dedicated support?{' '}
-            <a href="mailto:enterprise@gravix.ai" className="text-accent-500 hover:underline">Contact us for Enterprise pricing →</a>
+            <a href="mailto:enterprise@gravix.com" className="text-accent-500 hover:underline">Contact us for Enterprise pricing →</a>
           </p>
         </div>
 

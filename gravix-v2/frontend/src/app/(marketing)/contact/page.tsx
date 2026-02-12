@@ -19,29 +19,29 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
             <div className="bg-[#0F1D32] rounded-lg p-6 border border-[#1F2937]">
               <h3 className="text-white font-semibold mb-2">General Inquiries</h3>
-              <a href="mailto:hello@gravix.ai" className="text-accent-500 hover:underline text-sm">
-                hello@gravix.ai
+              <a href="mailto:hello@gravix.com" className="text-accent-500 hover:underline text-sm">
+                hello@gravix.com
               </a>
             </div>
 
             <div className="bg-[#0F1D32] rounded-lg p-6 border border-[#1F2937]">
               <h3 className="text-white font-semibold mb-2">Technical Support</h3>
-              <a href="mailto:support@gravix.ai" className="text-accent-500 hover:underline text-sm">
-                support@gravix.ai
+              <a href="mailto:support@gravix.com" className="text-accent-500 hover:underline text-sm">
+                support@gravix.com
               </a>
             </div>
 
             <div className="bg-[#0F1D32] rounded-lg p-6 border border-[#1F2937]">
               <h3 className="text-white font-semibold mb-2">Enterprise &amp; API</h3>
-              <a href="mailto:sales@gravix.ai" className="text-accent-500 hover:underline text-sm">
-                sales@gravix.ai
+              <a href="mailto:sales@gravix.com" className="text-accent-500 hover:underline text-sm">
+                sales@gravix.com
               </a>
             </div>
 
             <div className="bg-[#0F1D32] rounded-lg p-6 border border-[#1F2937]">
               <h3 className="text-white font-semibold mb-2">Privacy &amp; Data</h3>
-              <a href="mailto:privacy@gravix.ai" className="text-accent-500 hover:underline text-sm">
-                privacy@gravix.ai
+              <a href="mailto:privacy@gravix.com" className="text-accent-500 hover:underline text-sm">
+                privacy@gravix.com
               </a>
             </div>
           </div>
