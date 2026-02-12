@@ -91,7 +91,7 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
             Start Pro — $49/mo
           </Button>
           <Button variant="ghost" size="md" onClick={() => onOpenChange(false)} className="w-full">
-            I'll wait
+            I&apos;ll wait
           </Button>
         </div>
       </DialogContent>
