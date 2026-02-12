@@ -7,8 +7,15 @@ const nextConfig = {
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
     ],
   },
-  turbopack: {
-    root: '/Users/evolve/.openclaw/workspace/frontend',
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.gravix.com' }],
+        destination: 'https://gravix.com/:path*',
+        permanent: true,
+      },
+    ];
   },
 }
 
