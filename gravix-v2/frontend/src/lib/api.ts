@@ -1,6 +1,51 @@
 import { supabase } from './supabase';
 import type { FailureAnalysis, SpecRequest, Case, User } from './types';
 
+type ApiUserProfile = {
+  id: string;
+  email: string;
+  name?: string | null;
+  company?: string | null;
+  role?: string | null;
+  plan?: string;
+  analyses_this_month?: number;
+  specs_this_month?: number;
+  analyses_reset_date?: string | null;
+  specs_reset_date?: string | null;
+  stripe_customer_id?: string | null;
+  avatar_url?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+};
+
+export type UsageResponse = {
+  analyses_used: number;
+  analyses_limit: number;
+  specs_used: number;
+  specs_limit: number;
+  plan: string;
+  reset_date?: string | null;
+};
+
+function mapUserProfile(u: ApiUserProfile): User {
+  return {
+    id: u.id,
+    email: u.email,
+    name: u.name ?? undefined,
+    company: u.company ?? undefined,
+    role: u.role ?? undefined,
+    plan: (u.plan as User['plan']) ?? 'free',
+    analysesThisMonth: u.analyses_this_month ?? 0,
+    specsThisMonth: u.specs_this_month ?? 0,
+    analysesResetDate: u.analyses_reset_date ?? null,
+    specsResetDate: u.specs_reset_date ?? null,
+    stripeCustomerId: u.stripe_customer_id ?? undefined,
+    avatarUrl: u.avatar_url ?? undefined,
+    createdAt: u.created_at ?? null,
+    updatedAt: u.updated_at ?? null,
+  };
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export class ApiClient {
@@ -109,6 +154,14 @@ export class ApiClient {
   async getCurrentUser(): Promise<User | null> {
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/users/me`, { headers });
+    if (!response.ok) return null;
+    const json = (await response.json()) as ApiUserProfile;
+    return mapUserProfile(json);
+  }
+
+  async getCurrentUserUsage(): Promise<UsageResponse | null> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/users/me/usage`, { headers });
     if (!response.ok) return null;
     return response.json();
   }

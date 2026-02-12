@@ -1,38 +1,137 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
+import { api, type UsageResponse } from '@/lib/api';
 import { FlaskConical, Search, ArrowRight, MessageSquare } from 'lucide-react';
 
+type HistoryType = 'spec' | 'failure';
+
+type HistoryItem = {
+  id: string;
+  type: HistoryType;
+  substrates: string;
+  result: string;
+  createdAt: string | null;
+  status?: string;
+};
+
+function formatDate(iso: string | null): string {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '—';
+  return d.toISOString().slice(0, 10);
+}
+
 export default function DashboardPage() {
-  const { user, loading } = useAuth();
-  const { used, limit } = useUsageTracking();
+  const { user: authUser, loading: authLoading } = useAuth();
+  const usageFallback = useUsageTracking();
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [recentAnalyses, setRecentAnalyses] = useState<HistoryItem[]>([]);
+  const [profilePlan, setProfilePlan] = useState<string>('free');
+  const [usage, setUsage] = useState<UsageResponse | null>(null);
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!authLoading && !authUser) {
       window.location.href = '/';
     }
-  }, [user, loading]);
+  }, [authUser, authLoading]);
 
-  if (loading || !user) {
-    return null;
-  }
+  useEffect(() => {
+    if (authLoading || !authUser) return;
 
-  const greeting = user?.email
-    ? `Welcome back, ${user.email.split('@')[0]}`
+    let cancelled = false;
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        const [profile, usageResp, specs, failures] = await Promise.all([
+          api.getCurrentUser(),
+          api.getCurrentUserUsage(),
+          api.listSpecRequests(),
+          api.listFailureAnalyses(),
+        ]);
+
+        if (cancelled) return;
+
+        setProfilePlan(profile?.plan ?? 'free');
+        setUsage(usageResp);
+
+        const specItems: HistoryItem[] = (specs as any[]).map((s) => {
+          const substrateA = s.substrate_a ?? s.substrateA;
+          const substrateB = s.substrate_b ?? s.substrateB;
+          const recommended = s.recommended_spec ?? s.recommendedSpec;
+          const recommendedType = recommended?.material_type ?? recommended?.materialType;
+          const recommendedTitle = recommended?.title;
+
+          return {
+            id: s.id,
+            type: 'spec',
+            substrates: substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—',
+            result: recommendedType ?? recommendedTitle ?? (s.material_category ?? s.materialCategory ?? 'Spec'),
+            createdAt: s.created_at ?? s.createdAt ?? null,
+            status: s.status,
+          };
+        });
+
+        const failureItems: HistoryItem[] = (failures as any[]).map((f) => {
+          const substrateA = f.substrate_a ?? f.substrateA;
+          const substrateB = f.substrate_b ?? f.substrateB;
+          const substrates = substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—';
+          const failureMode = f.failure_mode ?? f.failureMode;
+          const materialSub = f.material_subcategory ?? f.materialSubcategory;
+
+          return {
+            id: f.id,
+            type: 'failure',
+            substrates,
+            result: failureMode ?? materialSub ?? (f.material_category ?? f.materialCategory ?? 'Failure analysis'),
+            createdAt: f.created_at ?? f.createdAt ?? null,
+            status: f.status,
+          };
+        });
+
+        const merged = [...specItems, ...failureItems].sort((a, b) => {
+          const at = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const bt = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return bt - at;
+        });
+
+        setRecentAnalyses(merged.slice(0, 5));
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Failed to load dashboard');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [authLoading, authUser]);
+
+  const greeting = authUser?.email
+    ? `Welcome back, ${authUser.email.split('@')[0]}`
     : 'Welcome back';
 
-  // Mock recent analyses
-  const recentAnalyses = [
-    { id: '1', type: 'spec', substrates: 'Aluminum 6061 → ABS', result: 'Two-Part Epoxy', date: '2024-12-10', outcome: 'Confirmed' },
-    { id: '2', type: 'failure', substrates: 'Steel 304 → Polycarbonate', result: 'Surface Prep Issue', date: '2024-12-09', outcome: 'Pending' },
-    { id: '3', type: 'spec', substrates: 'HDPE → HDPE', result: 'Structural Acrylic', date: '2024-12-08', outcome: null },
-  ];
+  const usageText = useMemo(() => {
+    if (usage) return `${usage.analyses_used}/${usage.analyses_limit} analyses used`;
+    return `${usageFallback.used}/${usageFallback.limit} analyses used`;
+  }, [usage, usageFallback.limit, usageFallback.used]);
 
-  // Mock pending feedback
-  const pendingFeedback = 2;
+  // No feedback endpoint currently; treat completed items as needing feedback.
+  const pendingFeedback = useMemo(() => {
+    return recentAnalyses.filter((a) => a.status === 'completed').length;
+  }, [recentAnalyses]);
+
+  if (authLoading || !authUser) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto px-6 py-10">
@@ -41,9 +140,9 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-bold text-white mb-2 md:mb-0">{greeting}</h1>
         <div className="flex items-center gap-3">
           <span className="px-3 py-1 bg-accent-500/10 text-accent-500 text-xs font-semibold rounded-full uppercase">
-            {user ? 'Free' : 'Guest'}
+            {profilePlan}
           </span>
-          <span className="text-sm text-[#94A3B8] font-mono">{used}/{limit} analyses used</span>
+          <span className="text-sm text-[#94A3B8] font-mono">{usageText}</span>
         </div>
       </div>
 
@@ -85,48 +184,56 @@ export default function DashboardPage() {
           <h2 className="text-lg font-semibold text-white">Recent Analyses</h2>
           <Link href="/history" className="text-sm text-accent-500 hover:underline">View All →</Link>
         </div>
-        <div className="bg-brand-800 border border-[#1F2937] rounded-lg overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-[#1F2937]">
-                <th className="text-left text-xs text-[#64748B] font-medium p-4">Type</th>
-                <th className="text-left text-xs text-[#64748B] font-medium p-4">Substrates</th>
-                <th className="text-left text-xs text-[#64748B] font-medium p-4 hidden md:table-cell">Result</th>
-                <th className="text-left text-xs text-[#64748B] font-medium p-4 hidden md:table-cell">Outcome</th>
-                <th className="text-left text-xs text-[#64748B] font-medium p-4">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentAnalyses.map((a) => (
-                <tr
-                  key={a.id}
-                  className="border-b border-[#1F2937] last:border-0 hover:bg-[#1F2937] transition-colors cursor-pointer"
-                  onClick={() => window.location.href = `/history`}
-                >
-                  <td className="p-4">
-                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                      a.type === 'spec' ? 'bg-accent-500/10 text-accent-500' : 'bg-warning/10 text-warning'
-                    }`}>
-                      {a.type === 'spec' ? 'Spec' : 'Failure'}
-                    </span>
-                  </td>
-                  <td className="p-4 text-sm text-white">{a.substrates}</td>
-                  <td className="p-4 text-sm text-[#94A3B8] hidden md:table-cell">{a.result}</td>
-                  <td className="p-4 hidden md:table-cell">
-                    {a.outcome ? (
-                      <span className={`text-xs font-medium ${a.outcome === 'Confirmed' ? 'text-success' : 'text-warning'}`}>
-                        {a.outcome}
-                      </span>
-                    ) : (
-                      <span className="text-xs text-[#64748B]">—</span>
-                    )}
-                  </td>
-                  <td className="p-4 text-sm text-[#64748B]">{a.date}</td>
+
+        {loading && <div className="text-sm text-[#94A3B8] py-6">Loading…</div>}
+        {error && <div className="text-sm text-warning py-6">{error}</div>}
+
+        {!loading && !error && (
+          <div className="bg-brand-800 border border-[#1F2937] rounded-lg overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[#1F2937]">
+                  <th className="text-left text-xs text-[#64748B] font-medium p-4">Type</th>
+                  <th className="text-left text-xs text-[#64748B] font-medium p-4">Substrates</th>
+                  <th className="text-left text-xs text-[#64748B] font-medium p-4 hidden md:table-cell">Result</th>
+                  <th className="text-left text-xs text-[#64748B] font-medium p-4">Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {recentAnalyses.map((a) => (
+                  <tr
+                    key={a.id}
+                    className="border-b border-[#1F2937] last:border-0 hover:bg-[#1F2937] transition-colors cursor-pointer"
+                    onClick={() => (window.location.href = `/history/${a.type}/${a.id}`)}
+                  >
+                    <td className="p-4">
+                      <span
+                        className={`px-2 py-0.5 rounded text-xs font-medium ${
+                          a.type === 'spec'
+                            ? 'bg-accent-500/10 text-accent-500'
+                            : 'bg-warning/10 text-warning'
+                        }`}
+                      >
+                        {a.type === 'spec' ? 'Spec' : 'Failure'}
+                      </span>
+                    </td>
+                    <td className="p-4 text-sm text-white">{a.substrates}</td>
+                    <td className="p-4 text-sm text-[#94A3B8] hidden md:table-cell">{a.result}</td>
+                    <td className="p-4 text-sm text-[#64748B]">{formatDate(a.createdAt)}</td>
+                  </tr>
+                ))}
+
+                {recentAnalyses.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="p-6 text-sm text-[#94A3B8]">
+                      No recent analyses yet.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
