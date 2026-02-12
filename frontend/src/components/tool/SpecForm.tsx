@@ -8,7 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { specRequestSchema } from '@/lib/schemas';
+import { ZodError } from 'zod';
 
+// Map the Zod schema to the internal form data structure
 interface SpecFormData {
   substrateA: string;
   substrateB: string;
@@ -65,11 +68,31 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validate = (): boolean => {
-    const newErrors: Record<string, string> = {};
-    if (!formData.substrateA) newErrors.substrateA = 'Substrate A is required';
-    if (!formData.substrateB) newErrors.substrateB = 'Substrate B is required';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    try {
+      specRequestSchema.parse({
+        substrateA: formData.substrateA,
+        substrateB: formData.substrateB,
+        tempMin: formData.tempMin,
+        tempMax: formData.tempMax,
+        bondType: formData.loadType || undefined,
+        cureMethod: formData.cureConstraint || undefined,
+        gapSize: formData.gapFill || undefined,
+        additionalContext: formData.additionalContext || undefined,
+      });
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path.length > 0) {
+            newErrors[err.path[0].toString()] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {

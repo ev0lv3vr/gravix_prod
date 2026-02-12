@@ -61,18 +61,18 @@ export default function SpecToolPage() {
         additional_requirements: formData.additionalContext || undefined,
       };
 
-      const response = await api.createSpecRequest(requestData);
+      const response = await api.createSpecRequest(requestData) as import('@/lib/types').ApiSpecResponse;
 
       // Capture the record ID for feedback
-      const recordId = (response as any).id;
+      const recordId = response.id;
       if (recordId) setSpecId(recordId);
 
       // Map backend snake_case response to frontend SpecResultData
-      const recSpec = response.recommendedSpec || (response as any).recommended_spec || {};
-      const prodChars = response.productCharacteristics || (response as any).product_characteristics || {};
-      const appGuidance = response.applicationGuidance || (response as any).application_guidance || {};
-      const responseWarnings = response.warnings || (response as any).warnings || [];
-      const responseAlts = response.alternatives || (response as any).alternatives || [];
+      const recSpec = (response.recommendedSpec || response.recommended_spec || {}) as Partial<import('@/lib/types').RecommendedSpec>;
+      const prodChars = (response.productCharacteristics || response.product_characteristics || {}) as Partial<import('@/lib/types').ProductCharacteristics> & { viscosity_range?: string; cure_time?: string; shear_strength?: string; service_temperature?: string; gap_fill?: string };
+      const appGuidance = response.applicationGuidance || response.application_guidance || {};
+      const responseWarnings = response.warnings || [];
+      const responseAlts = response.alternatives || [];
 
       const mapped: SpecResultData = {
         recommendedSpec: {
@@ -82,28 +82,28 @@ export default function SpecToolPage() {
           rationale: recSpec.rationale || '',
         },
         productCharacteristics: {
-          viscosityRange: prodChars.viscosity || prodChars.viscosity_range,
-          cureTime: prodChars.cure_time || prodChars.cureTime,
-          expectedStrength: prodChars.shear_strength || prodChars.shearStrength,
-          temperatureResistance: prodChars.service_temperature || prodChars.serviceTemperature,
-          gapFillCapability: prodChars.gap_fill || prodChars.gapFill,
+          viscosityRange: prodChars.viscosity || prodChars.viscosity_range || 'Unknown',
+          cureTime: prodChars.cure_time || prodChars.cureTime || 'Unknown',
+          expectedStrength: prodChars.shear_strength || prodChars.shearStrength || 'Unknown',
+          temperatureResistance: prodChars.service_temperature || prodChars.serviceTemperature || 'Unknown',
+          gapFillCapability: prodChars.gap_fill || prodChars.gapFill || 'Unknown',
         },
         applicationGuidance: {
-          surfacePreparation: appGuidance.surface_prep || appGuidance.surfacePrep || [],
-          applicationTips: appGuidance.application_tips || appGuidance.applicationTips || [],
-          curingNotes: appGuidance.curing_notes || appGuidance.curingNotes || [],
-          commonMistakesToAvoid: appGuidance.mistakes_to_avoid || appGuidance.mistakesToAvoid || [],
+          surfacePreparation: (appGuidance as import('@/lib/types').ApiApplicationGuidance).surface_prep || (appGuidance as import('@/lib/types').ApplicationGuidance).surfacePrep || [],
+          applicationTips: (appGuidance as import('@/lib/types').ApiApplicationGuidance).application_tips || (appGuidance as import('@/lib/types').ApplicationGuidance).applicationTips || [],
+          curingNotes: (appGuidance as import('@/lib/types').ApiApplicationGuidance).curing_notes || (appGuidance as import('@/lib/types').ApplicationGuidance).curingNotes || [],
+          commonMistakesToAvoid: (appGuidance as import('@/lib/types').ApiApplicationGuidance).mistakes_to_avoid || (appGuidance as import('@/lib/types').ApplicationGuidance).mistakesToAvoid || [],
         },
         warnings: responseWarnings,
-        alternatives: (responseAlts).map((alt: any) => ({
+        alternatives: responseAlts.map((alt: import('@/lib/types').ApiAlternative) => ({
           materialType: alt.name || '',
           chemistry: alt.name || '',
           advantages: alt.pros || [],
           disadvantages: alt.cons || [],
           whenToUse: 'See advantages/disadvantages',
         })),
-        confidenceScore: (response as any).confidence_score || (response as any).confidenceScore || 0.85,
-        knowledgeEvidenceCount: (response as any).knowledge_evidence_count ?? (response as any).knowledgeEvidenceCount ?? undefined,
+        confidenceScore: response.confidence_score || response.confidenceScore || 0.85,
+        knowledgeEvidenceCount: response.knowledge_evidence_count ?? response.knowledgeEvidenceCount ?? undefined,
       };
 
       setResultData(mapped);

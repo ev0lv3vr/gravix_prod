@@ -38,7 +38,7 @@ export default function FailureHistoryDetailPage({ params }: { params: { id: str
       setError(null);
       try {
         const data = await api.getFailureAnalysis(params.id);
-        if (!cancelled) setAnalysis(data as any);
+        if (!cancelled) setAnalysis(data);
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load analysis');
       } finally {
@@ -57,10 +57,10 @@ export default function FailureHistoryDetailPage({ params }: { params: { id: str
   const status = analysis?.status;
   const confidence = analysis?.confidence_score ?? analysis?.confidenceScore;
   const rootCauses = useMemo(() => {
-    return (analysis?.root_causes ?? analysis?.rootCauses ?? []) as any[];
+    return (analysis?.root_causes ?? analysis?.rootCauses ?? []) as import('@/lib/types').RootCause[];
   }, [analysis]);
   const recommendations = useMemo(() => {
-    return (analysis?.recommendations ?? []) as any[];
+    return (analysis?.recommendations ?? []) as import('@/lib/types').ApiRecommendation[];
   }, [analysis]);
   const contributingFactors = useMemo(() => {
     return (analysis?.contributing_factors ?? analysis?.contributingFactors ?? []) as string[];
@@ -73,27 +73,28 @@ export default function FailureHistoryDetailPage({ params }: { params: { id: str
     return [];
   }, [analysis]);
   const similarCases = useMemo(() => {
-    return (analysis?.similar_cases ?? analysis?.similarCases ?? []) as any[];
+    return (analysis?.similar_cases ?? analysis?.similarCases ?? []) as import('@/lib/types').SimilarCase[];
   }, [analysis]);
   const knowledgeEvidenceCount = analysis?.knowledge_evidence_count ?? analysis?.knowledgeEvidenceCount ?? undefined;
 
   // Split recommendations into immediate and long-term
   const immediateRecs = useMemo(() => {
     if (Array.isArray(recommendations)) {
-      return recommendations.filter((r: any) => r.priority === 'immediate' || r.priority === 'short_term');
+      return recommendations.filter((r) => r.priority === 'immediate' || r.priority === 'short_term');
     }
     if (recommendations && typeof recommendations === 'object' && !Array.isArray(recommendations)) {
-      return (recommendations as any).immediate || [];
+      return (recommendations as import('@/lib/types').Recommendations).immediate || [];
     }
     return [];
   }, [recommendations]);
 
   const longTermRecs = useMemo(() => {
     if (Array.isArray(recommendations)) {
-      return recommendations.filter((r: any) => r.priority === 'long_term');
+      return recommendations.filter((r) => r.priority === 'long_term');
     }
     if (recommendations && typeof recommendations === 'object' && !Array.isArray(recommendations)) {
-      return (recommendations as any).longTerm || (recommendations as any).long_term || [];
+      const objRecs = recommendations as import('@/lib/types').Recommendations;
+      return objRecs.longTerm || [];
     }
     return [];
   }, [recommendations]);
@@ -102,7 +103,7 @@ export default function FailureHistoryDetailPage({ params }: { params: { id: str
   const uncategorizedRecs = useMemo(() => {
     if (Array.isArray(recommendations)) {
       return recommendations.filter(
-        (r: any) => r.priority !== 'immediate' && r.priority !== 'short_term' && r.priority !== 'long_term'
+        (r) => r.priority !== 'immediate' && r.priority !== 'short_term' && r.priority !== 'long_term'
       );
     }
     return [];

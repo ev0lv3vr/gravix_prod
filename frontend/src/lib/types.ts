@@ -64,6 +64,13 @@ export interface Recommendations {
   longTerm: string[];
 }
 
+// API recommendation format (with priority field)
+export interface ApiRecommendation {
+  title?: string;
+  description?: string;
+  priority?: 'immediate' | 'short_term' | 'long_term';
+}
+
 export interface SimilarCase {
   id: string;
   title: string;
@@ -233,4 +240,85 @@ export interface SpecRequestFormData {
   uvAvailable?: boolean;
   productionVolume?: string;
   applicationMethod?: string;
+}
+
+// History page types
+export interface HistoryItem {
+  id: string;
+  type: 'spec' | 'failure';
+  status: string;
+  date?: string;
+  substrates: string;
+  confidenceScore?: number | null;
+  title?: string;
+  result?: string;
+  createdAt?: string | null;
+  outcome?: null;
+  pdfAvailable?: boolean;
+}
+
+// Case filters
+export interface CaseFilters {
+  materialCategory?: string;
+  failureMode?: string;
+  industry?: string;
+  search?: string;
+}
+
+// Alternative spec (parsed from API)
+export interface ParsedAlternative {
+  name: string;
+  pros: string[];
+  cons: string[];
+}
+
+// API response types (snake_case from backend)
+export interface ApiFailureAnalysisResponse {
+  id: string;
+  root_causes?: RootCause[];
+  rootCauses?: RootCause[];
+  contributing_factors?: string[];
+  contributingFactors?: string[];
+  recommendations?: ApiRecommendation[] | Recommendations;
+  prevention_plan?: string;
+  preventionPlan?: string;
+  confidence_score?: number;
+  confidenceScore?: number;
+  similar_cases?: SimilarCase[];
+  similarCases?: SimilarCase[];
+  knowledge_evidence_count?: number;
+  knowledgeEvidenceCount?: number;
+}
+
+export interface ApiSpecResponse {
+  id: string;
+  recommended_spec?: RecommendedSpec;
+  recommendedSpec?: RecommendedSpec;
+  product_characteristics?: ProductCharacteristics;
+  productCharacteristics?: ProductCharacteristics;
+  application_guidance?: ApplicationGuidance | ApiApplicationGuidance;
+  applicationGuidance?: ApplicationGuidance | ApiApplicationGuidance;
+  warnings?: string[];
+  alternatives?: Alternative[] | ApiAlternative[];
+  confidence_score?: number;
+  confidenceScore?: number;
+  knowledge_evidence_count?: number;
+  knowledgeEvidenceCount?: number;
+}
+
+export interface ApiApplicationGuidance {
+  surface_prep?: string[];
+  surfacePrep?: string[];
+  application_tips?: string[];
+  applicationTips?: string[];
+  curing_notes?: string[];
+  curingNotes?: string[];
+  mistakes_to_avoid?: string[];
+  mistakesToAvoid?: string[];
+}
+
+export interface ApiAlternative {
+  name: string;
+  pros: string[];
+  cons: string[];
 }

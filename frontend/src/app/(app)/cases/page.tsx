@@ -30,7 +30,7 @@ export default function CasesPage() {
   // Fetch cases from API with filters
   useEffect(() => {
     setLoading(true);
-    const filters: any = {};
+    const filters: import('@/lib/types').CaseFilters = {};
     if (materialFilter !== 'All Materials') filters.materialCategory = materialFilter;
     if (failureModeFilter !== 'All Failure Modes') filters.failureMode = failureModeFilter;
     

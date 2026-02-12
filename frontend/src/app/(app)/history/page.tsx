@@ -77,7 +77,7 @@ export default function HistoryPage() {
         // Check if there might be more results
         setHasMore(specs.length === 20 || failures.length === 20);
 
-        const specItems: HistoryItem[] = (specs as any[]).map((s) => {
+        const specItems: HistoryItem[] = specs.map((s: any) => {
           const substrateA = s.substrate_a ?? s.substrateA;
           const substrateB = s.substrate_b ?? s.substrateB;
           const recommended = s.recommended_spec ?? s.recommendedSpec;
@@ -86,7 +86,7 @@ export default function HistoryPage() {
 
           return {
             id: s.id,
-            type: 'spec',
+            type: 'spec' as const,
             substrates: substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—',
             result: recommendedType ?? recommendedTitle ?? (s.material_category ?? s.materialCategory ?? 'Spec'),
             outcome: null,
@@ -97,7 +97,7 @@ export default function HistoryPage() {
           };
         });
 
-        const failureItems: HistoryItem[] = (failures as any[]).map((f) => {
+        const failureItems: HistoryItem[] = failures.map((f: any) => {
           const substrateA = f.substrate_a ?? f.substrateA;
           const substrateB = f.substrate_b ?? f.substrateB;
           const substrates = substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—';
@@ -106,7 +106,7 @@ export default function HistoryPage() {
 
           return {
             id: f.id,
-            type: 'failure',
+            type: 'failure' as const,
             substrates,
             result: failureMode ?? materialSub ?? (f.material_category ?? f.materialCategory ?? 'Failure analysis'),
             outcome: null,
@@ -151,7 +151,7 @@ export default function HistoryPage() {
         api.listFailureAnalyses({ limit: 20, offset }),
       ]);
 
-      const specItems: HistoryItem[] = (specs as any[]).map((s) => {
+      const specItems: HistoryItem[] = specs.map((s: any) => {
         const substrateA = s.substrate_a ?? s.substrateA;
         const substrateB = s.substrate_b ?? s.substrateB;
         const recommended = s.recommended_spec ?? s.recommendedSpec;
@@ -160,7 +160,7 @@ export default function HistoryPage() {
 
         return {
           id: s.id,
-          type: 'spec',
+          type: 'spec' as const,
           substrates: substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—',
           result: recommendedType ?? recommendedTitle ?? (s.material_category ?? s.materialCategory ?? 'Spec'),
           outcome: null,
@@ -171,7 +171,7 @@ export default function HistoryPage() {
         };
       });
 
-      const failureItems: HistoryItem[] = (failures as any[]).map((f) => {
+      const failureItems: HistoryItem[] = failures.map((f: any) => {
         const substrateA = f.substrate_a ?? f.substrateA;
         const substrateB = f.substrate_b ?? f.substrateB;
         const substrates = substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—';
@@ -180,7 +180,7 @@ export default function HistoryPage() {
 
         return {
           id: f.id,
-          type: 'failure',
+          type: 'failure' as const,
           substrates,
           result: failureMode ?? materialSub ?? (f.material_category ?? f.materialCategory ?? 'Failure analysis'),
           outcome: null,

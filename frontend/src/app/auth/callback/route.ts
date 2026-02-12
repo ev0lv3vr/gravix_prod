@@ -39,7 +39,7 @@ export async function GET(request: Request) {
   // Email confirmation / password reset — uses token_hash
   if (token_hash && type) {
     const { error } = await supabase.auth.verifyOtp({
-      type: type as any,
+      type: type as 'email' | 'signup' | 'magiclink' | 'recovery' | 'invite' | 'email_change',
       token_hash,
     });
 

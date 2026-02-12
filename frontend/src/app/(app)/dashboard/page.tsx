@@ -15,12 +15,15 @@ type HistoryItem = {
   id: string;
   type: HistoryType;
   substrates: string;
-  result: string;
-  createdAt: string | null;
+  result?: string;
+  createdAt?: string | null;
   status?: string;
+  date?: string;
+  title?: string;
+  confidenceScore?: number | null;
 };
 
-function formatDate(iso: string | null): string {
+function formatDate(iso: string | null | undefined): string {
   if (!iso) return '—';
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '—';
@@ -91,7 +94,7 @@ function DashboardContent() {
         setProfilePlan(profile?.plan ?? 'free');
         setUsage(usageResp);
 
-        const specItems: HistoryItem[] = (specs as any[]).map((s) => {
+        const specItems: import('@/lib/types').HistoryItem[] = specs.map((s: any) => {
           const substrateA = s.substrate_a ?? s.substrateA;
           const substrateB = s.substrate_b ?? s.substrateB;
           const recommended = s.recommended_spec ?? s.recommendedSpec;
@@ -100,15 +103,16 @@ function DashboardContent() {
 
           return {
             id: s.id,
-            type: 'spec',
+            type: 'spec' as const,
             substrates: substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—',
-            result: recommendedType ?? recommendedTitle ?? (s.material_category ?? s.materialCategory ?? 'Spec'),
-            createdAt: s.created_at ?? s.createdAt ?? null,
             status: s.status,
+            date: s.created_at ?? s.createdAt ?? '',
+            title: recommendedType ?? recommendedTitle ?? (s.material_category ?? s.materialCategory ?? 'Spec'),
+            confidenceScore: s.confidence_score ?? s.confidenceScore,
           };
         });
 
-        const failureItems: HistoryItem[] = (failures as any[]).map((f) => {
+        const failureItems: import('@/lib/types').HistoryItem[] = failures.map((f: any) => {
           const substrateA = f.substrate_a ?? f.substrateA;
           const substrateB = f.substrate_b ?? f.substrateB;
           const substrates = substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—';
@@ -117,11 +121,12 @@ function DashboardContent() {
 
           return {
             id: f.id,
-            type: 'failure',
+            type: 'failure' as const,
             substrates,
-            result: failureMode ?? materialSub ?? (f.material_category ?? f.materialCategory ?? 'Failure analysis'),
-            createdAt: f.created_at ?? f.createdAt ?? null,
             status: f.status,
+            date: f.created_at ?? f.createdAt ?? '',
+            title: failureMode ?? materialSub ?? (f.material_category ?? f.materialCategory ?? 'Failure analysis'),
+            confidenceScore: f.confidence_score ?? f.confidenceScore,
           };
         });
 

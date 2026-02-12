@@ -9,23 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { failureAnalysisSchema, type FailureAnalysisFormData } from '@/lib/schemas';
+import { ZodError } from 'zod';
 
-interface FailureFormData {
-  failureDescription: string;
-  adhesiveUsed: string;
-  substrateA: string;
-  substrateB: string;
-  failureMode: string;
-  timeToFailure: string;
-  industry: string;
-  environment: string[];
-  surfacePrep: string;
-  productionImpact: string;
-  additionalContext: string;
-}
+export type FailureFormData = FailureAnalysisFormData;
 
 interface FailureFormProps {
-  onSubmit: (data: FailureFormData) => void;
+  onSubmit: (data: FailureAnalysisFormData) => void;
   isLoading?: boolean;
 }
 
@@ -77,7 +67,7 @@ const COMMON_ADHESIVES = [
 ];
 
 export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
-  const [formData, setFormData] = useState<FailureFormData>({
+  const [formData, setFormData] = useState<FailureAnalysisFormData>({
     failureDescription: '',
     adhesiveUsed: '',
     substrateA: '',
@@ -97,13 +87,22 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
   const adhesiveRef = useRef<HTMLDivElement>(null);
 
   const validate = (): boolean => {
-    const errs: Record<string, string> = {};
-    if (!formData.failureDescription.trim() || formData.failureDescription.trim().length < 10) errs.failureDescription = 'Describe the failure (min 10 characters)';
-    if (!formData.substrateA) errs.substrateA = 'Substrate A is required';
-    if (!formData.substrateB) errs.substrateB = 'Substrate B is required';
-    if (!formData.failureMode) errs.failureMode = 'Select a failure mode';
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
+    try {
+      failureAnalysisSchema.parse(formData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const errs: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path.length > 0) {
+            errs[err.path[0].toString()] = err.message;
+          }
+        });
+        setErrors(errs);
+      }
+      return false;
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -111,7 +110,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
     if (validate()) onSubmit(formData);
   };
 
-  const updateField = <K extends keyof FailureFormData>(key: K, value: FailureFormData[K]) => {
+  const updateField = <K extends keyof FailureAnalysisFormData>(key: K, value: FailureAnalysisFormData[K]) => {
     setFormData(prev => ({ ...prev, [key]: value }));
     if (errors[key]) setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
   };
@@ -273,5 +272,3 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
     </div>
   );
 }
-
-export type { FailureFormData };

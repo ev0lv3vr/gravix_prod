@@ -48,42 +48,44 @@ export default function FailureAnalysisPage() {
         requestData.chemical_exposure = formData.environment.join(', ');
       }
 
-      const response = await api.createFailureAnalysis(requestData);
+      const response = await api.createFailureAnalysis(requestData) as import('@/lib/types').ApiFailureAnalysisResponse;
 
       // Capture the record ID for feedback
-      const recordId = (response as any).id;
+      const recordId = response.id;
       if (recordId) setAnalysisId(recordId);
 
       // Map backend snake_case response to frontend FailureResultData
       // Handle both camelCase (from types.ts) and snake_case (from backend) field names
-      const rootCauses = response.rootCauses || (response as any).root_causes || [];
-      const contribFactors = response.contributingFactors || (response as any).contributing_factors || [];
-      const recs = response.recommendations || (response as any).recommendations || [];
-      const prevPlan = (response as any).prevention_plan || (response as any).preventionPlan || '';
-      const confScore = (response as any).confidence_score || (response as any).confidenceScore || 0.85;
-      const simCases = (response as any).similar_cases || (response as any).similarCases || [];
-      const knowledgeEvidenceCount = (response as any).knowledge_evidence_count ?? (response as any).knowledgeEvidenceCount ?? undefined;
+      const rootCauses = response.rootCauses || response.root_causes || [];
+      const contribFactors = response.contributingFactors || response.contributing_factors || [];
+      const recs = response.recommendations || [];
+      const prevPlan = response.prevention_plan || response.preventionPlan || '';
+      const confScore = response.confidence_score || response.confidenceScore || 0.85;
+      const simCases = response.similar_cases || response.similarCases || [];
+      const knowledgeEvidenceCount = response.knowledge_evidence_count ?? response.knowledgeEvidenceCount ?? undefined;
 
       // Recommendations can come as array of objects or as {immediate, longTerm}
       let immediateActions: string[] = [];
       let longTermSolutions: string[] = [];
 
       if (Array.isArray(recs)) {
-        immediateActions = recs
-          .filter((r: any) => r.priority === 'immediate' || r.priority === 'short_term')
-          .map((r: any) => `${r.title}: ${r.description}`);
-        longTermSolutions = recs
-          .filter((r: any) => r.priority === 'long_term')
-          .map((r: any) => `${r.title}: ${r.description}`);
+        const apiRecs = recs as import('@/lib/types').ApiRecommendation[];
+        immediateActions = apiRecs
+          .filter((r) => r.priority === 'immediate' || r.priority === 'short_term')
+          .map((r) => `${r.title}: ${r.description}`);
+        longTermSolutions = apiRecs
+          .filter((r) => r.priority === 'long_term')
+          .map((r) => `${r.title}: ${r.description}`);
         // If no categorization, split evenly
         if (immediateActions.length === 0 && longTermSolutions.length === 0) {
-          const mid = Math.ceil(recs.length / 2);
-          immediateActions = recs.slice(0, mid).map((r: any) => typeof r === 'string' ? r : `${r.title || ''}: ${r.description || ''}`);
-          longTermSolutions = recs.slice(mid).map((r: any) => typeof r === 'string' ? r : `${r.title || ''}: ${r.description || ''}`);
+          const mid = Math.ceil(apiRecs.length / 2);
+          immediateActions = apiRecs.slice(0, mid).map((r) => typeof r === 'string' ? r : `${r.title || ''}: ${r.description || ''}`);
+          longTermSolutions = apiRecs.slice(mid).map((r) => typeof r === 'string' ? r : `${r.title || ''}: ${r.description || ''}`);
         }
       } else if (recs && typeof recs === 'object') {
-        immediateActions = (recs as any).immediate || [];
-        longTermSolutions = (recs as any).longTerm || (recs as any).long_term || [];
+        const objRecs = recs as import('@/lib/types').Recommendations;
+        immediateActions = objRecs.immediate || [];
+        longTermSolutions = objRecs.longTerm || [];
       }
 
       const mapped: FailureResultData = {
@@ -92,10 +94,10 @@ export default function FailureAnalysisPage() {
           confidence: rootCauses[0]?.confidence || 0.85,
           explanation: rootCauses[0]?.explanation || 'See details below.',
         },
-        rootCauses: rootCauses.map((rc: any, i: number) => ({
+        rootCauses: rootCauses.map((rc, i) => ({
           rank: i + 1,
           cause: rc.cause,
-          category: rc.category || 'general',
+          category: 'general',
           confidence: rc.confidence,
           explanation: rc.explanation,
           mechanism: Array.isArray(rc.evidence) ? rc.evidence.join('. ') : (rc.evidence || ''),

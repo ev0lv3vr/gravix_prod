@@ -39,7 +39,7 @@ export default function SpecHistoryDetailPage({ params }: { params: { id: string
       setError(null);
       try {
         const data = await api.getSpecRequest(params.id);
-        if (!cancelled) setSpec(data as any);
+        if (!cancelled) setSpec(data);
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load spec');
       } finally {
