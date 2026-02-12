@@ -219,6 +219,56 @@ export class ApiClient {
     return response.json();
   }
 
+  async updateProfile(data: {
+    name?: string;
+    company?: string;
+    role?: string;
+  }): Promise<User | null> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/users/me`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(
+        (error as { detail?: string }).detail || 'Failed to update profile'
+      );
+    }
+    const json = (await response.json()) as ApiUserProfile;
+    return mapUserProfile(json);
+  }
+
+  async createBillingPortalSession(): Promise<{ portal_url: string }> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/billing/portal`, {
+      method: 'POST',
+      headers,
+    });
+    if (!response.ok) {
+      throw new Error('Failed to create billing portal session');
+    }
+    return response.json();
+  }
+
+  async createCheckoutSession(params: {
+    price_id?: string;
+    success_url: string;
+    cancel_url: string;
+  }): Promise<{ checkout_url: string }> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/billing/checkout`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(params),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to create checkout session');
+    }
+    return response.json();
+  }
+
   // PDF Download URLs
   getAnalysisPdfUrl(id: string): string {
     return `${API_URL}/reports/analysis/${id}/pdf`;

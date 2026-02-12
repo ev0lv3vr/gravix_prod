@@ -161,6 +161,19 @@ export default function HistoryPage() {
     <div className="container mx-auto px-6 py-10">
       <h1 className="text-2xl font-bold text-white mb-8">Analysis History</h1>
 
+      {/* Free user banner */}
+      {isFreeUser && !loading && analyses.length > 0 && (
+        <div className="bg-accent-500/10 border border-accent-500/20 rounded-lg p-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <p className="text-sm text-white">
+            Free plan shows your last 5 analyses.{' '}
+            <Link href="/pricing" className="text-accent-500 hover:underline font-medium">
+              Upgrade to Pro
+            </Link>
+            {' '}for full history.
+          </p>
+        </div>
+      )}
+
       {/* Component 7.1: Filters Bar */}
       <div className="flex flex-col md:flex-row gap-3 mb-6">
         <FilterSelect

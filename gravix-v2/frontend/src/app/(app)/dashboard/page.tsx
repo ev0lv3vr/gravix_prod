@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState, useCallback } from 'react';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { api, type UsageResponse } from '@/lib/api';
-import { FlaskConical, Search, ArrowRight } from 'lucide-react';
+import { FlaskConical, Search, ArrowRight, X, CheckCircle, Info } from 'lucide-react';
 import { PendingFeedbackBanner } from '@/components/dashboard/PendingFeedbackBanner';
 
 type HistoryType = 'spec' | 'failure';
@@ -27,14 +28,42 @@ function formatDate(iso: string | null): string {
 }
 
 export default function DashboardPage() {
+  return (
+    <Suspense fallback={null}>
+      <DashboardContent />
+    </Suspense>
+  );
+}
+
+function DashboardContent() {
   const { user: authUser, loading: authLoading } = useAuth();
   const usageFallback = useUsageTracking();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [recentAnalyses, setRecentAnalyses] = useState<HistoryItem[]>([]);
   const [profilePlan, setProfilePlan] = useState<string>('free');
   const [usage, setUsage] = useState<UsageResponse | null>(null);
+  const [checkoutBanner, setCheckoutBanner] = useState<'success' | 'cancel' | null>(null);
+
+  // Checkout success/cancel URL param handling
+  useEffect(() => {
+    const checkout = searchParams.get('checkout');
+    if (checkout === 'success' || checkout === 'cancel') {
+      setCheckoutBanner(checkout);
+      // Clean the URL param
+      router.replace('/dashboard', { scroll: false });
+
+      if (checkout === 'success') {
+        const timer = setTimeout(() => setCheckoutBanner(null), 8000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [searchParams, router]);
+
+  const dismissBanner = useCallback(() => setCheckoutBanner(null), []);
 
   useEffect(() => {
     if (!authLoading && !authUser) {
@@ -133,6 +162,36 @@ export default function DashboardPage() {
 
   return (
     <div className="container mx-auto px-6 py-10">
+      {/* Checkout banners */}
+      {checkoutBanner === 'success' && (
+        <div className="bg-success/10 border border-success/20 rounded-lg p-4 mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
+            <p className="text-sm text-white">
+              🎉 Welcome to Pro! Your subscription is active.
+            </p>
+          </div>
+          <button onClick={dismissBanner} className="text-[#94A3B8] hover:text-white ml-4">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+      {checkoutBanner === 'cancel' && (
+        <div
+          className="bg-[#1F2937]/50 border border-[#374151] rounded-lg p-4 mb-6 flex items-center justify-between cursor-pointer"
+          onClick={dismissBanner}
+        >
+          <div className="flex items-center gap-2">
+            <Info className="w-5 h-5 text-[#94A3B8] flex-shrink-0" />
+            <p className="text-sm text-[#94A3B8]">
+              Checkout cancelled. You can upgrade anytime from{' '}
+              <Link href="/settings" className="text-accent-500 hover:underline">Settings</Link>.
+            </p>
+          </div>
+          <X className="w-4 h-4 text-[#64748B]" />
+        </div>
+      )}
+
       {/* Component 6.1: Dashboard Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
         <h1 className="text-2xl font-bold text-white mb-2 md:mb-0">{greeting}</h1>

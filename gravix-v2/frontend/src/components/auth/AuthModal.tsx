@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -11,14 +11,56 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Mail, Eye, EyeOff } from 'lucide-react';
+import { Mail, Eye, EyeOff, Check, X as XIcon } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
-type AuthView = 'sign-in' | 'sign-up' | 'forgot-password' | 'check-email';
+type AuthView = 'sign-in' | 'sign-up' | 'forgot-password' | 'check-email' | 'reset-sent';
 
 interface AuthModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+}
+
+function PasswordStrength({ password }: { password: string }) {
+  const hasMinLength = password.length >= 8;
+  const hasNumber = /\d/.test(password);
+  const allMet = hasMinLength && hasNumber;
+
+  if (!password) return null;
+
+  return (
+    <div className="space-y-1.5 mt-2">
+      <div className="flex gap-1">
+        <div
+          className={`h-1 flex-1 rounded-full transition-colors ${
+            hasMinLength ? (allMet ? 'bg-success' : 'bg-warning') : 'bg-[#374151]'
+          }`}
+        />
+        <div
+          className={`h-1 flex-1 rounded-full transition-colors ${
+            allMet ? 'bg-success' : 'bg-[#374151]'
+          }`}
+        />
+      </div>
+      <div className="space-y-0.5">
+        <StrengthRule met={hasMinLength} label="At least 8 characters" />
+        <StrengthRule met={hasNumber} label="Contains a number" />
+      </div>
+    </div>
+  );
+}
+
+function StrengthRule({ met, label }: { met: boolean; label: string }) {
+  return (
+    <div className="flex items-center gap-1.5 text-xs">
+      {met ? (
+        <Check className="w-3 h-3 text-success" />
+      ) : (
+        <XIcon className="w-3 h-3 text-[#64748B]" />
+      )}
+      <span className={met ? 'text-success' : 'text-[#64748B]'}>{label}</span>
+    </div>
+  );
 }
 
 export function AuthModal({ open, onOpenChange }: AuthModalProps) {
@@ -29,6 +71,12 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Track email used for reset/signup so we can display it in success views
+  const [submittedEmail, setSubmittedEmail] = useState('');
+  // Resend timer for forgot-password
+  const [resendCountdown, setResendCountdown] = useState(0);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
 
@@ -44,13 +92,39 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
   const handleClose = () => {
     resetForm();
     setView('sign-in');
+    setResendCountdown(0);
+    if (countdownRef.current) clearInterval(countdownRef.current);
     onOpenChange(false);
   };
 
   const switchView = (newView: AuthView) => {
     resetForm();
+    setResendCountdown(0);
+    if (countdownRef.current) clearInterval(countdownRef.current);
     setView(newView);
   };
+
+  // Start resend countdown
+  const startResendCountdown = useCallback(() => {
+    setResendCountdown(30);
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    countdownRef.current = setInterval(() => {
+      setResendCountdown((prev) => {
+        if (prev <= 1) {
+          if (countdownRef.current) clearInterval(countdownRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (countdownRef.current) clearInterval(countdownRef.current);
+    };
+  }, []);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +137,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
       setError(authError.message || 'Invalid email or password');
       setIsLoading(false);
     } else {
-      // AuthContext.onAuthStateChange handles redirect to /dashboard
       onOpenChange(false);
     }
   };
@@ -75,6 +148,12 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
 
     if (password.length < 8) {
       setError('Password must be at least 8 characters');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!/\d/.test(password)) {
+      setError('Password must contain at least one number');
       setIsLoading(false);
       return;
     }
@@ -91,6 +170,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
       setError(authError.message || 'Failed to create account');
       setIsLoading(false);
     } else {
+      setSubmittedEmail(email);
       setView('check-email');
       setIsLoading(false);
     }
@@ -107,8 +187,25 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
       setError(authError.message || 'Failed to send reset link');
       setIsLoading(false);
     } else {
-      setView('check-email');
+      setSubmittedEmail(email);
+      setView('reset-sent');
       setIsLoading(false);
+      startResendCountdown();
+    }
+  };
+
+  const handleResendResetLink = async () => {
+    if (resendCountdown > 0 || !submittedEmail) return;
+    setIsLoading(true);
+    setError(null);
+
+    const { error: authError } = await resetPassword(submittedEmail);
+    setIsLoading(false);
+
+    if (authError) {
+      setError(authError.message || 'Failed to resend reset link');
+    } else {
+      startResendCountdown();
     }
   };
 
@@ -295,6 +392,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                     />
                     <PasswordToggle />
                   </div>
+                  <PasswordStrength password={password} />
                 </div>
 
                 <div className="space-y-2">
@@ -391,8 +489,8 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
           </>
         )}
 
-        {/* Check Email (after sign up or forgot password) */}
-        {view === 'check-email' && (
+        {/* Reset link sent (forgot-password success) */}
+        {view === 'reset-sent' && (
           <div className="text-center py-8">
             <div className="flex justify-center mb-4">
               <div className="w-16 h-16 rounded-full bg-accent-500/10 flex items-center justify-center">
@@ -401,9 +499,52 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
             </div>
             <DialogTitle className="mb-2 text-white text-xl">Check your inbox</DialogTitle>
             <DialogDescription className="text-text-secondary">
-              We sent a confirmation email to <strong className="text-white">{email}</strong>
+              Password reset link sent to <strong className="text-white">{submittedEmail}</strong>.
               <br />
-              Click the link to verify your account.
+              Check your inbox and click the link to reset your password.
+            </DialogDescription>
+
+            <ErrorMessage />
+
+            <div className="flex flex-col gap-3 items-center mt-6">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleResendResetLink}
+                disabled={resendCountdown > 0 || isLoading}
+                className="text-accent-500 hover:text-accent-400 disabled:text-text-tertiary"
+              >
+                {resendCountdown > 0
+                  ? `Resend in ${resendCountdown}s`
+                  : isLoading
+                    ? 'Sending…'
+                    : 'Resend reset link'}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => switchView('sign-in')}
+                className="text-text-secondary hover:text-white"
+              >
+                Back to sign in
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Check Email (after sign up) */}
+        {view === 'check-email' && (
+          <div className="text-center py-8">
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 rounded-full bg-accent-500/10 flex items-center justify-center">
+                <Mail className="w-8 h-8 text-accent-500" />
+              </div>
+            </div>
+            <DialogTitle className="mb-2 text-white text-xl">Verify your email</DialogTitle>
+            <DialogDescription className="text-text-secondary">
+              Check your email to verify your account.
+              <br />
+              We sent a confirmation link to <strong className="text-white">{submittedEmail}</strong>.
             </DialogDescription>
             <div className="flex gap-3 justify-center mt-6">
               <Button
