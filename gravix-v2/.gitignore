@@ -6,6 +6,7 @@ api/venv/
 .next/
 out/
 dist/
+*.tsbuildinfo
 
 # Environment
 .env
