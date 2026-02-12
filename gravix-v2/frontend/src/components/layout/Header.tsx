@@ -31,6 +31,8 @@ export function Header() {
     }
     api.getCurrentUser().then((u) => {
       setIsAdmin(u?.role === 'admin');
+    }).catch(() => {
+      setIsAdmin(false);
     });
   }, [user]);
 

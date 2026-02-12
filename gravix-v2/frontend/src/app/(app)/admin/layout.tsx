@@ -20,6 +20,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     api.getCurrentUser().then((u) => {
       setAuthorized(u?.role === 'admin');
+    }).catch(() => {
+      setAuthorized(false);
     });
   }, []);
 
