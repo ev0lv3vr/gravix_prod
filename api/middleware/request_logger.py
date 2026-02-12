@@ -16,7 +16,7 @@ import uuid
 from typing import Any, Optional
 
 from fastapi import Request
-from fastapi.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from jose import jwt, JWTError
 
 from config import settings
