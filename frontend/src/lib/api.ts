@@ -143,9 +143,13 @@ export class ApiClient {
     return response.json();
   }
 
-  async listFailureAnalyses(): Promise<FailureAnalysis[]> {
+  async listFailureAnalyses(params?: { limit?: number; offset?: number }): Promise<FailureAnalysis[]> {
     const headers = await this.getAuthHeaders();
-    const response = await fetch(`${API_URL}/analyze`, { headers });
+    const queryParams = new URLSearchParams();
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+    if (params?.offset) queryParams.set('offset', params.offset.toString());
+    const url = `${API_URL}/analyze${queryParams.toString() ? `?${queryParams}` : ''}`;
+    const response = await fetch(url, { headers });
     if (!response.ok) {
       throw new Error('Failed to fetch analyses');
     }
@@ -176,9 +180,13 @@ export class ApiClient {
     return response.json();
   }
 
-  async listSpecRequests(): Promise<SpecRequest[]> {
+  async listSpecRequests(params?: { limit?: number; offset?: number }): Promise<SpecRequest[]> {
     const headers = await this.getAuthHeaders();
-    const response = await fetch(`${API_URL}/specify`, { headers });
+    const queryParams = new URLSearchParams();
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+    if (params?.offset) queryParams.set('offset', params.offset.toString());
+    const url = `${API_URL}/specify${queryParams.toString() ? `?${queryParams}` : ''}`;
+    const response = await fetch(url, { headers });
     if (!response.ok) {
       throw new Error('Failed to fetch specs');
     }
@@ -279,6 +287,45 @@ export class ApiClient {
 
   getSpecPdfUrl(id: string): string {
     return `${API_URL}/reports/spec/${id}/pdf`;
+  }
+
+  // PDF Download with Auth
+  async downloadAnalysisPdf(id: string): Promise<void> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/reports/analysis/${id}/pdf`, {
+      headers,
+    });
+    if (!response.ok) {
+      throw new Error('Failed to download PDF');
+    }
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `gravix-analysis-${id.slice(0, 8)}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+  async downloadSpecPdf(id: string): Promise<void> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/reports/spec/${id}/pdf`, {
+      headers,
+    });
+    if (!response.ok) {
+      throw new Error('Failed to download PDF');
+    }
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `gravix-spec-${id.slice(0, 8)}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   }
 
   // Feedback

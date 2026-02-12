@@ -45,6 +45,8 @@ export default function HistoryPage() {
   const [error, setError] = useState<string | null>(null);
   const [plan, setPlan] = useState<string>('free');
   const [analyses, setAnalyses] = useState<HistoryItem[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !authUser) {
@@ -64,13 +66,16 @@ export default function HistoryPage() {
       try {
         const [profile, specs, failures] = await Promise.all([
           api.getCurrentUser(),
-          api.listSpecRequests(),
-          api.listFailureAnalyses(),
+          api.listSpecRequests({ limit: 20, offset: 0 }),
+          api.listFailureAnalyses({ limit: 20, offset: 0 }),
         ]);
 
         if (cancelled) return;
 
         setPlan(profile?.plan ?? 'free');
+        
+        // Check if there might be more results
+        setHasMore(specs.length === 20 || failures.length === 20);
 
         const specItems: HistoryItem[] = (specs as any[]).map((s) => {
           const substrateA = s.substrate_a ?? s.substrateA;
@@ -134,6 +139,72 @@ export default function HistoryPage() {
 
   const isFreeUser = plan === 'free';
   const visibleLimit = isFreeUser ? 5 : analyses.length;
+
+  const loadMore = async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    
+    try {
+      const offset = analyses.length;
+      const [specs, failures] = await Promise.all([
+        api.listSpecRequests({ limit: 20, offset }),
+        api.listFailureAnalyses({ limit: 20, offset }),
+      ]);
+
+      const specItems: HistoryItem[] = (specs as any[]).map((s) => {
+        const substrateA = s.substrate_a ?? s.substrateA;
+        const substrateB = s.substrate_b ?? s.substrateB;
+        const recommended = s.recommended_spec ?? s.recommendedSpec;
+        const recommendedType = recommended?.material_type ?? recommended?.materialType;
+        const recommendedTitle = recommended?.title;
+
+        return {
+          id: s.id,
+          type: 'spec',
+          substrates: substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—',
+          result: recommendedType ?? recommendedTitle ?? (s.material_category ?? s.materialCategory ?? 'Spec'),
+          outcome: null,
+          status: s.status,
+          confidenceScore: s.confidence_score ?? s.confidenceScore ?? null,
+          createdAt: s.created_at ?? s.createdAt ?? null,
+          pdfAvailable: true,
+        };
+      });
+
+      const failureItems: HistoryItem[] = (failures as any[]).map((f) => {
+        const substrateA = f.substrate_a ?? f.substrateA;
+        const substrateB = f.substrate_b ?? f.substrateB;
+        const substrates = substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—';
+        const failureMode = f.failure_mode ?? f.failureMode;
+        const materialSub = f.material_subcategory ?? f.materialSubcategory;
+
+        return {
+          id: f.id,
+          type: 'failure',
+          substrates,
+          result: failureMode ?? materialSub ?? (f.material_category ?? f.materialCategory ?? 'Failure analysis'),
+          outcome: null,
+          status: f.status,
+          confidenceScore: f.confidence_score ?? f.confidenceScore ?? null,
+          createdAt: f.created_at ?? f.createdAt ?? null,
+          pdfAvailable: true,
+        };
+      });
+
+      const newItems = [...specItems, ...failureItems].sort((a, b) => {
+        const at = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bt = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bt - at;
+      });
+
+      setAnalyses(prev => [...prev, ...newItems]);
+      setHasMore(specs.length === 20 || failures.length === 20);
+    } catch (e) {
+      console.error('Failed to load more:', e);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   const filtered = useMemo(() => {
     return analyses.filter((a) => {
@@ -224,7 +295,6 @@ export default function HistoryPage() {
 
         {!loading && !error && filtered.slice(0, visibleLimit).map((a) => {
           const href = `/history/${a.type}/${a.id}`;
-          const pdfUrl = a.type === 'spec' ? api.getSpecPdfUrl(a.id) : api.getAnalysisPdfUrl(a.id);
 
           return (
             <Link
@@ -264,7 +334,11 @@ export default function HistoryPage() {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+                    if (a.type === 'spec') {
+                      api.downloadSpecPdf(a.id);
+                    } else {
+                      api.downloadAnalysisPdf(a.id);
+                    }
                   }}
                 >
                   <Download className="w-4 h-4" />
@@ -302,9 +376,15 @@ export default function HistoryPage() {
         )}
 
         {/* Load more (for Pro users) */}
-        {!isFreeUser && !loading && !error && filtered.length > 10 && (
+        {!isFreeUser && !loading && !error && hasMore && (
           <div className="text-center pt-4">
-            <Button variant="outline">Load more</Button>
+            <Button 
+              variant="outline" 
+              onClick={loadMore}
+              disabled={loadingMore}
+            >
+              {loadingMore ? 'Loading...' : 'Load more'}
+            </Button>
           </div>
         )}
 

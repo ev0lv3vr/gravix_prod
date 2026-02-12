@@ -58,7 +58,6 @@ export default function SpecHistoryDetailPage({ params }: { params: { id: string
   const status = spec?.status;
   const confidence = spec?.confidence_score ?? spec?.confidenceScore;
   const recommended = spec?.recommended_spec ?? spec?.recommendedSpec;
-  const pdfUrl = api.getSpecPdfUrl(params.id);
 
   // Application guidance
   const guidance = useMemo(() => {
@@ -115,7 +114,7 @@ export default function SpecHistoryDetailPage({ params }: { params: { id: string
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
-            onClick={() => window.open(pdfUrl, '_blank', 'noopener,noreferrer')}
+            onClick={() => api.downloadSpecPdf(params.id)}
           >
             Download PDF
           </Button>

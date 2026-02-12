@@ -6,6 +6,7 @@ import { ConfidenceBadge } from '../shared/ConfidenceBadge';
 import { FeedbackPrompt } from '../results/FeedbackPrompt';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { api } from '@/lib/api';
 
 interface FailureResultsProps {
   status: 'idle' | 'loading' | 'success' | 'error';
@@ -257,8 +258,23 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
         {/* 9. Action bar */}
         <div className="fixed bottom-0 left-0 right-0 md:left-[45%] bg-[#0A1628] border-t border-[#1F2937] p-4 z-50">
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button variant="outline" className="flex-1 min-h-[44px]">Export PDF</Button>
-            <Button variant="outline" className="flex-1 min-h-[44px]">Request Expert Review</Button>
+            <Button 
+              variant="outline" 
+              className="flex-1 min-h-[44px]"
+              onClick={() => analysisId && api.downloadAnalysisPdf(analysisId)}
+              disabled={!analysisId}
+            >
+              Export PDF
+            </Button>
+            <Button 
+              variant="outline" 
+              className="flex-1 min-h-[44px]"
+              asChild
+            >
+              <a href={`mailto:support@gravix.com?subject=Expert Review Request — Analysis ${analysisId || ''}&body=Hi Gravix Team,%0D%0A%0D%0AI would like to request an expert review of my failure analysis.%0D%0A%0D%0AAnalysis ID: ${analysisId || ''}%0D%0A%0D%0AThank you!`}>
+                Request Expert Review
+              </a>
+            </Button>
             {onRunSpecAnalysis && (
               <Button onClick={onRunSpecAnalysis} variant="outline" className="flex-1 min-h-[44px]">Run Spec Analysis →</Button>
             )}

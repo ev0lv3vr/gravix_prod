@@ -108,8 +108,6 @@ export default function FailureHistoryDetailPage({ params }: { params: { id: str
     return [];
   }, [recommendations]);
 
-  const pdfUrl = api.getAnalysisPdfUrl(params.id);
-
   if (authLoading || !authUser) return null;
 
   return (
@@ -124,7 +122,7 @@ export default function FailureHistoryDetailPage({ params }: { params: { id: str
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
-            onClick={() => window.open(pdfUrl, '_blank', 'noopener,noreferrer')}
+            onClick={() => api.downloadAnalysisPdf(params.id)}
           >
             Download PDF
           </Button>
