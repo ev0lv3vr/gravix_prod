@@ -14,6 +14,8 @@ type Status = 'idle' | 'loading' | 'complete' | 'error';
 export default function SpecToolPage() {
   const [status, setStatus] = useState<Status>('idle');
   const [resultData, setResultData] = useState<SpecResultData | null>(null);
+  const [specId, setSpecId] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   const { user } = useAuth();
@@ -61,6 +63,10 @@ export default function SpecToolPage() {
 
       const response = await api.createSpecRequest(requestData);
 
+      // Capture the record ID for feedback
+      const recordId = (response as any).id;
+      if (recordId) setSpecId(recordId);
+
       // Map backend snake_case response to frontend SpecResultData
       const recSpec = response.recommendedSpec || (response as any).recommended_spec || {};
       const prodChars = response.productCharacteristics || (response as any).product_characteristics || {};
@@ -104,11 +110,12 @@ export default function SpecToolPage() {
       incrementUsage(user);
     } catch (err) {
       console.error('Spec generation error:', err);
+      setErrorMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
       setStatus('error');
     }
   };
 
-  const handleNewAnalysis = () => { setStatus('idle'); setResultData(null); };
+  const handleNewAnalysis = () => { setStatus('idle'); setResultData(null); setSpecId(null); setErrorMessage(null); };
 
   const resultsStatus = status === 'idle' ? 'idle' : status === 'complete' ? 'success' : status === 'error' ? 'error' : 'loading';
 
@@ -116,7 +123,7 @@ export default function SpecToolPage() {
     <>
       <ToolLayout
         formPanel={<SpecForm onSubmit={handleSubmit} isLoading={status === 'loading'} />}
-        resultsPanel={<SpecResults status={resultsStatus} data={resultData} onNewAnalysis={handleNewAnalysis} isFree={!user} />}
+        resultsPanel={<SpecResults status={resultsStatus} data={resultData} specId={specId} errorMessage={errorMessage} onNewAnalysis={handleNewAnalysis} isFree={!user} />}
       />
       <UpgradeModal open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen} onUpgrade={() => window.location.href = '/pricing'} />
     </>
