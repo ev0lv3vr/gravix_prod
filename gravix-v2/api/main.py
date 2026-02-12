@@ -8,7 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from config import settings
-from routers import health, analyze, specify, users, cases, reports, billing
+from routers import health, analyze, specify, users, cases, reports, billing, stats
+from middleware.request_logger import RequestLoggerMiddleware
 
 logging.basicConfig(
     level=logging.DEBUG if settings.debug else logging.INFO,
@@ -42,6 +43,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Request logging middleware (best-effort; never blocks requests)
+app.add_middleware(RequestLoggerMiddleware)
+
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
@@ -61,6 +65,7 @@ app.include_router(users.router)
 app.include_router(cases.router)
 app.include_router(reports.router)
 app.include_router(billing.router)
+app.include_router(stats.router)
 
 
 if __name__ == "__main__":
