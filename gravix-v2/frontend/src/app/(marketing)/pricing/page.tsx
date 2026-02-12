@@ -80,7 +80,7 @@ export default function PricingPage() {
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Pro</h3>
             <div className="mb-6">
-              <span className="text-4xl font-bold text-white">$49</span>
+              <span className="text-4xl font-bold text-white">$79</span>
               <span className="text-sm text-[#64748B] ml-1">/mo</span>
             </div>
             <p className="text-sm text-[#94A3B8] mb-6">Unlimited analyses</p>
@@ -105,7 +105,7 @@ export default function PricingPage() {
           <div className="bg-brand-800 border border-[#1F2937] rounded-xl p-8">
             <h3 className="text-xl font-bold text-white mb-2">Team</h3>
             <div className="mb-6">
-              <span className="text-4xl font-bold text-white">$149</span>
+              <span className="text-4xl font-bold text-white">$199</span>
               <span className="text-sm text-[#64748B] ml-1">/mo</span>
             </div>
             <p className="text-sm text-[#94A3B8] mb-6">Unlimited analyses</p>

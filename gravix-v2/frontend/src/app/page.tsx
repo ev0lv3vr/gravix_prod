@@ -517,7 +517,7 @@ function PricingPreview() {
           {/* Pro */}
           <div className="w-full md:max-w-[360px] bg-brand-800 border border-accent-500 border-t-[3px] border-t-accent-500 rounded-lg p-8 text-left">
             <h3 className="text-xl font-bold text-white mb-1">Pro</h3>
-            <div className="text-3xl font-bold text-white mb-1">$49<span className="text-base font-normal text-text-tertiary">/mo</span></div>
+            <div className="text-3xl font-bold text-white mb-1">$79<span className="text-base font-normal text-text-tertiary">/mo</span></div>
             <ul className="space-y-3 mb-8 mt-6">
               {[
                 'Unlimited analyses',
