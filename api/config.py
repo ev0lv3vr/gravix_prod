@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     database_url: str = ""
 
     # CORS
-    allowed_origins: str = "http://localhost:3000"
+    allowed_origins: str = "https://gravix.com,https://www.gravix.com,http://localhost:3000"
 
     # AI Settings
     max_retries_ai: int = 3
