@@ -3,7 +3,7 @@
 import logging
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response
 
 from database import get_supabase
 from schemas.case import CaseListItem, CaseDetail
@@ -15,6 +15,7 @@ router = APIRouter(prefix="/cases", tags=["cases"])
 
 @router.get("", response_model=list[CaseListItem])
 async def list_cases(
+    response: Response,
     material_category: Optional[str] = Query(None),
     failure_mode: Optional[str] = Query(None),
     industry: Optional[str] = Query(None),
@@ -22,6 +23,9 @@ async def list_cases(
     offset: int = Query(0),
 ):
     """List public cases with optional filters."""
+    # Sprint 10.3: Cache case library for 2 minutes
+    response.headers["Cache-Control"] = "public, max-age=120"
+    
     db = get_supabase()
     query = db.table("cases").select("*")
 

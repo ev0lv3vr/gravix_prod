@@ -11,7 +11,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 
 from database import get_supabase
 
@@ -35,7 +35,7 @@ def _safe_float(value: Any, default: float | None = None) -> float | None:
 
 
 @router.get("/public")
-async def get_public_stats() -> dict:
+async def get_public_stats(response: Response) -> dict:
     """Return public aggregate stats for marketing/dashboard.
 
     Reads from daily_metrics first (fast, pre-aggregated).
@@ -50,6 +50,9 @@ async def get_public_stats() -> dict:
     - knowledge_patterns_count (Sprint 6)
     """
 
+    # Sprint 10.3: Cache public stats for 5 minutes
+    response.headers["Cache-Control"] = "public, max-age=300"
+    
     db = get_supabase()
 
     # Try daily_metrics first (Sprint 6.5)

@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from config import settings
 from routers import health, analyze, specify, users, cases, reports, billing, stats, feedback, cron, admin
 from middleware.request_logger import RequestLoggerMiddleware
+from middleware.rate_limiter import RateLimitMiddleware
 
 logging.basicConfig(
     level=logging.DEBUG if settings.debug else logging.INFO,
@@ -46,11 +47,29 @@ app.add_middleware(
 # Request logging middleware (best-effort; never blocks requests)
 app.add_middleware(RequestLoggerMiddleware)
 
+# Rate limiting middleware (Sprint 10.2)
+app.add_middleware(RateLimitMiddleware)
+
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    """Global exception handler for unhandled errors."""
-    logger.exception(f"Unhandled exception: {exc}")
+    """Global exception handler for unhandled errors.
+    
+    Sprint 10.1: Structured error logging for production monitoring.
+    """
+    # Structured error log with request context
+    logger.error(
+        "Unhandled exception",
+        extra={
+            "error_type": type(exc).__name__,
+            "error_message": str(exc),
+            "path": request.url.path,
+            "method": request.method,
+            "client_host": request.client.host if request.client else None,
+            "user_id": getattr(request.state, "user_id", None),
+        },
+        exc_info=True,
+    )
     return JSONResponse(
         status_code=500,
         content={"detail": "Internal server error"},

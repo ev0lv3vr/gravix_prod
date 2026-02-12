@@ -17,9 +17,59 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'GRAVIX — Industrial Adhesive Specification Platform',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://gravix.com'),
+  title: {
+    default: 'GRAVIX — Industrial Adhesive Specification & Failure Analysis',
+    template: '%s | GRAVIX',
+  },
   description:
-    'AI-powered platform for precise adhesive specification and failure analysis. Trusted by manufacturing engineers worldwide.',
+    'AI-powered platform for precise adhesive specification and failure analysis. Get instant recommendations for industrial bonding applications. Trusted by manufacturing engineers worldwide.',
+  keywords: [
+    'adhesive specification',
+    'bond failure analysis',
+    'industrial adhesives',
+    'materials engineering',
+    'manufacturing',
+    'AI materials intelligence',
+  ],
+  authors: [{ name: 'GRAVIX' }],
+  creator: 'GRAVIX',
+  publisher: 'GRAVIX',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: '/',
+    siteName: 'GRAVIX',
+    title: 'GRAVIX — Industrial Adhesive Specification & Failure Analysis',
+    description:
+      'AI-powered platform for precise adhesive specification and failure analysis. Trusted by manufacturing engineers worldwide.',
+    images: [
+      {
+        url: '/og-image.png', // Placeholder - will need to create
+        width: 1200,
+        height: 630,
+        alt: 'GRAVIX Platform',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GRAVIX — Industrial Adhesive Specification & Failure Analysis',
+    description:
+      'AI-powered platform for precise adhesive specification and failure analysis.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({
