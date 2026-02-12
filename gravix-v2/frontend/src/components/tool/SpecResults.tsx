@@ -3,12 +3,15 @@
 import { useEffect, useState } from 'react';
 import { FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { ConfidenceBadge } from '../shared/ConfidenceBadge';
+import { FeedbackPrompt } from '../results/FeedbackPrompt';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface SpecResultsProps {
   status: 'idle' | 'loading' | 'success' | 'error';
   data?: SpecResultData | null;
+  specId?: string | null;
+  errorMessage?: string | null;
   onNewAnalysis?: () => void;
   isFree?: boolean;
 }
@@ -46,7 +49,7 @@ interface SpecResultData {
   confidenceScore: number;
 }
 
-export function SpecResults({ status, data, onNewAnalysis, isFree: _isFree = true }: SpecResultsProps) {
+export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis, isFree: _isFree = true }: SpecResultsProps) {
   const [loadingPhase, setLoadingPhase] = useState(1);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [expandedAlts, setExpandedAlts] = useState<number[]>([]);
@@ -103,12 +106,22 @@ export function SpecResults({ status, data, onNewAnalysis, isFree: _isFree = tru
   if (status === 'error') {
     return (
       <div className="h-full flex flex-col items-center justify-center text-center px-8">
-        <div className="w-12 h-12 rounded-full bg-danger/20 flex items-center justify-center mb-4">
-          <span className="text-2xl">⚠️</span>
+        <div className="w-full max-w-md space-y-4">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg">⚠️</span>
+              <h2 className="text-base font-semibold text-red-400">Analysis Failed</h2>
+            </div>
+            <p className="text-sm text-[#94A3B8]">
+              {errorMessage || 'Something went wrong. Please try again.'}
+            </p>
+          </div>
+          {onNewAnalysis && (
+            <Button onClick={onNewAnalysis} variant="outline" className="w-full">
+              Try Again
+            </Button>
+          )}
         </div>
-        <h2 className="text-lg font-semibold text-white mb-2">Analysis Failed</h2>
-        <p className="text-sm text-[#94A3B8] mb-6">Something went wrong. Please try again.</p>
-        {onNewAnalysis && <Button onClick={onNewAnalysis} variant="outline">Try Again</Button>}
       </div>
     );
   }
@@ -229,7 +242,10 @@ export function SpecResults({ status, data, onNewAnalysis, isFree: _isFree = tru
           </div>
         )}
 
-        {/* 8. Action bar */}
+        {/* 8. Feedback prompt */}
+        {specId && <FeedbackPrompt specId={specId} />}
+
+        {/* 9. Action bar */}
         <div className="fixed bottom-0 left-0 right-0 md:left-[45%] bg-[#0A1628] border-t border-[#1F2937] p-4 z-50">
           <div className="flex flex-col sm:flex-row gap-3">
             <Button variant="outline" className="flex-1 min-h-[44px]">Export PDF</Button>

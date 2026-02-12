@@ -16,6 +16,8 @@ export default function FailureAnalysisPage() {
   const router = useRouter();
   const [status, setStatus] = useState<Status>('idle');
   const [resultData, setResultData] = useState<FailureResultData | null>(null);
+  const [analysisId, setAnalysisId] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   const { user } = useAuth();
@@ -39,12 +41,18 @@ export default function FailureAnalysisPage() {
       if (formData.timeToFailure) requestData.time_to_failure = formData.timeToFailure;
       if (formData.surfacePrep) requestData.surface_preparation = formData.surfacePrep;
       if (formData.additionalContext) requestData.additional_notes = formData.additionalContext;
+      if (formData.industry) requestData.industry = formData.industry;
+      if (formData.productionImpact) requestData.production_impact = formData.productionImpact;
       // Environment conditions go into chemical_exposure or additional_notes
       if (formData.environment.length > 0) {
         requestData.chemical_exposure = formData.environment.join(', ');
       }
 
       const response = await api.createFailureAnalysis(requestData);
+
+      // Capture the record ID for feedback
+      const recordId = (response as any).id;
+      if (recordId) setAnalysisId(recordId);
 
       // Map backend snake_case response to frontend FailureResultData
       // Handle both camelCase (from types.ts) and snake_case (from backend) field names
@@ -106,11 +114,12 @@ export default function FailureAnalysisPage() {
       incrementUsage(user);
     } catch (err) {
       console.error('Failure analysis error:', err);
+      setErrorMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
       setStatus('error');
     }
   };
 
-  const handleNewAnalysis = () => { setStatus('idle'); setResultData(null); };
+  const handleNewAnalysis = () => { setStatus('idle'); setResultData(null); setAnalysisId(null); setErrorMessage(null); };
 
   const resultsStatus = status === 'idle' ? 'idle' : status === 'complete' ? 'success' : status === 'error' ? 'error' : 'loading';
 
@@ -122,6 +131,8 @@ export default function FailureAnalysisPage() {
           <FailureResults
             status={resultsStatus}
             data={resultData}
+            analysisId={analysisId}
+            errorMessage={errorMessage}
             onNewAnalysis={handleNewAnalysis}
             onRunSpecAnalysis={() => router.push('/tool')}
             isFree={!user}
