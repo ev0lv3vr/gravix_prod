@@ -291,12 +291,17 @@ function DashboardContent() {
                 {recentAnalyses.map((a) => (
                   <tr
                     key={a.id}
-                    className="border-b border-[#1F2937] last:border-0 hover:bg-[#1F2937] transition-colors cursor-pointer"
-                    onClick={() => router.push(`/history/${a.type}/${a.id}`)}
+                    className="relative border-b border-[#1F2937] last:border-0 hover:bg-[#1F2937] transition-colors"
                   >
                     <td className="p-4">
+                      {/* Stretched link covers the entire row for correct hover URL + accessibility */}
+                      <Link
+                        href={`/history/${a.type}/${a.id}`}
+                        className="absolute inset-0 z-10"
+                        aria-label={`View ${a.type === 'spec' ? 'spec' : 'failure analysis'}: ${a.substrates}`}
+                      />
                       <span
-                        className={`px-2 py-0.5 rounded text-xs font-medium ${
+                        className={`relative z-0 px-2 py-0.5 rounded text-xs font-medium ${
                           a.type === 'spec'
                             ? 'bg-accent-500/10 text-accent-500'
                             : 'bg-warning/10 text-warning'
