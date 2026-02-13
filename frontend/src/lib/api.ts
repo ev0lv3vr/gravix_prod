@@ -118,7 +118,45 @@ export class ApiClient {
     return this._sessionPromise;
   }
 
+  /**
+   * Try to read the Supabase access token directly from localStorage.
+   * This avoids the async getSession() round-trip on initial page load.
+   * Falls back to getSession() if localStorage token is unavailable.
+   */
+  private _getTokenFromStorage(): string | null {
+    if (typeof window === 'undefined') return null;
+    try {
+      // Supabase stores session under sb-<ref>-auth-token
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+      const ref = supabaseUrl.match(/\/\/([^.]+)\./)?.[1] || '';
+      if (!ref) return null;
+      const raw = localStorage.getItem(`sb-${ref}-auth-token`);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      const token = parsed?.access_token;
+      if (!token) return null;
+      // Check if token is expired (with 60s buffer)
+      const expiresAt = parsed?.expires_at;
+      if (expiresAt && expiresAt < Math.floor(Date.now() / 1000) + 60) {
+        return null; // Expired — let getSession() handle refresh
+      }
+      return token;
+    } catch {
+      return null;
+    }
+  }
+
   private async _fetchAuthHeaders(): Promise<Record<string, string>> {
+    // Fast path: read token from localStorage (no async, no network)
+    const cachedToken = this._getTokenFromStorage();
+    if (cachedToken) {
+      return {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${cachedToken}`,
+      };
+    }
+
+    // Slow path: full Supabase getSession (may trigger token refresh)
     if (!supabase) {
       return { 'Content-Type': 'application/json' };
     }
