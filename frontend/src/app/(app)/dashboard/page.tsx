@@ -45,7 +45,6 @@ function DashboardContent() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [recentAnalyses, setRecentAnalyses] = useState<HistoryItem[]>([]);
   const [profilePlan, setProfilePlan] = useState<string>('free');
   const [usage, setUsage] = useState<UsageResponse | null>(null);
@@ -80,13 +79,13 @@ function DashboardContent() {
     let cancelled = false;
     async function load() {
       setLoading(true);
-      setError(null);
       try {
+        // Fetch each independently so one failure doesn't break the dashboard
         const [profile, usageResp, specs, failures] = await Promise.all([
-          api.getCurrentUser(),
-          api.getCurrentUserUsage(),
-          api.listSpecRequests(),
-          api.listFailureAnalyses(),
+          api.getCurrentUser().catch(() => null),
+          api.getCurrentUserUsage().catch(() => null),
+          api.listSpecRequests().catch(() => [] as any[]),
+          api.listFailureAnalyses().catch(() => [] as any[]),
         ]);
 
         if (cancelled) return;
@@ -137,8 +136,8 @@ function DashboardContent() {
         });
 
         setRecentAnalyses(merged.slice(0, 5));
-      } catch (e) {
-        setError(e instanceof Error ? e.message : 'Failed to load dashboard');
+      } catch {
+        // Individual calls already handle their own errors
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -238,10 +237,22 @@ function DashboardContent() {
           <Link href="/history" className="text-sm text-accent-500 hover:underline">View All →</Link>
         </div>
 
-        {loading && <div className="text-sm text-[#94A3B8] py-6">Loading…</div>}
-        {error && <div className="text-sm text-warning py-6">{error}</div>}
+        {loading && (
+          <div className="bg-brand-800 border border-[#1F2937] rounded-lg overflow-hidden">
+            <div className="p-4 space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-4 animate-pulse">
+                  <div className="h-5 w-16 bg-[#1F2937] rounded" />
+                  <div className="h-4 w-40 bg-[#1F2937] rounded flex-1" />
+                  <div className="h-4 w-24 bg-[#1F2937] rounded hidden md:block" />
+                  <div className="h-4 w-20 bg-[#1F2937] rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-        {!loading && !error && (
+        {!loading && (
           <div className="bg-brand-800 border border-[#1F2937] rounded-lg overflow-hidden">
             <table className="w-full">
               <thead>
@@ -278,8 +289,9 @@ function DashboardContent() {
 
                 {recentAnalyses.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="p-6 text-sm text-[#94A3B8]">
-                      No recent analyses yet.
+                    <td colSpan={4} className="p-8 text-center">
+                      <p className="text-sm text-[#94A3B8] mb-1">No analyses yet</p>
+                      <p className="text-xs text-[#64748B]">Run your first spec or failure analysis to see results here.</p>
                     </td>
                   </tr>
                 )}

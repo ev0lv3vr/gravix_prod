@@ -13,18 +13,25 @@ export default function PricingPage() {
   const { session } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleProCheckout = async () => {
-    setIsLoading(true);
+  const [teamLoading, setTeamLoading] = useState(false);
+
+  const handleCheckout = async (priceEnvKey: string, setLoading: (v: boolean) => void) => {
+    setLoading(true);
     try {
       const token = session?.access_token;
+      if (!token) {
+        // Not logged in — redirect to tool page which will prompt auth
+        window.location.href = '/tool';
+        return;
+      }
       const response = await fetch(`${API_URL}/billing/checkout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          price_id: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || undefined,
+          price_id: process.env[priceEnvKey] || undefined,
           success_url: `${window.location.origin}/dashboard?checkout=success`,
           cancel_url: `${window.location.origin}/pricing?checkout=cancel`,
         }),
@@ -36,9 +43,12 @@ export default function PricingPage() {
       console.error('Checkout error:', error);
       alert('Failed to start checkout. Please try again.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
+
+  const handleProCheckout = () => handleCheckout('NEXT_PUBLIC_STRIPE_PRICE_ID_PRO', setIsLoading);
+  const handleTeamCheckout = () => handleCheckout('NEXT_PUBLIC_STRIPE_PRICE_ID_TEAM', setTeamLoading);
 
   return (
     <div className="flex min-h-screen flex-col bg-[#0A1628]">
@@ -116,9 +126,13 @@ export default function PricingPage() {
               <PricingFeature included text="API access" />
               <PricingFeature included text="Branded reports" />
             </ul>
-            <a href="mailto:sales@gravix.com" className="block w-full text-center border border-[#374151] text-[#94A3B8] hover:text-white hover:border-accent-500 py-3 rounded-lg text-sm font-medium transition-colors">
-              Contact Sales
-            </a>
+            <button
+              onClick={handleTeamCheckout}
+              disabled={teamLoading}
+              className="block w-full text-center border border-[#374151] text-[#94A3B8] hover:text-white hover:border-accent-500 py-3 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              {teamLoading ? 'Loading…' : 'Start Team Plan'}
+            </button>
           </div>
         </div>
 
