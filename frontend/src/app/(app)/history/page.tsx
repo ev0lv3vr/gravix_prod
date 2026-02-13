@@ -42,7 +42,6 @@ export default function HistoryPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [plan, setPlan] = useState<string>('free');
   const [analyses, setAnalyses] = useState<HistoryItem[]>([]);
   const [hasMore, setHasMore] = useState(false);
@@ -61,13 +60,12 @@ export default function HistoryPage() {
 
     async function load() {
       setLoading(true);
-      setError(null);
 
       try {
         const [profile, specs, failures] = await Promise.all([
-          api.getCurrentUser(),
-          api.listSpecRequests({ limit: 20, offset: 0 }),
-          api.listFailureAnalyses({ limit: 20, offset: 0 }),
+          api.getCurrentUser().catch(() => null),
+          api.listSpecRequests({ limit: 20, offset: 0 }).catch(() => [] as any[]),
+          api.listFailureAnalyses({ limit: 20, offset: 0 }).catch(() => [] as any[]),
         ]);
 
         if (cancelled) return;
@@ -124,8 +122,8 @@ export default function HistoryPage() {
         });
 
         setAnalyses(merged);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : 'Failed to load history');
+      } catch {
+        // Individual calls handle their own errors
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -286,14 +284,21 @@ export default function HistoryPage() {
       {/* Component 7.2: History List */}
       <div className="space-y-3">
         {loading && (
-          <div className="text-sm text-[#94A3B8] py-6">Loading…</div>
+          <div className="space-y-3">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-brand-800 border border-[#1F2937] rounded-lg p-4 animate-pulse">
+                <div className="flex items-center gap-3">
+                  <div className="h-5 w-14 bg-[#1F2937] rounded" />
+                  <div className="h-4 w-40 bg-[#1F2937] rounded flex-1" />
+                  <div className="h-4 w-24 bg-[#1F2937] rounded hidden md:block" />
+                  <div className="h-4 w-20 bg-[#1F2937] rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
-        {error && (
-          <div className="text-sm text-warning py-6">{error}</div>
-        )}
-
-        {!loading && !error && filtered.slice(0, visibleLimit).map((a) => {
+        {!loading && filtered.slice(0, visibleLimit).map((a) => {
           const href = `/history/${a.type}/${a.id}`;
 
           return (
@@ -349,7 +354,7 @@ export default function HistoryPage() {
         })}
 
         {/* Free user: blur + upgrade for items beyond limit */}
-        {isFreeUser && !loading && !error && filtered.length > visibleLimit && (
+        {isFreeUser && !loading && filtered.length > visibleLimit && (
           <div className="relative">
             {/* Blurred cards */}
             <div className="filter blur-[6px] select-none pointer-events-none space-y-3">
@@ -376,7 +381,7 @@ export default function HistoryPage() {
         )}
 
         {/* Load more (for Pro users) */}
-        {!isFreeUser && !loading && !error && hasMore && (
+        {!isFreeUser && !loading && hasMore && (
           <div className="text-center pt-4">
             <Button 
               variant="outline" 
@@ -388,8 +393,23 @@ export default function HistoryPage() {
           </div>
         )}
 
-        {!loading && !error && filtered.length === 0 && (
-          <div className="text-center py-12 text-[#64748B]">No analyses found matching your filters.</div>
+        {!loading && filtered.length === 0 && (
+          <div className="text-center py-16">
+            <p className="text-sm text-[#94A3B8] mb-1">
+              {searchQuery || typeFilter !== 'all' || outcomeFilter !== 'all'
+                ? 'No analyses match your filters.'
+                : 'No analyses yet'}
+            </p>
+            {!searchQuery && typeFilter === 'all' && outcomeFilter === 'all' && (
+              <p className="text-xs text-[#64748B]">
+                Run your first{' '}
+                <Link href="/tool" className="text-accent-500 hover:underline">spec</Link>
+                {' '}or{' '}
+                <Link href="/failure" className="text-accent-500 hover:underline">failure analysis</Link>
+                {' '}to get started.
+              </p>
+            )}
+          </div>
         )}
       </div>
     </div>
