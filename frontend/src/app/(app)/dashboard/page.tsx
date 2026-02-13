@@ -86,9 +86,30 @@ function DashboardContent() {
     }
   }, [authUser, authLoading]);
 
-  useEffect(() => {
-    if (authLoading || !authUser) return;
+  // Start loading data as soon as possible — don't wait for AuthProvider
+  // if we already have a cached session token in localStorage
+  const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
 
+  useEffect(() => {
+    // If auth is still loading but we might have a cached token, start loading anyway
+    // If auth is done and no user, skip (will redirect)
+    if (!authLoading && !authUser) return;
+    if (hasAttemptedLoad) return;
+
+    // Either auth is done (authUser exists) or we're optimistically loading
+    // with a potentially cached token
+    const hasCachedToken = (() => {
+      try {
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+        const ref = url.match(/\/\/([^.]+)\./)?.[1] || '';
+        if (!ref) return false;
+        return !!localStorage.getItem(`sb-${ref}-auth-token`);
+      } catch { return false; }
+    })();
+
+    if (authLoading && !hasCachedToken) return; // No token, must wait for auth
+
+    setHasAttemptedLoad(true);
     let cancelled = false;
     async function load() {
       setLoading(true);
@@ -171,7 +192,7 @@ function DashboardContent() {
     return () => {
       cancelled = true;
     };
-  }, [authLoading, authUser]);
+  }, [authLoading, authUser, hasAttemptedLoad]);
 
   const greeting = authUser?.email
     ? `Welcome back, ${authUser.email.split('@')[0]}`
