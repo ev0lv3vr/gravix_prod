@@ -131,8 +131,8 @@ function DashboardContent() {
         });
 
         const merged = [...specItems, ...failureItems].sort((a, b) => {
-          const at = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-          const bt = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          const at = a.date ? new Date(a.date).getTime() : 0;
+          const bt = b.date ? new Date(b.date).getTime() : 0;
           return bt - at;
         });
 
@@ -257,7 +257,7 @@ function DashboardContent() {
                   <tr
                     key={a.id}
                     className="border-b border-[#1F2937] last:border-0 hover:bg-[#1F2937] transition-colors cursor-pointer"
-                    onClick={() => (window.location.href = `/history/${a.type}/${a.id}`)}
+                    onClick={() => router.push(`/history/${a.type}/${a.id}`)}
                   >
                     <td className="p-4">
                       <span
@@ -272,7 +272,7 @@ function DashboardContent() {
                     </td>
                     <td className="p-4 text-sm text-white">{a.substrates}</td>
                     <td className="p-4 text-sm text-[#94A3B8] hidden md:table-cell">{a.result}</td>
-                    <td className="p-4 text-sm text-[#64748B]">{formatDate(a.createdAt)}</td>
+                    <td className="p-4 text-sm text-[#64748B]">{formatDate(a.date)}</td>
                   </tr>
                 ))}
 

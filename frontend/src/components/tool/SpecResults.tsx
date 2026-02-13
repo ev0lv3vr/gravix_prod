@@ -248,7 +248,7 @@ export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis,
         {specId && <FeedbackPrompt specId={specId} />}
 
         {/* 9. Action bar */}
-        <div className="fixed bottom-0 left-0 right-0 md:left-[45%] bg-[#0A1628] border-t border-[#1F2937] p-4 z-50">
+        <div className="fixed bottom-0 left-0 right-0 md:left-[calc(45%+1px)] bg-[#0A1628] border-t border-[#1F2937] p-4 z-50">
           <div className="flex flex-col sm:flex-row gap-3">
             <Button 
               variant="outline" 

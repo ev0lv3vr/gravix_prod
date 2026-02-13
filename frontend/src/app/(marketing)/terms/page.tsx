@@ -49,7 +49,7 @@ export default function TermsPage() {
           </p>
           <ul className="text-[#94A3B8] list-disc pl-6 space-y-1">
             <li>Free: 5 analyses/specs per month</li>
-            <li>Pro ($49/mo): Unlimited analyses and specs</li>
+            <li>Pro ($79/mo): Unlimited analyses and specs</li>
             <li>Team ($149/mo): Unlimited analyses, 5 seats, shared workspace</li>
           </ul>
 
