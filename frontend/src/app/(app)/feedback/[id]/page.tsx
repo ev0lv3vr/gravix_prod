@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ExternalLink } from 'lucide-react';
 import { api } from '@/lib/api';
+import { displayId } from '@/lib/display-id';
 import { FeedbackPrompt } from '@/components/results/FeedbackPrompt';
 import type { FailureAnalysis } from '@/lib/types';
 
@@ -75,10 +76,16 @@ export default function FeedbackPage() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-6 py-10">
       <div className="max-w-[560px] w-full">
-        {/* Analysis Summary */}
-        <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-6 mb-8">
-          <div className="text-xs text-[#64748B] mb-1">
-            Analysis #{analysisId.slice(0, 8)}
+        {/* Analysis Summary — links to full analysis detail */}
+        <Link
+          href={`/history/failure/${analysisId}`}
+          className="block bg-brand-800 border border-[#1F2937] rounded-lg p-6 mb-8 hover:border-accent-500/40 transition-colors group"
+        >
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs text-[#64748B]">
+              {displayId('failure', analysisId, analysis.createdAt)}
+            </span>
+            <ExternalLink className="w-3.5 h-3.5 text-[#64748B] opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
           <h2 className="text-lg font-semibold text-white mb-2">
             {primaryCause}
@@ -94,7 +101,7 @@ export default function FeedbackPage() {
               </span>
             )}
           </div>
-        </div>
+        </Link>
 
         {/* Feedback Prompt */}
         <h1 className="text-xl font-bold text-white mb-6">
