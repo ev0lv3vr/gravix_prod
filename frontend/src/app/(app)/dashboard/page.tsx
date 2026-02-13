@@ -48,6 +48,19 @@ function DashboardContent() {
   const [recentAnalyses, setRecentAnalyses] = useState<HistoryItem[]>([]);
   const [profilePlan, setProfilePlan] = useState<string>('free');
   const [usage, setUsage] = useState<UsageResponse | null>(null);
+
+  // Hydrate from cache immediately so returning users see data while API loads
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem('gravix_dashboard_cache');
+      if (cached) {
+        const data = JSON.parse(cached);
+        if (data.recentAnalyses?.length > 0) setRecentAnalyses(data.recentAnalyses);
+        if (data.profilePlan) setProfilePlan(data.profilePlan);
+        if (data.usage) setUsage(data.usage);
+      }
+    } catch { /* ignore */ }
+  }, []);
   const [checkoutBanner, setCheckoutBanner] = useState<'success' | 'cancel' | null>(null);
 
   // Checkout success/cancel URL param handling
@@ -135,7 +148,18 @@ function DashboardContent() {
           return bt - at;
         });
 
-        setRecentAnalyses(merged.slice(0, 5));
+        const recent = merged.slice(0, 5);
+        setRecentAnalyses(recent);
+
+        // Cache for instant hydration on next visit
+        try {
+          localStorage.setItem('gravix_dashboard_cache', JSON.stringify({
+            recentAnalyses: recent,
+            profilePlan: profile?.plan ?? 'free',
+            usage: usageResp,
+            cachedAt: Date.now(),
+          }));
+        } catch { /* quota exceeded, ignore */ }
       } catch {
         // Individual calls already handle their own errors
       } finally {
