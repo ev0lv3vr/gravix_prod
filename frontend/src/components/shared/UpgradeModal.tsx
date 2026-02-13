@@ -108,7 +108,7 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
                 POPULAR
               </div>
             </div>
-            <div className="text-2xl font-bold text-text-primary mb-1">$49</div>
+            <div className="text-2xl font-bold text-text-primary mb-1">$79</div>
             <div className="text-sm text-text-tertiary mb-4">per month</div>
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">
@@ -140,7 +140,7 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
             disabled={isLoading}
             className="w-full"
           >
-            {isLoading ? 'Loading…' : 'Start Pro — $49/mo'}
+            {isLoading ? 'Loading…' : 'Start Pro — $79/mo'}
           </Button>
           <Button variant="ghost" size="md" onClick={() => onOpenChange(false)} className="w-full">
             I&apos;ll wait

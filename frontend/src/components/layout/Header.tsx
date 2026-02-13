@@ -36,6 +36,16 @@ export function Header() {
     });
   }, [user]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobileMenuOpen]);
+
   const navLinks = [
     ...(user ? [{ href: '/dashboard', label: 'Dashboard' }] : []),
     { href: '/tool', label: 'Spec Engine' },
