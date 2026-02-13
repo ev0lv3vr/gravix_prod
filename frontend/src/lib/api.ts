@@ -102,7 +102,23 @@ function mapUserProfile(u: ApiUserProfile): User {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
 
 export class ApiClient {
+  // Cache the session promise to avoid redundant getSession() calls
+  // within the same tick (e.g., 4 parallel API calls on dashboard load)
+  private _sessionPromise: Promise<Record<string, string>> | null = null;
+  private _sessionCacheMs = 0;
+
   private async getAuthHeaders(): Promise<Record<string, string>> {
+    const now = Date.now();
+    // Reuse cached session for 5 seconds — covers parallel call bursts
+    if (this._sessionPromise && now - this._sessionCacheMs < 5000) {
+      return this._sessionPromise;
+    }
+    this._sessionPromise = this._fetchAuthHeaders();
+    this._sessionCacheMs = now;
+    return this._sessionPromise;
+  }
+
+  private async _fetchAuthHeaders(): Promise<Record<string, string>> {
     if (!supabase) {
       return { 'Content-Type': 'application/json' };
     }
