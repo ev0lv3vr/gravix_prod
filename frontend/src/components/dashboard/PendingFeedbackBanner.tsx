@@ -32,6 +32,9 @@ export function PendingFeedbackBanner() {
 
   const oldest = pending[pending.length - 1];
 
+  // Defensive: if backend returns an unexpected shape, don't crash the dashboard.
+  if (!oldest?.analysis_id) return null;
+
   return (
     <div className="relative bg-accent-500/10 border border-accent-500/20 rounded-lg p-4 mb-8 hover:border-accent-500/40 transition-colors">
       <Link

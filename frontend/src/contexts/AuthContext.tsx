@@ -23,6 +23,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // E2E test bypass: if a test session is injected via addInitScript,
+    // use it directly instead of going through Supabase auth.
+    if (typeof window !== 'undefined' && (window as any).__GRAVIX_TEST_SESSION__) {
+      const testSession = (window as any).__GRAVIX_TEST_SESSION__ as Session;
+      setSession(testSession);
+      setUser(testSession.user);
+      setLoading(false);
+      return;
+    }
+
     if (!supabase) {
       setSession(null);
       setUser(null);
