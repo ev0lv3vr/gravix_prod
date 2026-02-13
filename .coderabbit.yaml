@@ -1,0 +1,48 @@
+# CodeRabbit Configuration
+# Docs: https://docs.coderabbit.ai/guides/configure-coderabbit
+
+language: en-US
+
+reviews:
+  # Auto-review every PR
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+
+  # What to focus on
+  profile: chill  # "chill" = fewer nitpicks, focus on real issues
+  
+  # Review depth
+  request_changes_workflow: false  # Don't block PRs, just comment
+  high_level_summary: true
+  poem: false
+  collapse_walkthrough: true
+  sequence_diagrams: true
+
+  path_instructions:
+    - path: "api/routers/billing.py"
+      instructions: "Critical path — Stripe billing logic. Flag any changes to webhook handling, price IDs, or subscription state transitions."
+    - path: "api/dependencies.py"
+      instructions: "Auth dependency — JWT verification. Any changes here affect all authenticated endpoints. Review carefully."
+    - path: "api/services/ai_engine.py"
+      instructions: "Core AI engine — Claude prompt construction and knowledge injection. Check for prompt injection risks and token budget."
+    - path: "api/prompts/**"
+      instructions: "System prompts for Claude. Changes affect AI output quality. Check for prompt injection vectors."
+    - path: "database/migrations/**"
+      instructions: "Database migrations. Verify backward compatibility, check for data loss risks, ensure rollback is possible."
+    - path: "frontend/src/app/(app)/**"
+      instructions: "Authenticated app pages. Check for proper auth guards and loading states."
+
+  path_filters:
+    - "!**/*.lock"
+    - "!**/package-lock.json"
+    - "!**/.next/**"
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  learnings:
+    scope: auto
