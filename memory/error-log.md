@@ -1,3 +1,2 @@
-- 2026-02-13: MoneySamurai sync trigger: Node project is ESM (package.json type=module); CommonJS `require()` scripts fail unless renamed .cjs or converted to `import`. Also Supabase magiclink flow needs `verifyOtp({ type:'magiclink', token_hash: hashed_token })`; using `token`/wrong field leads to otp_expired/invalid.
-- 2026-02-13: OpenClaw multi-gateway: `openclaw --profile gravix gateway install --force` ignores `--port` flag and picks up the main gateway's port/token. Workaround: set `OPENCLAW_LAUNCHD_LABEL` env var explicitly when running install. Better approach: don't use separate gateways at all — use `openclaw agents add` for multi-agent on one gateway.
-- 2026-02-13: OpenClaw `--profile` flag doesn't propagate `OPENCLAW_PROFILE` to process.env early enough for `resolveGatewayService().isLoaded()` — it checks the main gateway's launchd label instead of the profile-specific one.
+
+2026-02-14: MoneySamurai sync trigger: supabase-js verifyOtp for magiclink should use {type:'magiclink', token_hash: properties.hashed_token} (not token=email_otp/hashed_token). Also sync_status table missing in PostgREST schema cache; use best-effort and proceed.
