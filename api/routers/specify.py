@@ -74,7 +74,8 @@ async def create_spec(
             "application_guidance": ai_result.get("application_guidance"),
             "warnings": ai_result.get("warnings", []),
             "alternatives": ai_result.get("alternatives", []),
-            "confidence_score": ai_result.get("confidence_score", 0.0),
+            # NOTE: spec_requests table in Supabase does not currently have confidence_score column
+            # (it exists in API response schema). Avoid writing a non-existent column.
             "status": "completed",
             "processing_time_ms": ai_result.get("processing_time_ms"),
             "updated_at": datetime.now(timezone.utc).isoformat(),
@@ -108,7 +109,7 @@ async def list_specs(user: dict = Depends(get_current_user)):
     db = get_supabase()
     result = (
         db.table("spec_requests")
-        .select("id, material_category, substrate_a, substrate_b, confidence_score, status, created_at")
+        .select("id, material_category, substrate_a, substrate_b, status, created_at")
         .eq("user_id", user["id"])
         .order("created_at", desc=True)
         .limit(50)
