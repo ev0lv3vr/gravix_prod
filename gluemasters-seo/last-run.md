@@ -1,36 +1,23 @@
-# Gluemasters SEO Blog - Last Run
+# Gluemasters SEO Blog — Last Run
 
-**Date:** 2026-02-13 (Friday)  
-**Article Published:** ✅
+**Date:** Monday, February 16, 2026 — 6:01 AM PST
 
----
+**Article Published:**
+- **Title:** Best Cyanoacrylate Glue for 3D Printing: How to Bond PLA, PETG, ABS, and Resin Prints
+- **URL:** https://gluemasters.com/blogs/articles/best-cyanoacrylate-glue-for-3d-printing-how-to-bond-pla-petg-abs-and-resin-prints
+- **Target Keyword:** best cyanoacrylate glue for 3D printing
+- **Keyword Cluster:** 3D printing
+- **Word Count:** 1,324 words
+- **Article ID:** 565768650929
 
-## Article Details
+**Content Highlights:**
+- Comprehensive guide covering PLA, PETG, ABS, and resin prints
+- Viscosity selection guide (thin, medium, thick CA)
+- Surface prep techniques and application methods
+- Troubleshooting section (brittle bonds, fogging, alignment issues)
+- Advanced techniques (CA + baking soda, using CA as primer)
+- 6-question FAQ section for featured snippet targeting
+- Internal links to all product pages (ultra-thin, thin, medium, thick, accelerator)
+- Strong CTA to shop collection
 
-**Title:** Cyanoacrylate Adhesive for Coral Fragging: Complete Guide to Bonding Frags Safely
-
-**Target Keyword:** cyanoacrylate adhesive for coral fragging
-
-**Keyword Cluster:** reef/coral
-
-**URL:** https://gluemasters.com/blogs/articles/cyanoacrylate-adhesive-for-coral-fragging-complete-guide-to-bonding-frags-safely
-
-**Word Count:** 1,247
-
-**Internal Links:**
-- https://gluemasters.com/products/thick (3 links)
-- https://gluemasters.com/products/medium (3 links)
-- https://gluemasters.com/products/thin (3 links)
-- https://gluemasters.com (1 link)
-
-**FAQ Questions:** 6
-- Can I use cyanoacrylate glue on soft corals?
-- What causes white fog (blooming) around glued frags?
-- How long does a CA-glued frag bond last?
-- Can I glue frags in a high-flow area?
-- Is there a difference between aquarium glue and industrial CA glue?
-- What if the frag won't stick?
-
----
-
-**Next Run:** Monday, 2026-02-16 (targeting different keyword cluster)
+**Status:** ✅ Published successfully to Shopify blog ID 85228945585

@@ -79,12 +79,19 @@ async def create_spec(
 
     except Exception as e:
         logger.exception(f"Spec generation failed: {e}")
+        error_detail = str(e)[:500]
         db.table("spec_requests").update(
             {"status": "failed", "updated_at": datetime.now(timezone.utc).isoformat()}
         ).eq("id", spec_id).execute()
         record["status"] = "failed"
 
-    return SpecRequestResponse(**record)
+    resp = SpecRequestResponse(**record)
+    # Attach error detail for debugging failed specs
+    if record["status"] == "failed" and "error_detail" in dir():
+        resp_dict = resp.model_dump()
+        resp_dict["error_detail"] = error_detail
+        return resp_dict
+    return resp
 
 
 @router.get("", response_model=list[SpecRequestListItem])
