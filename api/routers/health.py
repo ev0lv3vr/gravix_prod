@@ -72,6 +72,40 @@ async def db_health_check():
         return {"status": "error", "detail": str(e)[:500]}
 
 
+@router.get("/health/spec-dryrun")
+async def spec_dryrun():
+    """Diagnostic: dry-run the spec generation pipeline (no auth, no DB write).
+
+    Tests: Pydantic validation → prompt build → Claude API call.
+    Remove this endpoint after debugging.
+    """
+    import time
+    from services.ai_engine import generate_spec
+
+    test_data = {
+        "material_category": "adhesive",
+        "substrate_a": "steel",
+        "substrate_b": "aluminum",
+        "environment": {"temp_min": "-40°C", "temp_max": "120°C"},
+        "cure_constraints": {"heat_available": True},
+    }
+
+    steps = {}
+    try:
+        # Step 1: Test AI generation
+        start = time.time()
+        ai_result = await generate_spec(test_data)
+        steps["ai_call_ms"] = int((time.time() - start) * 1000)
+        steps["ai_keys"] = list(ai_result.keys())
+        steps["has_recommended_spec"] = "recommended_spec" in ai_result
+        steps["confidence_score"] = ai_result.get("confidence_score")
+
+        return {"status": "ok", **steps}
+    except Exception as e:
+        steps["error"] = f"{type(e).__name__}: {str(e)[:300]}"
+        return {"status": "error", **steps}
+
+
 @router.get("/")
 async def root():
     return {"status": "ok", "service": "gravix-api", "version": "2.0.0"}
