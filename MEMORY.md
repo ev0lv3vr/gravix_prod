@@ -68,6 +68,10 @@ Last updated: 2026-02-13
 - [ ] Bundle offers (Phase 4 — needs product strategy)
 - [ ] Refund policy still links to gravixadhesives.com (needs `write_legal_policies` scope)
 - [ ] Google Search Console sitemap submission (needs manual access)
+- [ ] **Amazon CA / NARF** — disable NARF for chemical ASINs or submit SDS (Ev's call, flagged 2/15)
+- [ ] **GSC indexing errors** — 5xx + 403 pages on gluemasters.com (flagged 2/15)
+- [ ] **ShipBob PAT expired** — blocking fulfillment data cross-referencing (since 2/14)
+- [ ] **Medium restock URGENT** — 8oz: ~5 days, 2oz: ~6 days as of 2/15
 
 #### Pump Accelerator 8oz — Label & Listing Project
 - **Supplier:** Xtralok (Chicago) — pump spray bottle, same formula as existing aerosol
@@ -107,6 +111,20 @@ Last updated: 2026-02-13
 - **Branch strategy:** feature branches → merge to main → Vercel auto-deploy
 - **Sub-agents:** Opus 4.6 for spawned work
 
+#### Gluemasters — B2B Pipeline
+- **Quintex Molding** (Ryan Belnap, Nampa ID) — trial kit shipped 2/11 (Medium + Thin 16oz), awaiting feedback
+- **OTL** (Mitch Hamilton, Jasper NY) — inbound 2/15, personalized gifts, needs low-odor solution. Draft email ready.
+- **Donaldson Company** (Rachael Fitzgerald) — B2B customer, had wrong-product shipment, replacement sent
+- **B2B CRM dashboard:** `gluemasters-bizdev/b2b-crm.html` — 12 prospects, ~$47K/mo pipeline potential
+- **Retail-to-wholesale email sequences:** `gluemasters-bizdev/b2b/retail-to-wholesale-sequences.md`
+
+#### Gluemasters — Ops Tools Built (2/13-2/14)
+- `gluemasters-bizdev/ops-dashboard.html` — live Shopify + ShipBob data dashboard
+- `gluemasters-bizdev/tools/restock-planner.sh` — per-product velocity + days-to-sellout
+- `gluemasters-bizdev/tools/inventory-alert.sh` — color-coded alerts, exit codes for automation
+- `gluemasters-bizdev/tools/weekly-report-generator.sh` — 8-week BI report with charts
+- `gluemasters-bizdev/tools/customer-issues.md` — issue tracker (pattern: 3 ShipBob pick errors in 3 weeks)
+
 ## Lessons Learned
 - **Don't use separate gateways for multi-agent** — use `openclaw agents add` + multi-account Telegram on one gateway. Separate gateways cause lock conflicts and the `--profile` flag has bugs with `isLoaded` detection.
 - **Don't use opacity-0 for scroll animations** — breaks mobile if JS doesn't fire
@@ -118,3 +136,5 @@ Last updated: 2026-02-13
 - **gdown gets rate-limited on Google Drive folders** — zip download is more reliable
 - **Formascope fonts are CFF/PostScript OTF** — reportlab can't embed them
 - **MoneySamurai is ESM** — CommonJS `require()` fails; use imports or .cjs extension
+- **Amazon NARF auto-lists FBA inventory on .ca/.mx** — chemical products get flagged for SDS/CCCR compliance even if you don't intend to sell internationally
+- **MoneySamurai sync_status table doesn't exist** — use amazon_accounts table for sync status resets (fixed 2/15)

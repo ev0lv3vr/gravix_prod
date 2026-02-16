@@ -1,2 +1,1 @@
-
-2026-02-14: MoneySamurai sync trigger: supabase-js verifyOtp for magiclink should use {type:'magiclink', token_hash: properties.hashed_token} (not token=email_otp/hashed_token). Also sync_status table missing in PostgREST schema cache; use best-effort and proceed.
+- 2026-02-15: MoneySamurai sync trigger attempt via custom sync-trigger.mjs failed: sync_status table missing + verifyOtp failed when using hashed_token incorrectly; service key as Bearer caused 401. Use existing moneysamurai/api/sync-trigger.js which uses token_hash with verifyOtp.
