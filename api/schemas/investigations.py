@@ -218,3 +218,70 @@ class StatusTransitionResponse(BaseModel):
     transition_allowed: bool
     validation_errors: Optional[List[str]] = None
     message: str
+
+
+# Attachment schemas
+class AttachmentUpload(BaseModel):
+    discipline: str = Field(..., pattern="^(D2|D3|D4|D5|D6|D7)$")
+    caption: Optional[str] = None
+    action_id: Optional[str] = None
+
+
+class AttachmentResponse(BaseModel):
+    id: str
+    investigation_id: str
+    action_id: Optional[str] = None
+    discipline: str
+    file_name: str
+    file_url: str
+    file_size_bytes: int
+    is_image: bool
+    caption: Optional[str] = None
+    sort_order: int
+    uploaded_by: str
+    uploaded_at: datetime
+
+
+# Signature schemas
+class SignatureCreate(BaseModel):
+    discipline: str = Field(..., pattern="^(D1|D2|D3|D4|D5|D6|D7|D8)$")
+
+
+class SignatureResponse(BaseModel):
+    id: str
+    investigation_id: str
+    user_id: str
+    discipline: str
+    signature_hash: str
+    signed_at: datetime
+
+
+# Shareable link schemas
+class ShareLinkCreate(BaseModel):
+    expires_days: Optional[int] = 30  # Default 30 days
+
+
+class ShareLinkResponse(BaseModel):
+    investigation_id: str
+    share_token: str
+    share_url: str
+    expires_at: datetime
+    created_at: datetime
+
+
+# Report generation schemas
+class ReportGenerateRequest(BaseModel):
+    template: str = Field("generic_8d", pattern="^(generic_8d|ford_global_8d)$")
+
+
+# AI analysis schemas
+class AnalyzeRequest(BaseModel):
+    """Request to run AI root cause analysis on investigation."""
+    run_five_why: bool = True
+    run_escape_point: bool = True
+
+
+class CloseInvestigationRequest(BaseModel):
+    """Request to close an investigation."""
+    lessons_learned: Optional[str] = None
+    generate_closure_summary: bool = True
