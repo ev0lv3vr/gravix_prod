@@ -55,6 +55,23 @@ async def ai_health_check():
         return {"status": "error", "model": model, "key_preview": key_preview, "detail": str(e)}
 
 
+@router.get("/health/db")
+async def db_health_check():
+    """Diagnostic: test Supabase connectivity + spec_requests table schema."""
+    from database import get_supabase
+    try:
+        db = get_supabase()
+        # Test a simple query
+        result = db.table("spec_requests").select("id").limit(1).execute()
+        row_count = len(result.data) if result.data else 0
+        # Test column existence by selecting all columns from one row
+        cols_result = db.table("spec_requests").select("*").limit(1).execute()
+        columns = list(cols_result.data[0].keys()) if cols_result.data else []
+        return {"status": "ok", "row_count_sample": row_count, "columns": columns}
+    except Exception as e:
+        return {"status": "error", "detail": str(e)[:500]}
+
+
 @router.get("/")
 async def root():
     return {"status": "ok", "service": "gravix-api", "version": "2.0.0"}
