@@ -55,57 +55,6 @@ async def ai_health_check():
         return {"status": "error", "model": model, "key_preview": key_preview, "detail": str(e)}
 
 
-@router.get("/health/db")
-async def db_health_check():
-    """Diagnostic: test Supabase connectivity + spec_requests table schema."""
-    from database import get_supabase
-    try:
-        db = get_supabase()
-        # Test a simple query
-        result = db.table("spec_requests").select("id").limit(1).execute()
-        row_count = len(result.data) if result.data else 0
-        # Test column existence by selecting all columns from one row
-        cols_result = db.table("spec_requests").select("*").limit(1).execute()
-        columns = list(cols_result.data[0].keys()) if cols_result.data else []
-        return {"status": "ok", "row_count_sample": row_count, "columns": columns}
-    except Exception as e:
-        return {"status": "error", "detail": str(e)[:500]}
-
-
-@router.get("/health/spec-dryrun")
-async def spec_dryrun():
-    """Diagnostic: dry-run the spec generation pipeline (no auth, no DB write).
-
-    Tests: Pydantic validation → prompt build → Claude API call.
-    Remove this endpoint after debugging.
-    """
-    import time
-    from services.ai_engine import generate_spec
-
-    test_data = {
-        "material_category": "adhesive",
-        "substrate_a": "steel",
-        "substrate_b": "aluminum",
-        "environment": {"temp_min": "-40°C", "temp_max": "120°C"},
-        "cure_constraints": {"heat_available": True},
-    }
-
-    steps = {}
-    try:
-        # Step 1: Test AI generation
-        start = time.time()
-        ai_result = await generate_spec(test_data)
-        steps["ai_call_ms"] = int((time.time() - start) * 1000)
-        steps["ai_keys"] = list(ai_result.keys())
-        steps["has_recommended_spec"] = "recommended_spec" in ai_result
-        steps["confidence_score"] = ai_result.get("confidence_score")
-
-        return {"status": "ok", **steps}
-    except Exception as e:
-        steps["error"] = f"{type(e).__name__}: {str(e)[:300]}"
-        return {"status": "error", **steps}
-
-
 @router.get("/")
 async def root():
     return {"status": "ok", "service": "gravix-api", "version": "2.0.0"}
