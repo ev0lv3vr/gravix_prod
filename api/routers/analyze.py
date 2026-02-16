@@ -55,7 +55,14 @@ async def create_analysis(
         "substrate_b_normalized": normalize_substrate(payload.get("substrate_b")),
     }
 
-    db.table("failure_analyses").insert(record).execute()
+    try:
+        db.table("failure_analyses").insert(record).execute()
+    except Exception as e:
+        logger.exception(f"Supabase insert failed for analysis {analysis_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {str(e)[:200]}",
+        )
 
     # Run AI analysis
     try:

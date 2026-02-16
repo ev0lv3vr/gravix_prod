@@ -183,7 +183,7 @@ export class ApiClient {
     });
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
-      throw new Error(error.message || 'Failed to create analysis');
+      throw new Error(error.detail || error.message || 'Failed to create analysis');
     }
     return response.json();
   }
@@ -220,7 +220,7 @@ export class ApiClient {
     });
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
-      throw new Error(error.message || 'Failed to create spec');
+      throw new Error(error.detail || error.message || 'Failed to create spec');
     }
     return response.json();
   }

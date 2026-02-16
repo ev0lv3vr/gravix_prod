@@ -53,9 +53,18 @@ async def create_spec(
         **data_dict,
     }
 
-    db.table("spec_requests").insert(record).execute()
+    # Insert initial record — wrap in try/except so DB errors don't 500
+    try:
+        db.table("spec_requests").insert(record).execute()
+    except Exception as e:
+        logger.exception(f"Supabase insert failed for spec {spec_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {str(e)[:200]}",
+        )
 
     # Run AI spec generation
+    error_detail = None
     try:
         ai_result = await generate_spec(data_dict)
 
@@ -86,8 +95,7 @@ async def create_spec(
         record["status"] = "failed"
 
     resp = SpecRequestResponse(**record)
-    # Attach error detail for debugging failed specs
-    if record["status"] == "failed" and "error_detail" in dir():
+    if record["status"] == "failed" and error_detail:
         resp_dict = resp.model_dump()
         resp_dict["error_detail"] = error_detail
         return resp_dict
