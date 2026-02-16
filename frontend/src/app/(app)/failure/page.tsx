@@ -24,6 +24,11 @@ export default function FailureAnalysisPage() {
   const { isExhausted } = useUsageTracking();
 
   const handleSubmit = async (formData: FailureFormData) => {
+    if (!user) {
+      setErrorMessage('Please sign in to run failure analysis.');
+      setStatus('error');
+      return;
+    }
     if (isExhausted) { setUpgradeModalOpen(true); return; }
     setStatus('loading');
 

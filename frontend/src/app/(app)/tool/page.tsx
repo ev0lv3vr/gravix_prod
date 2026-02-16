@@ -22,6 +22,11 @@ export default function SpecToolPage() {
   const { isExhausted } = useUsageTracking();
 
   const handleSubmit = async (formData: SpecFormData) => {
+    if (!user) {
+      setErrorMessage('Please sign in to generate specifications.');
+      setStatus('error');
+      return;
+    }
     if (isExhausted) { setUpgradeModalOpen(true); return; }
     setStatus('loading');
 
