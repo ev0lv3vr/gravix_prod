@@ -1,9 +1,9 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { investigationsApi, type InvestigationCreatePayload, type InvestigationSeverity } from '@/lib/investigations';
+import { investigationsApi, type InvestigationCreatePayload, type InvestigationSeverity, type ReportTemplate } from '@/lib/investigations';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -41,6 +41,13 @@ function CreateInvestigationContent() {
   const [whyItMatters, setWhyItMatters] = useState('');
   const [howDetected, setHowDetected] = useState('');
   const [howManyAffected, setHowManyAffected] = useState('');
+  const [reportTemplate, setReportTemplate] = useState('');
+  const [templates, setTemplates] = useState<ReportTemplate[]>([]);
+
+  // Fetch templates
+  useEffect(() => {
+    investigationsApi.listTemplates().then(setTemplates).catch(() => {});
+  }, []);
 
   if (authLoading) return null;
   if (!user) {
@@ -72,6 +79,7 @@ function CreateInvestigationContent() {
       if (howDetected.trim()) payload.how_detected = howDetected.trim();
       if (howManyAffected.trim()) payload.how_many_affected = parseInt(howManyAffected, 10) || undefined;
       if (analysisId) payload.analysis_id = analysisId;
+      if (reportTemplate) payload.report_template = reportTemplate;
 
       const created = await investigationsApi.create(payload);
       router.push(`/investigations/${created.id}`);
@@ -160,6 +168,30 @@ function CreateInvestigationContent() {
             className="bg-brand-800 border-[#1F2937] text-white placeholder:text-[#64748B]"
           />
         </div>
+
+        {/* Report Template */}
+        {templates.length > 0 && (
+          <div className="space-y-2">
+            <Label className="text-white">Report Template</Label>
+            <Select value={reportTemplate} onValueChange={setReportTemplate}>
+              <SelectTrigger className="bg-brand-800 border-[#1F2937] text-white">
+                <SelectValue placeholder="Select a template (optional)" />
+              </SelectTrigger>
+              <SelectContent>
+                {templates.map((t) => (
+                  <SelectItem key={t.id} value={t.slug}>
+                    {t.name}{t.oem_standard ? ` — ${t.oem_standard}` : ''}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {templates.find((t) => t.slug === reportTemplate)?.description && (
+              <p className="text-xs text-[#64748B]">
+                {templates.find((t) => t.slug === reportTemplate)?.description}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* D2: Problem Description */}
         <div className="border-t border-[#1F2937] pt-6">

@@ -183,6 +183,42 @@ export interface SharedInvestigation {
 }
 
 // ---------------------------------------------------------------------------
+// Comment types
+// ---------------------------------------------------------------------------
+
+export interface InvestigationComment {
+  id: string;
+  investigation_id: string;
+  parent_comment_id?: string | null;
+  discipline: string;
+  user_id: string;
+  comment_text: string;
+  is_resolution: boolean;
+  is_pinned: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CommentCreatePayload {
+  discipline: string;
+  comment_text: string;
+  parent_comment_id?: string;
+}
+
+// ---------------------------------------------------------------------------
+// Template types
+// ---------------------------------------------------------------------------
+
+export interface ReportTemplate {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  oem_standard?: string | null;
+  is_active: boolean;
+}
+
+// ---------------------------------------------------------------------------
 // Create / Update payloads
 // ---------------------------------------------------------------------------
 
@@ -198,6 +234,7 @@ export interface InvestigationCreatePayload {
   why_it_matters?: string;
   how_detected?: string;
   how_many_affected?: number;
+  report_template?: string;
 }
 
 export interface ActionCreatePayload {
@@ -353,6 +390,44 @@ export const investigationsApi = {
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+  },
+
+  // Comments
+  listComments(id: string, discipline?: string): Promise<InvestigationComment[]> {
+    const qs = discipline ? `?discipline=${discipline}` : '';
+    return request(`/v1/investigations/${id}/comments${qs}`);
+  },
+
+  createComment(id: string, data: CommentCreatePayload): Promise<InvestigationComment> {
+    return request(`/v1/investigations/${id}/comments`, { method: 'POST', body: JSON.stringify(data) });
+  },
+
+  updateComment(id: string, commentId: string, commentText: string): Promise<InvestigationComment> {
+    return request(`/v1/investigations/${id}/comments/${commentId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ comment_text: commentText }),
+    });
+  },
+
+  deleteComment(id: string, commentId: string): Promise<{ success: boolean }> {
+    return request(`/v1/investigations/${id}/comments/${commentId}`, { method: 'DELETE' });
+  },
+
+  togglePinComment(id: string, commentId: string): Promise<{ id: string; is_pinned: boolean; is_resolution: boolean }> {
+    return request(`/v1/investigations/${id}/comments/${commentId}/pin`, { method: 'PATCH' });
+  },
+
+  toggleResolveComment(id: string, commentId: string): Promise<{ id: string; is_pinned: boolean; is_resolution: boolean }> {
+    return request(`/v1/investigations/${id}/comments/${commentId}/resolve`, { method: 'PATCH' });
+  },
+
+  // Templates
+  listTemplates(): Promise<ReportTemplate[]> {
+    return request('/v1/templates');
+  },
+
+  getTemplate(templateId: string): Promise<ReportTemplate & { template_data?: Record<string, unknown> }> {
+    return request(`/v1/templates/${templateId}`);
   },
 
   // Audit log
