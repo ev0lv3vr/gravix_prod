@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,11 +11,15 @@ import {
   type InvestigationAction,
   type InvestigationSignature,
   type AuditLogEntry,
+  type InvestigationAttachment,
 } from '@/lib/investigations';
 import { StatusBadge, SeverityBadge } from '@/components/investigations/StatusBadge';
 import { DisciplineStepper } from '@/components/investigations/DisciplineStepper';
 import { AddActionDialog } from '@/components/investigations/AddActionDialog';
 import { CommentPanel } from '@/components/investigations/CommentPanel';
+import { AttachmentGallery } from '@/components/investigations/AttachmentGallery';
+
+const PhotoAnnotation = dynamic(() => import('@/components/investigations/PhotoAnnotation'), { ssr: false });
 import { daysOpen, formatDate, timeAgo, getNextStatus, formatStatus } from '@/components/investigations/InvestigationHelpers';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -29,6 +34,8 @@ import {
   Clock,
   Copy,
   ClipboardList,
+  Eye,
+  Download,
 } from 'lucide-react';
 
 export default function InvestigationDetailPage() {
@@ -54,6 +61,11 @@ export default function InvestigationDetailPage() {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [actionDialogOpen, setActionDialogOpen] = useState(false);
   const [actionDiscipline, setActionDiscipline] = useState('D3');
+
+  const [reportUrl, setReportUrl] = useState<string | null>(null);
+  const [loadingReport, setLoadingReport] = useState(false);
+
+  const [annotatingAttachment, setAnnotatingAttachment] = useState<InvestigationAttachment | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -169,6 +181,18 @@ export default function InvestigationDetailPage() {
   const handleCopyShareUrl = () => {
     if (shareUrl) {
       navigator.clipboard.writeText(shareUrl);
+    }
+  };
+
+  const handlePreviewReport = async () => {
+    setLoadingReport(true);
+    try {
+      const url = await investigationsApi.getReportBlob(investigationId);
+      setReportUrl(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load report preview');
+    } finally {
+      setLoadingReport(false);
     }
   };
 
@@ -383,6 +407,12 @@ export default function InvestigationDetailPage() {
             </div>
           </div>
 
+          {/* Attachments */}
+          <AttachmentGallery
+            investigationId={investigationId}
+            onAnnotate={(att) => setAnnotatingAttachment(att)}
+          />
+
           {/* Comment Panel */}
           <CommentPanel
             investigationId={investigationId}
@@ -395,7 +425,7 @@ export default function InvestigationDetailPage() {
         </div>
       </div>
 
-      {/* Tabs: Actions + History */}
+      {/* Tabs: Actions + History + Report */}
       <Tabs defaultValue="actions" className="mt-8">
         <TabsList className="bg-brand-800 border border-[#1F2937]">
           <TabsTrigger value="actions" className="data-[state=active]:bg-[#1F2937] data-[state=active]:text-white text-[#94A3B8]">
@@ -405,6 +435,10 @@ export default function InvestigationDetailPage() {
           <TabsTrigger value="history" className="data-[state=active]:bg-[#1F2937] data-[state=active]:text-white text-[#94A3B8]">
             <Clock className="w-4 h-4 mr-2" />
             History ({auditLog.length})
+          </TabsTrigger>
+          <TabsTrigger value="report" className="data-[state=active]:bg-[#1F2937] data-[state=active]:text-white text-[#94A3B8]">
+            <FileText className="w-4 h-4 mr-2" />
+            Report
           </TabsTrigger>
         </TabsList>
 
@@ -491,7 +525,45 @@ export default function InvestigationDetailPage() {
             </div>
           )}
         </TabsContent>
+
+        <TabsContent value="report" className="mt-4">
+          <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Button size="sm" className="bg-accent-500 hover:bg-accent-600 text-white" onClick={handlePreviewReport} disabled={loadingReport}>
+                {loadingReport ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Eye className="w-4 h-4 mr-2" />}
+                Preview Report
+              </Button>
+              <Button size="sm" variant="ghost" className="text-[#94A3B8] hover:text-white" onClick={handleGenerateReport} disabled={generatingReport}>
+                {generatingReport ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+                Download PDF
+              </Button>
+            </div>
+
+            {reportUrl ? (
+              <iframe
+                src={reportUrl}
+                className="w-full border border-[#1F2937] rounded"
+                style={{ height: '70vh' }}
+                title="Report Preview"
+              />
+            ) : (
+              <p className="text-sm text-[#94A3B8]">Click &quot;Preview Report&quot; to view the report inline.</p>
+            )}
+          </div>
+        </TabsContent>
       </Tabs>
+
+      {annotatingAttachment && (
+        <PhotoAnnotation
+          attachment={annotatingAttachment}
+          investigationId={investigationId}
+          onClose={() => setAnnotatingAttachment(null)}
+          onSaved={() => {
+            setAnnotatingAttachment(null);
+            fetchAll();
+          }}
+        />
+      )}
 
       {/* Add Action Dialog */}
       <AddActionDialog

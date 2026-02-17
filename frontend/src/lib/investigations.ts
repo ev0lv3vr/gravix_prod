@@ -183,6 +183,28 @@ export interface SharedInvestigation {
 }
 
 // ---------------------------------------------------------------------------
+// Attachment types
+// ---------------------------------------------------------------------------
+
+export interface InvestigationAttachment {
+  id: string;
+  investigation_id: string;
+  filename: string;
+  content_type: string;
+  file_size: number;
+  file_url?: string | null;
+  uploaded_by: string;
+  created_at: string;
+}
+
+export interface TeamMember {
+  user_id: string;
+  email?: string | null;
+  display_name?: string | null;
+  role?: string | null;
+}
+
+// ---------------------------------------------------------------------------
 // Comment types
 // ---------------------------------------------------------------------------
 
@@ -390,6 +412,48 @@ export const investigationsApi = {
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+  },
+
+  // Attachments
+  listAttachments(id: string): Promise<InvestigationAttachment[]> {
+    return request(`/v1/investigations/${id}/attachments`);
+  },
+
+  async uploadAttachment(id: string, file: File): Promise<InvestigationAttachment> {
+    const headers = await getAuthHeaders();
+    // Remove Content-Type (multipart boundary must be set by browser)
+    const { 'Content-Type': _ct, ...headersWithoutCT } = headers;
+    const form = new FormData();
+    form.append('file', file);
+    const res = await fetch(`${API_URL}/v1/investigations/${id}/attachments`, {
+      method: 'POST',
+      headers: headersWithoutCT,
+      body: form,
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.detail || body.message || 'Upload failed');
+    }
+    return res.json();
+  },
+
+  deleteAttachment(id: string, attachmentId: string): Promise<{ success: boolean }> {
+    return request(`/v1/investigations/${id}/attachments/${attachmentId}`, { method: 'DELETE' });
+  },
+
+  // Team members (for @mentions)
+  listTeam(id: string): Promise<TeamMember[]> {
+    return request(`/v1/investigations/${id}/team`);
+  },
+
+  // Report preview (returns blob URL)
+  async getReportBlob(id: string, template?: string): Promise<string> {
+    const headers = await getAuthHeaders();
+    const t = template || 'generic_8d';
+    const res = await fetch(`${API_URL}/v1/investigations/${id}/report?template=${t}`, { headers });
+    if (!res.ok) throw new Error('Failed to fetch report');
+    const blob = await res.blob();
+    return window.URL.createObjectURL(blob);
   },
 
   // Comments

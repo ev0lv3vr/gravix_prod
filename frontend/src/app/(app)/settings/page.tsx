@@ -4,11 +4,132 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { api, type UsageResponse } from '@/lib/api';
+import { supabase } from '@/lib/supabase';
 import type { User } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Download, ExternalLink, CheckCircle } from 'lucide-react';
+
+function BrandingSection() {
+  const [companyName, setCompanyName] = useState('');
+  const [primaryColor, setPrimaryColor] = useState('#1e40af');
+  const [hideFooter, setHideFooter] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string>('');
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('gravix_branding');
+      if (raw) {
+        const b = JSON.parse(raw);
+        setCompanyName(b.company_name || '');
+        setPrimaryColor(b.primary_color || '#1e40af');
+        setHideFooter(b.hide_footer || false);
+        setLogoUrl(b.logo_url || '');
+      }
+    } catch { /* ignore */ }
+  }, []);
+
+  const handleLogoUpload = async (file: File) => {
+    setUploadingLogo(true);
+    try {
+      if (!supabase) return;
+      const ext = file.name.split('.').pop() || 'png';
+      const path = `branding/${Date.now()}-${Math.random().toString(16).slice(2)}.${ext}`;
+      const { error } = await supabase.storage.from('public').upload(path, file, {
+        upsert: true,
+        contentType: file.type,
+      });
+      if (error) return;
+      const { data } = supabase.storage.from('public').getPublicUrl(path);
+      if (data?.publicUrl) setLogoUrl(data.publicUrl);
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const branding = { company_name: companyName, primary_color: primaryColor, hide_footer: hideFooter, logo_url: logoUrl };
+      localStorage.setItem('gravix_branding', JSON.stringify(branding));
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+        const ref = supabaseUrl.match(/\/\/([^.]+)\./)?.[1] || '';
+        const raw = ref ? localStorage.getItem(`sb-${ref}-auth-token`) : null;
+        const token = raw ? JSON.parse(raw)?.access_token : null;
+        if (token) {
+          await fetch(`${API_URL}/v1/users/me/branding`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify(branding),
+          });
+        }
+      } catch { /* best-effort */ }
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <section className="mb-10">
+      <h2 className="text-lg font-semibold text-white mb-6">Enterprise Branding</h2>
+      <div className="space-y-5">
+        <div>
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Company Name</Label>
+          <Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="Your company name (shown on reports)" className="h-11 bg-[#111827] border-[#374151] rounded text-sm" />
+        </div>
+
+        <div>
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Logo</Label>
+          <div className="flex items-center gap-3">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleLogoUpload(f);
+              }}
+              className="text-xs text-[#94A3B8]"
+              disabled={uploadingLogo}
+            />
+            {uploadingLogo && <span className="text-xs text-[#64748B]">Uploading…</span>}
+          </div>
+          {logoUrl && (
+            <div className="mt-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={logoUrl} alt="Company logo" className="h-10 w-auto rounded bg-white p-1" />
+            </div>
+          )}
+        </div>
+
+        <div>
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Primary Color</Label>
+          <div className="flex items-center gap-3">
+            <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="w-10 h-10 rounded border border-[#374151] cursor-pointer bg-transparent" />
+            <Input value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="h-11 bg-[#111827] border-[#374151] rounded text-sm w-32 font-mono" />
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <input type="checkbox" id="hideFooter" checked={hideFooter} onChange={(e) => setHideFooter(e.target.checked)} className="w-4 h-4 rounded border-[#374151] bg-[#111827]" />
+          <Label htmlFor="hideFooter" className="text-[13px] text-[#94A3B8] cursor-pointer">Remove &quot;Generated by Gravix&quot; footer from reports</Label>
+        </div>
+        {saved && (
+          <div className="text-sm text-success bg-success/10 border border-success/20 rounded p-3 flex items-center gap-2">
+            <CheckCircle className="w-4 h-4" />Branding settings saved
+          </div>
+        )}
+        <Button onClick={handleSave} disabled={saving} className="bg-accent-500 hover:bg-accent-600 text-white">{saving ? 'Saving…' : 'Save Branding'}</Button>
+      </div>
+    </section>
+  );
+}
 
 export default function SettingsPage() {
   const { user, loading, signOut } = useAuth();
@@ -310,6 +431,11 @@ export default function SettingsPage() {
           )}
         </div>
       </section>
+
+      <hr className="border-[#1F2937] my-10" />
+
+      {/* Enterprise Branding */}
+      <BrandingSection />
 
       <hr className="border-[#1F2937] my-10" />
 
