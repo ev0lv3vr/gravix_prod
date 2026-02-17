@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import { Users, FlaskConical, FileText, TrendingUp, UserPlus } from 'lucide-react';
+import { Users, FlaskConical, FileText, TrendingUp, UserPlus, AlertTriangle, CheckCircle } from 'lucide-react';
+import { getPatternAlerts, updatePatternAlert, type PatternAlert } from '@/lib/products';
+import { cn } from '@/lib/utils';
 
 type OverviewData = Awaited<ReturnType<typeof api.getAdminOverview>>;
 
@@ -33,13 +35,130 @@ function StatCard({
   );
 }
 
+// Sprint 11: Pattern Alert Components
+function SeverityBadge({ severity }: { severity: string }) {
+  const styles: Record<string, string> = {
+    critical: 'bg-danger/20 text-danger',
+    warning: 'bg-warning/20 text-warning',
+    informational: 'bg-info/20 text-info',
+  };
+  return (
+    <span className={cn('px-2 py-0.5 rounded text-xs font-medium', styles[severity] || styles.informational)}>
+      {severity}
+    </span>
+  );
+}
+
+function PatternAlertCard({
+  alert,
+  onAcknowledge,
+  onResolve,
+}: {
+  alert: PatternAlert;
+  onAcknowledge: (id: string) => void;
+  onResolve: (id: string) => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="bg-brand-800 border border-brand-600 rounded p-4 mb-3">
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <SeverityBadge severity={alert.severity} />
+            <span className="text-xs text-text-tertiary font-mono">{alert.alert_type}</span>
+          </div>
+          <h3 className="text-sm font-bold text-white">{alert.title}</h3>
+          {alert.description && (
+            <p className="text-xs text-text-secondary mt-1">{alert.description}</p>
+          )}
+        </div>
+        <div className="flex gap-1 ml-3">
+          {alert.status === 'active' && (
+            <>
+              <button
+                onClick={() => onAcknowledge(alert.id)}
+                className="px-2 py-1 text-[10px] font-medium rounded bg-warning/10 text-warning hover:bg-warning/20 transition-colors"
+              >
+                Acknowledge
+              </button>
+              <button
+                onClick={() => onResolve(alert.id)}
+                className="px-2 py-1 text-[10px] font-medium rounded bg-success/10 text-success hover:bg-success/20 transition-colors"
+              >
+                Resolve
+              </button>
+            </>
+          )}
+          {alert.status === 'acknowledged' && (
+            <button
+              onClick={() => onResolve(alert.id)}
+              className="px-2 py-1 text-[10px] font-medium rounded bg-success/10 text-success hover:bg-success/20 transition-colors"
+            >
+              Resolve
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Expandable details */}
+      <button onClick={() => setExpanded(!expanded)} className="text-[10px] text-accent-500 mt-2">
+        {expanded ? 'Hide details' : 'Show details'}
+      </button>
+
+      {expanded && (
+        <div className="mt-3 pt-3 border-t border-brand-700 space-y-2">
+          {alert.affected_product && (
+            <div className="text-xs"><span className="text-text-tertiary">Product:</span> <span className="text-white">{alert.affected_product}</span></div>
+          )}
+          {alert.affected_substrate && (
+            <div className="text-xs"><span className="text-text-tertiary">Substrate:</span> <span className="text-white">{alert.affected_substrate}</span></div>
+          )}
+          {alert.failure_mode && (
+            <div className="text-xs"><span className="text-text-tertiary">Failure Mode:</span> <span className="text-white">{alert.failure_mode}</span></div>
+          )}
+          {alert.statistical_confidence != null && (
+            <div className="text-xs"><span className="text-text-tertiary">Confidence:</span> <span className="text-white">{(alert.statistical_confidence * 100).toFixed(0)}%</span></div>
+          )}
+          {alert.ai_explanation && (
+            <div className="text-xs mt-2 p-2 bg-brand-900 rounded">
+              <span className="text-text-tertiary block mb-1">AI Explanation:</span>
+              <span className="text-text-primary">{alert.ai_explanation}</span>
+            </div>
+          )}
+          {alert.affected_investigation_ids && alert.affected_investigation_ids.length > 0 && (
+            <div className="text-xs"><span className="text-text-tertiary">Affected analyses:</span> <span className="text-white">{alert.affected_investigation_ids.length}</span></div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminOverviewPage() {
   const [data, setData] = useState<OverviewData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [alerts, setAlerts] = useState<PatternAlert[]>([]);
+  const [alertsError, setAlertsError] = useState<string | null>(null);
 
   useEffect(() => {
     api.getAdminOverview().then(setData).catch((e) => setError(e.message));
+    getPatternAlerts().then(setAlerts).catch((e) => setAlertsError(e.message));
   }, []);
+
+  const handleAcknowledge = async (id: string) => {
+    try {
+      const updated = await updatePatternAlert(id, 'acknowledged');
+      setAlerts(prev => prev.map(a => a.id === id ? updated : a));
+    } catch (e) { console.error(e); }
+  };
+
+  const handleResolve = async (id: string) => {
+    try {
+      await updatePatternAlert(id, 'resolved');
+      setAlerts(prev => prev.filter(a => a.id !== id));
+    } catch (e) { console.error(e); }
+  };
 
   if (error) {
     return (
@@ -136,6 +255,39 @@ export default function AdminOverviewPage() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Sprint 11: Pattern Alerts Section */}
+      <div className="mt-8">
+        <div className="flex items-center gap-2 mb-4">
+          <AlertTriangle className="h-5 w-5 text-warning" />
+          <h2 className="text-lg font-bold text-white">Pattern Alerts</h2>
+          {alerts.length > 0 && (
+            <span className="bg-danger/20 text-danger text-xs font-medium px-2 py-0.5 rounded-full">
+              {alerts.length} active
+            </span>
+          )}
+        </div>
+
+        {alertsError && (
+          <p className="text-danger text-xs mb-4">{alertsError}</p>
+        )}
+
+        {alerts.length === 0 && !alertsError && (
+          <div className="bg-brand-800 border border-brand-600 rounded p-6 text-center">
+            <CheckCircle className="h-8 w-8 text-success mx-auto mb-2" />
+            <p className="text-sm text-text-secondary">No active pattern alerts. All clear.</p>
+          </div>
+        )}
+
+        {alerts.map((alert) => (
+          <PatternAlertCard
+            key={alert.id}
+            alert={alert}
+            onAcknowledge={handleAcknowledge}
+            onResolve={handleResolve}
+          />
+        ))}
       </div>
     </div>
   );

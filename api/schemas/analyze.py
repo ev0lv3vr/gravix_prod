@@ -43,6 +43,20 @@ class FailureAnalysisCreate(BaseModel):
     test_results: Optional[str] = None
     additional_notes: Optional[str] = None
 
+    # Sprint 11: AI-Forward fields
+    product_name: Optional[str] = None
+    defect_photos: Optional[List[str]] = None
+
+
+class VisualAnalysisResult(BaseModel):
+    image_url: str
+    failure_mode_classification: Optional[str] = None
+    surface_condition: Optional[dict] = None
+    bond_line_assessment: Optional[str] = None
+    coverage_assessment: Optional[str] = None
+    ai_caption: Optional[str] = None
+    confidence_score: Optional[float] = None
+
 
 class FailureAnalysisResponse(BaseModel):
     id: str
@@ -81,6 +95,11 @@ class FailureAnalysisResponse(BaseModel):
     status: str = "pending"
     processing_time_ms: Optional[int] = None
     similar_cases: Optional[List[dict]] = None
+    # Sprint 11: AI-Forward fields
+    product_name: Optional[str] = None
+    defect_photos: Optional[List[str]] = None
+    visual_analysis: Optional[List[dict]] = None
+    known_risks: Optional[List[str]] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

@@ -10,6 +10,7 @@ import { AuthModal } from '@/components/auth/AuthModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking, incrementUsage } from '@/hooks/useUsageTracking';
 import { api } from '@/lib/api';
+import { startGuidedSession } from '@/lib/products';
 
 type Status = 'idle' | 'loading' | 'complete' | 'error';
 
@@ -51,6 +52,11 @@ export default function FailureAnalysisPage() {
       if (formData.productionImpact) requestData.production_impact = formData.productionImpact;
       if (formData.environment.length > 0) {
         requestData.chemical_exposure = formData.environment.join(', ');
+      }
+      // Sprint 11: product name and defect photos
+      if (formData.productName) requestData.product_name = formData.productName;
+      if (formData.defectPhotos && formData.defectPhotos.length > 0) {
+        requestData.defect_photos = formData.defectPhotos;
       }
 
       const response = await api.createFailureAnalysis(requestData) as import('@/lib/types').ApiFailureAnalysisResponse;
@@ -137,6 +143,31 @@ export default function FailureAnalysisPage() {
       setAuthModalOpen(true);
       return;
     }
+
+    // Sprint 11: Guided Investigation mode → redirect to guided UI
+    if (formData.investigationMode === 'guided') {
+      setStatus('loading');
+      try {
+        const session = await startGuidedSession({
+          initial_context: {
+            failure_description: formData.failureDescription,
+            failure_mode: formData.failureMode,
+            substrate_a: formData.substrateA,
+            substrate_b: formData.substrateB,
+            adhesive_used: formData.adhesiveUsed,
+            product_name: formData.productName,
+          },
+        });
+        router.push(`/guided/${session.id}`);
+        return;
+      } catch (err) {
+        console.error('Failed to start guided session:', err);
+        setErrorMessage('Failed to start guided investigation. Falling back to quick analysis.');
+        setStatus('error');
+        return;
+      }
+    }
+
     await executeSubmit(formData);
   };
 
