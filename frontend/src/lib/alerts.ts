@@ -77,13 +77,13 @@ export const alertsApi = {
     const qs = new URLSearchParams();
     if (params?.status && params.status !== 'all') qs.set('status', params.status);
     const q = qs.toString();
-    return request<PatternAlert[]>(`/v1/alerts${q ? `?${q}` : ''}`).catch(() => []);
+    return request<PatternAlert[]>(`/v1/patterns/alerts${q ? `?${q}` : ''}`).catch(() => []);
   },
 
   acknowledge(id: string, note?: string): Promise<PatternAlert> {
-    return request<PatternAlert>(`/v1/alerts/${id}/acknowledge`, {
-      method: 'POST',
-      body: JSON.stringify({ note: note || '' }),
+    return request<PatternAlert>(`/v1/patterns/alerts/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: 'acknowledged', acknowledge_note: note || '' }),
     });
   },
 };
