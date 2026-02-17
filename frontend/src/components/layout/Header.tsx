@@ -50,6 +50,7 @@ export function Header() {
     ...(user ? [{ href: '/dashboard', label: 'Dashboard' }] : []),
     { href: '/tool', label: 'Spec Engine' },
     { href: '/failure', label: 'Failure Analysis' },
+    ...(user ? [{ href: '/investigations', label: 'Investigations' }] : []),
     { href: '/pricing', label: 'Pricing' },
   ];
 

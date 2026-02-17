@@ -8,6 +8,7 @@ import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { api, type UsageResponse } from '@/lib/api';
 import { FlaskConical, Search, ArrowRight, X, CheckCircle, Info } from 'lucide-react';
 import { PendingFeedbackBanner } from '@/components/dashboard/PendingFeedbackBanner';
+import { InvestigationsDashboardWidget } from '@/components/investigations/InvestigationsDashboardWidget';
 
 type HistoryType = 'spec' | 'failure';
 
@@ -232,7 +233,7 @@ function DashboardContent() {
       </div>
 
       {/* Component 6.2: Quick Actions */}
-      <div className="grid md:grid-cols-2 gap-6 mb-10">
+      <div className="grid md:grid-cols-3 gap-6 mb-10">
         <Link href="/tool" className="group bg-brand-800 border border-[#1F2937] rounded-lg p-6 hover:border-accent-500 transition-colors">
           <FlaskConical className="w-8 h-8 text-accent-500 mb-3" />
           <h3 className="text-lg font-semibold text-white mb-1">New Material Spec</h3>
@@ -249,6 +250,7 @@ function DashboardContent() {
             Start <ArrowRight className="w-4 h-4" />
           </span>
         </Link>
+        <InvestigationsDashboardWidget />
       </div>
 
       {/* Component 6.4: Pending Feedback Banner */}
