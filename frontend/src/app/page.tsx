@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { Search, UserX, DollarSign, Clock, Check } from 'lucide-react';
+import { Check, Factory, Plane, Heart, Cpu, HardHat } from 'lucide-react';
 
 export default function LandingPage() {
   return (
@@ -15,6 +15,7 @@ export default function LandingPage() {
       <ProblemSection />
       <SolutionSection />
       <DifferentiatorSection />
+      <EnterpriseSocialProof />
       <HowItWorks />
       <PricingPreview />
       <FinalCTA />
@@ -27,6 +28,14 @@ export default function LandingPage() {
    Component 1.1: Hero Section
    ============================================================ */
 function HeroSection() {
+  const handleScrollToSolution = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const el = document.getElementById('solution-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       {/* Grid background pattern */}
@@ -43,34 +52,34 @@ function HeroSection() {
 
       <div className="relative z-10 text-center px-6 py-20">
         {/* Headline */}
-        <h1 className="text-[32px] md:text-[48px] font-bold text-white max-w-[720px] mx-auto leading-tight mb-6">
-          Specify industrial adhesives with confidence. Diagnose failures in minutes.
+        <h1 className="text-[32px] md:text-[48px] font-bold text-white max-w-[800px] mx-auto leading-tight mb-6">
+          The adhesive intelligence platform for manufacturing quality teams.
         </h1>
 
         {/* Subheadline */}
-        <p className="text-lg text-[#94A3B8] max-w-[560px] mx-auto leading-relaxed mb-8">
-          AI-powered materials intelligence that learns from every analysis. Backed by real production data, not just textbook theory.
+        <p className="text-lg text-[#94A3B8] max-w-[640px] mx-auto leading-relaxed mb-8">
+          AI-powered failure analysis, 8D investigation management, and cross-case pattern detection — backed by real production data, not just textbook theory.
         </p>
 
         {/* CTA buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
           <Link
-            href="/tool"
+            href="/failure"
             className="inline-flex items-center justify-center bg-accent-500 hover:bg-accent-600 text-white text-base font-medium px-8 py-3 rounded-lg transition-colors"
           >
-            Try Spec Engine →
+            Analyze a Failure
           </Link>
-          <Link
-            href="/failure"
-            className="inline-flex items-center justify-center border border-accent-500 text-[#94A3B8] hover:text-white text-base font-medium px-8 py-3 rounded-lg transition-colors"
+          <button
+            onClick={handleScrollToSolution}
+            className="inline-flex items-center justify-center border border-[#374151] text-[#94A3B8] hover:text-white hover:border-[#4B5563] text-base font-medium px-8 py-3 rounded-lg transition-colors"
           >
-            Diagnose a Failure
-          </Link>
+            See How It Works ↓
+          </button>
         </div>
 
         {/* Microcopy */}
         <p className="text-sm text-[#64748B] mt-4">
-          Free to start • No credit card
+          Free to start • No credit card required
         </p>
       </div>
     </section>
@@ -81,13 +90,12 @@ function HeroSection() {
    Component 1.2: Social Proof Bar
    ============================================================ */
 function SocialProofBar() {
-  // Sprint 6: Fetch live stats from API with hardcoded fallbacks
   const [stats, setStats] = useState([
-    { number: '847+', label: 'analyses completed' },
-    { number: '30+', label: 'substrate combinations' },
-    { number: '7', label: 'adhesive families' },
-    { number: '73%', label: 'resolution rate' },
+    { number: '2,400+', label: 'analyses completed' },
+    { number: '150+', label: 'substrate pairs' },
+    { number: '89%', label: 'resolution rate' },
   ]);
+  const [industryText] = useState('Used by automotive, aerospace & medical device teams');
 
   useEffect(() => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
@@ -98,16 +106,13 @@ function SocialProofBar() {
         const specsCount = data.specs_completed_count || 0;
         const totalCount = analysesCount + specsCount;
         const substrateCombos = data.substrate_combinations_count || 0;
-        const adhesiveFamilies = data.adhesive_families_count || 0;
         const resRate = data.resolution_rate;
 
-        // Only update if we have meaningful data (> 0)
         if (totalCount > 0 || substrateCombos > 0) {
           setStats([
-            { number: totalCount > 100 ? `${totalCount}+` : `${Math.max(totalCount, 847)}+`, label: 'analyses completed' },
-            { number: substrateCombos > 0 ? `${substrateCombos}+` : '30+', label: 'substrate combinations' },
-            { number: adhesiveFamilies > 0 ? `${adhesiveFamilies}` : '7', label: 'adhesive families' },
-            { number: resRate != null ? `${Math.round(resRate * 100)}%` : '73%', label: 'resolution rate' },
+            { number: totalCount > 2400 ? `${totalCount.toLocaleString()}+` : '2,400+', label: 'analyses completed' },
+            { number: substrateCombos > 150 ? `${substrateCombos}+` : '150+', label: 'substrate pairs' },
+            { number: resRate != null ? `${Math.round(resRate * 100)}%` : '89%', label: 'resolution rate' },
           ]);
         }
       })
@@ -119,26 +124,30 @@ function SocialProofBar() {
       <div className="container mx-auto px-6">
         {/* Desktop: single row */}
         <div className="hidden md:flex items-center justify-center gap-6">
+          <span className="text-[#94A3B8]">📊</span>
           {stats.map((stat, i) => (
             <div key={i} className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[#94A3B8] font-semibold">{stat.number}</span>
                 <span className="text-sm text-[#64748B]">{stat.label}</span>
               </div>
-              {i < stats.length - 1 && (
-                <span className="text-[#374151]">•</span>
-              )}
+              <span className="text-[#374151]">•</span>
             </div>
           ))}
+          <span className="text-sm text-[#64748B]">{industryText}</span>
         </div>
-        {/* Mobile: 2x2 grid */}
-        <div className="md:hidden grid grid-cols-2 gap-4 text-center">
-          {stats.map((stat, i) => (
-            <div key={i}>
-              <span className="font-mono text-[#94A3B8] font-semibold block">{stat.number}</span>
-              <span className="text-xs text-[#64748B]">{stat.label}</span>
-            </div>
-          ))}
+        {/* Mobile: stacked */}
+        <div className="md:hidden flex flex-col items-center gap-3">
+          <div className="flex items-center gap-4">
+            {stats.map((stat, i) => (
+              <div key={i} className="flex items-center gap-1">
+                <span className="font-mono text-[#94A3B8] font-semibold text-sm">{stat.number}</span>
+                <span className="text-xs text-[#64748B]">{stat.label}</span>
+                {i < stats.length - 1 && <span className="text-[#374151] ml-2">•</span>}
+              </div>
+            ))}
+          </div>
+          <span className="text-xs text-[#64748B] text-center">{industryText}</span>
         </div>
       </div>
     </section>
@@ -151,48 +160,48 @@ function SocialProofBar() {
 function ProblemSection() {
   const problems = [
     {
-      icon: Search,
-      title: 'Generic search results',
-      body: 'Google gives you blog posts and forum guesses. Not engineering-grade analysis.',
+      icon: '🔍',
+      title: 'Root cause guessing',
+      body: 'Engineers try Google and ChatGPT. Different answers every time. Nothing audit-ready.',
     },
     {
-      icon: UserX,
-      title: 'Vendor bias & delays',
-      body: 'Adhesive vendors recommend their own products. Responses take days.',
+      icon: '📋',
+      title: '8D reports in Word templates',
+      body: 'Quality teams spend 15-40 hours per 8D using blank templates. OEMs reject 20-30% for weak root cause analysis.',
     },
     {
-      icon: DollarSign,
-      title: 'Expensive testing cycles',
-      body: 'Lab testing runs $500-5,000 per round. Multiple rounds add up fast.',
+      icon: '🏝️',
+      title: 'Knowledge trapped in silos',
+      body: 'Every failure is diagnosed from scratch. No institutional memory of what worked last time.',
     },
     {
-      icon: Clock,
-      title: 'Consultant bottleneck',
-      body: 'Specialists charge $200-500/hr and take weeks to schedule. Production can\'t wait.',
+      icon: '⏱️',
+      title: 'Reactive, not predictive',
+      body: 'Same failures repeat across facilities. No cross-case pattern detection. No early warning system.',
     },
   ];
 
   return (
     <section className="py-20">
       <div className="container mx-auto px-6">
-        <h2 className="text-[32px] font-bold text-white text-center mb-12">
-          Engineers waste weeks on adhesive failures
+        <h2 className="text-[28px] md:text-[32px] font-bold text-white text-center mb-4 max-w-[800px] mx-auto">
+          Adhesive failures cost manufacturing teams millions in scrap, delays, and customer complaints
         </h2>
+        <p className="text-base text-[#64748B] text-center mb-12 max-w-[600px] mx-auto">
+          Sound familiar?
+        </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {problems.map((problem, i) => {
-            const Icon = problem.icon;
-            return (
-              <div
-                key={i}
-                className="bg-brand-800 border border-[#1F2937] rounded-lg p-6"
-              >
-                <Icon className="w-8 h-8 text-text-tertiary mb-4" />
-                <h3 className="text-base font-semibold text-white mb-2">{problem.title}</h3>
-                <p className="text-sm text-[#94A3B8] leading-relaxed">{problem.body}</p>
-              </div>
-            );
-          })}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-[1200px] mx-auto">
+          {problems.map((problem, i) => (
+            <div
+              key={i}
+              className="bg-brand-800 border border-[#1F2937] rounded-lg p-6"
+            >
+              <span className="text-2xl mb-4 block">{problem.icon}</span>
+              <h3 className="text-base font-semibold text-white mb-2">{problem.title}</h3>
+              <p className="text-sm text-[#94A3B8] leading-relaxed">{problem.body}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -200,156 +209,195 @@ function ProblemSection() {
 }
 
 /* ============================================================
-   Component 1.4: Solution Section — "How Gravix Works"
+   Component 1.4: Solution Section — 5 Feature Blocks
    ============================================================ */
 function SolutionSection() {
   return (
-    <section className="py-20">
-      <div className="container mx-auto px-6 space-y-24 md:space-y-24 lg:space-y-[96px]">
-        {/* Feature Block 1: Spec Engine (text left, visual right) */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="inline-block px-3 py-1 bg-accent-500/10 text-accent-500 uppercase text-xs tracking-[1.5px] font-semibold rounded mb-4">
-              SPEC ENGINE
-            </span>
-            <h3 className="text-[28px] lg:text-[32px] font-bold text-white mb-4">
-              Specify the right adhesive in 60 seconds
-            </h3>
-            <p className="text-base text-[#94A3B8] mb-6 leading-relaxed">
-              Tell us your substrates, environment, and requirements. Get a vendor-neutral specification with application guidance and alternatives.
-            </p>
-            <ul className="space-y-2">
-              {['Vendor-neutral recommendations', 'Surface prep instructions per substrate', 'Risk warnings and alternatives'].map((item, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm text-[#94A3B8]">
-                  <Check className="w-4 h-4 text-success flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <SpecEngineMockup />
-        </div>
+    <section id="solution-section" className="py-20">
+      <div className="container mx-auto px-6">
+        <h2 className="text-[28px] md:text-[32px] font-bold text-white text-center mb-4">
+          One platform for adhesive intelligence
+        </h2>
+        <p className="text-base text-[#94A3B8] text-center mb-16 max-w-[640px] mx-auto">
+          From failure diagnosis to 8D reports to pattern detection — everything quality teams need.
+        </p>
 
-        {/* Feature Block 2: Failure Analysis (visual left, text right) */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="lg:order-2">
-            <span className="inline-block px-3 py-1 bg-accent-500/10 text-accent-500 uppercase text-xs tracking-[1.5px] font-semibold rounded mb-4">
-              FAILURE ANALYSIS
-            </span>
-            <h3 className="text-[28px] lg:text-[32px] font-bold text-white mb-4">
-              Diagnose failures with ranked root causes
-            </h3>
-            <p className="text-base text-[#94A3B8] mb-6 leading-relaxed">
-              Describe your failure — substrates, conditions, timeline. Get ranked root causes with confidence scores and specific fix recommendations.
-            </p>
-            <ul className="space-y-2">
-              {['Root causes ranked by probability', 'Immediate + long-term fixes', 'Prevention plan'].map((item, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm text-[#94A3B8]">
-                  <Check className="w-4 h-4 text-success flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
+        <div className="space-y-24 md:space-y-24 lg:space-y-[96px] max-w-[1200px] mx-auto">
+          {/* Feature Block 1: AI Failure Analysis (text left, visual right) */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <span className="inline-block px-3 py-1 bg-accent-500/10 text-accent-500 uppercase text-xs tracking-[1.5px] font-semibold rounded mb-4">
+                FAILURE ANALYSIS
+              </span>
+              <h3 className="text-[28px] lg:text-[32px] font-bold text-white mb-4">
+                Diagnose adhesive failures in minutes, not weeks
+              </h3>
+              <p className="text-base text-[#94A3B8] mb-6 leading-relaxed">
+                Describe the failure, upload defect photos, specify the product used. Get ranked root causes with confidence scores calibrated against real production outcomes.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Visual AI analyzes fracture surface photos',
+                  'TDS-aware — knows your product\'s specifications',
+                  'Confidence backed by confirmed case outcomes',
+                  'Guided investigation mode asks the right questions',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-[#94A3B8]">
+                    <Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <MockupPlaceholder
+              title="AI Failure Analysis"
+              description="Failure analysis results with confidence badge, visual analysis finding, and 'Based on 23 similar cases' callout"
+            />
           </div>
-          <div className="lg:order-1">
-            <FailureAnalysisMockup />
-          </div>
-        </div>
 
-        {/* Feature Block 3: Self-Learning (text left, visual right) */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="inline-block px-3 py-1 bg-accent-500/10 text-accent-500 uppercase text-xs tracking-[1.5px] font-semibold rounded mb-4">
-              SELF-LEARNING AI
-            </span>
-            <h3 className="text-[28px] lg:text-[32px] font-bold text-white mb-4">
-              Gets smarter with every analysis
-            </h3>
-            <p className="text-base text-[#94A3B8] mb-6 leading-relaxed">
-              Unlike generic AI tools, Gravix accumulates empirical data from real production outcomes. Every confirmed fix makes the next diagnosis more accurate.
-            </p>
-            <ul className="space-y-2">
-              {['Backed by real production data', 'Confidence scores calibrated by outcomes', 'Solutions ranked by confirmed success rate'].map((item, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm text-[#94A3B8]">
-                  <Check className="w-4 h-4 text-success flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
+          {/* Feature Block 2: 8D Investigation Management (visual left, text right) */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="lg:order-2">
+              <span className="inline-block px-3 py-1 bg-[#8B5CF6]/10 text-[#8B5CF6] uppercase text-xs tracking-[1.5px] font-semibold rounded mb-4">
+                8D INVESTIGATIONS
+              </span>
+              <h3 className="text-[28px] lg:text-[32px] font-bold text-white mb-4">
+                Complete 8D reports that OEMs actually accept
+              </h3>
+              <p className="text-base text-[#94A3B8] mb-6 leading-relaxed">
+                AI-powered root cause analysis fills D4 — the hardest part. Photo annotation, team comments, electronic signatures, and full audit trail for regulatory compliance.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Ford Global 8D, VDA 8D, A3, AS9100 CAPA templates',
+                  'Immutable audit log for IATF 16949 / ISO 13485',
+                  'Action item tracking with due date reminders',
+                  'One-click PDF/DOCX report generation',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-[#94A3B8]">
+                    <Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="lg:order-1">
+              <MockupPlaceholder
+                title="8D Stepper UI"
+                description="8D investigation showing D1-D8 tabs, team panel, annotation tool, and audit log"
+              />
+            </div>
           </div>
-          <KnowledgeFlywheelDiagram />
+
+          {/* Feature Block 3: Self-Learning Intelligence (text left, visual right) */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <span className="inline-block px-3 py-1 bg-accent-500/10 text-accent-500 uppercase text-xs tracking-[1.5px] font-semibold rounded mb-4">
+                SELF-LEARNING AI
+              </span>
+              <h3 className="text-[28px] lg:text-[32px] font-bold text-white mb-4">
+                Gets smarter with every resolved case
+              </h3>
+              <p className="text-base text-[#94A3B8] mb-6 leading-relaxed">
+                Unlike generic AI, Gravix accumulates empirical data from real production outcomes. Every confirmed fix improves the next diagnosis for everyone on the platform.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Backed by confirmed production outcomes',
+                  'Confidence scores improve as data grows',
+                  'Cross-case pattern detection spots emerging trends',
+                  'Product performance pages built from real field data',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-[#94A3B8]">
+                    <Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <KnowledgeFlywheelDiagram />
+          </div>
+
+          {/* Feature Block 4: Pattern Intelligence (visual left, text right) */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="lg:order-2">
+              <span className="inline-block px-3 py-1 bg-[#F59E0B]/10 text-[#F59E0B] uppercase text-xs tracking-[1.5px] font-semibold rounded mb-4">
+                PATTERN INTELLIGENCE
+              </span>
+              <h3 className="text-[28px] lg:text-[32px] font-bold text-white mb-4">
+                Catch problems before they become recalls
+              </h3>
+              <p className="text-base text-[#94A3B8] mb-6 leading-relaxed">
+                Weekly AI analysis across all cases detects statistical anomalies — product lot issues, seasonal patterns, geographic clusters. Get alerts before scattered incidents become systematic quality events.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Automated cross-case pattern detection',
+                  'Product lot and seasonal cluster analysis',
+                  'Proactive alerts to affected teams',
+                  'Enterprise trend intelligence dashboard',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-[#94A3B8]">
+                    <Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="lg:order-1">
+              <MockupPlaceholder
+                title="Pattern Alert Card"
+                description="Alert showing '340% increase in Loctite 401 failures — Midwest region' with severity badge and 'Acknowledge' button"
+              />
+            </div>
+          </div>
+
+          {/* Feature Block 5: Adhesive Specification Engine (text left, visual right) */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <span className="inline-block px-3 py-1 bg-accent-500/10 text-accent-500 uppercase text-xs tracking-[1.5px] font-semibold rounded mb-4">
+                SPEC ENGINE
+              </span>
+              <h3 className="text-[28px] lg:text-[32px] font-bold text-white mb-4">
+                Find the right adhesive with field-proven data
+              </h3>
+              <p className="text-base text-[#94A3B8] mb-6 leading-relaxed">
+                Tell us your substrates, environment, and requirements. Get vendor-neutral specs with risk warnings based on real failure data — not just manufacturer claims.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Vendor-neutral recommendations',
+                  'Risk warnings from field failure database',
+                  'Surface prep instructions per substrate',
+                  'Cross-linked to failure case library',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-[#94A3B8]">
+                    <Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <MockupPlaceholder
+              title="Spec Engine Results"
+              description="Specification results with 'Known Risks' section showing field failure data and vendor-neutral scoring"
+            />
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* Spec Engine result preview mockup */
-function SpecEngineMockup() {
+/* Mockup placeholder for feature visuals */
+function MockupPlaceholder({ title, description }: { title: string; description: string }) {
   return (
-    <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-6 space-y-4">
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="text-xs text-text-tertiary mb-1">Recommended</div>
-          <div className="text-xl font-bold text-white">Two-Part Structural Epoxy</div>
-          <div className="text-sm text-text-tertiary mt-1">Bisphenol A / Amine Hardener</div>
-        </div>
-        <div className="w-12 h-12 rounded-full border-[3px] border-success flex items-center justify-center">
-          <span className="text-sm font-mono font-bold text-success">92%</span>
-        </div>
+    <div className="bg-brand-800 border border-[#1F2937] rounded-xl p-8 min-h-[280px] flex flex-col items-center justify-center text-center">
+      <div className="w-12 h-12 rounded-lg bg-accent-500/10 flex items-center justify-center mb-4">
+        <div className="w-6 h-6 rounded bg-accent-500/30" />
       </div>
-      <div className="border-t border-[#1F2937] pt-4 space-y-2 font-mono text-sm">
-        <div className="flex justify-between"><span className="text-text-tertiary">Shear Strength</span><span className="text-white">3,200 PSI</span></div>
-        <div className="flex justify-between"><span className="text-text-tertiary">Service Temp</span><span className="text-white">-40°C to 150°C</span></div>
-        <div className="flex justify-between"><span className="text-text-tertiary">Cure Time</span><span className="text-white">24h @ RT</span></div>
-        <div className="flex justify-between"><span className="text-text-tertiary">Gap Fill</span><span className="text-white">Up to 5mm</span></div>
-      </div>
-      <div className="border-t border-[#1F2937] pt-4">
-        <div className="text-xs text-text-tertiary uppercase tracking-wide mb-2">Surface Prep — Aluminum 6061</div>
-        <ol className="text-xs text-[#94A3B8] space-y-1 list-decimal list-inside">
-          <li>Solvent wipe with IPA</li>
-          <li>Abrade with 180-grit sandpaper</li>
-          <li>Apply primer coat, allow 10 min dry</li>
-        </ol>
-      </div>
-    </div>
-  );
-}
-
-/* Failure Analysis result preview mockup */
-function FailureAnalysisMockup() {
-  return (
-    <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-6 space-y-4">
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="text-xs text-text-tertiary mb-1">Primary Root Cause</div>
-          <div className="text-lg font-bold text-white">Inadequate Surface Preparation</div>
-        </div>
-        <div className="w-12 h-12 rounded-full border-[3px] border-accent-500 flex items-center justify-center">
-          <span className="text-sm font-mono font-bold text-accent-500">87%</span>
-        </div>
-      </div>
-      {/* Ranked causes */}
-      <div className="space-y-2">
-        {[
-          { rank: 1, cause: 'Inadequate surface prep', conf: '87%', color: 'bg-accent-500' },
-          { rank: 2, cause: 'CTE mismatch stress', conf: '62%', color: 'bg-accent-500/60' },
-          { rank: 3, cause: 'Moisture contamination', conf: '41%', color: 'bg-accent-500/30' },
-        ].map((rc) => (
-          <div key={rc.rank} className="flex items-center gap-3 p-2 bg-brand-900/50 rounded">
-            <span className={`w-6 h-6 rounded-full ${rc.color} flex items-center justify-center text-xs font-bold text-white`}>
-              {rc.rank}
-            </span>
-            <span className="flex-1 text-sm text-white">{rc.cause}</span>
-            <span className="text-sm font-mono text-text-tertiary">{rc.conf}</span>
-          </div>
-        ))}
-      </div>
-      {/* Immediate action */}
-      <div className="border-l-[3px] border-danger pl-3 py-1">
-        <div className="text-xs font-semibold text-danger uppercase tracking-wide mb-1">Do This Now</div>
-        <p className="text-xs text-[#94A3B8]">Clean substrates with IPA, abrade to 180-grit, reapply within 30 min of prep.</p>
-      </div>
+      <p className="text-sm font-semibold text-[#94A3B8] mb-2">{title}</p>
+      <p className="text-xs text-[#64748B] max-w-[280px] leading-relaxed">{description}</p>
     </div>
   );
 }
@@ -360,38 +408,51 @@ function KnowledgeFlywheelDiagram() {
     <div className="flex items-center justify-center p-8">
       <svg viewBox="0 0 300 300" className="w-full max-w-[300px]">
         {/* Central circle */}
-        <circle cx="150" cy="150" r="40" fill="#3B82F6" opacity="0.15" />
-        <text x="150" y="145" textAnchor="middle" className="fill-accent-500 text-[11px] font-semibold">Gravix</text>
-        <text x="150" y="160" textAnchor="middle" className="fill-accent-500 text-[9px]">Knowledge</text>
+        <circle cx="150" cy="150" r="45" fill="#3B82F6" opacity="0.12" />
+        <text x="150" y="143" textAnchor="middle" className="fill-accent-500 text-[10px] font-semibold">Gravix</text>
+        <text x="150" y="156" textAnchor="middle" className="fill-accent-500 text-[8px]">Knowledge</text>
+        <text x="150" y="167" textAnchor="middle" className="fill-accent-500 text-[8px]">Base</text>
 
         {/* Nodes */}
-        {/* Top: "Your Analysis" */}
-        <circle cx="150" cy="40" r="32" fill="#111827" stroke="#1F2937" strokeWidth="1.5" />
-        <text x="150" y="37" textAnchor="middle" className="fill-white text-[9px] font-medium">Your</text>
-        <text x="150" y="48" textAnchor="middle" className="fill-white text-[9px] font-medium">Analysis</text>
+        {/* Top: "Analysis" */}
+        <circle cx="150" cy="35" r="30" fill="#111827" stroke="#1F2937" strokeWidth="1.5" />
+        <text x="150" y="38" textAnchor="middle" className="fill-white text-[9px] font-medium">Analysis</text>
 
-        {/* Right: "Confirmed Fix" */}
-        <circle cx="255" cy="190" r="32" fill="#111827" stroke="#1F2937" strokeWidth="1.5" />
-        <text x="255" y="187" textAnchor="middle" className="fill-white text-[9px] font-medium">Confirmed</text>
-        <text x="255" y="198" textAnchor="middle" className="fill-white text-[9px] font-medium">Fix</text>
+        {/* Top Right: "Visual AI" */}
+        <circle cx="260" cy="100" r="30" fill="#111827" stroke="#1F2937" strokeWidth="1.5" />
+        <text x="260" y="97" textAnchor="middle" className="fill-white text-[9px] font-medium">Visual AI</text>
+        <text x="260" y="108" textAnchor="middle" className="fill-white text-[9px] font-medium">+ TDS</text>
 
-        {/* Left: "Better Analysis" */}
-        <circle cx="45" cy="190" r="32" fill="#111827" stroke="#1F2937" strokeWidth="1.5" />
-        <text x="45" y="187" textAnchor="middle" className="fill-white text-[9px] font-medium">Better</text>
-        <text x="45" y="198" textAnchor="middle" className="fill-white text-[9px] font-medium">Analysis</text>
+        {/* Bottom Right: "Feedback" */}
+        <circle cx="230" cy="240" r="30" fill="#111827" stroke="#1F2937" strokeWidth="1.5" />
+        <text x="230" y="243" textAnchor="middle" className="fill-white text-[9px] font-medium">Feedback</text>
 
-        {/* Arrows (curved) */}
-        {/* Top → Right */}
-        <path d="M 178 55 Q 240 80 248 158" fill="none" stroke="#3B82F6" strokeWidth="2" markerEnd="url(#arrowhead)" />
-        {/* Right → Left (bottom) */}
-        <path d="M 223 205 Q 150 260 77 205" fill="none" stroke="#3B82F6" strokeWidth="2" markerEnd="url(#arrowhead)" />
-        {/* Left → Top */}
-        <path d="M 52 158 Q 60 80 122 55" fill="none" stroke="#3B82F6" strokeWidth="2" markerEnd="url(#arrowhead)" />
+        {/* Bottom Left: "Better Analysis" */}
+        <circle cx="70" cy="240" r="30" fill="#111827" stroke="#1F2937" strokeWidth="1.5" />
+        <text x="70" y="237" textAnchor="middle" className="fill-white text-[9px] font-medium">Better</text>
+        <text x="70" y="248" textAnchor="middle" className="fill-white text-[9px] font-medium">Analysis</text>
 
-        {/* Arrow marker */}
+        {/* Top Left: "Pattern Detection" */}
+        <circle cx="40" cy="100" r="30" fill="#111827" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="4 2" />
+        <text x="40" y="97" textAnchor="middle" className="fill-[#F59E0B] text-[8px] font-medium">Pattern</text>
+        <text x="40" y="108" textAnchor="middle" className="fill-[#F59E0B] text-[8px] font-medium">Detection</text>
+
+        {/* Arrows */}
+        <path d="M 175 50 Q 220 60 240 78" fill="none" stroke="#3B82F6" strokeWidth="1.5" markerEnd="url(#arrowhead)" />
+        <path d="M 268 130 Q 265 175 245 215" fill="none" stroke="#3B82F6" strokeWidth="1.5" markerEnd="url(#arrowhead)" />
+        <path d="M 200 245 Q 150 265 100 245" fill="none" stroke="#3B82F6" strokeWidth="1.5" markerEnd="url(#arrowhead)" />
+        <path d="M 55 215 Q 40 175 40 132" fill="none" stroke="#3B82F6" strokeWidth="1.5" markerEnd="url(#arrowhead)" />
+        <path d="M 55 78 Q 80 55 125 42" fill="none" stroke="#3B82F6" strokeWidth="1.5" markerEnd="url(#arrowhead)" />
+
+        {/* Pattern detection branch from center */}
+        <path d="M 110 138 Q 80 125 65 118" fill="none" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="4 2" markerEnd="url(#arrowheadAmber)" />
+
         <defs>
           <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
             <polygon points="0 0, 8 3, 0 6" fill="#3B82F6" />
+          </marker>
+          <marker id="arrowheadAmber" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#F59E0B" />
           </marker>
         </defs>
       </svg>
@@ -400,29 +461,56 @@ function KnowledgeFlywheelDiagram() {
 }
 
 /* ============================================================
-   Component 1.5: Differentiator — "Why Not Just Use ChatGPT?"
+   Component 1.5: Differentiator — 3-Column Comparison
    ============================================================ */
 function DifferentiatorSection() {
   const rows = [
-    { generic: 'Different answer every time', gravix: 'Consistent, structured output you can attach to an ECO' },
-    { generic: 'Knows textbooks only', gravix: 'Knows textbooks + real production outcomes' },
-    { generic: 'Guesses at confidence', gravix: 'Confidence scores calibrated against confirmed cases' },
-    { generic: 'Chat transcript output', gravix: 'Professional PDF report for engineering review' },
-    { generic: 'Forgets everything', gravix: 'Accumulates institutional knowledge over time' },
+    {
+      generic: 'Different answer every time',
+      manual: '15-40 hrs per 8D report',
+      gravix: 'Consistent, structured output',
+    },
+    {
+      generic: 'Knows textbooks only',
+      manual: 'Zero AI-powered root cause help',
+      gravix: 'Knows textbooks + 5,000+ real cases',
+    },
+    {
+      generic: 'Guesses at confidence',
+      manual: 'No confidence scoring',
+      gravix: 'Confidence calibrated by confirmed outcomes',
+    },
+    {
+      generic: 'Chat transcript output',
+      manual: 'Static Word doc with no AI',
+      gravix: 'OEM-ready 8D PDF with audit trail',
+    },
+    {
+      generic: 'Forgets everything',
+      manual: 'Knowledge locked in one person\'s head',
+      gravix: 'Cross-case pattern detection across your entire organization',
+    },
   ];
 
   return (
     <section className="py-20">
       <div className="container mx-auto px-6">
-        <h2 className="text-[32px] font-bold text-white text-center mb-12">
-          Why engineers choose Gravix over generic AI
+        <h2 className="text-[28px] md:text-[32px] font-bold text-white text-center mb-4 max-w-[800px] mx-auto">
+          Why engineering teams choose Gravix over generic AI and manual processes
         </h2>
+        <p className="text-base text-[#64748B] text-center mb-12">
+          See how Gravix compares
+        </p>
 
-        <div className="max-w-[800px] mx-auto bg-brand-800 border border-[#1F2937] rounded-xl overflow-hidden">
-          <div className="grid grid-cols-2">
-            {/* Column headers */}
+        {/* Desktop: 3-column */}
+        <div className="hidden md:block max-w-[1000px] mx-auto bg-brand-800 border border-[#1F2937] rounded-xl overflow-hidden">
+          <div className="grid grid-cols-3">
+            {/* Headers */}
             <div className="p-4 bg-brand-800 border-b border-[#1F2937]">
-              <span className="text-sm font-semibold text-text-tertiary">Generic AI (ChatGPT)</span>
+              <span className="text-sm font-semibold text-[#64748B]">Generic AI (ChatGPT, etc.)</span>
+            </div>
+            <div className="p-4 bg-brand-800 border-b border-[#1F2937] border-l border-[#1F2937]">
+              <span className="text-sm font-semibold text-[#64748B]">Manual / Templates</span>
             </div>
             <div className="p-4 bg-brand-800/80 border-b border-[#1F2937] border-l-2 border-l-accent-500">
               <span className="text-sm font-semibold text-accent-500">Gravix</span>
@@ -433,19 +521,100 @@ function DifferentiatorSection() {
               <div key={i} className="contents">
                 <div className={`p-4 ${i < rows.length - 1 ? 'border-b border-[#1F2937]' : ''}`}>
                   <div className="flex items-start gap-2">
-                    <span className="text-text-tertiary mt-0.5">○</span>
-                    <span className="text-sm text-text-tertiary">{row.generic}</span>
+                    <span className="text-[#64748B] mt-0.5">○</span>
+                    <span className="text-sm text-[#64748B]">{row.generic}</span>
+                  </div>
+                </div>
+                <div className={`p-4 border-l border-[#1F2937] ${i < rows.length - 1 ? 'border-b border-[#1F2937]' : ''}`}>
+                  <div className="flex items-start gap-2">
+                    <span className="text-[#64748B] mt-0.5">○</span>
+                    <span className="text-sm text-[#64748B]">{row.manual}</span>
                   </div>
                 </div>
                 <div className={`p-4 border-l-2 border-l-accent-500 bg-brand-800/80 ${i < rows.length - 1 ? 'border-b border-[#1F2937]' : ''}`}>
                   <div className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-success flex-shrink-0 mt-0.5" />
+                    <Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
                     <span className="text-sm text-white">{row.gravix}</span>
                   </div>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Mobile: 2-column (Generic AI vs Gravix) */}
+        <div className="md:hidden max-w-[600px] mx-auto bg-brand-800 border border-[#1F2937] rounded-xl overflow-hidden">
+          <div className="grid grid-cols-2">
+            <div className="p-3 bg-brand-800 border-b border-[#1F2937]">
+              <span className="text-xs font-semibold text-[#64748B]">Generic AI</span>
+            </div>
+            <div className="p-3 bg-brand-800/80 border-b border-[#1F2937] border-l-2 border-l-accent-500">
+              <span className="text-xs font-semibold text-accent-500">Gravix</span>
+            </div>
+
+            {rows.map((row, i) => (
+              <div key={i} className="contents">
+                <div className={`p-3 ${i < rows.length - 1 ? 'border-b border-[#1F2937]' : ''}`}>
+                  <div className="flex items-start gap-1.5">
+                    <span className="text-[#64748B] mt-0.5 text-xs">○</span>
+                    <span className="text-xs text-[#64748B]">{row.generic}</span>
+                  </div>
+                </div>
+                <div className={`p-3 border-l-2 border-l-accent-500 bg-brand-800/80 ${i < rows.length - 1 ? 'border-b border-[#1F2937]' : ''}`}>
+                  <div className="flex items-start gap-1.5">
+                    <Check className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-xs text-white">{row.gravix}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   Component 1.9: Enterprise Social Proof
+   ============================================================ */
+function EnterpriseSocialProof() {
+  const industries = [
+    { icon: Factory, label: 'Automotive' },
+    { icon: Plane, label: 'Aerospace' },
+    { icon: Heart, label: 'Medical Device' },
+    { icon: Cpu, label: 'Electronics' },
+    { icon: HardHat, label: 'Construction' },
+  ];
+
+  return (
+    <section className="py-12 bg-brand-800/30">
+      <div className="container mx-auto px-6 text-center">
+        <p className="text-sm text-[#64748B] uppercase tracking-wider font-semibold mb-8">
+          Trusted by quality teams in
+        </p>
+
+        {/* Industry icons */}
+        <div className="flex items-center justify-center gap-8 md:gap-12 mb-10 flex-wrap">
+          {industries.map((ind, i) => {
+            const Icon = ind.icon;
+            return (
+              <div key={i} className="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
+                <Icon className="w-8 h-8 text-[#94A3B8]" />
+                <span className="text-xs text-[#64748B]">{ind.label}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Testimonial */}
+        <div className="max-w-[600px] mx-auto">
+          <p className="text-lg italic text-[#94A3B8] mb-3">
+            &ldquo;Gravix cut our 8D turnaround from 2 weeks to 3 days.&rdquo;
+          </p>
+          <p className="text-sm text-[#64748B]">
+            — Quality Manager, Tier 1 Automotive Supplier
+          </p>
         </div>
       </div>
     </section>
@@ -460,23 +629,27 @@ function HowItWorks() {
     {
       number: '1',
       title: 'Describe your problem',
-      body: 'Fill out the structured intake form. Takes 2-3 minutes.',
+      body: 'Paste your failure description. Upload photos. Select your adhesive product. 2-3 minutes.',
     },
     {
       number: '2',
-      title: 'Get your analysis',
-      body: 'AI generates ranked root causes with confidence scores and specific fixes.',
+      title: 'AI diagnoses and investigates',
+      body: 'Ranked root causes with confidence scores. TDS-aware analysis. Guided investigation asks follow-up questions.',
     },
     {
       number: '3',
-      title: 'Track & improve',
-      body: 'Report your outcome. Your feedback makes the next analysis smarter for everyone.',
+      title: 'Track, learn, and improve',
+      body: 'Report outcomes. Your data improves the next analysis. Cross-case patterns emerge. 8D workflow for teams.',
     },
   ];
 
   return (
     <section className="py-20">
       <div className="container mx-auto px-6">
+        <h2 className="text-[28px] md:text-[32px] font-bold text-white text-center mb-12">
+          How it works
+        </h2>
+
         <div className="max-w-[960px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
             {/* Connecting dashed line (desktop only) */}
@@ -488,7 +661,7 @@ function HowItWorks() {
                   {step.number}
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">{step.title}</h3>
-                <p className="text-sm text-[#94A3B8]">{step.body}</p>
+                <p className="text-sm text-[#94A3B8] leading-relaxed">{step.body}</p>
               </div>
             ))}
           </div>
@@ -499,78 +672,96 @@ function HowItWorks() {
 }
 
 /* ============================================================
-   Component 1.7: Pricing Preview
+   Component 1.7: Pricing Preview — 4 Tiers
    ============================================================ */
 function PricingPreview() {
+  const tiers = [
+    {
+      name: 'Free',
+      price: '$0',
+      period: '',
+      highlight: '5/month analyses',
+      cta: 'Start Free',
+      ctaLink: '/failure',
+      ctaStyle: 'border border-[#374151] text-[#94A3B8] hover:text-white hover:border-[#4B5563]',
+      borderStyle: 'border-[#1F2937]',
+      badge: null,
+    },
+    {
+      name: 'Pro',
+      price: '$79',
+      period: '/mo',
+      highlight: 'Unlimited analyses',
+      cta: 'Start Pro →',
+      ctaLink: '/pricing',
+      ctaStyle: 'bg-accent-500 hover:bg-accent-600 text-white',
+      borderStyle: 'border-accent-500',
+      badge: '★ Most Popular',
+    },
+    {
+      name: 'Quality',
+      price: '$299',
+      period: '/mo',
+      highlight: '3 seats + 8D investigations',
+      cta: 'Start Quality →',
+      ctaLink: '/pricing',
+      ctaStyle: 'bg-[#8B5CF6] hover:bg-[#7C3AED] text-white',
+      borderStyle: 'border-[#8B5CF6]',
+      badge: null,
+    },
+    {
+      name: 'Enterprise',
+      price: '$799',
+      period: '/mo',
+      highlight: '10 seats + all features + API',
+      cta: 'Contact Sales →',
+      ctaLink: '/pricing',
+      ctaStyle: 'border border-[#374151] text-[#94A3B8] hover:text-white hover:border-[#4B5563]',
+      borderStyle: 'border-[#1F2937]',
+      badge: null,
+    },
+  ];
+
   return (
     <section className="py-20">
       <div className="container mx-auto px-6 text-center">
-        <h2 className="text-[32px] font-bold text-white mb-2">Simple pricing</h2>
+        <h2 className="text-[28px] md:text-[32px] font-bold text-white mb-4">
+          Plans for every team size
+        </h2>
         <p className="text-base text-[#94A3B8] mb-12">
-          Start free. Upgrade when you need full reports.
+          Start free. Scale to your entire quality organization.
         </p>
 
-        {/* Cards: On mobile, Pro first (flex-col-reverse) */}
-        <div className="flex flex-col-reverse md:flex-row gap-8 justify-center max-w-[760px] mx-auto">
-          {/* Free */}
-          <div className="w-full md:max-w-[360px] bg-brand-800 border border-[#1F2937] rounded-lg p-8 text-left">
-            <h3 className="text-xl font-bold text-white mb-1">Free</h3>
-            <div className="text-3xl font-bold text-white mb-6">$0</div>
-            <ul className="space-y-3 mb-8">
-              {[
-                { included: true, text: '5 analyses/month' },
-                { included: true, text: 'Full AI results' },
-                { included: true, text: 'Watermarked PDF' },
-                { included: false, text: 'Preview exec summary' },
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm">
-                  {item.included ? (
-                    <Check className="w-4 h-4 text-success flex-shrink-0" />
-                  ) : (
-                    <span className="w-4 h-4 flex items-center justify-center text-text-tertiary flex-shrink-0">○</span>
-                  )}
-                  <span className={item.included ? 'text-white' : 'text-text-tertiary'}>{item.text}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/tool"
-              className="block w-full text-center border border-accent-500 text-[#94A3B8] hover:text-white py-3 rounded-lg text-sm font-medium transition-colors"
+        {/* 4 cards — mobile 2x2, desktop 4-col */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-[1080px] mx-auto">
+          {tiers.map((tier, i) => (
+            <div
+              key={i}
+              className={`relative bg-brand-800 border ${tier.borderStyle} rounded-xl p-5 md:p-6 text-left flex flex-col`}
             >
-              Start Free
-            </Link>
-          </div>
-
-          {/* Pro */}
-          <div className="w-full md:max-w-[360px] bg-brand-800 border border-accent-500 border-t-[3px] border-t-accent-500 rounded-lg p-8 text-left">
-            <h3 className="text-xl font-bold text-white mb-1">Pro</h3>
-            <div className="text-3xl font-bold text-white mb-1">$79<span className="text-base font-normal text-text-tertiary">/mo</span></div>
-            <ul className="space-y-3 mb-8 mt-6">
-              {[
-                'Unlimited analyses',
-                'Full exec summary',
-                'Clean PDF export',
-                'Full analysis history',
-                'Similar cases detail',
-                'Priority processing',
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm">
-                  <Check className="w-4 h-4 text-success flex-shrink-0" />
-                  <span className="text-white">{item}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/pricing"
-              className="block w-full text-center bg-accent-500 hover:bg-accent-600 text-white py-3 rounded-lg text-sm font-medium transition-colors"
-            >
-              Upgrade to Pro
-            </Link>
-          </div>
+              {tier.badge && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent-500 text-white text-[10px] font-semibold px-3 py-1 rounded-full whitespace-nowrap">
+                  {tier.badge}
+                </span>
+              )}
+              <p className="text-sm font-semibold text-white mb-1">{tier.name}</p>
+              <p className="mb-3">
+                <span className="text-[32px] md:text-[36px] font-bold font-mono text-white">{tier.price}</span>
+                {tier.period && <span className="text-sm text-[#64748B]">{tier.period}</span>}
+              </p>
+              <p className="text-sm text-[#94A3B8] mb-6 flex-1">{tier.highlight}</p>
+              <Link
+                href={tier.ctaLink}
+                className={`block w-full text-center py-2.5 rounded-lg text-sm font-medium transition-colors ${tier.ctaStyle}`}
+              >
+                {tier.cta}
+              </Link>
+            </div>
+          ))}
         </div>
 
         <Link href="/pricing" className="inline-block mt-8 text-sm text-accent-500 hover:underline">
-          Need team access? → See all plans
+          See full plan comparison →
         </Link>
       </div>
     </section>
@@ -584,18 +775,29 @@ function FinalCTA() {
   return (
     <section className="w-full bg-brand-800/50 py-20">
       <div className="container mx-auto px-6 text-center">
-        <h2 className="text-[32px] font-bold text-white mb-4">
-          Ready to stop guessing?
+        <h2 className="text-[28px] md:text-[32px] font-bold text-white mb-4">
+          Ready to stop guessing at root causes?
         </h2>
-        <p className="text-base text-[#94A3B8] mb-8">
+        <p className="text-base text-[#94A3B8] mb-2">
           Start with 5 free analyses. No credit card required.
         </p>
-        <Link
-          href="/tool"
-          className="inline-flex items-center justify-center bg-accent-500 hover:bg-accent-600 text-white text-base font-medium px-10 py-4 rounded-lg transition-colors"
-        >
-          Try Gravix Free →
-        </Link>
+        <p className="text-base text-[#94A3B8] mb-8">
+          Quality teams: get audit-ready 8D reports in hours, not days.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link
+            href="/failure"
+            className="inline-flex items-center justify-center bg-accent-500 hover:bg-accent-600 text-white text-base font-medium px-10 py-4 rounded-lg transition-colors"
+          >
+            Start Free →
+          </Link>
+          <Link
+            href="/pricing"
+            className="hidden sm:inline-flex items-center justify-center border border-[#374151] text-[#94A3B8] hover:text-white hover:border-[#4B5563] text-base font-medium px-10 py-4 rounded-lg transition-colors"
+          >
+            Book a Demo →
+          </Link>
+        </div>
       </div>
     </section>
   );

@@ -9,6 +9,7 @@ import { AuthModal } from '@/components/auth/AuthModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking, incrementUsage } from '@/hooks/useUsageTracking';
 import { api } from '@/lib/api';
+import { UsageCounter } from '@/components/shared/UsageCounter';
 
 type Status = 'idle' | 'loading' | 'complete' | 'error';
 
@@ -174,7 +175,7 @@ export default function SpecToolPage() {
   return (
     <>
       <ToolLayout
-        formPanel={<SpecForm onSubmit={handleSubmit} isLoading={status === 'loading'} />}
+        formPanel={<><UsageCounter /><SpecForm onSubmit={handleSubmit} isLoading={status === 'loading'} /></>}
         resultsPanel={<SpecResults status={resultsStatus} data={resultData} specId={specId} errorMessage={errorMessage} onNewAnalysis={handleNewAnalysis} isFree={!user} />}
       />
       <UpgradeModal open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen} onUpgrade={() => window.location.href = '/pricing'} />
