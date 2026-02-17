@@ -104,14 +104,14 @@ def get_usage(user: dict) -> dict:
     plan = user.get("plan", "free")
     limits = settings.plan_limits.get(plan, settings.plan_limits["free"])
 
-    # Admins get unlimited access
+    # Admins get unlimited access but return their actual plan
     if _is_admin(user):
         return {
             "analyses_used": user.get("analyses_this_month", 0),
             "analyses_limit": 999999,
             "specs_used": user.get("specs_this_month", 0),
             "specs_limit": 999999,
-            "plan": "admin",
+            "plan": user.get("plan", "free"),
             "reset_date": user.get("analyses_reset_date"),
         }
 
