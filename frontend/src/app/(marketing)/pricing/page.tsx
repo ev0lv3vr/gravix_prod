@@ -4,23 +4,22 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { Check, ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, Star, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
 
 export default function PricingPage() {
   const { session } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [teamLoading, setTeamLoading] = useState(false);
+  const [proLoading, setProLoading] = useState(false);
+  const [qualityLoading, setQualityLoading] = useState(false);
+  const [enterpriseLoading, setEnterpriseLoading] = useState(false);
 
   const handleCheckout = async (priceEnvKey: string, setLoading: (v: boolean) => void) => {
     setLoading(true);
     try {
       const token = session?.access_token;
       if (!token) {
-        // Not logged in — redirect to tool page which will prompt auth
         window.location.href = '/tool';
         return;
       }
@@ -47,24 +46,25 @@ export default function PricingPage() {
     }
   };
 
-  const handleProCheckout = () => handleCheckout('NEXT_PUBLIC_STRIPE_PRICE_ID_PRO', setIsLoading);
-  const handleTeamCheckout = () => handleCheckout('NEXT_PUBLIC_STRIPE_PRICE_ID_TEAM', setTeamLoading);
+  const handleProCheckout = () => handleCheckout('NEXT_PUBLIC_STRIPE_PRICE_ID_PRO', setProLoading);
+  const handleQualityCheckout = () => handleCheckout('NEXT_PUBLIC_STRIPE_PRICE_ID_QUALITY', setQualityLoading);
+  const handleEnterpriseCheckout = () => handleCheckout('NEXT_PUBLIC_STRIPE_PRICE_ID_ENTERPRISE', setEnterpriseLoading);
 
   return (
     <div className="flex min-h-screen flex-col bg-[#0A1628]">
       <Header />
 
       <div className="container mx-auto px-6 py-20">
-        {/* Component 4.1: Page Header */}
+        {/* Page Header */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-white mb-4">Simple, transparent pricing</h1>
           <p className="text-base text-[#94A3B8] max-w-xl mx-auto">
-            Start free. Upgrade when you need full reports and unlimited analyses.
+            Start free. Upgrade when you need full reports, 8D investigations, and team collaboration.
           </p>
         </div>
 
-        {/* Component 4.2: Pricing Cards (3 cards) */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-[1080px] mx-auto mb-16">
+        {/* Pricing Cards (4 cards) */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-[1280px] mx-auto mb-16">
           {/* Free */}
           <div className="bg-brand-800 border border-[#1F2937] rounded-xl p-8">
             <h3 className="text-xl font-bold text-white mb-2">Free</h3>
@@ -76,15 +76,14 @@ export default function PricingPage() {
               <PricingFeature included text="Full AI results" />
               <PricingFeature included text="Watermarked PDF" />
               <PricingFeature included text="Last 5 analyses" />
-              <PricingFeature included={false} text="Preview exec summary" />
             </ul>
             <Link href="/tool" className="block w-full text-center border border-[#374151] text-[#94A3B8] hover:text-white hover:border-accent-500 py-3 rounded-lg text-sm font-medium transition-colors">
               Start Free
             </Link>
           </div>
 
-          {/* Pro — highlighted */}
-          <div className="bg-brand-800 border-2 border-accent-500 rounded-xl p-8 relative scale-105">
+          {/* Pro — Most Popular */}
+          <div className="bg-brand-800 border-2 border-accent-500 rounded-xl p-8 relative">
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-accent-500 text-white text-xs font-semibold rounded-full flex items-center gap-1">
               <Star className="w-3 h-3" /> Most Popular
             </div>
@@ -95,7 +94,7 @@ export default function PricingPage() {
             </div>
             <p className="text-sm text-[#94A3B8] mb-6">Unlimited analyses</p>
             <ul className="space-y-3 mb-8">
-              <PricingFeature included text="Everything in Free, plus:" bold />
+              <PricingFeature included text="Everything in Free" bold />
               <PricingFeature included text="Full exec summary" />
               <PricingFeature included text="Clean PDF" />
               <PricingFeature included text="Full history" />
@@ -104,53 +103,90 @@ export default function PricingPage() {
             </ul>
             <button
               onClick={handleProCheckout}
-              disabled={isLoading}
+              disabled={proLoading}
               className="block w-full text-center bg-accent-500 hover:bg-accent-600 text-white py-3 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             >
-              {isLoading ? 'Loading…' : 'Upgrade to Pro'}
+              {proLoading ? 'Loading…' : 'Upgrade to Pro'}
             </button>
           </div>
 
-          {/* Team */}
-          <div className="bg-brand-800 border border-[#1F2937] rounded-xl p-8">
-            <h3 className="text-xl font-bold text-white mb-2">Team</h3>
+          {/* Quality — Recommended */}
+          <div className="bg-brand-800 border-2 border-success rounded-xl p-8 relative">
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-success text-white text-xs font-semibold rounded-full flex items-center gap-1">
+              <Shield className="w-3 h-3" /> For Quality Teams
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Quality</h3>
             <div className="mb-6">
-              <span className="text-4xl font-bold text-white">$199</span>
+              <span className="text-4xl font-bold text-white">$299</span>
               <span className="text-sm text-[#64748B] ml-1">/mo</span>
             </div>
-            <p className="text-sm text-[#94A3B8] mb-6">Unlimited analyses</p>
+            <p className="text-sm text-[#94A3B8] mb-6">8D Investigations + team</p>
             <ul className="space-y-3 mb-8">
-              <PricingFeature included text="Everything in Pro, plus:" bold />
+              <PricingFeature included text="Everything in Pro" bold />
+              <PricingFeature included text="8D Investigation module" />
               <PricingFeature included text="5 team seats" />
-              <PricingFeature included text="Shared workspace" />
-              <PricingFeature included text="API access" />
-              <PricingFeature included text="Branded reports" />
+              <PricingFeature included text="OEM report templates" />
+              <PricingFeature included text="Action tracking" />
+              <PricingFeature included text="Electronic sign-off" />
+              <PricingFeature included text="Shareable investigation links" />
             </ul>
             <button
-              onClick={handleTeamCheckout}
-              disabled={teamLoading}
+              onClick={handleQualityCheckout}
+              disabled={qualityLoading}
+              className="block w-full text-center bg-success hover:bg-success/90 text-white py-3 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              {qualityLoading ? 'Loading…' : 'Start Quality Plan'}
+            </button>
+          </div>
+
+          {/* Enterprise */}
+          <div className="bg-brand-800 border border-[#1F2937] rounded-xl p-8">
+            <h3 className="text-xl font-bold text-white mb-2">Enterprise</h3>
+            <div className="mb-6">
+              <span className="text-4xl font-bold text-white">$799</span>
+              <span className="text-sm text-[#64748B] ml-1">/mo</span>
+            </div>
+            <p className="text-sm text-[#94A3B8] mb-6">Full platform, unlimited</p>
+            <ul className="space-y-3 mb-8">
+              <PricingFeature included text="Everything in Quality" bold />
+              <PricingFeature included text="Unlimited seats" />
+              <PricingFeature included text="All OEM templates" />
+              <PricingFeature included text="White-label reports" />
+              <PricingFeature included text="Custom fields (up to 10)" />
+              <PricingFeature included text="Email-in investigations" />
+              <PricingFeature included text="Pattern detection alerts" />
+              <PricingFeature included text="API access" />
+              <PricingFeature included text="Dedicated support" />
+            </ul>
+            <button
+              onClick={handleEnterpriseCheckout}
+              disabled={enterpriseLoading}
               className="block w-full text-center border border-[#374151] text-[#94A3B8] hover:text-white hover:border-accent-500 py-3 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             >
-              {teamLoading ? 'Loading…' : 'Start Team Plan'}
+              {enterpriseLoading ? 'Loading…' : 'Start Enterprise'}
             </button>
           </div>
         </div>
 
-        {/* Component 4.3: Enterprise CTA */}
+        {/* Enterprise CTA — custom needs */}
         <div className="text-center mb-20">
           <p className="text-base text-[#94A3B8]">
-            Need unlimited access, SSO, or dedicated support?{' '}
-            <a href="mailto:enterprise@gravix.com" className="text-accent-500 hover:underline">Contact us for Enterprise pricing →</a>
+            Need SSO, on-premise deployment, or custom integrations?{' '}
+            <a href="mailto:enterprise@gravix.com" className="text-accent-500 hover:underline">Contact us for custom Enterprise pricing →</a>
           </p>
         </div>
 
-        {/* Component 4.4: FAQ Accordion */}
+        {/* FAQ Accordion */}
         <div className="max-w-[680px] mx-auto">
           <h2 className="text-2xl font-bold text-white text-center mb-8">Frequently Asked Questions</h2>
           <div className="space-y-3">
             <FAQItem
               question="What counts as an analysis?"
               answer="Each submission of a failure analysis form or spec request form counts as one analysis. You can view and download results unlimited times after generation."
+            />
+            <FAQItem
+              question="What's the difference between Quality and Enterprise?"
+              answer="Quality includes the 8D investigation module with 5 team seats and Generic 8D + 1 OEM template. Enterprise adds unlimited seats, all OEM templates (Ford, VDA, Toyota A3, AS9100 CAPA), white-label branding, custom fields, pattern detection, and API access."
             />
             <FAQItem
               question="Can I cancel anytime?"

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   Dialog,
   DialogContent,
@@ -23,15 +24,15 @@ interface UpgradeModalProps {
 export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProps) {
   const { session } = useAuth();
   const { used, limit } = useUsageTracking();
-  const [isLoading, setIsLoading] = useState(false);
+  const [proLoading, setProLoading] = useState(false);
+  const [qualityLoading, setQualityLoading] = useState(false);
 
-  const handleUpgrade = async () => {
-    // If logged in, trigger checkout directly
+  const handleCheckout = async (priceEnvKey: string, setLoading: (v: boolean) => void) => {
     if (session?.access_token) {
-      setIsLoading(true);
+      setLoading(true);
       try {
         const data = await api.createCheckoutSession({
-          price_id: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || undefined,
+          price_id: process.env[priceEnvKey] || undefined,
           success_url: `${window.location.origin}/dashboard?checkout=success`,
           cancel_url: `${window.location.origin}/dashboard?checkout=cancel`,
         });
@@ -42,21 +43,19 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
       } catch {
         // Fall through to onUpgrade (navigate to /pricing)
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     }
-
-    // Fallback: not logged in or checkout failed
     onUpgrade();
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[560px]">
+      <DialogContent className="sm:max-w-[720px]">
         <DialogHeader>
           <DialogTitle className="text-2xl">You&apos;ve reached your free limit</DialogTitle>
           <DialogDescription>
-            You&apos;ve used {used}/{limit} free analyses this month. Upgrade to Pro to unlock unlimited analyses, full executive summaries, and more.
+            You&apos;ve used {used}/{limit} free analyses this month. Upgrade to continue with unlimited analyses, 8D investigations, and more.
           </DialogDescription>
         </DialogHeader>
 
@@ -73,8 +72,8 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
           </p>
         </div>
 
-        {/* Comparison Table */}
-        <div className="grid grid-cols-2 gap-4 my-6">
+        {/* Comparison Table — 3 columns */}
+        <div className="grid grid-cols-3 gap-4 my-6">
           {/* Free Column */}
           <div className="bg-surface-1 rounded p-4 border border-brand-600">
             <div className="font-semibold text-text-primary mb-3">Free</div>
@@ -87,7 +86,7 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
               </li>
               <li className="flex items-start gap-2">
                 <X className="h-4 w-4 text-danger shrink-0 mt-0.5" />
-                <span className="text-text-secondary">No executive summary</span>
+                <span className="text-text-secondary">No exec summary</span>
               </li>
               <li className="flex items-start gap-2">
                 <X className="h-4 w-4 text-danger shrink-0 mt-0.5" />
@@ -95,7 +94,7 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
               </li>
               <li className="flex items-start gap-2">
                 <X className="h-4 w-4 text-danger shrink-0 mt-0.5" />
-                <span className="text-text-secondary">No history</span>
+                <span className="text-text-secondary">No 8D module</span>
               </li>
             </ul>
           </div>
@@ -117,7 +116,7 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="h-4 w-4 text-success shrink-0 mt-0.5" />
-                <span className="text-text-primary font-medium">Full executive summary</span>
+                <span className="text-text-primary font-medium">Full exec summary</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="h-4 w-4 text-success shrink-0 mt-0.5" />
@@ -129,22 +128,68 @@ export function UpgradeModal({ open, onOpenChange, onUpgrade }: UpgradeModalProp
               </li>
             </ul>
           </div>
+
+          {/* Quality Column */}
+          <div className="bg-surface-1 rounded p-4 border-2 border-success">
+            <div className="flex items-center justify-between mb-3">
+              <div className="font-semibold text-text-primary">Quality</div>
+              <div className="text-xs px-2 py-1 bg-success/10 text-success rounded font-semibold">
+                TEAMS
+              </div>
+            </div>
+            <div className="text-2xl font-bold text-text-primary mb-1">$299</div>
+            <div className="text-sm text-text-tertiary mb-4">per month</div>
+            <ul className="space-y-2 text-sm">
+              <li className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-success shrink-0 mt-0.5" />
+                <span className="text-text-primary font-medium">Everything in Pro</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-success shrink-0 mt-0.5" />
+                <span className="text-text-primary font-medium">8D Investigations</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-success shrink-0 mt-0.5" />
+                <span className="text-text-primary font-medium">5 team seats</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-success shrink-0 mt-0.5" />
+                <span className="text-text-primary font-medium">OEM templates</span>
+              </li>
+            </ul>
+          </div>
         </div>
 
         {/* Actions */}
         <div className="flex flex-col gap-3">
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={handleUpgrade}
-            disabled={isLoading}
-            className="w-full"
-          >
-            {isLoading ? 'Loading…' : 'Start Pro — $79/mo'}
-          </Button>
-          <Button variant="ghost" size="md" onClick={() => onOpenChange(false)} className="w-full">
-            I&apos;ll wait
-          </Button>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => handleCheckout('NEXT_PUBLIC_STRIPE_PRICE_ID_PRO', setProLoading)}
+              disabled={proLoading}
+              className="w-full"
+            >
+              {proLoading ? 'Loading…' : 'Start Pro — $79/mo'}
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => handleCheckout('NEXT_PUBLIC_STRIPE_PRICE_ID_QUALITY', setQualityLoading)}
+              disabled={qualityLoading}
+              className="w-full bg-success hover:bg-success/90"
+            >
+              {qualityLoading ? 'Loading…' : 'Start Quality — $299/mo'}
+            </Button>
+          </div>
+          <div className="flex items-center justify-between">
+            <Link href="/pricing" className="text-sm text-accent-500 hover:underline" onClick={() => onOpenChange(false)}>
+              Compare all plans →
+            </Link>
+            <Button variant="ghost" size="md" onClick={() => onOpenChange(false)}>
+              I&apos;ll wait
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
