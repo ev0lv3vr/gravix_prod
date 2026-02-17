@@ -97,3 +97,110 @@ def fake_admin_user():
         "analyses_this_month": 0,
         "specs_this_month": 0,
     }
+
+
+# ---------------------------------------------------------------------------
+# Plan-Tier User Fixtures
+# ---------------------------------------------------------------------------
+
+@pytest.fixture()
+def free_user():
+    """Returns authenticated free-tier user with fresh monthly quota."""
+    from tests.factories import create_test_user
+    return create_test_user(plan="free", email="free@test.com")
+
+
+@pytest.fixture()
+def pro_user():
+    """Returns authenticated Pro-tier user."""
+    from tests.factories import create_test_user
+    return create_test_user(plan="pro", email="pro@test.com")
+
+
+@pytest.fixture()
+def quality_user():
+    """Returns authenticated Quality-tier user with org and 3 seats."""
+    from tests.factories import create_test_user, create_test_org
+    user = create_test_user(plan="quality", email="quality@test.com")
+    org = create_test_org(owner=user, seat_limit=3, plan="quality")
+    return user, org
+
+
+@pytest.fixture()
+def enterprise_user():
+    """Returns authenticated Enterprise-tier user with org and 10 seats."""
+    from tests.factories import create_test_user, create_test_org
+    user = create_test_user(plan="enterprise", email="enterprise@test.com")
+    org = create_test_org(owner=user, seat_limit=10, plan="enterprise")
+    return user, org
+
+
+# ---------------------------------------------------------------------------
+# Investigation Fixtures
+# ---------------------------------------------------------------------------
+
+@pytest.fixture()
+def sample_investigation(quality_user):
+    """Returns a Quality-tier investigation with status=Open."""
+    from tests.factories import create_test_investigation
+    user, org = quality_user
+    inv = create_test_investigation(
+        org=org, creator=user,
+        title="Test B-pillar disbond",
+        customer="Ford Motor Company",
+        severity="critical",
+        template="ford_global_8d",
+        status="open",
+    )
+    return inv
+
+
+@pytest.fixture()
+def full_investigation(enterprise_user):
+    """Returns investigation with all D1-D8 complete, ready for closure."""
+    from tests.factories import create_full_investigation
+    user, org = enterprise_user
+    inv = create_full_investigation(org=org, creator=user)
+    return inv
+
+
+# ---------------------------------------------------------------------------
+# Product & TDS Fixtures
+# ---------------------------------------------------------------------------
+
+@pytest.fixture()
+def seeded_products():
+    """Seeds 15 products with TDS data."""
+    from tests.factories import seed_tds_products
+    return seed_tds_products()
+
+
+# ---------------------------------------------------------------------------
+# Notification Fixtures
+# ---------------------------------------------------------------------------
+
+@pytest.fixture()
+def notification_preferences(quality_user):
+    """Returns user with custom notification preferences dict."""
+    user, org = quality_user
+    prefs = {
+        "id": "prefs-test-123",
+        "user_id": user["id"],
+        "email_enabled": True,
+        "digest_mode": False,
+        "quiet_hours_start": "20:00",
+        "quiet_hours_end": "07:00",
+        "status_changes": True,
+        "new_comments": True,
+        "action_assigned": True,
+        "action_due_soon": True,
+        "team_member_added": True,
+        "investigation_closed": True,
+        "events": {
+            "investigation_assigned": {"email": True, "in_app": True},
+            "action_assigned": {"email": True, "in_app": True},
+            "mentioned": {"email": True, "in_app": True},
+            "status_changed": {"email": False, "in_app": True},
+        },
+    }
+    return user, org, prefs
