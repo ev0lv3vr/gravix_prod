@@ -1,6 +1,6 @@
 # MEMORY.md — Long-Term Memory
 
-Last updated: 2026-02-13
+Last updated: 2026-02-17
 
 ## About My Human
 - Name: Евгений (Evgeny) Нечаев, goes by Ev / @Evolv3
@@ -69,9 +69,11 @@ Last updated: 2026-02-13
 - [ ] Refund policy still links to gravixadhesives.com (needs `write_legal_policies` scope)
 - [ ] Google Search Console sitemap submission (needs manual access)
 - [ ] **Amazon CA / NARF** — disable NARF for chemical ASINs or submit SDS (Ev's call, flagged 2/15)
-- [ ] **GSC indexing errors** — 5xx + 403 pages on gluemasters.com (flagged 2/15)
+- [x] ~~GSC indexing errors~~ — investigated 2/15: 5xx = Shopify transient 503s, 403 = correct robots.txt blocks. Non-issue.
 - [ ] **ShipBob PAT expired** — blocking fulfillment data cross-referencing (since 2/14)
-- [ ] **Medium restock URGENT** — 8oz: ~5 days, 2oz: ~6 days as of 2/15
+- [ ] **ShipBob UROs accruing fees** — 2 shipments in On-Hold Receiving, $490 accrued (~$18/day), flagged 2/17
+- [ ] **Medium restock URGENT** — 8oz: ~5 days, 2oz: ~6 days as of 2/15 (deteriorating daily)
+- [ ] **Ethan Miller replacement** — order #5786, 4× Thick 16oz replacement not yet created at ShipBob
 
 #### Pump Accelerator 8oz — Label & Listing Project
 - **Supplier:** Xtralok (Chicago) — pump spray bottle, same formula as existing aerosol
@@ -83,7 +85,7 @@ Last updated: 2026-02-13
   - 7 Amazon listing images (3D renders + infographics)
   - 5 Amazon A+ Content modules
   - 3D bottle mockups
-  - ETA: ~Feb 17-18 for first review
+  - Status: reviewing feedback, updates in progress (as of 2/17)
 - **Competitor research done:** Starbond ($14.50), BSI, TotalBond, ASI, Chem-Set
 - **Target price:** $14.99
 - **Files:** `gluemasters-bizdev/labels/pump-accelerator-8oz/` (copy draft, designer brief, UPC, research)
@@ -112,11 +114,15 @@ Last updated: 2026-02-13
 - **Sub-agents:** Opus 4.6 for spawned work
 
 #### Gluemasters — B2B Pipeline
-- **Quintex Molding** (Ryan Belnap, Nampa ID) — trial kit shipped 2/11 (Medium + Thin 16oz), awaiting feedback
-- **OTL** (Mitch Hamilton, Jasper NY) — inbound 2/15, personalized gifts, needs low-odor solution. Draft email ready.
+- **Noveon Magnetics** (Jonathan Martinez, jmartinez@noveon.co, San Marcos TX) — 4 cases Medium 700cps 16oz, PDF quote sent ($4,140, free shipping), awaiting buyer approval (2/17)
+- **Quintex Molding** (Ryan Belnap, Nampa ID) — trial kit shipped 2/11 + original order #5836 (12x Thick 16oz) had USPS delivery fail (business closed 2/14), redelivery scheduled 2/17
+- **OTL** (Mitch Hamilton, Jasper NY) — inbound 2/15, personalized gifts, needs low-odor solution. Replied 2/16.
 - **Donaldson Company** (Rachael Fitzgerald) — B2B customer, had wrong-product shipment, replacement sent
-- **B2B CRM dashboard:** `gluemasters-bizdev/b2b-crm.html` — 12 prospects, ~$47K/mo pipeline potential
+- **Ethan Miller** — order #5786, received Medium instead of Thick (ShipBob pick error), replacement promised but not yet created
+- **B2B CRM dashboard:** `gluemasters-bizdev/b2b-crm.html` — 12+ prospects, ~$47K/mo pipeline potential
 - **Retail-to-wholesale email sequences:** `gluemasters-bizdev/b2b/retail-to-wholesale-sequences.md`
+- **B2B quote template:** `gluemasters-bizdev/quotes/` — PDF generator with GM logo, used for Noveon
+- **GM logo SVG:** `gluemasters-bizdev/assets/gluemasters-logo.svg`
 
 #### Gluemasters — Ops Tools Built (2/13-2/14)
 - `gluemasters-bizdev/ops-dashboard.html` — live Shopify + ShipBob data dashboard
@@ -129,6 +135,9 @@ Last updated: 2026-02-13
 - **Don't use separate gateways for multi-agent** — use `openclaw agents add` + multi-account Telegram on one gateway. Separate gateways cause lock conflicts and the `--profile` flag has bugs with `isLoaded` detection.
 - **Don't use opacity-0 for scroll animations** — breaks mobile if JS doesn't fire
 - **himalaya SMTP save-to-Sent causes retries** — set `save-copy = false` for Gmail
+- **himalaya has TWO accounts** — `gluemasters` (evgueni@, newsletters/Amazon/ShipBob) and `sales` (sales@, customer/B2B emails). Always use `--account sales` for customer replies.
+- **himalaya attachments need MML multipart** — must use `<#multipart type=mixed>` wrapper, not bare `<#part filename=...>` in plain text
+- **himalaya thread replies** — get Message-ID from original email, set In-Reply-To + References headers
 - **Shopify CLI device auth times out quickly** — may need Theme Access password approach
 - **Context compaction loses details** — write everything to files immediately
 - **TT Norms font has contextual ligatures** — disable with `font-variant-ligatures: no-common-ligatures no-contextual`

@@ -4,8 +4,9 @@ import { Suspense, useEffect, useMemo, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePlan } from '@/contexts/PlanContext';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
-import { api, type UsageResponse } from '@/lib/api';
+import { api } from '@/lib/api';
 import { FlaskConical, Search, ArrowRight, X, CheckCircle, Info } from 'lucide-react';
 import { PendingFeedbackBanner } from '@/components/dashboard/PendingFeedbackBanner';
 import { InvestigationsDashboardWidget } from '@/components/investigations/InvestigationsDashboardWidget';
@@ -43,24 +44,21 @@ export default function DashboardPage() {
 
 function DashboardContent() {
   const { user: authUser, loading: authLoading } = useAuth();
+  const { plan: profilePlan, usage, refreshPlan } = usePlan();
   const usageFallback = useUsageTracking();
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [recentAnalyses, setRecentAnalyses] = useState<HistoryItem[]>([]);
-  const [profilePlan, setProfilePlan] = useState<string>('free');
-  const [usage, setUsage] = useState<UsageResponse | null>(null);
 
-  // Hydrate from cache immediately so returning users see data while API loads
+  // Hydrate recentAnalyses from cache immediately so returning users see data while API loads
   useEffect(() => {
     try {
       const cached = localStorage.getItem('gravix_dashboard_cache');
       if (cached) {
         const data = JSON.parse(cached);
         if (data.recentAnalyses?.length > 0) setRecentAnalyses(data.recentAnalyses);
-        if (data.profilePlan) setProfilePlan(data.profilePlan);
-        if (data.usage) setUsage(data.usage);
       }
     } catch { /* ignore */ }
   }, []);
@@ -75,11 +73,13 @@ function DashboardContent() {
       router.replace('/dashboard', { scroll: false });
 
       if (checkout === 'success') {
+        // Force-refresh plan data after successful checkout
+        refreshPlan();
         const timer = setTimeout(() => setCheckoutBanner(null), 8000);
         return () => clearTimeout(timer);
       }
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, refreshPlan]);
 
   const dismissBanner = useCallback(() => setCheckoutBanner(null), []);
 
@@ -96,18 +96,13 @@ function DashboardContent() {
     async function load() {
       setLoading(true);
       try {
-        // Fetch each independently so one failure doesn't break the dashboard
-        const [profile, usageResp, specs, failures] = await Promise.all([
-          api.getCurrentUser().catch(() => null),
-          api.getCurrentUserUsage().catch(() => null),
+        // Fetch analyses — plan + usage are handled by PlanContext
+        const [specs, failures] = await Promise.all([
           api.listSpecRequests().catch(() => [] as any[]),
           api.listFailureAnalyses().catch(() => [] as any[]),
         ]);
 
         if (cancelled) return;
-
-        setProfilePlan(profile?.plan ?? 'free');
-        setUsage(usageResp);
 
         const specItems: import('@/lib/types').HistoryItem[] = specs.map((s: any) => {
           const substrateA = s.substrate_a ?? s.substrateA;
@@ -154,12 +149,11 @@ function DashboardContent() {
         const recent = merged.slice(0, 5);
         setRecentAnalyses(recent);
 
-        // Cache for instant hydration on next visit
+        // Cache recentAnalyses for instant hydration on next visit
+        // (plan + usage are cached separately by PlanContext)
         try {
           localStorage.setItem('gravix_dashboard_cache', JSON.stringify({
             recentAnalyses: recent,
-            profilePlan: profile?.plan ?? 'free',
-            usage: usageResp,
             cachedAt: Date.now(),
           }));
         } catch { /* quota exceeded, ignore */ }
@@ -259,10 +253,10 @@ function DashboardContent() {
       <PendingFeedbackBanner />
 
       {/* Component 6.5 & 6.6: Investigations Summary + Pattern Alerts (plan-gated) */}
-      {(profilePlan === 'quality' || profilePlan === 'team' || profilePlan === 'enterprise') && (
-        <div className={`grid gap-6 mb-10 ${profilePlan === 'enterprise' ? 'md:grid-cols-2' : 'md:grid-cols-1'}`}>
+      {(profilePlan === 'quality' || profilePlan === 'enterprise' || profilePlan === 'admin') && (
+        <div className={`grid gap-6 mb-10 ${(profilePlan === 'enterprise' || profilePlan === 'admin') ? 'md:grid-cols-2' : 'md:grid-cols-1'}`}>
           <InvestigationsSummaryCard />
-          {profilePlan === 'enterprise' && <PatternAlertsCard />}
+          {(profilePlan === 'enterprise' || profilePlan === 'admin') && <PatternAlertsCard />}
         </div>
       )}
 

@@ -14,64 +14,26 @@ import { AuthModal } from '@/components/auth/AuthModal';
 import { NotificationBell } from '@/components/layout/NotificationBell';
 import { Menu, X, User, ChevronDown, Settings, CreditCard, LogOut, Bell } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { api } from '@/lib/api';
-
-type PlanTier = 'free' | 'pro' | 'quality' | 'enterprise';
+import { usePlan, type PlanTier } from '@/contexts/PlanContext';
 
 const PLAN_BADGE_COLORS: Record<PlanTier, string> = {
   free: 'bg-[#374151] text-[#94A3B8]',
   pro: 'bg-accent-500/20 text-accent-500',
   quality: 'bg-[#8B5CF6]/20 text-[#8B5CF6]',
   enterprise: 'bg-[#F59E0B]/20 text-[#F59E0B]',
+  admin: 'bg-red-500/20 text-red-400',
 };
-
-function useUserPlan(): PlanTier {
-  const { user } = useAuth();
-  const [plan, setPlan] = useState<PlanTier>('free');
-
-  useEffect(() => {
-    if (!user) {
-      setPlan('free');
-      return;
-    }
-    api.getCurrentUser().then((u) => {
-      const p = (u?.plan || 'free') as string;
-      const normalized = p.toLowerCase();
-      if (normalized === 'team' || normalized === 'quality') {
-        setPlan('quality');
-      } else if (['pro', 'enterprise'].includes(normalized)) {
-        setPlan(normalized as PlanTier);
-      } else {
-        setPlan('free');
-      }
-    }).catch(() => setPlan('free'));
-  }, [user]);
-
-  return plan;
-}
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [analyzeOpen, setAnalyzeOpen] = useState(false);
   const analyzeRef = useRef<HTMLDivElement>(null);
 
   const { user, signOut } = useAuth();
-  const plan = useUserPlan();
-  const showInvestigations = plan === 'quality' || plan === 'enterprise';
-
-  useEffect(() => {
-    if (!user) {
-      setIsAdmin(false);
-      return;
-    }
-    api.getCurrentUser().then((u) => {
-      setIsAdmin(u?.role === 'admin');
-    }).catch(() => {
-      setIsAdmin(false);
-    });
-  }, [user]);
+  const { plan } = usePlan();
+  const showInvestigations = plan === 'quality' || plan === 'enterprise' || plan === 'admin';
+  const isAdmin = plan === 'admin';
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {

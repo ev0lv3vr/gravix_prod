@@ -1,23 +1,35 @@
 # Gluemasters SEO Blog — Last Run
 
-**Date:** Monday, February 16, 2026 — 6:01 AM PST
+**Date:** 2026-02-17 (Tuesday)
+**Run:** 3 of ~20 planned weekday articles
 
-**Article Published:**
-- **Title:** Best Cyanoacrylate Glue for 3D Printing: How to Bond PLA, PETG, ABS, and Resin Prints
-- **URL:** https://gluemasters.com/blogs/articles/best-cyanoacrylate-glue-for-3d-printing-how-to-bond-pla-petg-abs-and-resin-prints
-- **Target Keyword:** best cyanoacrylate glue for 3D printing
-- **Keyword Cluster:** 3D printing
-- **Word Count:** 1,324 words
-- **Article ID:** 565768650929
+## Published Today
 
-**Content Highlights:**
-- Comprehensive guide covering PLA, PETG, ABS, and resin prints
-- Viscosity selection guide (thin, medium, thick CA)
-- Surface prep techniques and application methods
-- Troubleshooting section (brittle bonds, fogging, alignment issues)
-- Advanced techniques (CA + baking soda, using CA as primer)
-- 6-question FAQ section for featured snippet targeting
-- Internal links to all product pages (ultra-thin, thin, medium, thick, accelerator)
-- Strong CTA to shop collection
+| Field | Value |
+|-------|-------|
+| **Title** | CA Glue for Woodworking: Which Viscosity to Use, When to Skip Wood Glue, and Pro Finishing Tips |
+| **URL** | https://gluemasters.com/blogs/articles/ca-glue-for-woodworking-viscosity-guide-finishing-tips |
+| **Target Keyword** | CA glue for woodworking |
+| **Cluster** | woodworking/finishes |
+| **Article ID** | 565773107377 |
+| **Word Count** | ~1,180 |
+| **Published At** | 2026-02-17T06:02:00-08:00 |
 
-**Status:** ✅ Published successfully to Shopify blog ID 85228945585
+## Coverage So Far
+
+| Date | Cluster | Keyword |
+|------|---------|---------|
+| 2026-02-13 | reef/coral | cyanoacrylate adhesive for coral fragging |
+| 2026-02-16 | 3D printing | best cyanoacrylate glue for 3D printing |
+| 2026-02-17 | woodworking/finishes | CA glue for woodworking ✅ |
+
+## Remaining Clusters (rotate through)
+- model/RC
+- furniture repair
+- manufacturing/B2B
+- viscosity/CPS education
+- accelerator/debonder/how-to
+- safety/storage/shelf-life
+- bonding specific substrates
+- troubleshooting (blooming/fogging, brittle bond, wicking too far)
+- reef/coral (additional angles)

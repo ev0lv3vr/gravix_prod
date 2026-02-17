@@ -49,8 +49,15 @@ def check_and_reset_usage(user: dict) -> dict:
     return user
 
 
+def _is_admin(user: dict) -> bool:
+    """Check if the user has admin role (unlimited access)."""
+    return user.get("role") == "admin"
+
+
 def can_use_analysis(user: dict) -> bool:
     """Check if the user can run another analysis."""
+    if _is_admin(user):
+        return True
     user = check_and_reset_usage(user)
     plan = user.get("plan", "free")
     limit = settings.plan_limits.get(plan, settings.plan_limits["free"])["analyses"]
@@ -60,6 +67,8 @@ def can_use_analysis(user: dict) -> bool:
 
 def can_use_spec(user: dict) -> bool:
     """Check if the user can run another spec."""
+    if _is_admin(user):
+        return True
     user = check_and_reset_usage(user)
     plan = user.get("plan", "free")
     limit = settings.plan_limits.get(plan, settings.plan_limits["free"])["specs"]
@@ -94,6 +103,17 @@ def get_usage(user: dict) -> dict:
     user = check_and_reset_usage(user)
     plan = user.get("plan", "free")
     limits = settings.plan_limits.get(plan, settings.plan_limits["free"])
+
+    # Admins get unlimited access
+    if _is_admin(user):
+        return {
+            "analyses_used": user.get("analyses_this_month", 0),
+            "analyses_limit": 999999,
+            "specs_used": user.get("specs_this_month", 0),
+            "specs_limit": 999999,
+            "plan": "admin",
+            "reset_date": user.get("analyses_reset_date"),
+        }
 
     return {
         "analyses_used": user.get("analyses_this_month", 0),
