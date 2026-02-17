@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Search } from 'lucide-react';
+import Link from 'next/link';
+import { Search, ClipboardList } from 'lucide-react';
 import { ConfidenceBadge } from '../shared/ConfidenceBadge';
 import { FeedbackPrompt } from '../results/FeedbackPrompt';
 import { Button } from '@/components/ui/button';
@@ -252,10 +253,30 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
           </div>
         )}
 
-        {/* 8. Feedback prompt */}
+        {/* 8. Create 8D Investigation cross-link */}
+        {analysisId && (
+          <div className="bg-brand-800 border border-accent-500/30 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <ClipboardList className="w-5 h-5 text-accent-500" />
+                <div>
+                  <h3 className="text-sm font-semibold text-white">Start an 8D Investigation</h3>
+                  <p className="text-xs text-[#94A3B8]">Turn this analysis into a formal 8D investigation with action tracking and sign-off.</p>
+                </div>
+              </div>
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`/investigations/new?analysis_id=${analysisId}`}>
+                  Create 8D Investigation →
+                </Link>
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* 9. Feedback prompt */}
         {analysisId && <FeedbackPrompt analysisId={analysisId} />}
 
-        {/* 9. Action bar */}
+        {/* 10. Action bar */}
         <div className="fixed bottom-0 left-0 right-0 md:left-[calc(45%+1px)] bg-[#0A1628] border-t border-[#1F2937] p-4 z-50">
           <div className="flex flex-col sm:flex-row gap-3">
             <Button 
