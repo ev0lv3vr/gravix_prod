@@ -15,6 +15,10 @@ export const failureAnalysisSchema = z.object({
   surfacePrep: z.string().optional(),
   productionImpact: z.string().optional(),
   additionalContext: z.string().optional(),
+  // Sprint 11: AI-Forward fields
+  productName: z.string().optional(),
+  defectPhotos: z.array(z.string()).optional().default([]),
+  investigationMode: z.enum(['quick', 'guided']).optional().default('quick'),
 });
 
 export type FailureAnalysisFormData = z.infer<typeof failureAnalysisSchema>;

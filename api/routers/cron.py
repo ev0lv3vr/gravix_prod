@@ -43,6 +43,20 @@ async def aggregate_knowledge(x_cron_secret: str = Header(...)):
     return result
 
 
+@router.post("/detect-patterns")
+async def detect_patterns_cron(x_cron_secret: str = Header(...)):
+    """Run pattern detection as a cron job.
+
+    Sprint 11: Delegates to the patterns router's detection logic.
+    """
+    _verify_cron_secret(x_cron_secret)
+    from routers.patterns import detect_patterns as _detect
+    # Create a minimal admin user dict for the cron context
+    admin_user = {"id": "cron", "role": "admin"}
+    result = await _detect(x_cron_secret=x_cron_secret, user=admin_user)
+    return result
+
+
 @router.post("/aggregate-metrics")
 async def aggregate_metrics(x_cron_secret: str = Header(...)):
     """Aggregate daily metrics for public stats / Social Proof Bar.

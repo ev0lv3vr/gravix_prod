@@ -49,6 +49,7 @@ interface SpecResultData {
   }>;
   confidenceScore: number;
   knowledgeEvidenceCount?: number;
+  knownRisks?: string[];
 }
 
 export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis, isFree: _isFree = true }: SpecResultsProps) {
@@ -202,6 +203,19 @@ export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis,
             <ul className="space-y-1">
               {data.warnings.map((w, i) => (
                 <li key={i} className="text-sm text-[#94A3B8]">• {w}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* 6b. Known Risks (Sprint 11) */}
+        {data.knownRisks && data.knownRisks.length > 0 && (
+          <div className="bg-danger/5 border-l-[3px] border-l-danger rounded-r-lg p-4">
+            <h3 className="text-sm font-semibold text-danger mb-2">⚡ Known Risks</h3>
+            <p className="text-xs text-[#94A3B8] mb-2">Previous failure patterns detected for this product/substrate combination:</p>
+            <ul className="space-y-1">
+              {data.knownRisks.map((risk, i) => (
+                <li key={i} className="text-sm text-[#94A3B8]">• {risk}</li>
               ))}
             </ul>
           </div>
