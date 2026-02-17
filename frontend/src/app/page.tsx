@@ -249,10 +249,7 @@ function SolutionSection() {
                 ))}
               </ul>
             </div>
-            <MockupPlaceholder
-              title="AI Failure Analysis"
-              description="Failure analysis results with confidence badge, visual analysis finding, and 'Based on 23 similar cases' callout"
-            />
+            <FailureAnalysisPreview />
           </div>
 
           {/* Feature Block 2: 8D Investigation Management (visual left, text right) */}
@@ -282,10 +279,7 @@ function SolutionSection() {
               </ul>
             </div>
             <div className="lg:order-1">
-              <MockupPlaceholder
-                title="8D Stepper UI"
-                description="8D investigation showing D1-D8 tabs, team panel, annotation tool, and audit log"
-              />
+              <EightDPreview />
             </div>
           </div>
 
@@ -345,10 +339,7 @@ function SolutionSection() {
               </ul>
             </div>
             <div className="lg:order-1">
-              <MockupPlaceholder
-                title="Pattern Alert Card"
-                description="Alert showing '340% increase in Loctite 401 failures — Midwest region' with severity badge and 'Acknowledge' button"
-              />
+              <PatternAlertPreview />
             </div>
           </div>
 
@@ -378,10 +369,7 @@ function SolutionSection() {
                 ))}
               </ul>
             </div>
-            <MockupPlaceholder
-              title="Spec Engine Results"
-              description="Specification results with 'Known Risks' section showing field failure data and vendor-neutral scoring"
-            />
+            <SpecEnginePreview />
           </div>
         </div>
       </div>
@@ -389,15 +377,185 @@ function SolutionSection() {
   );
 }
 
-/* Mockup placeholder for feature visuals */
-function MockupPlaceholder({ title, description }: { title: string; description: string }) {
+/* ── Mini-UI Preview: AI Failure Analysis ── */
+function FailureAnalysisPreview() {
+  const causes = [
+    { rank: 1, label: 'Surface contamination', pct: 89, color: '#3B82F6' },
+    { rank: 2, label: 'Inadequate cure', pct: 67, color: '#3B82F6' },
+    { rank: 3, label: 'UV degradation', pct: 34, color: '#3B82F6' },
+  ];
   return (
-    <div className="bg-brand-800 border border-[#1F2937] rounded-xl p-8 min-h-[280px] flex flex-col items-center justify-center text-center">
-      <div className="w-12 h-12 rounded-lg bg-accent-500/10 flex items-center justify-center mb-4">
-        <div className="w-6 h-6 rounded bg-accent-500/30" />
+    <div className="bg-[#0F1B2E] border border-[#1F2937] rounded-xl p-5 min-h-[280px] select-none">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-[13px] font-semibold text-white">Root Cause Analysis</span>
+        <span className="text-[10px] bg-[#10B981]/15 text-[#10B981] px-2 py-0.5 rounded-full font-medium">High confidence</span>
       </div>
-      <p className="text-sm font-semibold text-[#94A3B8] mb-2">{title}</p>
-      <p className="text-xs text-[#64748B] max-w-[280px] leading-relaxed">{description}</p>
+      {/* Ranked causes */}
+      <div className="space-y-3 mb-4">
+        {causes.map((c) => (
+          <div key={c.rank}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[11px] text-[#94A3B8]">{c.rank}. {c.label}</span>
+              <span className="text-[11px] font-mono text-white">{c.pct}%</span>
+            </div>
+            <div className="h-1.5 rounded-full bg-[#1F2937] overflow-hidden">
+              <div className="h-full rounded-full" style={{ width: `${c.pct}%`, backgroundColor: c.color, opacity: 1 - (c.rank - 1) * 0.25 }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* Visual analysis tag */}
+      <div className="flex items-center gap-2 mb-3 bg-[#1F2937]/60 rounded-lg px-3 py-2">
+        <div className="w-8 h-8 rounded bg-[#1F2937] flex items-center justify-center flex-shrink-0">
+          <span className="text-[12px]">📸</span>
+        </div>
+        <span className="text-[10px] text-[#94A3B8] leading-snug">Visual: Adhesive failure detected — cohesive fracture pattern</span>
+      </div>
+      {/* Badge */}
+      <div className="flex items-center justify-center">
+        <span className="text-[10px] text-[#64748B] bg-[#1F2937]/50 px-3 py-1 rounded-full">Based on 23 similar cases</span>
+      </div>
+    </div>
+  );
+}
+
+/* ── Mini-UI Preview: 8D Investigation ── */
+function EightDPreview() {
+  const steps = ['D1','D2','D3','D4','D5','D6','D7','D8'];
+  const completed = [0,1,2]; // indices
+  const active = 3;
+  return (
+    <div className="bg-[#0F1B2E] border border-[#1F2937] rounded-xl p-5 min-h-[280px] select-none">
+      {/* Stepper */}
+      <div className="flex items-center gap-1 mb-4 overflow-x-auto">
+        {steps.map((s, i) => {
+          const done = completed.includes(i);
+          const isCurrent = i === active;
+          return (
+            <div
+              key={s}
+              className={`flex items-center justify-center px-2 py-1 rounded text-[10px] font-medium flex-shrink-0 ${
+                isCurrent
+                  ? 'bg-[#3B82F6] text-white'
+                  : done
+                  ? 'bg-[#10B981]/15 text-[#10B981]'
+                  : 'bg-[#1F2937] text-[#64748B]'
+              }`}
+            >
+              {done ? `${s} ✓` : s}
+            </div>
+          );
+        })}
+      </div>
+      {/* Active step heading */}
+      <h4 className="text-[13px] font-semibold text-white mb-3">D4: Root Cause Analysis</h4>
+      {/* 5-Why snippet */}
+      <div className="bg-[#1F2937]/50 rounded-lg px-3 py-2.5 mb-4">
+        <span className="text-[10px] text-[#64748B] uppercase tracking-wider font-semibold block mb-1.5">5-Why Analysis</span>
+        <div className="flex items-center gap-1 flex-wrap">
+          {['Bond failed','Surface contamination','Cleaning skipped','SOP not updated','Training gap'].map((why, i) => (
+            <span key={i} className="flex items-center gap-1">
+              <span className="text-[10px] text-[#94A3B8]">Why {i+1}: {why}</span>
+              {i < 4 && <span className="text-[10px] text-[#64748B]">→</span>}
+            </span>
+          ))}
+        </div>
+      </div>
+      {/* Footer badges */}
+      <div className="flex items-center gap-3">
+        <span className="text-[10px] bg-[#8B5CF6]/15 text-[#8B5CF6] px-2 py-0.5 rounded-full font-medium">Ford Global 8D</span>
+        <span className="text-[10px] text-[#64748B]">👥 2 team members</span>
+      </div>
+    </div>
+  );
+}
+
+/* ── Mini-UI Preview: Pattern Alert ── */
+function PatternAlertPreview() {
+  const bars = [20, 25, 30, 28, 55, 70, 85, 95]; // relative heights
+  return (
+    <div className="bg-[#0F1B2E] border border-[#1F2937] rounded-xl p-5 min-h-[280px] select-none border-l-4 border-l-[#EF4444]">
+      {/* Severity badge */}
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-[10px] bg-[#EF4444]/15 text-[#EF4444] px-2 py-0.5 rounded-full font-semibold">🔴 Critical</span>
+        <span className="text-[10px] text-[#64748B]">Pattern Alert</span>
+      </div>
+      {/* Title */}
+      <h4 className="text-[13px] font-semibold text-white mb-1">Loctite 401 Failure Spike — Midwest</h4>
+      <p className="text-[11px] text-[#94A3B8] mb-4">15 failures in 8 weeks (340% above avg)</p>
+      {/* Sparkline bar chart */}
+      <div className="flex items-end gap-1.5 h-12 mb-4 px-1">
+        {bars.map((h, i) => (
+          <div
+            key={i}
+            className="flex-1 rounded-sm"
+            style={{
+              height: `${h}%`,
+              backgroundColor: i >= 5 ? '#EF4444' : '#1F2937',
+            }}
+          />
+        ))}
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-[9px] text-[#64748B]">8 weeks ago</span>
+        <span className="text-[9px] text-[#64748B]">This week</span>
+      </div>
+      {/* Action */}
+      <button className="w-full text-[11px] font-medium border border-[#EF4444]/40 text-[#EF4444] rounded-lg py-1.5 hover:bg-[#EF4444]/10 transition-colors cursor-default">
+        Acknowledge
+      </button>
+    </div>
+  );
+}
+
+/* ── Mini-UI Preview: Spec Engine ── */
+function SpecEnginePreview() {
+  const compat = [
+    { label: 'Aluminum', color: '#10B981' },
+    { label: 'Steel', color: '#10B981' },
+    { label: 'ABS', color: '#F59E0B' },
+  ];
+  return (
+    <div className="bg-[#0F1B2E] border border-[#1F2937] rounded-xl p-5 min-h-[280px] select-none">
+      {/* Top badge */}
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-[10px] bg-[#10B981]/15 text-[#10B981] px-2 py-0.5 rounded-full font-medium">Top Match</span>
+      </div>
+      {/* Product name */}
+      <h4 className="text-[15px] font-semibold text-white mb-1">Recommended: 3M DP460</h4>
+      <p className="text-[11px] text-[#94A3B8] mb-4">Epoxy • 31 MPa shear • -55°C to 120°C</p>
+      {/* Risk warning */}
+      <div className="bg-[#F59E0B]/10 border border-[#F59E0B]/20 rounded-lg px-3 py-2 mb-4">
+        <span className="text-[11px] text-[#F59E0B]">⚠️ 2 known failures on ABS substrate</span>
+      </div>
+      {/* Compatibility grid */}
+      <div className="mb-2">
+        <span className="text-[10px] text-[#64748B] uppercase tracking-wider font-semibold block mb-2">Substrate Compatibility</span>
+        <div className="flex items-center gap-4">
+          {compat.map((c) => (
+            <div key={c.label} className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: c.color }} />
+              <span className="text-[10px] text-[#94A3B8]">{c.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Specs row */}
+      <div className="mt-4 flex items-center gap-3">
+        <div className="bg-[#1F2937]/50 rounded px-2 py-1">
+          <span className="text-[9px] text-[#64748B] block">Cure</span>
+          <span className="text-[10px] text-[#94A3B8] font-medium">24h @ 23°C</span>
+        </div>
+        <div className="bg-[#1F2937]/50 rounded px-2 py-1">
+          <span className="text-[9px] text-[#64748B] block">Mix ratio</span>
+          <span className="text-[10px] text-[#94A3B8] font-medium">2:1</span>
+        </div>
+        <div className="bg-[#1F2937]/50 rounded px-2 py-1">
+          <span className="text-[9px] text-[#64748B] block">Viscosity</span>
+          <span className="text-[10px] text-[#94A3B8] font-medium">Paste</span>
+        </div>
+      </div>
     </div>
   );
 }
