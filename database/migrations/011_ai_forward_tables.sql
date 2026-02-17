@@ -85,7 +85,7 @@ CREATE POLICY "Authenticated users can insert visual_analysis_results"
 CREATE TABLE IF NOT EXISTS public.investigation_sessions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
-  analysis_id UUID REFERENCES public.failure_analyses(id),
+  analysis_id UUID REFERENCES public.failure_analyses(id) ON DELETE SET NULL,
   session_state JSONB DEFAULT '{}',
   messages JSONB DEFAULT '[]',
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'abandoned')),

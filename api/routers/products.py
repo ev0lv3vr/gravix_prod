@@ -24,6 +24,10 @@ from prompts.tds_extraction import (
     build_tds_extraction_user_prompt,
 )
 
+def _escape_like(val: str) -> str:
+    """Escape SQL LIKE/ILIKE wildcards in user input."""
+    return val.replace("%", r"\%").replace("_", r"\_")
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/products", tags=["products"])
@@ -59,7 +63,10 @@ async def extract_tds(
         )
     
     # Upload to Supabase storage
-    storage_path = f"tds/{user['id']}/{uuid.uuid4().hex}_{file.filename}"
+    # Sanitize filename to prevent path traversal
+    import re as _re
+    safe_filename = _re.sub(r'[^a-zA-Z0-9._-]', '_', file.filename or "upload.pdf")
+    storage_path = f"tds/{user['id']}/{uuid.uuid4().hex}_{safe_filename}"
     try:
         db.storage.from_("tds-documents").upload(
             storage_path,
@@ -201,7 +208,7 @@ async def list_products(
     query = db.table("product_specifications").select("*")
     
     if search:
-        query = query.ilike("product_name", f"%{search}%")
+        query = query.ilike("product_name", f"%{_escape_like(search)}%")
     
     result = query.order("product_name", desc=False).limit(100).execute()
     

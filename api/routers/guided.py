@@ -22,6 +22,10 @@ from schemas.guided import (
 from services.ai_engine import _call_claude
 from prompts.tds_extraction import get_guided_investigation_system_prompt
 
+def _escape_like(val: str) -> str:
+    """Escape SQL LIKE/ILIKE wildcards in user input."""
+    return val.replace("%", r"\%").replace("_", r"\_")
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/guided", tags=["guided"])
@@ -36,7 +40,7 @@ def _tool_lookup_product_tds(db, product_name: str) -> dict:
     result = (
         db.table("product_specifications")
         .select("*")
-        .ilike("product_name", f"%{product_name}%")
+        .ilike("product_name", f"%{_escape_like(product_name)}%")
         .limit(3)
         .execute()
     )
@@ -72,11 +76,11 @@ def _tool_search_similar_cases(db, substrate_a: str = None, substrate_b: str = N
     )
     
     if substrate_a:
-        query = query.ilike("substrate_a", f"%{substrate_a}%")
+        query = query.ilike("substrate_a", f"%{_escape_like(substrate_a)}%")
     if substrate_b:
-        query = query.ilike("substrate_b", f"%{substrate_b}%")
+        query = query.ilike("substrate_b", f"%{_escape_like(substrate_b)}%")
     if failure_mode:
-        query = query.ilike("failure_mode", f"%{failure_mode}%")
+        query = query.ilike("failure_mode", f"%{_escape_like(failure_mode)}%")
     
     result = query.order("created_at", desc=True).limit(10).execute()
     
@@ -100,7 +104,7 @@ def _tool_check_specification_compliance(db, product_name: str, conditions: dict
     spec_result = (
         db.table("product_specifications")
         .select("*")
-        .ilike("product_name", f"%{product_name}%")
+        .ilike("product_name", f"%{_escape_like(product_name)}%")
         .limit(1)
         .execute()
     )
@@ -156,28 +160,32 @@ async def _tool_generate_5why(root_cause: str, failure_description: str) -> dict
 
 async def _execute_tool(db, tool_name: str, tool_input: dict) -> dict:
     """Execute a guided investigation tool and return the result."""
-    if tool_name == "lookup_product_tds":
-        return _tool_lookup_product_tds(db, tool_input.get("product_name", ""))
-    elif tool_name == "search_similar_cases":
-        return _tool_search_similar_cases(
-            db,
-            substrate_a=tool_input.get("substrate_a"),
-            substrate_b=tool_input.get("substrate_b"),
-            failure_mode=tool_input.get("failure_mode"),
-        )
-    elif tool_name == "check_specification_compliance":
-        return _tool_check_specification_compliance(
-            db,
-            product_name=tool_input.get("product_name", ""),
-            conditions=tool_input.get("conditions", {}),
-        )
-    elif tool_name == "generate_5why":
-        return await _tool_generate_5why(
-            root_cause=tool_input.get("root_cause", ""),
-            failure_description=tool_input.get("failure_description", ""),
-        )
-    else:
-        return {"error": f"Unknown tool: {tool_name}"}
+    try:
+        if tool_name == "lookup_product_tds":
+            return _tool_lookup_product_tds(db, tool_input.get("product_name", ""))
+        elif tool_name == "search_similar_cases":
+            return _tool_search_similar_cases(
+                db,
+                substrate_a=tool_input.get("substrate_a"),
+                substrate_b=tool_input.get("substrate_b"),
+                failure_mode=tool_input.get("failure_mode"),
+            )
+        elif tool_name == "check_specification_compliance":
+            return _tool_check_specification_compliance(
+                db,
+                product_name=tool_input.get("product_name", ""),
+                conditions=tool_input.get("conditions", {}),
+            )
+        elif tool_name == "generate_5why":
+            return await _tool_generate_5why(
+                root_cause=tool_input.get("root_cause", ""),
+                failure_description=tool_input.get("failure_description", ""),
+            )
+        else:
+            return {"error": f"Unknown tool: {tool_name}"}
+    except Exception as e:
+        logger.error(f"Tool execution failed: {tool_name} — {e}")
+        return {"error": f"Tool '{tool_name}' failed: {str(e)}"}
 
 
 # ============================================================================

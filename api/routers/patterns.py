@@ -131,15 +131,21 @@ async def detect_patterns(
         severity = _determine_severity(z_score)
         
         # Check if similar alert already exists (avoid duplicates)
-        existing = (
-            db.table("pattern_alerts")
-            .select("id")
-            .eq("status", "active")
-            .eq("failure_mode", failure_mode or "")
-            .eq("affected_substrate", substrate or "")
-            .eq("affected_product", product or "")
-            .execute()
-        )
+        # Check for duplicates — handle NULLs properly
+        dup_query = db.table("pattern_alerts").select("id").eq("status", "active")
+        if failure_mode:
+            dup_query = dup_query.eq("failure_mode", failure_mode)
+        else:
+            dup_query = dup_query.is_("failure_mode", "null")
+        if substrate:
+            dup_query = dup_query.eq("affected_substrate", substrate)
+        else:
+            dup_query = dup_query.is_("affected_substrate", "null")
+        if product:
+            dup_query = dup_query.eq("affected_product", product)
+        else:
+            dup_query = dup_query.is_("affected_product", "null")
+        existing = dup_query.execute()
         
         if existing.data:
             continue

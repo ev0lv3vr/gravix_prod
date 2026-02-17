@@ -290,8 +290,18 @@ async def _run_visual_analysis(
         substrate_b=substrate_b,
     )
     
+    # Validate photo URLs — restrict to Supabase storage to prevent SSRF
+    supabase_host = settings.supabase_url.replace("https://", "").replace("http://", "")
+    
     for photo_url in photo_urls[:5]:  # Max 5 photos
         try:
+            # SSRF protection: only allow Supabase storage URLs
+            from urllib.parse import urlparse
+            parsed = urlparse(photo_url)
+            if parsed.scheme not in ("https",) or supabase_host not in parsed.netloc:
+                logger.warning(f"Blocked non-Supabase photo URL: {photo_url}")
+                continue
+            
             # Fetch image and convert to base64
             async with httpx.AsyncClient(timeout=30) as client:
                 img_response = await client.get(photo_url)
