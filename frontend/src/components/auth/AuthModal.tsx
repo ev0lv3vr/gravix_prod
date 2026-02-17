@@ -19,6 +19,8 @@ type AuthView = 'sign-in' | 'sign-up' | 'forgot-password' | 'check-email' | 'res
 interface AuthModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Called after successful authentication (e.g. to auto-submit a saved form). */
+  onSuccess?: () => void;
 }
 
 function PasswordStrength({ password }: { password: string }) {
@@ -63,7 +65,7 @@ function StrengthRule({ met, label }: { met: boolean; label: string }) {
   );
 }
 
-export function AuthModal({ open, onOpenChange }: AuthModalProps) {
+export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
   const [view, setView] = useState<AuthView>('sign-in');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -78,7 +80,14 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
   const [resendCountdown, setResendCountdown] = useState(0);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
+  const { user, signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
+
+  // When user becomes authenticated while modal is open, trigger onSuccess callback
+  useEffect(() => {
+    if (user && open && onSuccess) {
+      onSuccess();
+    }
+  }, [user, open, onSuccess]);
 
   const resetForm = () => {
     setEmail('');

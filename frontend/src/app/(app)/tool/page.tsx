@@ -1,15 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { ToolLayout } from '@/components/layout/ToolLayout';
 import { SpecForm, type SpecFormData } from '@/components/tool/SpecForm';
 import { SpecResults, type SpecResultData } from '@/components/tool/SpecResults';
 import { UpgradeModal } from '@/components/shared/UpgradeModal';
+import { AuthModal } from '@/components/auth/AuthModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking, incrementUsage } from '@/hooks/useUsageTracking';
 import { api } from '@/lib/api';
 
 type Status = 'idle' | 'loading' | 'complete' | 'error';
+
+const STORAGE_KEY = 'gravix_spec_form';
+const AUTO_SUBMIT_KEY = 'gravix_spec_auto_submit';
 
 export default function SpecToolPage() {
   const [status, setStatus] = useState<Status>('idle');
@@ -17,21 +21,18 @@ export default function SpecToolPage() {
   const [specId, setSpecId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const autoSubmitTriggered = useRef(false);
 
   const { user } = useAuth();
   const { isExhausted } = useUsageTracking();
 
-  const handleSubmit = async (formData: SpecFormData) => {
-    if (!user) {
-      setErrorMessage('Please sign in to generate specifications.');
-      setStatus('error');
-      return;
-    }
+  // Core submission logic (no auth check — caller is responsible)
+  const executeSubmit = useCallback(async (formData: SpecFormData) => {
     if (isExhausted) { setUpgradeModalOpen(true); return; }
     setStatus('loading');
 
     try {
-      // Map frontend form data to backend SpecRequestCreate schema
       const envConditions: string[] = formData.environment || [];
       const requestData: Record<string, unknown> = {
         material_category: 'adhesive',
@@ -68,11 +69,9 @@ export default function SpecToolPage() {
 
       const response = await api.createSpecRequest(requestData) as import('@/lib/types').ApiSpecResponse;
 
-      // Capture the record ID for feedback
       const recordId = response.id;
       if (recordId) setSpecId(recordId);
 
-      // Map backend snake_case response to frontend SpecResultData
       const recSpec = (response.recommendedSpec || response.recommended_spec || {}) as Partial<import('@/lib/types').RecommendedSpec>;
       const prodChars = (response.productCharacteristics || response.product_characteristics || {}) as Partial<import('@/lib/types').ProductCharacteristics> & { viscosity_range?: string; cure_time?: string; shear_strength?: string; service_temperature?: string; gap_fill?: string };
       const appGuidance = response.applicationGuidance || response.application_guidance || {};
@@ -114,12 +113,59 @@ export default function SpecToolPage() {
       setResultData(mapped);
       setStatus('complete');
       incrementUsage(user);
+
+      // Clear saved form state on success
+      try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(AUTO_SUBMIT_KEY); } catch { /* noop */ }
     } catch (err) {
       console.error('Spec generation error:', err);
       setErrorMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
       setStatus('error');
     }
+  }, [isExhausted, user]);
+
+  // Public submit handler — gates on auth
+  const handleSubmit = async (formData: SpecFormData) => {
+    if (!user) {
+      // Save form state to localStorage so it survives the auth flow
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+        localStorage.setItem(AUTO_SUBMIT_KEY, 'true');
+      } catch { /* noop */ }
+      setAuthModalOpen(true);
+      return;
+    }
+    await executeSubmit(formData);
   };
+
+  // After auth success: restore form and auto-submit
+  const handleAuthSuccess = useCallback(() => {
+    setAuthModalOpen(false);
+    try {
+      const shouldAutoSubmit = localStorage.getItem(AUTO_SUBMIT_KEY);
+      const savedForm = localStorage.getItem(STORAGE_KEY);
+      if (shouldAutoSubmit && savedForm) {
+        const formData = JSON.parse(savedForm) as SpecFormData;
+        localStorage.removeItem(AUTO_SUBMIT_KEY);
+        executeSubmit(formData);
+      }
+    } catch { /* noop */ }
+  }, [executeSubmit]);
+
+  // Auto-submit on page load if user just authenticated (e.g., after OAuth redirect)
+  useEffect(() => {
+    if (user && !autoSubmitTriggered.current) {
+      try {
+        const shouldAutoSubmit = localStorage.getItem(AUTO_SUBMIT_KEY);
+        const savedForm = localStorage.getItem(STORAGE_KEY);
+        if (shouldAutoSubmit && savedForm) {
+          autoSubmitTriggered.current = true;
+          const formData = JSON.parse(savedForm) as SpecFormData;
+          localStorage.removeItem(AUTO_SUBMIT_KEY);
+          executeSubmit(formData);
+        }
+      } catch { /* noop */ }
+    }
+  }, [user, executeSubmit]);
 
   const handleNewAnalysis = () => { setStatus('idle'); setResultData(null); setSpecId(null); setErrorMessage(null); };
 
@@ -132,6 +178,7 @@ export default function SpecToolPage() {
         resultsPanel={<SpecResults status={resultsStatus} data={resultData} specId={specId} errorMessage={errorMessage} onNewAnalysis={handleNewAnalysis} isFree={!user} />}
       />
       <UpgradeModal open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen} onUpgrade={() => window.location.href = '/pricing'} />
+      <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} onSuccess={handleAuthSuccess} />
     </>
   );
 }
