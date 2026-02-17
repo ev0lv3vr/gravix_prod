@@ -92,6 +92,8 @@ def build_user_prompt(data: dict) -> str:
         lines.append(f"\n**Production Volume:** {data['production_volume']}")
     if data.get("application_method"):
         lines.append(f"**Application Method:** {data['application_method']}")
+    if data.get("required_fixture_time"):
+        lines.append(f"**Required Fixture Time:** {data['required_fixture_time']}")
     if data.get("additional_requirements"):
         lines.append(f"**Additional Requirements:** {data['additional_requirements']}")
 

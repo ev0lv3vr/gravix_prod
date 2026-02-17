@@ -40,6 +40,7 @@ class SpecRequestCreate(BaseModel):
     cure_constraints: Optional[CureConstraints] = None
     production_volume: Optional[str] = None
     application_method: Optional[str] = None
+    required_fixture_time: Optional[str] = None
     additional_requirements: Optional[str] = None
 
 
@@ -54,6 +55,7 @@ class SpecRequestResponse(BaseModel):
     cure_constraints: Optional[dict] = None
     production_volume: Optional[str] = None
     application_method: Optional[str] = None
+    required_fixture_time: Optional[str] = None
     additional_requirements: Optional[str] = None
     recommended_spec: Optional[dict] = None
     product_characteristics: Optional[dict] = None

@@ -66,6 +66,10 @@ export default function SpecToolPage() {
           uv_available: formData.cureConstraint === 'uv_available',
         },
         additional_requirements: formData.additionalContext || undefined,
+        production_volume: formData.productionVolume || undefined,
+        application_method: formData.applicationMethod || undefined,
+        required_fixture_time: formData.requiredFixtureTime || undefined,
+        product_considered: formData.productConsidered || undefined,
       };
 
       const response = await api.createSpecRequest(requestData) as import('@/lib/types').ApiSpecResponse;
