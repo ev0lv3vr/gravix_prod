@@ -14,6 +14,7 @@ import {
 import { StatusBadge, SeverityBadge } from '@/components/investigations/StatusBadge';
 import { DisciplineStepper } from '@/components/investigations/DisciplineStepper';
 import { AddActionDialog } from '@/components/investigations/AddActionDialog';
+import { CommentPanel } from '@/components/investigations/CommentPanel';
 import { daysOpen, formatDate, timeAgo, getNextStatus, formatStatus } from '@/components/investigations/InvestigationHelpers';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -307,7 +308,7 @@ export default function InvestigationDetailPage() {
       )}
 
       {/* Main Content: Stepper + Sidebar */}
-      <div className="grid lg:grid-cols-[1fr_320px] gap-6 mb-8">
+      <div className="grid lg:grid-cols-[1fr_380px] gap-6 mb-8">
         {/* Discipline Stepper */}
         <DisciplineStepper
           investigation={investigation}
@@ -320,7 +321,7 @@ export default function InvestigationDetailPage() {
           signing={signing}
         />
 
-        {/* Sidebar Info */}
+        {/* Sidebar Info + Comments */}
         <div className="space-y-4">
           <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-4">
             <h3 className="text-sm font-semibold text-white mb-3">Investigation Info</h3>
@@ -381,6 +382,16 @@ export default function InvestigationDetailPage() {
               </div>
             </div>
           </div>
+
+          {/* Comment Panel */}
+          <CommentPanel
+            investigationId={investigationId}
+            currentUserId={user.id}
+            isLeadOrChampion={
+              investigation.team_lead_user_id === user.id ||
+              investigation.champion_user_id === user.id
+            }
+          />
         </div>
       </div>
 

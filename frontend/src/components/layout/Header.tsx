@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { AuthModal } from '@/components/auth/AuthModal';
+import { NotificationBell } from '@/components/layout/NotificationBell';
 import { Menu, X, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
@@ -112,6 +113,7 @@ export function Header() {
                 <Badge variant="outline" className="font-mono text-xs text-text-secondary border-brand-600">
                   {used}/{limit} analyses
                 </Badge>
+                <NotificationBell />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="gap-2">
