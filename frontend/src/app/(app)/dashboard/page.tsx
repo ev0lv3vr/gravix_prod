@@ -106,7 +106,7 @@ function DashboardContent() {
 
         if (cancelled) return;
 
-        setProfilePlan(profile?.plan ?? 'free');
+        setProfilePlan(profile?.role === 'admin' ? 'admin' : (profile?.plan ?? 'free'));
         setUsage(usageResp);
 
         const specItems: import('@/lib/types').HistoryItem[] = specs.map((s: any) => {
@@ -158,7 +158,7 @@ function DashboardContent() {
         try {
           localStorage.setItem('gravix_dashboard_cache', JSON.stringify({
             recentAnalyses: recent,
-            profilePlan: profile?.plan ?? 'free',
+            profilePlan: profile?.role === 'admin' ? 'admin' : (profile?.plan ?? 'free'),
             usage: usageResp,
             cachedAt: Date.now(),
           }));
@@ -259,10 +259,10 @@ function DashboardContent() {
       <PendingFeedbackBanner />
 
       {/* Component 6.5 & 6.6: Investigations Summary + Pattern Alerts (plan-gated) */}
-      {(profilePlan === 'quality' || profilePlan === 'team' || profilePlan === 'enterprise') && (
-        <div className={`grid gap-6 mb-10 ${profilePlan === 'enterprise' ? 'md:grid-cols-2' : 'md:grid-cols-1'}`}>
+      {(profilePlan === 'quality' || profilePlan === 'team' || profilePlan === 'enterprise' || profilePlan === 'admin') && (
+        <div className={`grid gap-6 mb-10 ${(profilePlan === 'enterprise' || profilePlan === 'admin') ? 'md:grid-cols-2' : 'md:grid-cols-1'}`}>
           <InvestigationsSummaryCard />
-          {profilePlan === 'enterprise' && <PatternAlertsCard />}
+          {(profilePlan === 'enterprise' || profilePlan === 'admin') && <PatternAlertsCard />}
         </div>
       )}
 

@@ -16,13 +16,14 @@ import { Menu, X, User, ChevronDown, Settings, CreditCard, LogOut, Bell } from '
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 
-type PlanTier = 'free' | 'pro' | 'quality' | 'enterprise';
+type PlanTier = 'free' | 'pro' | 'quality' | 'enterprise' | 'admin';
 
 const PLAN_BADGE_COLORS: Record<PlanTier, string> = {
   free: 'bg-[#374151] text-[#94A3B8]',
   pro: 'bg-accent-500/20 text-accent-500',
   quality: 'bg-[#8B5CF6]/20 text-[#8B5CF6]',
   enterprise: 'bg-[#F59E0B]/20 text-[#F59E0B]',
+  admin: 'bg-red-500/20 text-red-400',
 };
 
 function useUserPlan(): PlanTier {
@@ -35,6 +36,10 @@ function useUserPlan(): PlanTier {
       return;
     }
     api.getCurrentUser().then((u) => {
+      if (u?.role === 'admin') {
+        setPlan('admin');
+        return;
+      }
       const p = (u?.plan || 'free') as string;
       const normalized = p.toLowerCase();
       if (normalized === 'team' || normalized === 'quality') {
@@ -59,7 +64,7 @@ export function Header() {
 
   const { user, signOut } = useAuth();
   const plan = useUserPlan();
-  const showInvestigations = plan === 'quality' || plan === 'enterprise';
+  const showInvestigations = plan === 'quality' || plan === 'enterprise' || plan === 'admin';
 
   useEffect(() => {
     if (!user) {
