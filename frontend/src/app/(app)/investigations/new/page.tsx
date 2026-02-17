@@ -1,16 +1,36 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { investigationsApi, type InvestigationCreatePayload, type InvestigationSeverity, type ReportTemplate } from '@/lib/investigations';
+import {
+  investigationsApi,
+  type InvestigationCreatePayload,
+  type InvestigationSeverity,
+} from '@/lib/investigations';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { ArrowLeft, Loader2, Search, Link2 } from 'lucide-react';
 import Link from 'next/link';
+
+// ─── Report template options (hardcoded per spec) ────────────────────────────
+
+const REPORT_TEMPLATES = [
+  { value: 'generic_8d', label: 'Generic 8D' },
+  { value: 'ford_global_8d', label: 'Ford Global 8D' },
+  { value: 'vda_8d', label: 'VDA 8D' },
+  { value: 'a3', label: 'A3 Report' },
+  { value: 'as9100_capa', label: 'AS9100 CAPA' },
+] as const;
 
 export default function CreateInvestigationPage() {
   return (
@@ -25,7 +45,7 @@ function CreateInvestigationContent() {
   const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
 
-  const analysisId = searchParams.get('analysis_id') || undefined;
+  const analysisIdParam = searchParams.get('analysis_id') || '';
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,20 +54,22 @@ function CreateInvestigationContent() {
   const [title, setTitle] = useState('');
   const [severity, setSeverity] = useState<InvestigationSeverity>('major');
   const [customerOem, setCustomerOem] = useState('');
+  const [customerRef, setCustomerRef] = useState('');
   const [productPartNumber, setProductPartNumber] = useState('');
+  const [reportTemplate, setReportTemplate] = useState('generic_8d');
+
+  // Analysis link
+  const [analysisId, setAnalysisId] = useState(analysisIdParam);
+  const [analysisSearch, setAnalysisSearch] = useState('');
+  const [showAnalysisSearch, setShowAnalysisSearch] = useState(false);
+
+  // D2 pre-fill fields (optional at creation)
   const [whatFailed, setWhatFailed] = useState('');
   const [whoReported, setWhoReported] = useState('');
   const [whereInProcess, setWhereInProcess] = useState('');
   const [whyItMatters, setWhyItMatters] = useState('');
   const [howDetected, setHowDetected] = useState('');
   const [howManyAffected, setHowManyAffected] = useState('');
-  const [reportTemplate, setReportTemplate] = useState('');
-  const [templates, setTemplates] = useState<ReportTemplate[]>([]);
-
-  // Fetch templates
-  useEffect(() => {
-    investigationsApi.listTemplates().then(setTemplates).catch(() => {});
-  }, []);
 
   if (authLoading) return null;
   if (!user) {
@@ -69,6 +91,7 @@ function CreateInvestigationContent() {
       const payload: InvestigationCreatePayload = {
         title: title.trim(),
         severity,
+        report_template: reportTemplate,
       };
       if (customerOem.trim()) payload.customer_oem = customerOem.trim();
       if (productPartNumber.trim()) payload.product_part_number = productPartNumber.trim();
@@ -79,7 +102,6 @@ function CreateInvestigationContent() {
       if (howDetected.trim()) payload.how_detected = howDetected.trim();
       if (howManyAffected.trim()) payload.how_many_affected = parseInt(howManyAffected, 10) || undefined;
       if (analysisId) payload.analysis_id = analysisId;
-      if (reportTemplate) payload.report_template = reportTemplate;
 
       const created = await investigationsApi.create(payload);
       router.push(`/investigations/${created.id}`);
@@ -103,7 +125,7 @@ function CreateInvestigationContent() {
       <h1 className="text-2xl font-bold text-white mb-2">New Investigation</h1>
       <p className="text-sm text-[#94A3B8] mb-8">
         Start a new 8D quality investigation. Fill in the details below.
-        {analysisId && ' Pre-filling from your failure analysis.'}
+        {analysisIdParam && ' Pre-filling from your failure analysis.'}
       </p>
 
       {error && (
@@ -128,8 +150,42 @@ function CreateInvestigationContent() {
           />
         </div>
 
-        {/* Severity + Customer (row) */}
+        {/* Customer + Customer Reference */}
         <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="customer" className="text-white">Customer</Label>
+            <Input
+              id="customer"
+              value={customerOem}
+              onChange={(e) => setCustomerOem(e.target.value)}
+              placeholder="e.g. Toyota, Boeing"
+              className="bg-brand-800 border-[#1F2937] text-white placeholder:text-[#64748B]"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="customerRef" className="text-white">Customer Reference</Label>
+            <Input
+              id="customerRef"
+              value={customerRef}
+              onChange={(e) => setCustomerRef(e.target.value)}
+              placeholder="e.g. FORD-QN-2026-1847"
+              className="bg-brand-800 border-[#1F2937] text-white placeholder:text-[#64748B]"
+            />
+          </div>
+        </div>
+
+        {/* Part Number + Severity */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="partNumber" className="text-white">Part Number</Label>
+            <Input
+              id="partNumber"
+              value={productPartNumber}
+              onChange={(e) => setProductPartNumber(e.target.value)}
+              placeholder="e.g. P/N 12345-A"
+              className="bg-brand-800 border-[#1F2937] text-white placeholder:text-[#64748B]"
+            />
+          </div>
           <div className="space-y-2">
             <Label className="text-white">
               Severity <span className="text-danger">*</span>
@@ -139,63 +195,79 @@ function CreateInvestigationContent() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="critical">Critical — Safety / line stop</SelectItem>
-                <SelectItem value="major">Major — Significant quality impact</SelectItem>
                 <SelectItem value="minor">Minor — Low impact</SelectItem>
+                <SelectItem value="major">Major — Significant quality impact</SelectItem>
+                <SelectItem value="critical">Critical — Safety / line stop</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="customer" className="text-white">Customer / OEM</Label>
-            <Input
-              id="customer"
-              value={customerOem}
-              onChange={(e) => setCustomerOem(e.target.value)}
-              placeholder="e.g. Toyota, Boeing"
-              className="bg-brand-800 border-[#1F2937] text-white placeholder:text-[#64748B]"
-            />
-          </div>
-        </div>
-
-        {/* Product */}
-        <div className="space-y-2">
-          <Label htmlFor="product" className="text-white">Product / Part Number</Label>
-          <Input
-            id="product"
-            value={productPartNumber}
-            onChange={(e) => setProductPartNumber(e.target.value)}
-            placeholder="e.g. P/N 12345-A"
-            className="bg-brand-800 border-[#1F2937] text-white placeholder:text-[#64748B]"
-          />
         </div>
 
         {/* Report Template */}
-        {templates.length > 0 && (
-          <div className="space-y-2">
-            <Label className="text-white">Report Template</Label>
-            <Select value={reportTemplate} onValueChange={setReportTemplate}>
-              <SelectTrigger className="bg-brand-800 border-[#1F2937] text-white">
-                <SelectValue placeholder="Select a template (optional)" />
-              </SelectTrigger>
-              <SelectContent>
-                {templates.map((t) => (
-                  <SelectItem key={t.id} value={t.slug}>
-                    {t.name}{t.oem_standard ? ` — ${t.oem_standard}` : ''}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {templates.find((t) => t.slug === reportTemplate)?.description && (
-              <p className="text-xs text-[#64748B]">
-                {templates.find((t) => t.slug === reportTemplate)?.description}
-              </p>
-            )}
-          </div>
-        )}
+        <div className="space-y-2">
+          <Label className="text-white">Report Template</Label>
+          <Select value={reportTemplate} onValueChange={setReportTemplate}>
+            <SelectTrigger className="bg-brand-800 border-[#1F2937] text-white">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {REPORT_TEMPLATES.map((t) => (
+                <SelectItem key={t.value} value={t.value}>
+                  {t.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Link to existing analysis */}
+        <div className="space-y-2">
+          <Label className="text-white flex items-center gap-2">
+            <Link2 className="w-4 h-4 text-[#64748B]" />
+            Link to Existing Analysis
+            <span className="text-xs text-[#64748B] font-normal">(optional — pre-fills D2)</span>
+          </Label>
+          {analysisId ? (
+            <div className="flex items-center gap-2 bg-accent-500/10 border border-accent-500/20 rounded-lg px-3 py-2">
+              <span className="text-sm text-accent-500 font-mono flex-1 truncate">
+                {analysisId}
+              </span>
+              <button
+                type="button"
+                onClick={() => { setAnalysisId(''); setAnalysisSearch(''); }}
+                className="text-xs text-[#94A3B8] hover:text-white"
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B]" />
+              <Input
+                value={analysisSearch}
+                onChange={(e) => {
+                  setAnalysisSearch(e.target.value);
+                  setShowAnalysisSearch(e.target.value.length > 2);
+                }}
+                onBlur={() => setTimeout(() => setShowAnalysisSearch(false), 200)}
+                placeholder="Search analyses by title or ID..."
+                className="pl-9 bg-brand-800 border-[#1F2937] text-white placeholder:text-[#64748B]"
+              />
+              {showAnalysisSearch && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-[#0F1A2E] border border-[#1F2937] rounded-lg shadow-xl z-10 p-2">
+                  <p className="text-xs text-[#64748B] text-center py-3">
+                    Analysis search will connect to API when available.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* D2: Problem Description */}
         <div className="border-t border-[#1F2937] pt-6">
-          <h2 className="text-lg font-semibold text-white mb-4">Problem Description (D2)</h2>
+          <h2 className="text-lg font-semibold text-white mb-1">Problem Description (D2)</h2>
+          <p className="text-xs text-[#64748B] mb-4">Optional at creation — you can fill these in later.</p>
 
           <div className="space-y-4">
             <div className="space-y-2">
