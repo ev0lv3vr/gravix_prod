@@ -41,10 +41,14 @@ def should_show_upgrade_banner(plan: str) -> bool:
 
 
 def is_submit_disabled(plan: str, used: int) -> bool:
-    """Submit button disabled when at limit (free tier only)."""
-    limit = PLAN_LIMITS.get(plan)
-    if limit is None:
+    """Submit button disabled when at limit.
+
+    Per addendum: only Free tier is hard-blocked at the monthly limit.
+    Paid plans should not show a "Monthly Limit Reached" state.
+    """
+    if plan != "free":
         return False
+    limit = PLAN_LIMITS.get(plan) or 0
     return used >= limit
 
 

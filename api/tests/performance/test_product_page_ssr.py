@@ -59,12 +59,13 @@ class TestProductPageSSR:
         with (
             patch("database.get_supabase", return_value=mock_db),
             patch("dependencies._fetch_jwks", return_value={"keys": []}),
+            patch("dependencies._verify_token", return_value={"sub": "user-perf", "email": "perf@test.com"}),
         ):
             from main import app
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 start = time.perf_counter()
-                resp = await client.get("/v1/products")
+                resp = await client.get("/v1/products", headers={"Authorization": "Bearer test-token"})
                 elapsed = time.perf_counter() - start
 
             assert resp.status_code in (200, 403), f"Got {resp.status_code}"
@@ -81,12 +82,13 @@ class TestProductPageSSR:
         with (
             patch("database.get_supabase", return_value=mock_db),
             patch("dependencies._fetch_jwks", return_value={"keys": []}),
+            patch("dependencies._verify_token", return_value={"sub": "user-perf", "email": "perf@test.com"}),
         ):
             from main import app
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 start = time.perf_counter()
-                resp = await client.get(f"/v1/products/{products[0]['id']}")
+                resp = await client.get(f"/v1/products/{products[0]['id']}", headers={"Authorization": "Bearer test-token"})
                 elapsed = time.perf_counter() - start
 
             # 404 is OK if route requires different path format

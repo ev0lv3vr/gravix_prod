@@ -48,7 +48,7 @@ async def _make_request(method, path, user, db_overrides=None):
     with (
         patch("database.get_supabase", return_value=mock_db),
         patch("dependencies._fetch_jwks", return_value={"keys": []}),
-        patch("dependencies.get_current_user", return_value=user),
+        patch("dependencies._verify_token", return_value={"sub": user["id"], "email": user["email"]}),
     ):
         from main import app
         transport = ASGITransport(app=app)
