@@ -1,6 +1,7 @@
 """Investigation comments router — threaded comments with pin/resolve."""
 
 import logging
+import re
 import uuid
 from datetime import datetime, timezone
 
@@ -19,6 +20,8 @@ from services.audit_service import log_event
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/investigations", tags=["comments"])
+
+_MENTION_RE = re.compile(r"@([\w.\-]+)")
 
 
 def _check_team_access(db, investigation_id: str, user_id: str) -> dict:
@@ -119,13 +122,36 @@ async def create_comment(
 
         # Create notification for team (inline import to avoid circular)
         try:
-            from services.notification_service import notify_new_comment
+            from services.notification_service import notify_new_comment, create_notification
+
             notify_new_comment(
                 investigation_id=investigation_id,
                 actor_user_id=user["id"],
                 discipline=data.discipline,
                 comment_text=data.comment_text,
             )
+
+            # @mention notifications (best-effort)
+            mentioned = set(_MENTION_RE.findall(data.comment_text or ""))
+            for handle in mentioned:
+                # Match display_name in raw_user_meta_data or email prefix
+                user_res = (
+                    db.table("users")
+                    .select("id")
+                    .or_(f"raw_user_meta_data->>display_name.eq.{handle},email.ilike.{handle}@%")
+                    .execute()
+                )
+                for u in (user_res.data or []):
+                    if u["id"] == user["id"]:
+                        continue
+                    create_notification(
+                        user_id=u["id"],
+                        investigation_id=investigation_id,
+                        notification_type="mention",
+                        title=f"You were mentioned in {data.discipline}",
+                        message=(data.comment_text or "")[:200],
+                        action_url=f"/investigations/{investigation_id}",
+                    )
         except Exception:
             logger.debug("Notification for comment creation skipped", exc_info=True)
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -18,17 +18,7 @@ export default function PricingPage() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const pendingCheckoutRef = useRef<{ priceEnvKey: string; setLoading: (v: boolean) => void } | null>(null);
 
-  // After auth completes, retry the pending checkout
-  useEffect(() => {
-    if (session?.access_token && pendingCheckoutRef.current) {
-      const { priceEnvKey, setLoading } = pendingCheckoutRef.current;
-      pendingCheckoutRef.current = null;
-      setShowAuthModal(false);
-      handleCheckout(priceEnvKey, setLoading);
-    }
-  }, [session?.access_token]);
-
-  const handleCheckout = async (priceEnvKey: string, setLoading: (v: boolean) => void) => {
+  const handleCheckout = useCallback(async (priceEnvKey: string, setLoading: (v: boolean) => void) => {
     setLoading(true);
     try {
       const token = session?.access_token;
@@ -59,7 +49,17 @@ export default function PricingPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [session?.access_token]);
+
+  // After auth completes, retry the pending checkout
+  useEffect(() => {
+    if (session?.access_token && pendingCheckoutRef.current) {
+      const { priceEnvKey, setLoading } = pendingCheckoutRef.current;
+      pendingCheckoutRef.current = null;
+      setShowAuthModal(false);
+      handleCheckout(priceEnvKey, setLoading);
+    }
+  }, [session?.access_token, handleCheckout]);
 
   const handleProCheckout = () => handleCheckout('NEXT_PUBLIC_STRIPE_PRICE_ID_PRO', setProLoading);
   const handleQualityCheckout = () => handleCheckout('NEXT_PUBLIC_STRIPE_PRICE_ID_QUALITY', setQualityLoading);

@@ -322,32 +322,264 @@ def _generate_ford_8d_html(investigation: dict, actions: list[dict]) -> str:
     return generic_html
 
 
+def _generate_vda_8d_html(investigation: dict, actions: list[dict]) -> str:
+    """VW/VDA 8D template.
+
+    Emphasises containment metrics, German automotive structure, and references IATF 16949.
+    """
+    d3_actions = [a for a in actions if a.get("discipline") == "D3"]
+    d5_actions = [a for a in actions if a.get("discipline") == "D5"]
+    d6_actions = [a for a in actions if a.get("discipline") == "D6"]
+    d7_actions = [a for a in actions if a.get("discipline") == "D7"]
+
+    def action_rows(alist: list[dict]) -> str:
+        if not alist:
+            return "<tr><td colspan='5'><em>Keine Maßnahmen erfasst / No actions recorded</em></td></tr>"
+        rows = ""
+        for a in alist:
+            rows += f"""<tr>
+                <td>{a.get('description','N/A')}</td>
+                <td>{(a.get('owner_user_id') or 'N/A')[:8]}</td>
+                <td>{_format_date(a.get('due_date'))}</td>
+                <td>{a.get('status','open').upper()}</td>
+                <td>{a.get('verification_results','—')}</td>
+            </tr>"""
+        return rows
+
+    containment_total = len(d3_actions)
+    containment_closed = len([a for a in d3_actions if a.get("status") == "complete"])
+
+    root_causes_html = ""
+    if investigation.get("root_causes"):
+        root_causes_html = "<ol>" + "".join(
+            f"<li><strong>{c.get('cause','')}</strong> — {c.get('explanation','')} (Conf: {c.get('confidence',0):.0%})</li>"
+            for c in investigation["root_causes"]
+        ) + "</ol>"
+    else:
+        root_causes_html = "<p><em>Root-cause analysis pending</em></p>"
+
+    return f"""<!DOCTYPE html><html><head><meta charset='utf-8'>
+    <title>VW/VDA 8D — {investigation.get('investigation_number')}</title>
+    <style>
+      @page {{ size:A4; margin:18mm; @bottom-center {{ content: 'Page ' counter(page) ' / ' counter(pages); font-size:8pt; color:#666; }} }}
+      body {{ font-family: Arial, sans-serif; font-size:10pt; color:#222; }}
+      h1 {{ font-size:18pt; color:#003366; border-bottom:3px solid #003366; padding-bottom:6px; margin:0; }}
+      h2 {{ font-size:13pt; color:#003366; border-bottom:1px solid #ccc; padding-bottom:3px; margin-top:18px; }}
+      .iatf {{ font-size:8.5pt; color:#888; margin:4px 0 10px; }}
+      .info-grid {{ display:grid; grid-template-columns:1fr 1fr; gap:6px 20px; margin:10px 0; }}
+      .label {{ font-weight:bold; color:#555; }}
+      .metrics {{ background:#f0f4f8; border-left:4px solid #003366; padding:10px; margin:12px 0; }}
+      table {{ width:100%; border-collapse:collapse; margin:10px 0; font-size:9.5pt; }}
+      th {{ background:#003366; color:#fff; padding:6px 8px; text-align:left; }}
+      td {{ border:1px solid #ddd; padding:6px 8px; }}
+      tr:nth-child(even) {{ background:#f7f9fc; }}
+      .section {{ page-break-inside:avoid; }}
+    </style></head><body>
+      <h1>VW / VDA 8D — Corrective Action Report</h1>
+      <div class='iatf'>Ref: IATF 16949:2016 / VDA 8D Guideline</div>
+      <div class='info-grid'>
+        <div><span class='label'>Report No.:</span> {investigation.get('investigation_number','N/A')}</div>
+        <div><span class='label'>Date:</span> {_format_date(investigation.get('created_at'))}</div>
+        <div><span class='label'>Title:</span> {investigation.get('title','N/A')}</div>
+        <div><span class='label'>Status:</span> {investigation.get('status','N/A').upper()}</div>
+        <div><span class='label'>Customer/OEM:</span> {investigation.get('customer_oem','N/A')}</div>
+        <div><span class='label'>Part No.:</span> {investigation.get('product_part_number','N/A')}</div>
+      </div>
+      <div class='metrics'><strong>Containment Metrics:</strong> {containment_closed}/{containment_total} closed
+        &nbsp;|&nbsp; Defect Qty: {investigation.get('defect_quantity','N/A')}
+        &nbsp;|&nbsp; Scrap: {investigation.get('scrap_cost','N/A')}
+        &nbsp;|&nbsp; Rework: {investigation.get('rework_cost','N/A')}
+      </div>
+
+      <div class='section'><h2>D1 — Team</h2>
+        <p>Lead: {investigation.get('team_lead_user_id','N/A')} | Champion: {investigation.get('champion_user_id','N/A')} | Approver: {investigation.get('approver_user_id','N/A')}</p>
+      </div>
+      <div class='section'><h2>D2 — Problem Description</h2>
+        <p><strong>What failed:</strong> {investigation.get('what_failed','N/A')}</p>
+        <p><strong>Where:</strong> {investigation.get('where_in_process','N/A')} | <strong>How detected:</strong> {investigation.get('how_detected','N/A')}</p>
+      </div>
+      <div class='section'><h2>D3 — Containment (Sofortmaßnahmen)</h2>
+        <table><thead><tr><th>Action</th><th>Owner</th><th>Due</th><th>Status</th><th>Verification</th></tr></thead><tbody>{action_rows(d3_actions)}</tbody></table>
+      </div>
+      <div class='section'><h2>D4 — Root Cause Analysis</h2>
+        {root_causes_html}
+        {f"<p><strong>Escape Point:</strong> {investigation.get('escape_point')}</p>" if investigation.get('escape_point') else ''}
+      </div>
+      <div class='section'><h2>D5 — Corrective Actions (Abstellmaßnahmen)</h2>
+        <table><thead><tr><th>Action</th><th>Owner</th><th>Due</th><th>Status</th><th>Verification</th></tr></thead><tbody>{action_rows(d5_actions)}</tbody></table>
+      </div>
+      <div class='section'><h2>D6 — Verification of Effectiveness</h2>
+        <table><thead><tr><th>Action</th><th>Owner</th><th>Due</th><th>Status</th><th>Verification</th></tr></thead><tbody>{action_rows(d6_actions)}</tbody></table>
+      </div>
+      <div class='section'><h2>D7 — Preventive Actions (Vorbeugemaßnahmen)</h2>
+        <table><thead><tr><th>Action</th><th>Owner</th><th>Due</th><th>Status</th><th>Verification</th></tr></thead><tbody>{action_rows(d7_actions)}</tbody></table>
+      </div>
+      <div class='section'><h2>D8 — Closure</h2>
+        <p>{investigation.get('closure_summary','Pending closure.')}</p>
+        {f"<p><strong>Lessons Learned:</strong> {investigation.get('lessons_learned')}</p>" if investigation.get('lessons_learned') else ''}
+      </div>
+      <div class='iatf' style='margin-top:22px;'>Generated by Gravix Quality — gravix.com</div>
+    </body></html>"""
+
+
+def _generate_toyota_a3_html(investigation: dict, actions: list[dict]) -> str:
+    """Toyota A3 — single-page (landscape) problem solving report."""
+    d3 = [a for a in actions if a.get("discipline") == "D3"]
+    d5 = [a for a in actions if a.get("discipline") == "D5"]
+    d7 = [a for a in actions if a.get("discipline") == "D7"]
+
+    def bullets(alist: list[dict], limit: int = 6) -> str:
+        if not alist:
+            return "<em>None</em>"
+        items = "".join(f"<li>{a.get('description','')[:90]} <span style='color:#888'>[{a.get('status','open')}]</span></li>" for a in alist[:limit])
+        return f"<ul style='margin:2px 0 2px 16px;padding:0;'>{items}</ul>"
+
+    root = "<em>Pending</em>"
+    if investigation.get("root_causes"):
+        items = "".join(f"<li>{c.get('cause','')} <span style='color:#888'>({c.get('confidence',0):.0%})</span></li>" for c in investigation["root_causes"][:3])
+        root = f"<ol style='margin:2px 0 2px 16px;padding:0;'>{items}</ol>"
+
+    follow_up = investigation.get("lessons_learned") or "Define follow-up checks and standard work updates."
+
+    return f"""<!DOCTYPE html><html><head><meta charset='utf-8'>
+    <title>A3 — {investigation.get('investigation_number')}</title>
+    <style>
+      @page {{ size: A3 landscape; margin: 12mm; }}
+      body {{ font-family: Arial, sans-serif; font-size:9pt; color:#222; margin:0; }}
+      h1 {{ font-size:16pt; color:#cc0000; margin:0 0 6px 0; text-align:center; }}
+      .meta {{ font-size:8pt; color:#666; text-align:center; margin-bottom:6px; }}
+      .grid {{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; }}
+      .cell {{ border:1px solid #ccc; border-radius:4px; padding:8px; background:#fafafa; }}
+      .cell h3 {{ margin:0 0 4px 0; font-size:10pt; color:#cc0000; border-bottom:1px solid #ddd; padding-bottom:2px; }}
+      .cell p, .cell ul, .cell ol {{ margin:2px 0; font-size:8.5pt; line-height:1.35; }}
+    </style></head><body>
+      <h1>Toyota A3 Problem-Solving Report</h1>
+      <div class='meta'>{investigation.get('investigation_number','N/A')} — {investigation.get('title','')} | {investigation.get('customer_oem','N/A')} | {_format_date(investigation.get('created_at'))}</div>
+      <div class='grid'>
+        <div class='cell'><h3>Problem</h3>
+          <p><strong>What:</strong> {investigation.get('what_failed','N/A')}</p>
+          <p><strong>Where:</strong> {investigation.get('where_in_process','N/A')}</p>
+          <p><strong>Impact:</strong> {investigation.get('why_it_matters','N/A')}</p>
+        </div>
+        <div class='cell'><h3>Current State</h3>
+          <p><strong>Status:</strong> {investigation.get('status','N/A').upper()}</p>
+          <p><strong>Containment:</strong></p>{bullets(d3)}
+        </div>
+        <div class='cell'><h3>Root Cause</h3>
+          {root}
+          {f"<p><strong>Escape Point:</strong> {investigation.get('escape_point')}</p>" if investigation.get('escape_point') else ''}
+        </div>
+        <div class='cell'><h3>Target State</h3>
+          <p>{investigation.get('closure_summary') or 'Define the desired measurable target condition.'}</p>
+        </div>
+        <div class='cell'><h3>Countermeasures</h3>
+          {bullets(d5)}
+        </div>
+        <div class='cell'><h3>Implementation / Follow-up</h3>
+          <p><strong>Plan:</strong></p>{bullets(d7)}
+          <p><strong>Follow-up:</strong> {follow_up}</p>
+        </div>
+      </div>
+      <div class='meta' style='margin-top:6px;color:#999;'>Generated by Gravix Quality — gravix.com</div>
+    </body></html>"""
+
+
+def _generate_as9100_capa_html(investigation: dict, actions: list[dict]) -> str:
+    """AS9100 CAPA template (aerospace corrective & preventive action)."""
+    d3 = [a for a in actions if a.get("discipline") == "D3"]
+    d5 = [a for a in actions if a.get("discipline") == "D5"]
+    d6 = [a for a in actions if a.get("discipline") == "D6"]
+    d7 = [a for a in actions if a.get("discipline") == "D7"]
+
+    def action_table(alist: list[dict]) -> str:
+        if not alist:
+            return "<p><em>No actions recorded</em></p>"
+        rows = "".join(
+            f"<tr><td>{a.get('description','N/A')}</td><td>{(a.get('owner_user_id') or 'N/A')[:8]}</td><td>{_format_date(a.get('due_date'))}</td><td>{a.get('status','open').upper()}</td><td>{a.get('verification_results','—')}</td></tr>"
+            for a in alist
+        )
+        return f"<table><thead><tr><th>Action</th><th>Owner</th><th>Due</th><th>Status</th><th>Verification</th></tr></thead><tbody>{rows}</tbody></table>"
+
+    root_html = "<p><em>Root cause analysis pending</em></p>"
+    if investigation.get("root_causes"):
+        root_html = "<ol>" + "".join(
+            f"<li><strong>{c.get('cause','')}</strong> — {c.get('explanation','')} ({c.get('confidence',0):.0%})</li>"
+            for c in investigation["root_causes"]
+        ) + "</ol>"
+
+    severity = investigation.get("severity", "minor")
+    risk_level = "HIGH" if severity == "critical" else ("MEDIUM" if severity == "major" else "LOW")
+    airworthiness = "POTENTIAL IMPACT — Full review required" if severity == "critical" else "No direct airworthiness impact identified"
+
+    return f"""<!DOCTYPE html><html><head><meta charset='utf-8'>
+    <title>AS9100 CAPA — {investigation.get('investigation_number')}</title>
+    <style>
+      @page {{ size: letter; margin: 0.75in; @bottom-right {{ content: 'Page ' counter(page) ' of ' counter(pages); font-size:8pt; color:#666; }} }}
+      body {{ font-family: Arial, sans-serif; font-size:10pt; color:#333; }}
+      h1 {{ font-size:18pt; color:#1a237e; border-bottom:3px solid #1a237e; padding-bottom:6px; margin:0; }}
+      h2 {{ font-size:13pt; color:#1a237e; margin-top:18px; border-bottom:1px solid #ccc; padding-bottom:3px; }}
+      .info-grid {{ display:grid; grid-template-columns:1fr 1fr; gap:4px 20px; margin:10px 0; }}
+      .label {{ font-weight:bold; }}
+      .risk {{ border:2px solid #e65100; background:#fff3e0; border-radius:4px; padding:10px; margin:10px 0; }}
+      table {{ width:100%; border-collapse:collapse; margin:8px 0; font-size:9.5pt; }}
+      th {{ background:#1a237e; color:#fff; padding:6px 8px; text-align:left; }}
+      td {{ border:1px solid #ddd; padding:6px 8px; }}
+      tr:nth-child(even) {{ background:#f5f5f5; }}
+      .ref {{ font-size:8pt; color:#888; }}
+      .section {{ page-break-inside:avoid; }}
+    </style></head><body>
+      <h1>AS9100 CAPA Report</h1>
+      <p class='ref'>Emphasis: risk assessment, product safety, airworthiness impact, escape analysis, effectiveness verification.</p>
+      <div class='info-grid'>
+        <div><span class='label'>CAPA No.:</span> {investigation.get('investigation_number','N/A')}</div>
+        <div><span class='label'>Date Opened:</span> {_format_date(investigation.get('created_at'))}</div>
+        <div><span class='label'>Title:</span> {investigation.get('title','N/A')}</div>
+        <div><span class='label'>Status:</span> {investigation.get('status','N/A').upper()}</div>
+        <div><span class='label'>Customer:</span> {investigation.get('customer_oem','N/A')}</div>
+        <div><span class='label'>Part No.:</span> {investigation.get('product_part_number','N/A')}</div>
+      </div>
+      <div class='risk'>
+        <strong>Risk Level:</strong> {risk_level}<br/>
+        <strong>Product Safety:</strong> {severity.upper()} severity<br/>
+        <strong>Airworthiness Impact:</strong> {airworthiness}
+      </div>
+      <div class='section'><h2>1. Nonconformance</h2>
+        <p><strong>What failed:</strong> {investigation.get('what_failed','N/A')}</p>
+        <p><strong>Where:</strong> {investigation.get('where_in_process','N/A')} | <strong>How detected:</strong> {investigation.get('how_detected','N/A')}</p>
+      </div>
+      <div class='section'><h2>2. Containment / Disposition</h2>{action_table(d3)}</div>
+      <div class='section'><h2>3. Root Cause Analysis</h2>{root_html}
+        {f"<p><strong>Escape Point:</strong> {investigation.get('escape_point')}</p>" if investigation.get('escape_point') else ''}
+      </div>
+      <div class='section'><h2>4. Escape Analysis</h2>
+        <p>{investigation.get('escape_point') or 'Assess why controls did not detect the nonconformance prior to escape.'}</p>
+      </div>
+      <div class='section'><h2>5. Corrective Actions</h2>{action_table(d5)}</div>
+      <div class='section'><h2>6. Effectiveness Verification</h2>{action_table(d6)}
+        <p class='ref'>Verification must demonstrate recurrence has been eliminated (AS9100D 10.2.1).</p>
+      </div>
+      <div class='section'><h2>7. Preventive / Systemic Actions</h2>{action_table(d7)}</div>
+      <div class='section'><h2>8. Closure</h2>
+        <p>{investigation.get('closure_summary') or 'Pending closure — effectiveness verification required.'}</p>
+        {f"<p><strong>Lessons Learned:</strong> {investigation.get('lessons_learned')}</p>" if investigation.get('lessons_learned') else ''}
+      </div>
+      <p class='ref' style='margin-top:18px;'>Generated by Gravix Quality — gravix.com</p>
+    </body></html>"""
+
+
 async def generate_8d_pdf(
     investigation_id: str,
     template_key: str = "generic_8d",
 ) -> bytes:
-    """Generate 8D report PDF from investigation data.
-    
-    Args:
-        investigation_id: UUID of the investigation
-        template_key: Template to use ('generic_8d' or 'ford_global_8d')
-        
-    Returns:
-        PDF bytes
-        
-    Raises:
-        ValueError: If investigation not found or template unknown
-    """
+    """Generate 8D report PDF from investigation data."""
     db = get_supabase()
-    
-    # Fetch investigation
+
     result = db.table("investigations").select("*").eq("id", investigation_id).execute()
     if not result.data:
         raise ValueError(f"Investigation {investigation_id} not found")
-    
+
     investigation = result.data[0]
-    
-    # Fetch actions
+
     actions_result = (
         db.table("investigation_actions")
         .select("*")
@@ -356,16 +588,23 @@ async def generate_8d_pdf(
         .execute()
     )
     actions = actions_result.data if actions_result.data else []
-    
-    # Generate HTML based on template
-    if template_key == "generic_8d":
-        html_content = _generate_generic_8d_html(investigation, actions)
-    elif template_key == "ford_global_8d":
-        html_content = _generate_ford_8d_html(investigation, actions)
-    else:
+
+    template_generators = {
+        "generic_8d": _generate_generic_8d_html,
+        "ford_global_8d": _generate_ford_8d_html,
+        "vw_8d": _generate_vda_8d_html,
+        "toyota_a3": _generate_toyota_a3_html,
+        "as9100_capa": _generate_as9100_capa_html,
+        # Compatibility: if template_type is 'custom' and config indicates aerospace
+        "custom": _generate_as9100_capa_html,
+    }
+
+    generator = template_generators.get(template_key)
+    if not generator:
         raise ValueError(f"Unknown template: {template_key}")
-    
-    # Render PDF with WeasyPrint
+
+    html_content = generator(investigation, actions)
+
     try:
         pdf_bytes = HTML(string=html_content).write_pdf()
         logger.info(

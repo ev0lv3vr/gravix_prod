@@ -1,9 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   investigationsApi,
   type InvestigationComment,
+  type TeamMember,
 } from '@/lib/investigations';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -39,6 +40,12 @@ export function CommentPanel({
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // @mentions
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [showMentions, setShowMentions] = useState(false);
+  const [mentionFilter, setMentionFilter] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   const fetchComments = useCallback(async () => {
     try {
       const data = await investigationsApi.listComments(investigationId);
@@ -53,6 +60,43 @@ export function CommentPanel({
   useEffect(() => {
     fetchComments();
   }, [fetchComments]);
+
+  useEffect(() => {
+    investigationsApi.listTeam(investigationId).then(setTeamMembers).catch(() => {});
+  }, [investigationId]);
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = e.target.value;
+    setNewComment(val);
+
+    const cursor = e.target.selectionStart || 0;
+    const upToCursor = val.slice(0, cursor);
+    const at = upToCursor.match(/@([\w.\-]*)$/);
+    if (at) {
+      setMentionFilter(at[1].toLowerCase());
+      setShowMentions(true);
+    } else {
+      setShowMentions(false);
+    }
+  };
+
+  const insertMention = (m: TeamMember) => {
+    const name = m.display_name || m.email?.split('@')[0] || m.user_id.slice(0, 8);
+    const cursor = textareaRef.current?.selectionStart ?? newComment.length;
+    const atIdx = newComment.slice(0, cursor).lastIndexOf('@');
+    if (atIdx >= 0) {
+      const before = newComment.slice(0, atIdx);
+      const after = newComment.slice(cursor);
+      setNewComment(`${before}@${name} ${after}`);
+    }
+    setShowMentions(false);
+    textareaRef.current?.focus();
+  };
+
+  const filteredMembers = teamMembers.filter((m) => {
+    const key = (m.display_name || m.email || m.user_id).toLowerCase();
+    return key.includes(mentionFilter);
+  });
 
   const handleSubmit = async () => {
     if (!newComment.trim()) return;
@@ -215,17 +259,34 @@ export function CommentPanel({
             </button>
           </div>
         )}
+        {showMentions && filteredMembers.length > 0 && (
+          <div className="bg-[#0F1A2E] border border-[#1F2937] rounded-md max-h-32 overflow-y-auto mb-1">
+            {filteredMembers.slice(0, 8).map((m) => (
+              <button
+                key={m.user_id}
+                onClick={() => insertMention(m)}
+                className="w-full text-left px-3 py-1.5 text-xs text-white hover:bg-[#1F2937] flex items-center gap-2"
+              >
+                <span className="text-accent-500">@</span>
+                <span>{m.display_name || m.email?.split('@')[0] || m.user_id.slice(0, 8)}</span>
+                {m.role && <span className="text-[#64748B] text-[10px]">({m.role})</span>}
+              </button>
+            ))}
+          </div>
+        )}
         <div className="flex gap-2">
           <Textarea
+            ref={textareaRef}
             value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder={`Add a comment on ${activeDiscipline}...`}
+            onChange={handleCommentChange}
+            placeholder={`Add a comment on ${activeDiscipline}... (type @ to mention)`}
             rows={2}
             className="bg-[#0F1A2E] border-[#1F2937] text-white placeholder:text-[#64748B] text-sm resize-none flex-1"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
                 handleSubmit();
               }
+              if (e.key === 'Escape') setShowMentions(false);
             }}
           />
           <Button

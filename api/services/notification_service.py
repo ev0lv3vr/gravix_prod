@@ -1,13 +1,106 @@
-"""Notification service — creates in-app notifications for investigation events."""
+"""Notification service — creates in-app notifications for investigation events.
+
+Sprint 10 gap: deliver notification emails via Resend based on
+notification_preferences (email_enabled + per-event toggles) and quiet hours.
+"""
 
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, time as dtime
 from typing import Optional
 
+import resend
+
+from config import settings
 from database import get_supabase
 
 logger = logging.getLogger(__name__)
+
+
+def _is_quiet_hours(start: Optional[str], end: Optional[str]) -> bool:
+    if not start or not end:
+        return False
+    try:
+        now = datetime.now(timezone.utc).time()
+        s = dtime.fromisoformat(str(start))
+        e = dtime.fromisoformat(str(end))
+        if s <= e:
+            return s <= now <= e
+        # Wrap midnight
+        return now >= s or now <= e
+    except Exception:
+        return False
+
+
+def _event_pref_enabled(prefs: dict, notification_type: str) -> bool:
+    """Map notification_type → notification_preferences columns."""
+    mapping = {
+        "status_changed": "investigation_status_changed",
+        "new_comment": "comment_reply",
+        "mention": "comment_mention",
+        "action_assigned": "action_assigned",
+        "team_member_added": "team_member_added",
+        "investigation_closed": "investigation_closed",
+    }
+    col = mapping.get(notification_type)
+    if not col:
+        return True
+    return bool(prefs.get(col, True))
+
+
+def _send_email(to_email: str, title: str, message: Optional[str], action_url: Optional[str]) -> None:
+    if not settings.resend_api_key:
+        return
+
+    resend.api_key = settings.resend_api_key
+    frontend = settings.frontend_url.rstrip("/")
+    full_url = f"{frontend}{action_url}" if action_url else frontend
+
+    html = f"""
+    <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:20px;">
+      <h2 style="color:#1e40af;margin:0 0 10px;">You have a new notification from Gravix Quality</h2>
+      <h3 style="margin:0 0 10px;color:#111;">{title}</h3>
+      {f"<p style='color:#333;line-height:1.5;'>{message}</p>" if message else ""}
+      <p style="margin-top:14px;">
+        <a href="{full_url}" style="display:inline-block;padding:10px 16px;background:#1e40af;color:#fff;text-decoration:none;border-radius:4px;">Open in Gravix</a>
+      </p>
+      <p style="color:#999;font-size:12px;margin-top:22px;">If you prefer not to receive emails, disable email notifications in Settings.</p>
+    </div>
+    """
+
+    try:
+        resend.Emails.send({
+            "from": settings.from_email,
+            "to": to_email,
+            "subject": f"Gravix: {title}",
+            "html": html,
+        })
+    except Exception:
+        logger.debug("Resend email send failed", exc_info=True)
+
+
+def _maybe_email_user(user_id: str, notification_type: str, title: str, message: Optional[str], action_url: Optional[str]) -> None:
+    db = get_supabase()
+
+    # Lookup preferences
+    prefs_res = db.table("notification_preferences").select("*").eq("user_id", user_id).execute()
+    prefs = prefs_res.data[0] if prefs_res.data else {}
+
+    if not prefs.get("email_enabled", False):
+        return
+
+    if _is_quiet_hours(prefs.get("quiet_hours_start"), prefs.get("quiet_hours_end")):
+        return
+
+    if not _event_pref_enabled(prefs, notification_type):
+        return
+
+    # Lookup email
+    user_res = db.table("users").select("email").eq("id", user_id).execute()
+    if not user_res.data or not user_res.data[0].get("email"):
+        return
+
+    _send_email(user_res.data[0]["email"], title, message, action_url)
 
 
 def create_notification(
@@ -18,11 +111,7 @@ def create_notification(
     message: Optional[str] = None,
     action_url: Optional[str] = None,
 ) -> Optional[str]:
-    """
-    Insert a notification into the notifications table.
-
-    Returns the notification id or None on failure.
-    """
+    """Insert a notification and optionally send an email."""
     db = get_supabase()
     notification_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc).isoformat()
@@ -42,6 +131,10 @@ def create_notification(
     try:
         db.table("notifications").insert(record).execute()
         logger.info(f"Notification created: {notification_type} for user {user_id}")
+        try:
+            _maybe_email_user(user_id, notification_type, title, message, action_url)
+        except Exception:
+            logger.debug("Email delivery skipped", exc_info=True)
         return notification_id
     except Exception as e:
         logger.error(f"Failed to create notification: {e}", exc_info=True)
