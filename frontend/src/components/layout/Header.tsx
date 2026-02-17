@@ -14,9 +14,7 @@ import { AuthModal } from '@/components/auth/AuthModal';
 import { NotificationBell } from '@/components/layout/NotificationBell';
 import { Menu, X, User, ChevronDown, Settings, CreditCard, LogOut, Bell } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { api } from '@/lib/api';
-
-type PlanTier = 'free' | 'pro' | 'quality' | 'enterprise' | 'admin';
+import { usePlan, type PlanTier } from '@/contexts/PlanContext';
 
 const PLAN_BADGE_COLORS: Record<PlanTier, string> = {
   free: 'bg-[#374151] text-[#94A3B8]',
@@ -26,57 +24,16 @@ const PLAN_BADGE_COLORS: Record<PlanTier, string> = {
   admin: 'bg-red-500/20 text-red-400',
 };
 
-function useUserPlan(): PlanTier {
-  const { user } = useAuth();
-  const [plan, setPlan] = useState<PlanTier>('free');
-
-  useEffect(() => {
-    if (!user) {
-      setPlan('free');
-      return;
-    }
-    api.getCurrentUser().then((u) => {
-      if (u?.role === 'admin') {
-        setPlan('admin');
-        return;
-      }
-      const p = (u?.plan || 'free') as string;
-      const normalized = p.toLowerCase();
-      if (normalized === 'team' || normalized === 'quality') {
-        setPlan('quality');
-      } else if (['pro', 'enterprise'].includes(normalized)) {
-        setPlan(normalized as PlanTier);
-      } else {
-        setPlan('free');
-      }
-    }).catch(() => setPlan('free'));
-  }, [user]);
-
-  return plan;
-}
-
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [analyzeOpen, setAnalyzeOpen] = useState(false);
   const analyzeRef = useRef<HTMLDivElement>(null);
 
   const { user, signOut } = useAuth();
-  const plan = useUserPlan();
+  const { plan } = usePlan();
   const showInvestigations = plan === 'quality' || plan === 'enterprise' || plan === 'admin';
-
-  useEffect(() => {
-    if (!user) {
-      setIsAdmin(false);
-      return;
-    }
-    api.getCurrentUser().then((u) => {
-      setIsAdmin(u?.role === 'admin');
-    }).catch(() => {
-      setIsAdmin(false);
-    });
-  }, [user]);
+  const isAdmin = plan === 'admin';
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
