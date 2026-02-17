@@ -8,7 +8,7 @@ export const failureAnalysisSchema = z.object({
   adhesiveUsed: z.string().optional(),
   substrateA: z.string().min(1, 'Substrate A is required'),
   substrateB: z.string().min(1, 'Substrate B is required'),
-  failureMode: z.string().min(1, 'Please select a failure mode'),
+  failureMode: z.string().optional().default(''),
   timeToFailure: z.string().optional(),
   industry: z.string().optional(),
   environment: z.array(z.string()).optional().default([]),
