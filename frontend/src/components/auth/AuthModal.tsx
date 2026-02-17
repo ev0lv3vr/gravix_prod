@@ -21,6 +21,8 @@ interface AuthModalProps {
   onOpenChange: (open: boolean) => void;
   /** Called after successful authentication (e.g. to auto-submit a saved form). */
   onSuccess?: () => void;
+  /** When true, shows microcopy that analysis data has been saved. Set when modal is triggered from a form submit. */
+  fromFormSubmit?: boolean;
 }
 
 function PasswordStrength({ password }: { password: string }) {
@@ -65,7 +67,7 @@ function StrengthRule({ met, label }: { met: boolean; label: string }) {
   );
 }
 
-export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
+export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = false }: AuthModalProps) {
   const [view, setView] = useState<AuthView>('sign-in');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -356,6 +358,12 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
                   Sign up
                 </button>
               </p>
+
+              {fromFormSubmit && (
+                <p className="text-xs text-text-tertiary text-center italic mt-2">
+                  Your analysis data is saved. Sign in to see your results instantly.
+                </p>
+              )}
             </div>
           </>
         )}
@@ -441,6 +449,12 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
                   Sign in
                 </button>
               </p>
+
+              {fromFormSubmit && (
+                <p className="text-xs text-text-tertiary text-center italic mt-2">
+                  Your analysis data is saved. Sign in to see your results instantly.
+                </p>
+              )}
             </div>
           </>
         )}

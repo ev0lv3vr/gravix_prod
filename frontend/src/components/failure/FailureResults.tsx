@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Search, ClipboardList } from 'lucide-react';
 import { ConfidenceBadge } from '../shared/ConfidenceBadge';
 import { FeedbackPrompt } from '../results/FeedbackPrompt';
+import { VisualAnalysisSection, type VisualAnalysisItem } from './VisualAnalysisSection';
+import { TDSComplianceSection, type TDSComplianceItem } from './TDSComplianceSection';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
@@ -53,6 +55,14 @@ interface FailureResultData {
   similarCases?: SimilarCaseItem[];
   confidenceScore: number;
   knowledgeEvidenceCount?: number;
+  // Phase 3: Visual analysis results
+  visualAnalysis?: VisualAnalysisItem[];
+  userSelectedFailureMode?: string;
+  // Phase 3: TDS compliance results
+  tdsCompliance?: {
+    productName: string;
+    items: TDSComplianceItem[];
+  };
 }
 
 export function FailureResults({ status, data, analysisId, errorMessage, onNewAnalysis, onRunSpecAnalysis, isFree: _isFree = true }: FailureResultsProps) {
@@ -148,9 +158,9 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-sm font-semibold text-white">{rc.cause}</span>
                     <span className={cn('text-xs font-mono px-2 py-0.5 rounded',
-                      rc.confidence >= 0.8 ? 'bg-success/10 text-success' :
+                      rc.confidence >= 0.8 ? 'bg-emerald-500/10 text-emerald-400' :
                       rc.confidence >= 0.6 ? 'bg-accent-500/10 text-accent-500' :
-                      'bg-warning/10 text-warning'
+                      'bg-amber-500/10 text-amber-400'
                     )}>{Math.round(rc.confidence * 100)}%</span>
                   </div>
                   {rc.gravixData && (
@@ -163,6 +173,22 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
             </div>
           ))}
         </div>
+
+        {/* 2.5. Visual Analysis — renders when photos uploaded */}
+        {data.visualAnalysis && data.visualAnalysis.length > 0 && (
+          <VisualAnalysisSection
+            items={data.visualAnalysis}
+            userSelectedMode={data.userSelectedFailureMode}
+          />
+        )}
+
+        {/* 2.6. TDS Compliance — renders when product from TDS database selected */}
+        {data.tdsCompliance && data.tdsCompliance.items.length > 0 && (
+          <TDSComplianceSection
+            productName={data.tdsCompliance.productName}
+            items={data.tdsCompliance.items}
+          />
+        )}
 
         {/* 3. Contributing factors */}
         {data.contributingFactors.length > 0 && (
@@ -180,12 +206,12 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
 
         {/* 4. Immediate actions (red border) */}
         {data.immediateActions.length > 0 && (
-          <div className="border-l-[3px] border-l-danger bg-danger/5 rounded-r-lg p-4">
-            <h3 className="text-sm font-semibold text-danger mb-3">Do This Now</h3>
+          <div className="border-l-[3px] border-l-red-500 bg-red-500/5 rounded-r-lg p-4">
+            <h3 className="text-sm font-semibold text-red-400 mb-3">Do This Now</h3>
             <ol className="space-y-2">
               {data.immediateActions.map((a, i) => (
                 <li key={i} className="text-sm text-[#94A3B8] flex items-start gap-2">
-                  <span className="text-danger font-semibold">{i + 1}.</span>{a}
+                  <span className="text-red-400 font-semibold">{i + 1}.</span>{a}
                 </li>
               ))}
             </ol>
@@ -208,19 +234,19 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
 
         {/* 6. Prevention plan (green border) */}
         {data.preventionPlan.length > 0 && (
-          <div className="border-l-[3px] border-l-success bg-success/5 rounded-r-lg p-4">
-            <h3 className="text-sm font-semibold text-success mb-3">Prevention Plan</h3>
+          <div className="border-l-[3px] border-l-emerald-500 bg-emerald-500/5 rounded-r-lg p-4">
+            <h3 className="text-sm font-semibold text-emerald-400 mb-3">Prevention Plan</h3>
             <ul className="space-y-2">
               {data.preventionPlan.map((p, i) => (
                 <li key={i} className="text-sm text-[#94A3B8] flex items-start gap-2">
-                  <span className="text-success">•</span>{p}
+                  <span className="text-emerald-400">•</span>{p}
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        {/* 7. Similar cases (Sprint 6: enriched from knowledge engine) */}
+        {/* 7. Similar cases */}
         {data.similarCases && data.similarCases.length > 0 && (
           <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-4">
             <h3 className="text-sm font-semibold text-white mb-3">
@@ -314,7 +340,7 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
 function LoadStep({ active, done, label }: { active: boolean; done: boolean; label: string }) {
   return (
     <div className="flex items-center gap-3">
-      <div className={cn('w-3 h-3 rounded-full', done ? 'bg-success' : active ? 'bg-accent-500 animate-pulse' : 'bg-[#374151]')} />
+      <div className={cn('w-3 h-3 rounded-full', done ? 'bg-emerald-500' : active ? 'bg-accent-500 animate-pulse' : 'bg-[#374151]')} />
       <span className={cn('text-sm', active ? 'text-white' : 'text-[#64748B]')}>{label}</span>
     </div>
   );

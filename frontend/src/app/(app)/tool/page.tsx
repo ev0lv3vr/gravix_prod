@@ -109,6 +109,26 @@ export default function SpecToolPage() {
         })),
         confidenceScore: response.confidence_score || response.confidenceScore || 0.85,
         knowledgeEvidenceCount: response.knowledge_evidence_count ?? response.knowledgeEvidenceCount ?? undefined,
+        knownRisks: response.known_risks || response.knownRisks || undefined,
+        knownRiskData: (() => {
+          const apiRisk = response.known_risk_data || response.knownRiskData;
+          if (!apiRisk) return undefined;
+          return {
+            productName: apiRisk.product_name,
+            substratePair: apiRisk.substrate_pair,
+            totalFailures: apiRisk.total_failures,
+            failureRate: apiRisk.failure_rate,
+            mostCommonCause: apiRisk.most_common_cause,
+            commonCausePercent: apiRisk.common_cause_percent,
+            typicalTimeToFailure: apiRisk.typical_time_to_failure,
+            alternatives: apiRisk.alternatives?.map(a => ({
+              name: a.name,
+              failureRate: a.failure_rate,
+              caseCount: a.case_count,
+            })),
+            linkedCases: apiRisk.linked_cases,
+          };
+        })(),
       };
 
       setResultData(mapped);
@@ -179,7 +199,7 @@ export default function SpecToolPage() {
         resultsPanel={<SpecResults status={resultsStatus} data={resultData} specId={specId} errorMessage={errorMessage} onNewAnalysis={handleNewAnalysis} isFree={!user} />}
       />
       <UpgradeModal open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen} onUpgrade={() => window.location.href = '/pricing'} />
-      <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} onSuccess={handleAuthSuccess} />
+      <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} onSuccess={handleAuthSuccess} fromFormSubmit />
     </>
   );
 }

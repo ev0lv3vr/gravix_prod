@@ -273,6 +273,43 @@ export interface ParsedAlternative {
 }
 
 // API response types (snake_case from backend)
+// Visual analysis result from API
+export interface ApiVisualAnalysisResult {
+  image_url: string;
+  failure_mode?: string;
+  confidence?: number;
+  description?: string;
+}
+
+// TDS compliance item from API
+export interface ApiTDSComplianceItem {
+  parameter: string;
+  actual: string;
+  spec: string;
+  status: 'violation' | 'pass' | 'warning';
+}
+
+// Known risk data from API
+export interface ApiKnownRiskData {
+  product_name: string;
+  substrate_pair: string;
+  total_failures: number;
+  failure_rate: number;
+  most_common_cause: string;
+  common_cause_percent: number;
+  typical_time_to_failure?: string;
+  alternatives?: Array<{
+    name: string;
+    failure_rate: number;
+    case_count: number;
+  }>;
+  linked_cases?: Array<{
+    id: string;
+    title: string;
+    outcome?: string;
+  }>;
+}
+
 export interface ApiFailureAnalysisResponse {
   id: string;
   root_causes?: RootCause[];
@@ -288,6 +325,17 @@ export interface ApiFailureAnalysisResponse {
   similarCases?: SimilarCase[];
   knowledge_evidence_count?: number;
   knowledgeEvidenceCount?: number;
+  // Phase 3: visual analysis and TDS compliance
+  visual_analysis?: ApiVisualAnalysisResult[];
+  visualAnalysis?: ApiVisualAnalysisResult[];
+  tds_compliance?: {
+    product_name: string;
+    items: ApiTDSComplianceItem[];
+  };
+  tdsCompliance?: {
+    product_name: string;
+    items: ApiTDSComplianceItem[];
+  };
 }
 
 export interface ApiSpecResponse {
@@ -304,6 +352,11 @@ export interface ApiSpecResponse {
   confidenceScore?: number;
   knowledge_evidence_count?: number;
   knowledgeEvidenceCount?: number;
+  // Phase 3: known risks
+  known_risks?: string[];
+  knownRisks?: string[];
+  known_risk_data?: ApiKnownRiskData;
+  knownRiskData?: ApiKnownRiskData;
 }
 
 export interface ApiApplicationGuidance {
