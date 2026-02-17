@@ -10,9 +10,9 @@ test.describe('Landing Page', () => {
 
   test('has CTA buttons', async ({ page }) => {
     await page.goto('/');
-    // Nav has "Get Started Free" and "Sign In" links
-    await expect(page.getByRole('link', { name: /get started free/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /sign in/i }).first()).toBeVisible();
+    // Nav has "Get Started Free" button and "Sign In" link
+    await expect(page.getByRole('button', { name: /get started free/i }).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /sign in/i }).first()).toBeVisible();
   });
 
   test('has hero action links', async ({ page }) => {
