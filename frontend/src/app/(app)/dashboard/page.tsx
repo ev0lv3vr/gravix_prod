@@ -9,6 +9,8 @@ import { api, type UsageResponse } from '@/lib/api';
 import { FlaskConical, Search, ArrowRight, X, CheckCircle, Info } from 'lucide-react';
 import { PendingFeedbackBanner } from '@/components/dashboard/PendingFeedbackBanner';
 import { InvestigationsDashboardWidget } from '@/components/investigations/InvestigationsDashboardWidget';
+import { InvestigationsSummaryCard } from '@/components/dashboard/InvestigationsSummaryCard';
+import { PatternAlertsCard } from '@/components/dashboard/PatternAlertsCard';
 
 type HistoryType = 'spec' | 'failure';
 
@@ -255,6 +257,14 @@ function DashboardContent() {
 
       {/* Component 6.4: Pending Feedback Banner */}
       <PendingFeedbackBanner />
+
+      {/* Component 6.5 & 6.6: Investigations Summary + Pattern Alerts (plan-gated) */}
+      {(profilePlan === 'quality' || profilePlan === 'team' || profilePlan === 'enterprise') && (
+        <div className={`grid gap-6 mb-10 ${profilePlan === 'enterprise' ? 'md:grid-cols-2' : 'md:grid-cols-1'}`}>
+          <InvestigationsSummaryCard />
+          {profilePlan === 'enterprise' && <PatternAlertsCard />}
+        </div>
+      )}
 
       {/* Component 6.3: Recent Analyses */}
       <div>
