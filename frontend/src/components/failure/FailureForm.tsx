@@ -12,6 +12,10 @@ import { cn } from '@/lib/utils';
 import { failureAnalysisSchema, type FailureAnalysisFormData } from '@/lib/schemas';
 import { ZodError } from 'zod';
 import { searchProducts, uploadDefectPhoto, type ProductSpecification } from '@/lib/products';
+import { Upload, X, Camera } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUsageTracking } from '@/hooks/useUsageTracking';
+import Link from 'next/link';
 
 export type FailureFormData = FailureAnalysisFormData;
 
@@ -67,7 +71,14 @@ const COMMON_ADHESIVES = [
   'Henkel EA 9394', 'Generic epoxy', 'Generic cyanoacrylate', 'Generic polyurethane', 'Unknown',
 ];
 
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/heic', 'image/heif'];
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_PHOTOS = 5;
+
 export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
+  const { user } = useAuth();
+  const { isExhausted } = useUsageTracking();
+
   const [formData, setFormData] = useState<FailureAnalysisFormData>({
     failureDescription: '',
     adhesiveUsed: '',
@@ -80,7 +91,6 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
     surfacePrep: '',
     productionImpact: '',
     additionalContext: '',
-    // Sprint 11
     productName: '',
     defectPhotos: [],
     investigationMode: 'quick',
@@ -91,21 +101,24 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const adhesiveRef = useRef<HTMLDivElement>(null);
 
-  // Sprint 11: Product autocomplete
+  // Product autocomplete
   const [productInput, setProductInput] = useState('');
   const [productSuggestions, setProductSuggestions] = useState<ProductSpecification[]>([]);
   const [showProductSuggestions, setShowProductSuggestions] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<ProductSpecification | null>(null);
   const productRef = useRef<HTMLDivElement>(null);
   const productSearchTimeout = useRef<ReturnType<typeof setTimeout>>();
 
-  // Sprint 11: Photo upload
+  // Photo upload
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
   // Product search debounce
   const handleProductSearch = useCallback((value: string) => {
     setProductInput(value);
     updateField('productName', value);
+    setSelectedProduct(null);
     setShowProductSuggestions(true);
     if (productSearchTimeout.current) clearTimeout(productSearchTimeout.current);
     if (value.length < 2) { setProductSuggestions([]); return; }
@@ -115,26 +128,73 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
         setProductSuggestions(results);
       } catch { setProductSuggestions([]); }
     }, 300);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleProductSelect = (product: ProductSpecification) => {
+    updateField('productName', product.product_name);
+    setProductInput(product.product_name);
+    setSelectedProduct(product);
+    setShowProductSuggestions(false);
+
+    // Auto-fill adhesive chemistry
+    if (product.chemistry_type) {
+      updateField('adhesiveUsed', product.chemistry_type);
+      setAdhesiveInput(product.chemistry_type);
+    }
+  };
+
   // Photo upload handler
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  const handlePhotoFiles = async (files: FileList | File[]) => {
+    const fileArray = Array.from(files);
     const currentPhotos = formData.defectPhotos || [];
-    if (currentPhotos.length >= 5) return;
+    const remaining = MAX_PHOTOS - currentPhotos.length;
+    if (remaining <= 0) return;
+
+    const validFiles = fileArray
+      .filter(f => {
+        if (!ACCEPTED_IMAGE_TYPES.includes(f.type) && !f.name.toLowerCase().endsWith('.heic')) return false;
+        if (f.size > MAX_FILE_SIZE) return false;
+        return true;
+      })
+      .slice(0, remaining);
+
+    if (validFiles.length === 0) return;
 
     setUploadingPhoto(true);
     try {
-      const file = files[0];
-      const result = await uploadDefectPhoto(file);
-      updateField('defectPhotos', [...currentPhotos, result.url]);
+      const uploadPromises = validFiles.map(file => uploadDefectPhoto(file));
+      const results = await Promise.all(uploadPromises);
+      const newUrls = results.map(r => r.url);
+      updateField('defectPhotos', [...currentPhotos, ...newUrls]);
     } catch (err) {
       console.error('Photo upload failed:', err);
     } finally {
       setUploadingPhoto(false);
       if (photoInputRef.current) photoInputRef.current.value = '';
     }
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) handlePhotoFiles(files);
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files) handlePhotoFiles(e.dataTransfer.files);
   };
 
   const removePhoto = (index: number) => {
@@ -181,6 +241,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
 
   const filtered = COMMON_ADHESIVES.filter(a => a.toLowerCase().includes(adhesiveInput.toLowerCase()));
 
+  // Click-outside handlers
   useEffect(() => {
     if (!showSuggestions) return;
     const handler = (e: MouseEvent) => {
@@ -190,7 +251,6 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
     return () => document.removeEventListener('mousedown', handler);
   }, [showSuggestions]);
 
-  // Sprint 11: Product suggestions click-outside
   useEffect(() => {
     if (!showProductSuggestions) return;
     const handler = (e: MouseEvent) => {
@@ -199,6 +259,16 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [showProductSuggestions]);
+
+  // Determine submit button state
+  const isAtLimit = user && isExhausted;
+  const submitLabel = isAtLimit
+    ? 'Monthly Limit Reached'
+    : isLoading
+      ? 'Analyzing…'
+      : formData.investigationMode === 'guided'
+        ? 'Start Guided Investigation →'
+        : 'Analyze Failure →';
 
   return (
     <div>
@@ -236,6 +306,39 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
               {filtered.map(a => (
                 <button key={a} type="button" onClick={() => { updateField('adhesiveUsed', a); setAdhesiveInput(a); setShowSuggestions(false); }}
                   className="w-full text-left px-3 py-2 text-sm text-white hover:bg-[#374151] transition-colors">{a}</button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 2.5. Product Name — autocomplete (searches product_specifications) */}
+        <div ref={productRef} className="relative">
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Product Name</Label>
+          <div className="relative">
+            <Input
+              value={productInput}
+              onChange={(e) => handleProductSearch(e.target.value)}
+              onFocus={() => productInput.length >= 2 && setShowProductSuggestions(true)}
+              placeholder="Search product specifications…"
+              className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
+            />
+            {selectedProduct?.tds_file_url && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-full font-medium">
+                ✓ TDS on file
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-[#64748B] mt-1">Add your product for specification-aware analysis</p>
+          {showProductSuggestions && productSuggestions.length > 0 && (
+            <div className="absolute z-50 w-full mt-1 bg-[#1F2937] border border-[#374151] rounded-md shadow-lg max-h-48 overflow-y-auto">
+              {productSuggestions.map(p => (
+                <button key={p.id} type="button" onClick={() => handleProductSelect(p)}
+                  className="w-full text-left px-3 py-2 text-sm text-white hover:bg-[#374151] transition-colors">
+                  <span className="font-medium">{p.product_name}</span>
+                  {p.manufacturer && <span className="text-[#94A3B8] ml-2">— {p.manufacturer}</span>}
+                  {p.chemistry_type && <span className="text-[#6B7280] ml-1 text-xs">({p.chemistry_type})</span>}
+                  {p.tds_file_url && <span className="text-emerald-400 ml-2 text-xs">✓ TDS</span>}
+                </button>
               ))}
             </div>
           )}
@@ -331,91 +434,132 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
           />
         </div>
 
-        {/* 12. Product Used — autocomplete (Sprint 11) */}
-        <div ref={productRef} className="relative">
-          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Product Used</Label>
-          <Input
-            value={productInput}
-            onChange={(e) => handleProductSearch(e.target.value)}
-            onFocus={() => productInput.length >= 2 && setShowProductSuggestions(true)}
-            placeholder="Search product specifications…"
-            className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
-          />
-          {showProductSuggestions && productSuggestions.length > 0 && (
-            <div className="absolute z-50 w-full mt-1 bg-[#1F2937] border border-[#374151] rounded-md shadow-lg max-h-48 overflow-y-auto">
-              {productSuggestions.map(p => (
-                <button key={p.id} type="button" onClick={() => { updateField('productName', p.product_name); setProductInput(p.product_name); setShowProductSuggestions(false); }}
-                  className="w-full text-left px-3 py-2 text-sm text-white hover:bg-[#374151] transition-colors">
-                  <span className="font-medium">{p.product_name}</span>
-                  {p.manufacturer && <span className="text-[#94A3B8] ml-2">— {p.manufacturer}</span>}
-                  {p.chemistry_type && <span className="text-[#6B7280] ml-1 text-xs">({p.chemistry_type})</span>}
-                </button>
+        {/* 12. Defect Photos — drag-and-drop upload */}
+        <div>
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">
+            Defect Photos <span className="text-[#6B7280] text-xs">(up to {MAX_PHOTOS})</span>
+          </Label>
+
+          {/* Thumbnails */}
+          {(formData.defectPhotos || []).length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {(formData.defectPhotos || []).map((url, i) => (
+                <div key={i} className="relative w-20 h-20 rounded-lg border border-[#374151] overflow-hidden group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={url} alt={`Defect ${i + 1}`} className="w-full h-full object-cover" />
+                  <button type="button" onClick={() => removePhoto(i)}
+                    className="absolute top-1 right-1 bg-black/70 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
               ))}
             </div>
           )}
-        </div>
 
-        {/* 13. Defect Photos — upload (Sprint 11) */}
-        <div>
-          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">
-            Defect Photos <span className="text-[#6B7280] text-xs">(up to 5)</span>
-          </Label>
-          <div className="flex flex-wrap gap-2 mb-2">
-            {(formData.defectPhotos || []).map((url, i) => (
-              <div key={i} className="relative w-20 h-20 rounded border border-[#374151] overflow-hidden group">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt={`Defect ${i + 1}`} className="w-full h-full object-cover" />
-                <button type="button" onClick={() => removePhoto(i)}
-                  className="absolute top-0.5 right-0.5 bg-black/70 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">×</button>
-              </div>
-            ))}
-          </div>
-          {(formData.defectPhotos || []).length < 5 && (
-            <div>
-              <input ref={photoInputRef} type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
-              <Button type="button" variant="outline" size="sm" disabled={uploadingPhoto}
-                onClick={() => photoInputRef.current?.click()}
-                className="text-xs border-[#374151] text-[#94A3B8] hover:text-white">
-                {uploadingPhoto ? 'Uploading…' : '+ Add Photo'}
-              </Button>
+          {/* Drop zone */}
+          {(formData.defectPhotos || []).length < MAX_PHOTOS && (
+            <div
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              onDrop={handleDrop}
+              onClick={() => photoInputRef.current?.click()}
+              className={cn(
+                'border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all',
+                dragActive
+                  ? 'border-accent-500 bg-accent-500/10'
+                  : 'border-[#374151] hover:border-accent-500/50 hover:bg-[#111827]'
+              )}
+            >
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept=".jpg,.jpeg,.png,.heic"
+                multiple
+                onChange={handlePhotoUpload}
+                className="hidden"
+              />
+              {uploadingPhoto ? (
+                <div className="flex items-center gap-2 text-sm text-[#94A3B8]">
+                  <div className="w-4 h-4 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
+                  Uploading…
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2">
+                    <Upload className="w-5 h-5 text-[#64748B]" />
+                    <Camera className="w-5 h-5 text-[#64748B]" />
+                  </div>
+                  <p className="text-sm text-[#94A3B8]">
+                    <span className="text-accent-500 font-medium">Click to browse</span> or drag and drop
+                  </p>
+                  <p className="text-xs text-[#64748B]">JPG, PNG, HEIC • Max 10MB each</p>
+                </>
+              )}
             </div>
           )}
+          <p className="text-xs text-[#64748B] mt-1.5">Upload fracture surface photos for visual AI analysis</p>
         </div>
 
-        {/* 14. Investigation Mode toggle (Sprint 11) */}
+        {/* Analysis Mode Toggle — pill-style tabs above submit */}
         <div>
-          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Investigation Mode</Label>
-          <div className="flex gap-2">
-            <button type="button" onClick={() => updateField('investigationMode', 'quick')}
-              className={cn('flex-1 px-4 py-2.5 rounded text-sm font-medium border transition-all',
+          <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Analysis Mode</Label>
+          <div className="flex bg-[#111827] rounded-lg p-1 border border-[#374151]">
+            <button
+              type="button"
+              onClick={() => updateField('investigationMode', 'quick')}
+              className={cn(
+                'flex-1 px-4 py-2.5 rounded-md text-sm font-medium transition-all',
                 formData.investigationMode === 'quick'
-                  ? 'bg-accent-500/15 border-accent-500 text-accent-500'
-                  : 'bg-[#1F2937] border-[#374151] text-[#94A3B8] hover:border-accent-500'
-              )}>
-              ⚡ Quick Analysis
+                  ? 'bg-accent-500 text-white shadow-sm'
+                  : 'text-[#94A3B8] hover:text-white'
+              )}
+            >
+              Standard Analysis
             </button>
-            <button type="button" onClick={() => updateField('investigationMode', 'guided')}
-              className={cn('flex-1 px-4 py-2.5 rounded text-sm font-medium border transition-all',
+            <button
+              type="button"
+              onClick={() => updateField('investigationMode', 'guided')}
+              className={cn(
+                'flex-1 px-4 py-2.5 rounded-md text-sm font-medium transition-all',
                 formData.investigationMode === 'guided'
-                  ? 'bg-accent-500/15 border-accent-500 text-accent-500'
-                  : 'bg-[#1F2937] border-[#374151] text-[#94A3B8] hover:border-accent-500'
-              )}>
-              🔍 Guided Investigation
+                  ? 'bg-accent-500 text-white shadow-sm'
+                  : 'text-[#94A3B8] hover:text-white'
+              )}
+            >
+              Guided Investigation
             </button>
           </div>
           {formData.investigationMode === 'guided' && (
-            <p className="mt-1.5 text-xs text-[#6B7280]">AI will guide you through a structured investigation with tool use.</p>
+            <p className="mt-1.5 text-xs text-[#6B7280]">AI will guide you through a structured investigation with follow-up questions.</p>
           )}
         </div>
 
         {/* Submit */}
-        <Button type="submit" className="w-full h-12 bg-accent-500 hover:bg-accent-600 text-white text-base font-medium" disabled={isLoading}>
-          {isLoading
-            ? 'Analyzing…'
-            : formData.investigationMode === 'guided'
-              ? 'Start Guided Investigation →'
-              : 'Analyze Failure →'}
-        </Button>
+        <div>
+          <Button
+            type="submit"
+            className={cn(
+              'w-full h-12 text-base font-medium',
+              isAtLimit
+                ? 'bg-[#374151] text-[#64748B] cursor-not-allowed'
+                : 'bg-accent-500 hover:bg-accent-600 text-white'
+            )}
+            disabled={isLoading || !!isAtLimit}
+          >
+            {submitLabel}
+          </Button>
+
+          {/* Monthly limit CTA */}
+          {isAtLimit && (
+            <p className="mt-2 text-sm text-[#94A3B8] text-center">
+              Upgrade to Pro for unlimited analyses.{' '}
+              <Link href="/pricing" className="text-accent-500 hover:text-accent-400 font-medium">
+                See Plans →
+              </Link>
+            </p>
+          )}
+        </div>
       </form>
     </div>
   );

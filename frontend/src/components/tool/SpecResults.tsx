@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { ConfidenceBadge } from '../shared/ConfidenceBadge';
 import { FeedbackPrompt } from '../results/FeedbackPrompt';
+import { KnownRisksSection, type KnownRiskData } from './KnownRisksSection';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
@@ -50,6 +51,7 @@ interface SpecResultData {
   confidenceScore: number;
   knowledgeEvidenceCount?: number;
   knownRisks?: string[];
+  knownRiskData?: KnownRiskData;
 }
 
 export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis, isFree: _isFree = true }: SpecResultsProps) {
@@ -208,10 +210,13 @@ export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis,
           </div>
         )}
 
-        {/* 6b. Known Risks (Sprint 11) */}
-        {data.knownRisks && data.knownRisks.length > 0 && (
-          <div className="bg-danger/5 border-l-[3px] border-l-danger rounded-r-lg p-4">
-            <h3 className="text-sm font-semibold text-danger mb-2">⚡ Known Risks</h3>
+        {/* 6b. Known Risks — rich view if available, fallback to basic */}
+        {data.knownRiskData && (
+          <KnownRisksSection data={data.knownRiskData} />
+        )}
+        {!data.knownRiskData && data.knownRisks && data.knownRisks.length > 0 && (
+          <div className="bg-red-500/5 border-l-[3px] border-l-red-500 rounded-r-lg p-4">
+            <h3 className="text-sm font-semibold text-red-400 mb-2">⚡ Known Risks</h3>
             <p className="text-xs text-[#94A3B8] mb-2">Previous failure patterns detected for this product/substrate combination:</p>
             <ul className="space-y-1">
               {data.knownRisks.map((risk, i) => (

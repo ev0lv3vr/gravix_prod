@@ -95,6 +95,22 @@ export default function FailureAnalysisPage() {
         longTermSolutions = objRecs.longTerm || [];
       }
 
+      // Phase 3: Map visual analysis results
+      const apiVisualAnalysis = response.visual_analysis || response.visualAnalysis || [];
+      const visualAnalysis = apiVisualAnalysis.map((va) => ({
+        imageUrl: va.image_url,
+        failureMode: va.failure_mode || 'Unknown',
+        confidence: va.confidence || 0.5,
+        description: va.description || '',
+      }));
+
+      // Phase 3: Map TDS compliance results
+      const apiTdsCompliance = response.tds_compliance || response.tdsCompliance;
+      const tdsCompliance = apiTdsCompliance ? {
+        productName: apiTdsCompliance.product_name,
+        items: apiTdsCompliance.items,
+      } : undefined;
+
       const mapped: FailureResultData = {
         diagnosis: {
           topRootCause: rootCauses[0]?.cause || 'Analysis Complete',
@@ -118,6 +134,9 @@ export default function FailureAnalysisPage() {
         similarCases: simCases,
         confidenceScore: confScore,
         knowledgeEvidenceCount: knowledgeEvidenceCount,
+        visualAnalysis: visualAnalysis.length > 0 ? visualAnalysis : undefined,
+        userSelectedFailureMode: formData.failureMode,
+        tdsCompliance,
       };
 
       setResultData(mapped);
@@ -223,7 +242,7 @@ export default function FailureAnalysisPage() {
         }
       />
       <UpgradeModal open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen} onUpgrade={() => window.location.href = '/pricing'} />
-      <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} onSuccess={handleAuthSuccess} />
+      <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} onSuccess={handleAuthSuccess} fromFormSubmit />
     </>
   );
 }
