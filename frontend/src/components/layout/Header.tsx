@@ -21,7 +21,6 @@ const PLAN_BADGE_COLORS: Record<PlanTier, string> = {
   pro: 'bg-accent-500/20 text-accent-500',
   quality: 'bg-[#8B5CF6]/20 text-[#8B5CF6]',
   enterprise: 'bg-[#F59E0B]/20 text-[#F59E0B]',
-  admin: 'bg-red-500/20 text-red-400',
 };
 
 export function Header() {
@@ -31,9 +30,8 @@ export function Header() {
   const analyzeRef = useRef<HTMLDivElement>(null);
 
   const { user, signOut } = useAuth();
-  const { plan } = usePlan();
-  const showInvestigations = plan === 'quality' || plan === 'enterprise' || plan === 'admin';
-  const isAdmin = plan === 'admin';
+  const { plan, isAdmin, isLoading: planLoading } = usePlan();
+  const showInvestigations = plan === 'quality' || plan === 'enterprise' || isAdmin;
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -186,9 +184,13 @@ export function Header() {
                     <Button variant="ghost" size="sm" className="gap-2 text-[#94A3B8] hover:text-white">
                       <User className="h-4 w-4" />
                       <span className="text-sm max-w-[120px] truncate">{user.email?.split('@')[0]}</span>
-                      <span className={`text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded-full ${PLAN_BADGE_COLORS[plan]}`}>
-                        {plan}
-                      </span>
+                      {planLoading ? (
+                        <span className="inline-block w-12 h-4 bg-[#1F2937] rounded-full animate-pulse" />
+                      ) : (
+                        <span className={`text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded-full ${PLAN_BADGE_COLORS[plan]}`}>
+                          {isAdmin && '🛡️ '}{plan}
+                        </span>
+                      )}
                       <ChevronDown className="w-3.5 h-3.5" />
                     </Button>
                   </DropdownMenuTrigger>

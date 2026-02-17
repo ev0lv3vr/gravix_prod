@@ -44,7 +44,7 @@ export default function DashboardPage() {
 
 function DashboardContent() {
   const { user: authUser, loading: authLoading } = useAuth();
-  const { plan: profilePlan, usage, refreshPlan } = usePlan();
+  const { plan: profilePlan, isAdmin, usage, refreshPlan, isLoading: planLoading } = usePlan();
   const usageFallback = useUsageTracking();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -221,10 +221,18 @@ function DashboardContent() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
         <h1 className="text-2xl font-bold text-white mb-2 md:mb-0">{greeting}</h1>
         <div className="flex items-center gap-3">
-          <span className="px-3 py-1 bg-accent-500/10 text-accent-500 text-xs font-semibold rounded-full uppercase">
-            {profilePlan}
-          </span>
-          <span className="text-sm text-[#94A3B8] font-mono">{usageText}</span>
+          {planLoading ? (
+            <span className="inline-block w-16 h-6 bg-[#1F2937] rounded-full animate-pulse" />
+          ) : (
+            <span className="px-3 py-1 bg-accent-500/10 text-accent-500 text-xs font-semibold rounded-full uppercase">
+              {isAdmin && '🛡️ '}{profilePlan}
+            </span>
+          )}
+          {planLoading && !usage ? (
+            <span className="inline-block w-32 h-4 bg-[#1F2937] rounded animate-pulse" />
+          ) : (
+            <span className="text-sm text-[#94A3B8] font-mono">{usageText}</span>
+          )}
         </div>
       </div>
 
@@ -253,10 +261,10 @@ function DashboardContent() {
       <PendingFeedbackBanner />
 
       {/* Component 6.5 & 6.6: Investigations Summary + Pattern Alerts (plan-gated) */}
-      {(profilePlan === 'quality' || profilePlan === 'enterprise' || profilePlan === 'admin') && (
-        <div className={`grid gap-6 mb-10 ${(profilePlan === 'enterprise' || profilePlan === 'admin') ? 'md:grid-cols-2' : 'md:grid-cols-1'}`}>
+      {(profilePlan === 'quality' || profilePlan === 'enterprise' || isAdmin) && (
+        <div className={`grid gap-6 mb-10 ${(profilePlan === 'enterprise' || isAdmin) ? 'md:grid-cols-2' : 'md:grid-cols-1'}`}>
           <InvestigationsSummaryCard />
-          {(profilePlan === 'enterprise' || profilePlan === 'admin') && <PatternAlertsCard />}
+          {(profilePlan === 'enterprise' || isAdmin) && <PatternAlertsCard />}
         </div>
       )}
 

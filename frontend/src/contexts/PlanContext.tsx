@@ -15,10 +15,11 @@ import { api, type UsageResponse } from '@/lib/api';
 // Types
 // ---------------------------------------------------------------------------
 
-export type PlanTier = 'free' | 'pro' | 'quality' | 'enterprise' | 'admin';
+export type PlanTier = 'free' | 'pro' | 'quality' | 'enterprise';
 
 interface PlanContextValue {
   plan: PlanTier;
+  isAdmin: boolean;
   usage: UsageResponse | null;
   refreshPlan: () => Promise<void>;
   isLoading: boolean;
@@ -33,6 +34,7 @@ const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 interface PlanCache {
   plan: PlanTier;
+  isAdmin: boolean;
   usage: UsageResponse | null;
   cachedAt: number;
 }
@@ -49,9 +51,9 @@ function readCache(): PlanCache | null {
   }
 }
 
-function writeCache(plan: PlanTier, usage: UsageResponse | null): void {
+function writeCache(plan: PlanTier, isAdmin: boolean, usage: UsageResponse | null): void {
   try {
-    const data: PlanCache = { plan, usage, cachedAt: Date.now() };
+    const data: PlanCache = { plan, isAdmin, usage, cachedAt: Date.now() };
     localStorage.setItem(CACHE_KEY, JSON.stringify(data));
   } catch {
     /* quota exceeded — ignore */
@@ -62,11 +64,7 @@ function writeCache(plan: PlanTier, usage: UsageResponse | null): void {
 // Normalize plan string → PlanTier
 // ---------------------------------------------------------------------------
 
-function normalizePlan(
-  rawPlan: string | undefined | null,
-  role: string | undefined | null,
-): PlanTier {
-  if (role === 'admin') return 'admin';
+function normalizePlan(rawPlan: string | undefined | null): PlanTier {
   const p = (rawPlan || 'free').toLowerCase();
   if (p === 'team' || p === 'quality') return 'quality';
   if (p === 'pro') return 'pro';
@@ -89,11 +87,15 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
     const cached = readCache();
     return cached?.plan ?? 'free';
   });
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    const cached = readCache();
+    return cached?.isAdmin ?? false;
+  });
   const [usage, setUsage] = useState<UsageResponse | null>(() => {
     const cached = readCache();
     return cached?.usage ?? null;
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Track latest fetch to avoid stale responses overwriting newer data
   const fetchIdRef = useRef(0);
@@ -109,10 +111,12 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
       // Only apply if this is still the latest request
       if (id !== fetchIdRef.current) return;
 
-      const normalized = normalizePlan(profile?.plan, profile?.role);
+      const normalized = normalizePlan(profile?.plan);
+      const admin = profile?.role === 'admin';
       setPlan(normalized);
+      setIsAdmin(admin);
       setUsage(usageResp);
-      writeCache(normalized, usageResp);
+      writeCache(normalized, admin, usageResp);
     } catch {
       // keep existing state
     } finally {
@@ -124,7 +128,9 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!user) {
       setPlan('free');
+      setIsAdmin(false);
       setUsage(null);
+      setIsLoading(false);
       try {
         localStorage.removeItem(CACHE_KEY);
       } catch {
@@ -137,7 +143,9 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
     const cached = readCache();
     if (cached) {
       setPlan(cached.plan);
+      setIsAdmin(cached.isAdmin ?? false);
       setUsage(cached.usage);
+      setIsLoading(false); // Cache is fresh — stop loading immediately
     }
 
     fetchPlan();
@@ -158,6 +166,7 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
 
   const value: PlanContextValue = {
     plan,
+    isAdmin,
     usage,
     refreshPlan: fetchPlan,
     isLoading,
