@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Check, ChevronDown, ChevronUp, Star, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { AuthModal } from '@/components/auth/AuthModal';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
 
@@ -14,13 +15,27 @@ export default function PricingPage() {
   const [proLoading, setProLoading] = useState(false);
   const [qualityLoading, setQualityLoading] = useState(false);
   const [enterpriseLoading, setEnterpriseLoading] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const pendingCheckoutRef = useRef<{ priceEnvKey: string; setLoading: (v: boolean) => void } | null>(null);
+
+  // After auth completes, retry the pending checkout
+  useEffect(() => {
+    if (session?.access_token && pendingCheckoutRef.current) {
+      const { priceEnvKey, setLoading } = pendingCheckoutRef.current;
+      pendingCheckoutRef.current = null;
+      setShowAuthModal(false);
+      handleCheckout(priceEnvKey, setLoading);
+    }
+  }, [session?.access_token]);
 
   const handleCheckout = async (priceEnvKey: string, setLoading: (v: boolean) => void) => {
     setLoading(true);
     try {
       const token = session?.access_token;
       if (!token) {
-        window.location.href = '/tool';
+        pendingCheckoutRef.current = { priceEnvKey, setLoading };
+        setShowAuthModal(true);
+        setLoading(false);
         return;
       }
       const response = await fetch(`${API_URL}/billing/checkout`, {
@@ -213,6 +228,11 @@ export default function PricingPage() {
       </div>
 
       <Footer />
+
+      <AuthModal
+        open={showAuthModal}
+        onOpenChange={setShowAuthModal}
+      />
     </div>
   );
 }
