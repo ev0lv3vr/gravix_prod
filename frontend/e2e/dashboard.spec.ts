@@ -199,8 +199,8 @@ test.describe('Dashboard — Authenticated', () => {
     await page.goto('/dashboard');
     await expect(page.getByText(/welcome back/i)).toBeVisible({ timeout: 15_000 });
 
-    // Plan badge
-    await expect(page.getByText('pro', { exact: true })).toBeVisible();
+    // Plan badge (scoped to main content to avoid nav duplicate)
+    await expect(page.getByRole('main').getByText('pro', { exact: true })).toBeVisible();
 
     // Usage text should be present (exact numbers can vary based on fallback)
     await expect(page.getByText(/analyses used/i)).toBeVisible();

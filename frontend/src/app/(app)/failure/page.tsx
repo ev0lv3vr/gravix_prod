@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking, incrementUsage } from '@/hooks/useUsageTracking';
 import { api } from '@/lib/api';
 import { startGuidedSession } from '@/lib/products';
+import { UsageCounter } from '@/components/shared/UsageCounter';
 
 type Status = 'idle' | 'loading' | 'complete' | 'error';
 
@@ -208,7 +209,7 @@ export default function FailureAnalysisPage() {
   return (
     <>
       <ToolLayout
-        formPanel={<FailureForm onSubmit={handleSubmit} isLoading={status === 'loading'} />}
+        formPanel={<><UsageCounter /><FailureForm onSubmit={handleSubmit} isLoading={status === 'loading'} /></>}
         resultsPanel={
           <FailureResults
             status={resultsStatus}
