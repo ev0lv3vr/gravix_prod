@@ -33,14 +33,14 @@ export function NotificationBell() {
     return () => clearInterval(interval);
   }, [fetchUnread]);
 
-  // When dropdown opens, fetch recent notifications
+  // When dropdown opens, fetch recent notifications (max 5 items)
   const handleToggle = async () => {
     const next = !open;
     setOpen(next);
     if (next) {
       setLoading(true);
       try {
-        const data = await notificationsApi.list({ limit: 10 });
+        const data = await notificationsApi.list({ limit: 5 });
         setNotifications(data);
       } catch {
         // silently fail
@@ -101,11 +101,12 @@ export function NotificationBell() {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
     if (mins < 1) return 'just now';
-    if (mins < 60) return `${mins}m`;
+    if (mins < 60) return `${mins}m ago`;
     const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs}h`;
+    if (hrs < 24) return `${hrs}h ago`;
     const days = Math.floor(hrs / 24);
-    return `${days}d`;
+    if (days === 1) return 'Yesterday';
+    return `${days}d ago`;
   };
 
   return (
@@ -124,15 +125,17 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-80 bg-brand-800 border border-[#1F2937] rounded-lg shadow-xl z-50 overflow-hidden">
+        <div className="absolute right-0 mt-2 w-[400px] max-w-[calc(100vw-2rem)] bg-brand-800 border border-[#1F2937] rounded-lg shadow-xl z-50 overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#1F2937]">
-            <span className="text-sm font-semibold text-white">Notifications</span>
+            <span className="text-sm font-semibold text-white">
+              Notifications{unreadCount > 0 ? ` (${unreadCount} unread)` : ''}
+            </span>
             <div className="flex items-center gap-2">
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllRead}
-                  className="text-[10px] text-accent-500 hover:text-accent-400"
+                  className="text-xs text-accent-500 hover:text-accent-400 transition-colors"
                 >
                   Mark all read
                 </button>
@@ -140,8 +143,8 @@ export function NotificationBell() {
             </div>
           </div>
 
-          {/* List */}
-          <div className="max-h-80 overflow-y-auto">
+          {/* List — max 5 items, scrollable */}
+          <div className="max-h-[340px] overflow-y-auto">
             {loading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="w-5 h-5 border-2 border-[#1F2937] border-t-accent-500 rounded-full animate-spin" />
@@ -159,12 +162,14 @@ export function NotificationBell() {
                     !n.is_read ? 'bg-accent-500/5' : ''
                   }`}
                 >
-                  <div className="flex items-start gap-2">
-                    {!n.is_read && (
-                      <span className="w-2 h-2 rounded-full bg-accent-500 mt-1.5 flex-shrink-0" />
-                    )}
+                  <div className="flex items-start gap-2.5">
+                    <span
+                      className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
+                        !n.is_read ? 'bg-accent-500' : 'bg-[#374151]'
+                      }`}
+                    />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-white truncate">
+                      <p className={`text-xs font-medium truncate ${!n.is_read ? 'text-white' : 'text-[#94A3B8]'}`}>
                         {n.title}
                       </p>
                       {n.message && (
@@ -187,13 +192,13 @@ export function NotificationBell() {
             <Button
               variant="ghost"
               size="sm"
-              className="w-full text-xs text-[#94A3B8] hover:text-white"
+              className="w-full text-xs text-accent-500 hover:text-accent-400"
               onClick={() => {
                 router.push('/notifications');
                 setOpen(false);
               }}
             >
-              View all notifications
+              View all notifications →
             </Button>
           </div>
         </div>
