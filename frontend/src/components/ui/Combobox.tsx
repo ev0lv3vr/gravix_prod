@@ -199,10 +199,13 @@ export function Combobox({
         items.push({ name: item.name, hasTds: item.hasTds });
       }
     }
-    // Also add fuzzy matches
-    for (const item of fuzzyMatched) {
-      if (!items.some((i) => i.name === item.name)) {
-        items.push({ name: item.name, hasTds: item.hasTds });
+    // Only add fuzzy matches when they'll be rendered (no exact/prefix matches)
+    const showFuzzy = items.length === 0 && fuzzyMatched.length > 0;
+    if (showFuzzy) {
+      for (const item of fuzzyMatched) {
+        if (!items.some((i) => i.name === item.name)) {
+          items.push({ name: item.name, hasTds: item.hasTds });
+        }
       }
     }
     // "Use as entered" row

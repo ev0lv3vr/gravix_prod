@@ -87,14 +87,17 @@ def build_user_prompt(data: dict) -> str:
                 label = key.replace("_", " ").title()
                 lines.append(f"  - {label}: {value}")
 
-    # Optional fields
+    # Optional fields – sanitize user-controlled values before prompt insertion
+    def _sanitize(value: str) -> str:
+        return str(value).replace("\n", " ").replace("\r", " ").strip()
+
     if data.get("production_volume"):
-        lines.append(f"\n**Production Volume:** {data['production_volume']}")
+        lines.append(f"\n**Production Volume:** {_sanitize(data['production_volume'])}")
     if data.get("application_method"):
-        lines.append(f"**Application Method:** {data['application_method']}")
+        lines.append(f"**Application Method:** {_sanitize(data['application_method'])}")
     if data.get("required_fixture_time"):
-        lines.append(f"**Required Fixture Time:** {data['required_fixture_time']}")
+        lines.append(f"**Required Fixture Time:** {_sanitize(data['required_fixture_time'])}")
     if data.get("additional_requirements"):
-        lines.append(f"**Additional Requirements:** {data['additional_requirements']}")
+        lines.append(f"**Additional Requirements:** {_sanitize(data['additional_requirements'])}")
 
     return "\n".join(lines)

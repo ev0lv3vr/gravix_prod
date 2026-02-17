@@ -165,6 +165,8 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
         cureMethod: formData.cureConstraint || undefined,
         gapSize: formData.gapFill || undefined,
         additionalContext: formData.additionalContext || undefined,
+        productionVolume: formData.productionVolume || undefined,
+        applicationMethod: formData.applicationMethod || undefined,
       });
       setErrors({});
       return true;

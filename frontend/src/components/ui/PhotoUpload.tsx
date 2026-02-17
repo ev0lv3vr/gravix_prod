@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { Upload, Camera, X, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -109,6 +109,12 @@ export function PhotoUpload({
 
   const hasPhotos = photos.length > 0;
 
+  // Memoize blob preview URLs and revoke on cleanup
+  const previewUrls = useMemo(() => photos.map((f) => URL.createObjectURL(f)), [photos]);
+  useEffect(() => {
+    return () => { previewUrls.forEach((url) => URL.revokeObjectURL(url)); };
+  }, [previewUrls]);
+
   return (
     <div>
       {/* Uploaded state: thumbnails */}
@@ -119,7 +125,7 @@ export function PhotoUpload({
               <div key={`${file.name}-${i}`} className="relative w-16 h-16 rounded-md overflow-hidden group flex-shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={URL.createObjectURL(file)}
+                  src={previewUrls[i]}
                   alt={`Upload ${i + 1}`}
                   className="w-full h-full object-cover"
                 />
@@ -155,6 +161,10 @@ export function PhotoUpload({
       {/* Drop zone (shown when room for more, or no photos) */}
       {!hasPhotos && (
         <div
+          role="button"
+          tabIndex={0}
+          aria-label={`Upload photos — drag and drop or click to select up to ${maxFiles} images`}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputRef.current?.click(); } }}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}

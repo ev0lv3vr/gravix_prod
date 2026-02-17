@@ -191,11 +191,18 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
     // Upload photos if any
     let photoUrls = formData.defectPhotos || [];
     if (localPhotos.length > 0) {
-      try {
-        const uploads = await Promise.all(localPhotos.map((f) => uploadDefectPhoto(f)));
-        photoUrls = uploads.map((r) => r.url);
-      } catch (err) {
-        console.error('Photo upload failed:', err);
+      const results = await Promise.allSettled(localPhotos.map((f) => uploadDefectPhoto(f)));
+      const succeeded = results.filter((r): r is PromiseFulfilledResult<{ url: string; filename: string }> => r.status === 'fulfilled');
+      const failedCount = results.length - succeeded.length;
+      photoUrls = succeeded.map((r) => r.value.url);
+
+      if (failedCount > 0 && succeeded.length === 0) {
+        alert(`All ${failedCount} photo upload(s) failed. Please try again or submit without photos.`);
+        return;
+      }
+      if (failedCount > 0) {
+        const proceed = confirm(`${failedCount} of ${results.length} photo(s) failed to upload. Continue with ${succeeded.length} photo(s)?`);
+        if (!proceed) return;
       }
     }
 
