@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { ToolLayout } from '@/components/layout/ToolLayout';
 import { FailureForm, type FailureFormData } from '@/components/failure/FailureForm';
 import { FailureResults, type FailureResultData } from '@/components/failure/FailureResults';
+import { GuidedInvestigation } from '@/components/failure/GuidedInvestigation';
 import { UpgradeModal } from '@/components/shared/UpgradeModal';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { useAuth } from '@/contexts/AuthContext';
@@ -18,7 +20,19 @@ type Status = 'idle' | 'loading' | 'complete' | 'error';
 const STORAGE_KEY = 'gravix_failure_form';
 const AUTO_SUBMIT_KEY = 'gravix_failure_auto_submit';
 
-export default function FailureAnalysisPage() {
+function FailurePageContent() {
+  const searchParams = useSearchParams();
+  const isGuidedMode = searchParams.get('mode') === 'guided';
+
+  // If guided mode is active via query param, render chat UI instead
+  if (isGuidedMode) {
+    return <GuidedInvestigation />;
+  }
+
+  return <StandardFailureAnalysis />;
+}
+
+function StandardFailureAnalysis() {
   const router = useRouter();
   const [status, setStatus] = useState<Status>('idle');
   const [resultData, setResultData] = useState<FailureResultData | null>(null);
@@ -244,5 +258,13 @@ export default function FailureAnalysisPage() {
       <UpgradeModal open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen} onUpgrade={() => window.location.href = '/pricing'} />
       <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} onSuccess={handleAuthSuccess} fromFormSubmit />
     </>
+  );
+}
+
+export default function FailureAnalysisPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh] text-[#94A3B8] text-sm">Loading...</div>}>
+      <FailurePageContent />
+    </Suspense>
   );
 }
