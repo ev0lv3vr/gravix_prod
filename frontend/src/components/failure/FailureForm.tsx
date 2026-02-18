@@ -4,8 +4,11 @@ import { useState, useRef, useCallback } from 'react';
 import { Combobox } from '@/components/ui/Combobox';
 import { ExpandableSection } from '@/components/ui/ExpandableSection';
 import { PhotoUpload } from '@/components/ui/PhotoUpload';
+import { MultiSelectChips } from '@/components/forms/MultiSelectChips';
+import { ConditionalSubField } from '@/components/forms/ConditionalSubField';
 import { FailureModeCards } from './FailureModeCards';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -18,6 +21,13 @@ import { useUsageTracking } from '@/hooks/useUsageTracking';
 import Link from 'next/link';
 import { SUBSTRATE_SUGGESTIONS } from '@/lib/substrate-suggestions';
 import type { SuggestionCategory } from '@/lib/substrate-suggestions';
+import {
+  ENVIRONMENT_OPTIONS,
+  CHEMICAL_OPTIONS,
+  STERILIZATION_OPTIONS,
+  SURFACE_PREP_OPTIONS,
+  INDUSTRY_OPTIONS,
+} from '@/lib/form-constants';
 
 export type FailureFormData = FailureAnalysisFormData;
 
@@ -33,30 +43,6 @@ const TIME_OPTIONS = [
   { value: '1-4weeks', label: '1-4 weeks' },
   { value: '1-6months', label: '1-6 months' },
   { value: '>6months', label: '>6 months' },
-];
-
-const INDUSTRY_OPTIONS = [
-  { value: 'automotive', label: 'Automotive' },
-  { value: 'aerospace', label: 'Aerospace' },
-  { value: 'electronics', label: 'Electronics' },
-  { value: 'medical', label: 'Medical Device' },
-  { value: 'consumer', label: 'Consumer' },
-  { value: 'construction', label: 'Construction' },
-  { value: 'general_mfg', label: 'General Mfg' },
-  { value: 'other', label: 'Other' },
-];
-
-const ENVIRONMENT_CHIPS = [
-  'High humidity', 'Chemical exposure', 'UV/outdoor', 'Thermal cycling', 'Submersion', 'Vibration',
-];
-
-const SURFACE_PREP_OPTIONS = [
-  { value: 'ipa', label: 'Solvent wipe (IPA)' },
-  { value: 'acetone', label: 'Solvent wipe (acetone)' },
-  { value: 'abrasion', label: 'Abrasion' },
-  { value: 'plasma', label: 'Plasma/corona' },
-  { value: 'primer', label: 'Primer' },
-  { value: 'none', label: 'None/unknown' },
 ];
 
 const PRODUCTION_IMPACT_OPTIONS = [
@@ -113,7 +99,12 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
     timeToFailure: '',
     industry: '',
     environment: [],
+    chemicalExposureDetail: [],
+    chemicalExposureOther: '',
+    sterilizationMethods: [],
     surfacePrep: '',
+    surfacePreps: [],
+    surfacePrepDetail: '',
     productionImpact: '',
     additionalContext: '',
     productName: '',
@@ -214,15 +205,6 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
     if (errors[key]) setErrors((prev) => { const n = { ...prev }; delete n[key]; return n; });
   };
 
-  const toggleEnv = (chip: string) => {
-    updateField(
-      'environment',
-      formData.environment.includes(chip)
-        ? formData.environment.filter((v) => v !== chip)
-        : [...formData.environment, chip]
-    );
-  };
-
   // Determine submit button state
   const isAtLimit = user && isExhausted;
   const submitLabel = isAtLimit
@@ -314,7 +296,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
           label="Add details for a more accurate diagnosis (optional)"
           persistKey="gravix_failure_form_expanded"
         >
-          {/* Failure Mode — NOW OPTIONAL */}
+          {/* ─── Failure Mode — Visual Cards (optional, now with 5th card) ─── */}
           <div>
             <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">
               Failure Mode
@@ -324,11 +306,11 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
               onChange={(v) => updateField('failureMode', v)}
             />
             <p className="mt-2 text-xs text-[#64748B]">
-              Not sure? Leave blank — our AI can infer from your description and photos.
+              Not sure? Select &quot;Can&apos;t Determine&quot; or leave blank — our AI can infer from your description and photos.
             </p>
           </div>
 
-          {/* Time to Failure + Industry — side by side */}
+          {/* ─── Time to Failure + Industry — side by side ─── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Time to Failure</Label>
@@ -351,56 +333,85 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
                 </SelectTrigger>
                 <SelectContent>
                   {INDUSTRY_OPTIONS.map((o) => (
-                    <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                    <SelectItem key={o.value} value={o.value}>
+                      <span title={o.tooltip}>{o.label}</span>
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
 
-          {/* Surface Prep */}
+          {/* ─── Surface Preparation — Multi-Select Chips ─── */}
           <div>
-            <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Surface Preparation</Label>
-            <Select value={formData.surfacePrep} onValueChange={(v) => updateField('surfacePrep', v)}>
-              <SelectTrigger className="h-11 bg-[#111827] border-[#374151] rounded text-sm">
-                <SelectValue placeholder="Select surface prep" />
-              </SelectTrigger>
-              <SelectContent>
-                {SURFACE_PREP_OPTIONS.map((o) => (
-                  <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">
+              What surface preparation was done? <span className="text-[#64748B] text-xs">(select all steps, in any order)</span>
+            </Label>
+            <MultiSelectChips
+              options={SURFACE_PREP_OPTIONS}
+              selected={formData.surfacePreps}
+              onChange={(v) => updateField('surfacePreps', v)}
+            />
+            <div className="mt-3">
+              <Input
+                type="text"
+                value={formData.surfacePrepDetail}
+                onChange={(e) => updateField('surfacePrepDetail', e.target.value)}
+                placeholder="Optional: describe prep sequence, abrasive grit, primer product, dwell time, etc."
+                className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
+              />
+            </div>
           </div>
 
-          {/* Environment — chips */}
+          {/* ─── Environment — 15 Chips + Conditional Sub-Fields ─── */}
           <div>
             <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">
               Environment <span className="text-[#64748B] text-xs">(select all that apply)</span>
             </Label>
-            <div className="flex flex-wrap gap-2">
-              {ENVIRONMENT_CHIPS.map((env) => {
-                const sel = formData.environment.includes(env);
-                return (
-                  <button
-                    key={env}
-                    type="button"
-                    onClick={() => toggleEnv(env)}
-                    className={cn(
-                      'px-3 py-1.5 rounded-full text-sm font-medium transition-all border',
-                      sel
-                        ? 'bg-accent-500/15 border-accent-500 text-accent-500'
-                        : 'bg-[#1F2937] border-[#374151] text-[#94A3B8] hover:border-accent-500'
-                    )}
-                  >
-                    {env}
-                  </button>
-                );
-              })}
-            </div>
+            <MultiSelectChips
+              options={ENVIRONMENT_OPTIONS}
+              selected={formData.environment}
+              onChange={(v) => updateField('environment', v)}
+            />
+
+            {/* Conditional: Chemical Exposure Detail */}
+            <ConditionalSubField
+              parentChipValue="chemical"
+              visible={formData.environment.includes('chemical')}
+              label="Which chemicals? (select all that apply)"
+            >
+              <MultiSelectChips
+                options={CHEMICAL_OPTIONS}
+                selected={formData.chemicalExposureDetail}
+                onChange={(v) => updateField('chemicalExposureDetail', v)}
+              />
+              <div className="mt-3">
+                <Input
+                  type="text"
+                  value={formData.chemicalExposureOther}
+                  onChange={(e) => updateField('chemicalExposureOther', e.target.value)}
+                  placeholder="e.g., Skydrol, hydrazine, customer-specific fluids"
+                  className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
+                />
+                <p className="text-[#64748B] text-xs mt-1">Other chemicals not listed above</p>
+              </div>
+            </ConditionalSubField>
+
+            {/* Conditional: Sterilization Method */}
+            <ConditionalSubField
+              parentChipValue="sterilization"
+              visible={formData.environment.includes('sterilization')}
+              label="Sterilization method (select all that apply)"
+            >
+              <MultiSelectChips
+                options={STERILIZATION_OPTIONS}
+                selected={formData.sterilizationMethods}
+                onChange={(v) => updateField('sterilizationMethods', v)}
+              />
+            </ConditionalSubField>
           </div>
 
-          {/* Production Impact */}
+          {/* ─── Production Impact ─── */}
           <div>
             <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Production Impact</Label>
             <Select value={formData.productionImpact} onValueChange={(v) => updateField('productionImpact', v)}>
@@ -415,7 +426,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
             </Select>
           </div>
 
-          {/* Additional Context */}
+          {/* ─── Additional Context ─── */}
           <div>
             <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Additional Context</Label>
             <Textarea

@@ -61,12 +61,31 @@ function StandardFailureAnalysis() {
 
       if (formData.adhesiveUsed) requestData.material_subcategory = formData.adhesiveUsed;
       if (formData.timeToFailure) requestData.time_to_failure = formData.timeToFailure;
-      if (formData.surfacePrep) requestData.surface_preparation = formData.surfacePrep;
+      // Surface prep: prefer new multi-select, fall back to legacy single-select
+      if (formData.surfacePreps && formData.surfacePreps.length > 0) {
+        requestData.surface_preparation = formData.surfacePreps.map(s => `prep:${s}`);
+      } else if (formData.surfacePrep) {
+        requestData.surface_preparation = formData.surfacePrep;
+      }
+      if (formData.surfacePrepDetail) requestData.surface_prep_detail = formData.surfacePrepDetail;
       if (formData.additionalContext) requestData.additional_notes = formData.additionalContext;
       if (formData.industry) requestData.industry = formData.industry;
       if (formData.productionImpact) requestData.production_impact = formData.productionImpact;
       if (formData.environment.length > 0) {
-        requestData.chemical_exposure = formData.environment.join(', ');
+        requestData.chemical_exposure = formData.environment.map(e => `env:${e}`);
+      }
+      // Chemical exposure detail
+      if (formData.environment.includes('chemical')) {
+        if (formData.chemicalExposureDetail && formData.chemicalExposureDetail.length > 0) {
+          requestData.chemical_exposure_detail = formData.chemicalExposureDetail.map(c => `chem:${c}`);
+        }
+        if (formData.chemicalExposureOther) {
+          requestData.chemical_exposure_other = formData.chemicalExposureOther;
+        }
+      }
+      // Sterilization methods
+      if (formData.environment.includes('sterilization') && formData.sterilizationMethods && formData.sterilizationMethods.length > 0) {
+        requestData.sterilization_methods = formData.sterilizationMethods.map(s => `sterilization:${s}`);
       }
       // Sprint 11: product name and defect photos
       if (formData.productName) requestData.product_name = formData.productName;
