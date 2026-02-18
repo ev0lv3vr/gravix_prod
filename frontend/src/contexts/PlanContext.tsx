@@ -100,9 +100,12 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
   // Track latest fetch to avoid stale responses overwriting newer data
   const fetchIdRef = useRef(0);
 
+  const hasDataRef = useRef(false);
+
   const fetchPlan = useCallback(async () => {
     const id = ++fetchIdRef.current;
-    setIsLoading(true);
+    // Only show loading skeleton if we have no data yet
+    if (!hasDataRef.current) setIsLoading(true);
     try {
       const [profile, usageResp] = await Promise.all([
         api.getCurrentUser().catch(() => null),
@@ -116,6 +119,7 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
       setPlan(normalized);
       setIsAdmin(admin);
       setUsage(usageResp);
+      hasDataRef.current = true;
       writeCache(normalized, admin, usageResp);
     } catch {
       // keep existing state
@@ -133,6 +137,7 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
       setPlan('free');
       setIsAdmin(false);
       setUsage(null);
+      hasDataRef.current = false;
       setIsLoading(false);
       try {
         localStorage.removeItem(CACHE_KEY);
@@ -148,6 +153,7 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
       setPlan(cached.plan);
       setIsAdmin(cached.isAdmin ?? false);
       setUsage(cached.usage);
+      hasDataRef.current = true;
       setIsLoading(false); // Cache is fresh — stop loading immediately
     } else {
       setIsLoading(true); // No cache — keep skeleton until API responds
