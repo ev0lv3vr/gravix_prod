@@ -949,12 +949,15 @@ function FinalCTA() {
           >
             Start Free →
           </Link>
-          <Link
-            href="/pricing"
-            className="hidden sm:inline-flex items-center justify-center border border-[#374151] text-[#94A3B8] hover:text-white hover:border-[#4B5563] text-base font-medium px-10 py-4 rounded-lg transition-colors"
-          >
-            Book a Demo →
-          </Link>
+        </div>
+        <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent-500/20 bg-accent-500/5">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-500"></span>
+          </span>
+          <span className="text-sm text-[#94A3B8]">
+            Alpha — early access for a limited number of users
+          </span>
         </div>
       </div>
     </section>
