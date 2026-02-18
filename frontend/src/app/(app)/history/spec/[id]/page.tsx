@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { FeedbackPrompt } from '@/components/results/FeedbackPrompt';
+import { usePlanGate } from '@/hooks/usePlanGate';
 
 type SpecDetail = any;
 
@@ -19,6 +20,7 @@ function formatDateTime(iso?: string | null): string {
 
 export default function SpecHistoryDetailPage({ params }: { params: { id: string } }) {
   const { user: authUser, loading: authLoading } = useAuth();
+  const { allowed: canExportPdf } = usePlanGate('history.export_pdf');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [spec, setSpec] = useState<SpecDetail | null>(null);
@@ -114,9 +116,10 @@ export default function SpecHistoryDetailPage({ params }: { params: { id: string
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
-            onClick={() => api.downloadSpecPdf(params.id)}
+            disabled={!canExportPdf}
+            onClick={() => canExportPdf && api.downloadSpecPdf(params.id)}
           >
-            Download PDF
+            {canExportPdf ? 'Download PDF' : 'PDF (Pro)'}
           </Button>
           <Link href="/history" className="text-sm text-accent-500 hover:underline">
             Back to history

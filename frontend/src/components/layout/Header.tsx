@@ -15,6 +15,7 @@ import { NotificationBell } from '@/components/layout/NotificationBell';
 import { Menu, X, User, ChevronDown, Settings, CreditCard, LogOut, Bell } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlan, type PlanTier } from '@/contexts/PlanContext';
+import { usePlanGate } from '@/hooks/usePlanGate';
 
 const PLAN_BADGE_COLORS: Record<PlanTier, string> = {
   free: 'bg-[#374151] text-[#94A3B8]',
@@ -31,7 +32,7 @@ export function Header() {
 
   const { user, signOut } = useAuth();
   const { plan, isAdmin, isLoading: planLoading } = usePlan();
-  const showInvestigations = plan === 'quality' || plan === 'enterprise' || isAdmin;
+  const { allowed: showInvestigations } = usePlanGate('investigations.view');
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {

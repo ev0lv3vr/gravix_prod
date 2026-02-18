@@ -18,7 +18,9 @@ import { ZodError } from 'zod';
 import { searchProducts, uploadDefectPhoto, type ProductSpecification } from '@/lib/products';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
+import { usePlanGate } from '@/hooks/usePlanGate';
 import Link from 'next/link';
+import { Lock } from 'lucide-react';
 import { SUBSTRATE_SUGGESTIONS } from '@/lib/substrate-suggestions';
 import type { SuggestionCategory } from '@/lib/substrate-suggestions';
 import {
@@ -89,6 +91,7 @@ const ADHESIVE_TYPE_SUGGESTIONS: SuggestionCategory[] = [
 export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
   const { user } = useAuth();
   const { isExhausted } = useUsageTracking();
+  const { allowed: canUploadPhotos } = usePlanGate('analysis.photos');
 
   const [formData, setFormData] = useState<FailureAnalysisFormData>({
     failureDescription: '',
@@ -283,12 +286,20 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
           <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">
             Defect Photos <span className="text-[#64748B] text-xs">(optional)</span>
           </Label>
-          <PhotoUpload
-            photos={localPhotos}
-            onChange={handlePhotosChange}
-            maxFiles={5}
-            maxSizeMB={10}
-          />
+          {canUploadPhotos ? (
+            <PhotoUpload
+              photos={localPhotos}
+              onChange={handlePhotosChange}
+              maxFiles={5}
+              maxSizeMB={10}
+            />
+          ) : (
+            <div className="bg-brand-800/50 border border-accent-500/20 rounded-lg p-4 text-center">
+              <Lock className="w-6 h-6 text-accent-500 mx-auto mb-2" />
+              <p className="text-sm text-text-secondary">Photo upload requires Pro</p>
+              <Link href="/pricing" className="text-accent-500 text-sm hover:underline">Upgrade →</Link>
+            </div>
+          )}
         </div>
 
         {/* ═══════════════════ ZONE 2: Expandable Detail ═══════════════════ */}

@@ -13,6 +13,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File,
 from typing import Optional, List
 
 from dependencies import get_current_user
+from middleware.plan_gate import plan_gate
 from database import get_supabase
 from schemas.analyze import (
     FailureAnalysisCreate,
@@ -219,6 +220,7 @@ async def get_analysis(
 async def upload_defect_photo(
     file: UploadFile = File(...),
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("analysis.photos")),
 ):
     """Upload a defect photo to Supabase storage. Returns the public URL.
     

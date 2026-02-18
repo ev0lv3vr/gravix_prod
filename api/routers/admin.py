@@ -229,7 +229,7 @@ async def admin_update_user(
 
     update_fields: dict = {}
     if data.plan is not None:
-        if data.plan not in ("free", "pro", "team"):
+        if data.plan not in ("free", "pro", "team", "quality", "enterprise"):
             raise HTTPException(status_code=400, detail="Invalid plan value")
         update_fields["plan"] = data.plan
     if data.role is not None:

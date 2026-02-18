@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 
 from dependencies import get_current_user
+from middleware.plan_gate import plan_gate
 from database import get_supabase
 from schemas.investigations import (
     InvestigationCreate,
@@ -202,6 +203,7 @@ def _validate_status_transition(
 async def create_investigation(
     data: InvestigationCreate,
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("investigations.create")),
 ):
     """Create a new 8D investigation."""
     db = get_supabase()
@@ -271,6 +273,7 @@ async def create_investigation(
 @router.get("", response_model=list[InvestigationListItem])
 async def list_investigations(
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("investigations.view")),
     status_filter: str = Query(None, alias="status"),
     severity_filter: str = Query(None, alias="severity"),
 ):
@@ -299,6 +302,7 @@ async def list_investigations(
 async def get_investigation(
     investigation_id: str,
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("investigations.view")),
 ):
     """Get investigation detail (auth + team member check)."""
     db = get_supabase()
