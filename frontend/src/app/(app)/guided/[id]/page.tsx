@@ -5,6 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import ReactMarkdown from 'react-markdown';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   getGuidedSession,
   sendGuidedMessage,
@@ -57,7 +59,13 @@ function MessageBubble({ message }: { message: GuidedMessage }) {
         ))}
 
         {/* Message content */}
-        <div className="whitespace-pre-wrap">{message.content}</div>
+        {isUser ? (
+          <div className="whitespace-pre-wrap">{message.content}</div>
+        ) : (
+          <div className="prose prose-invert prose-sm max-w-none prose-headings:text-white prose-h2:text-base prose-h2:font-semibold prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-[#94A3B8] prose-h3:text-sm prose-h3:font-medium prose-h3:mt-3 prose-h3:mb-1 prose-li:text-[#94A3B8] prose-strong:text-white prose-p:my-1.5">
+            <ReactMarkdown>{message.content}</ReactMarkdown>
+          </div>
+        )}
 
         {/* Timestamp */}
         {message.timestamp && (
@@ -77,6 +85,7 @@ export default function GuidedInvestigationPage() {
   const params = useParams();
   const router = useRouter();
   const sessionId = params.id as string;
+  const { user, loading: authLoading } = useAuth();
 
   const [session, setSession] = useState<GuidedSession | null>(null);
   const [messages, setMessages] = useState<GuidedMessage[]>([]);
@@ -85,8 +94,16 @@ export default function GuidedInvestigationPage() {
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [summary, setSummary] = useState<string | null>(null);
+  const [copyLabel, setCopyLabel] = useState('Copy Results');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auth guard
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/');
+    }
+  }, [authLoading, user, router]);
 
   // Scroll to bottom on new messages
   const scrollToBottom = useCallback(() => {
@@ -97,13 +114,15 @@ export default function GuidedInvestigationPage() {
 
   // Load session
   useEffect(() => {
-    getGuidedSession(sessionId)
-      .then((s) => {
-        setSession(s);
-        setMessages(s.messages || []);
-      })
-      .catch((e) => setError(e.message));
-  }, [sessionId]);
+    if (!authLoading && user) {
+      getGuidedSession(sessionId)
+        .then((s) => {
+          setSession(s);
+          setMessages(s.messages || []);
+        })
+        .catch((e) => setError(e.message));
+    }
+  }, [sessionId, authLoading, user]);
 
   // Send message
   const handleSend = async () => {
@@ -159,6 +178,17 @@ export default function GuidedInvestigationPage() {
       handleSend();
     }
   };
+
+  // Auth guard early returns (after all hooks)
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-400" />
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   if (error && !session) {
     return (
@@ -222,15 +252,37 @@ export default function GuidedInvestigationPage() {
       {summary && (
         <div className="bg-brand-800 border border-success/30 mx-6 mt-4 rounded-lg p-4">
           <h3 className="text-sm font-bold text-success mb-2">Investigation Summary</h3>
-          <p className="text-sm text-text-primary whitespace-pre-wrap">{summary}</p>
+          <div className="text-sm text-text-primary prose prose-invert prose-sm max-w-none prose-headings:text-white prose-strong:text-white prose-li:text-[#94A3B8] prose-p:my-1.5">
+            <ReactMarkdown>{summary}</ReactMarkdown>
+          </div>
           <div className="mt-3 flex gap-2">
             <Button
               size="sm"
               variant="outline"
               className="text-xs"
-              onClick={() => router.push('/investigations/new')}
+              onClick={() => router.push(`/investigations/new?guided_session_id=${sessionId}`)}
             >
               Create 8D Investigation →
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-xs"
+              onClick={async () => {
+                const text = messages
+                  .filter(m => m.role === 'assistant')
+                  .map(m => m.content)
+                  .join('\n\n---\n\n');
+                try {
+                  await navigator.clipboard.writeText(text);
+                  setCopyLabel('✓ Copied!');
+                } catch {
+                  setCopyLabel('⚠ Copy failed');
+                }
+                setTimeout(() => setCopyLabel('Copy Results'), 2000);
+              }}
+            >
+              {copyLabel}
             </Button>
           </div>
         </div>
@@ -254,7 +306,7 @@ export default function GuidedInvestigationPage() {
       </div>
 
       {/* Input */}
-      {session.status === 'active' && (
+      {(session.status === 'active' || session.status === 'paused') && (
         <div className="border-t border-brand-600 px-6 py-4 shrink-0">
           <div className="flex gap-2">
             <Input

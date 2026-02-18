@@ -56,7 +56,7 @@ export interface GuidedSession {
   analysis_id?: string | null;
   session_state: Record<string, unknown>;
   messages: GuidedMessage[];
-  status: 'active' | 'completed' | 'abandoned';
+  status: 'active' | 'completed' | 'abandoned' | 'paused';
   created_at?: string | null;
   updated_at?: string | null;
 }
@@ -208,6 +208,19 @@ export async function completeGuidedSession(
     body: JSON.stringify(params || {}),
   });
   if (!response.ok) throw new Error('Failed to complete session');
+  return response.json();
+}
+
+// Pause session
+export async function pauseGuidedSession(
+  sessionId: string
+): Promise<{ success: boolean }> {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${API_URL}/v1/guided/${sessionId}/pause`, {
+    method: 'POST',
+    headers,
+  });
+  if (!response.ok) throw new Error('Failed to pause session');
   return response.json();
 }
 

@@ -3,13 +3,15 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Paperclip, Send, Pause, FileText } from 'lucide-react';
+import { Paperclip, Send, Pause, FileText, Check, Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
+import ReactMarkdown from 'react-markdown';
 import {
   sendGuidedMessage,
   startGuidedSession,
   completeGuidedSession,
+  pauseGuidedSession,
   uploadDefectPhoto,
   type GuidedMessageResponse,
 } from '@/lib/products';
@@ -186,9 +188,15 @@ function ChatBubble({
         )}
 
         {/* Content */}
-        <div className="text-sm whitespace-pre-wrap leading-relaxed">
-          {message.content}
-        </div>
+        {isUser ? (
+          <div className="text-sm whitespace-pre-wrap leading-relaxed">
+            {message.content}
+          </div>
+        ) : (
+          <div className="text-sm leading-relaxed prose prose-invert prose-sm max-w-none prose-headings:text-white prose-h2:text-base prose-h2:font-semibold prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-[#94A3B8] prose-h3:text-sm prose-h3:font-medium prose-h3:mt-3 prose-h3:mb-1 prose-li:text-[#94A3B8] prose-strong:text-white prose-p:my-1.5">
+            <ReactMarkdown>{message.content}</ReactMarkdown>
+          </div>
+        )}
 
         {/* Quick replies */}
         {message.quickReplies && message.quickReplies.length > 0 && onQuickReply && (
@@ -212,9 +220,19 @@ function ChatBubble({
 function ResultsCard({
   onOpenInvestigation,
   showInvestigationButton,
+  rootCause,
+  confidence,
+  actions,
+  onExport,
+  exportDone,
 }: {
   onOpenInvestigation: () => void;
   showInvestigationButton: boolean;
+  rootCause: string;
+  confidence: number | null;
+  actions: string[];
+  onExport: () => void;
+  exportDone: boolean;
 }) {
   return (
     <div className="bg-brand-800 border border-accent-500/30 rounded-lg p-5 w-full">
@@ -229,27 +247,31 @@ function ResultsCard({
             Primary Root Cause
           </p>
           <p className="text-white">
-            Moisture degradation of cyanoacrylate bond in high-humidity environment
+            {rootCause || 'See summary above for root cause analysis.'}
           </p>
         </div>
 
-        <div>
-          <p className="text-[#64748B] text-xs uppercase tracking-wider mb-1">
-            Confidence
-          </p>
-          <p className="text-accent-500 font-mono font-bold">87%</p>
-        </div>
+        {confidence !== null && (
+          <div>
+            <p className="text-[#64748B] text-xs uppercase tracking-wider mb-1">
+              Confidence
+            </p>
+            <p className="text-accent-500 font-mono font-bold">{confidence}%</p>
+          </div>
+        )}
 
-        <div>
-          <p className="text-[#64748B] text-xs uppercase tracking-wider mb-1">
-            Immediate Actions
-          </p>
-          <ul className="text-[#94A3B8] list-disc list-inside space-y-1">
-            <li>Switch to rubber-toughened cyanoacrylate (Loctite 480) for humidity resistance</li>
-            <li>Apply SF 770 primer for low-surface-energy substrates</li>
-            <li>Control application environment to &lt;50% RH</li>
-          </ul>
-        </div>
+        {actions.length > 0 && (
+          <div>
+            <p className="text-[#64748B] text-xs uppercase tracking-wider mb-1">
+              Immediate Actions
+            </p>
+            <ul className="text-[#94A3B8] list-disc list-inside space-y-1">
+              {actions.map((a, i) => (
+                <li key={i}>{a}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-3 mt-4 pt-3 border-t border-[#1F2937]">
@@ -264,11 +286,19 @@ function ResultsCard({
         <Button
           variant="outline"
           className="border-[#374151] text-[#94A3B8] hover:text-white text-sm"
-          onClick={() => {
-            // TODO: export results
-          }}
+          onClick={onExport}
         >
-          Export Results
+          {exportDone ? (
+            <>
+              <Check className="w-4 h-4 mr-1" />
+              Copied!
+            </>
+          ) : (
+            <>
+              <Copy className="w-4 h-4 mr-1" />
+              Copy Results
+            </>
+          )}
         </Button>
       </div>
     </div>
@@ -291,6 +321,12 @@ export function GuidedInvestigation() {
   const [turnCount, setTurnCount] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [useApi, setUseApi] = useState(true);
+  const [exportDone, setExportDone] = useState(false);
+
+  // Completion data (Patch 2 — dynamic summary card)
+  const [completionRootCause, setCompletionRootCause] = useState('');
+  const [completionConfidence, setCompletionConfidence] = useState<number | null>(null);
+  const [completionActions, setCompletionActions] = useState<string[]>([]);
 
   // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -405,6 +441,18 @@ export function GuidedInvestigation() {
         setMessages((prev) => [...prev, mockResponse]);
       }
 
+      // Warn before turn limit (Patch 0B)
+      if (newTurn === maxTurns - 2 && isFree) {
+        const warningMsg: ChatMessage = {
+          id: `system-warning-${Date.now()}`,
+          role: 'assistant',
+          content: `⚠️ You have ${maxTurns - newTurn} turns remaining on the free tier. I'd recommend we wrap up the investigation — I can generate a summary of our findings now, or you can continue for ${maxTurns - newTurn} more turns.`,
+          timestamp: new Date().toISOString(),
+          quickReplies: ['Generate summary now', 'Continue investigating'],
+        };
+        setMessages(prev => [...prev, warningMsg]);
+      }
+
       // Check completion
       if (newTurn >= maxTurns) {
         await handleComplete();
@@ -477,36 +525,119 @@ export function GuidedInvestigation() {
     }
   };
 
+  // Helper: parse root cause / actions from last assistant message
+  const extractFromMessages = useCallback((msgs: ChatMessage[]) => {
+    const assistantMsgs = msgs.filter(m => m.role === 'assistant');
+    if (assistantMsgs.length === 0) return;
+    const last = assistantMsgs[assistantMsgs.length - 1].content;
+
+    // Try to extract a root cause sentence
+    const rcMatch = last.match(/(?:root cause|primary cause|systemic root cause)[:\s]*([^\n.]+)/i);
+    if (rcMatch) setCompletionRootCause(rcMatch[1].trim());
+
+    // Try to extract confidence
+    const confMatch = last.match(/(?:confidence)[:\s]*(\d{1,3})%/i);
+    if (confMatch) setCompletionConfidence(parseInt(confMatch[1], 10));
+
+    // Try to extract action items (lines starting with - or numbered)
+    const actionLines = last.match(/^[\s]*[-•*\d]+[.)]\s+(.+)/gm);
+    if (actionLines && actionLines.length > 0) {
+      setCompletionActions(actionLines.slice(0, 5).map(l => l.replace(/^[\s]*[-•*\d]+[.)]\s+/, '').trim()));
+    }
+  }, []);
+
   // Complete session
   const handleComplete = async () => {
     setIsCompleted(true);
 
     if (useApi && sessionId) {
       try {
-        await completeGuidedSession(sessionId);
+        const result = await completeGuidedSession(sessionId);
+        // Try to extract structured data from the summary
+        if (result.summary) {
+          // Parse root cause from summary
+          const rcMatch = result.summary.match(/(?:root cause|primary cause)[:\s]*([^\n.]+)/i);
+          if (rcMatch) setCompletionRootCause(rcMatch[1].trim());
+
+          // Parse confidence from summary
+          const confMatch = result.summary.match(/(?:confidence)[:\s]*(\d{1,3})%/i);
+          if (confMatch) setCompletionConfidence(parseInt(confMatch[1], 10));
+
+          // Parse actions from summary
+          const actionLines = result.summary.match(/^[\s]*[-•*\d]+[.)]\s+(.+)/gm);
+          if (actionLines && actionLines.length > 0) {
+            setCompletionActions(actionLines.slice(0, 5).map(l => l.replace(/^[\s]*[-•*\d]+[.)]\s+/, '').trim()));
+          }
+        }
       } catch {
-        // Silent fail — UI still shows completion
+        // Fall back to parsing from conversation messages
+        extractFromMessages(messages);
       }
+    } else {
+      extractFromMessages(messages);
     }
   };
 
-  // Pause & Save
-  const handlePauseAndSave = () => {
-    // Save session state to localStorage
-    try {
-      localStorage.setItem(
-        'gravix_guided_session',
-        JSON.stringify({
-          sessionId,
-          messages,
-          turnCount,
-          savedAt: new Date().toISOString(),
-        })
-      );
-    } catch {
-      // noop
+  // Pause & Save (Patch 0C — call backend)
+  const handlePauseAndSave = async () => {
+    if (useApi && sessionId) {
+      try {
+        await pauseGuidedSession(sessionId);
+      } catch {
+        // Fall back to localStorage if backend fails
+        try {
+          localStorage.setItem(
+            'gravix_guided_session',
+            JSON.stringify({
+              sessionId,
+              messages,
+              turnCount,
+              savedAt: new Date().toISOString(),
+            })
+          );
+        } catch {
+          // noop
+        }
+      }
+    } else {
+      try {
+        localStorage.setItem(
+          'gravix_guided_session',
+          JSON.stringify({
+            sessionId,
+            messages,
+            turnCount,
+            savedAt: new Date().toISOString(),
+          })
+        );
+      } catch {
+        // noop
+      }
     }
     router.push('/dashboard');
+  };
+
+  // Patch 4: Copy results to clipboard
+  const handleExportResults = async () => {
+    const text = messages
+      .filter(m => m.role === 'assistant')
+      .map(m => m.content)
+      .join('\n\n---\n\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      setExportDone(true);
+      setTimeout(() => setExportDone(false), 2000);
+    } catch {
+      // Fallback for non-secure contexts
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      setExportDone(true);
+      setTimeout(() => setExportDone(false), 2000);
+    }
   };
 
   // Quick reply handler
@@ -557,7 +688,18 @@ export function GuidedInvestigation() {
         {isCompleted && (
           <ResultsCard
             showInvestigationButton={isQualityPlus}
-            onOpenInvestigation={() => router.push('/investigations/new')}
+            onOpenInvestigation={() =>
+              router.push(
+                sessionId
+                  ? `/investigations/new?guided_session_id=${sessionId}`
+                  : '/investigations/new'
+              )
+            }
+            rootCause={completionRootCause}
+            confidence={completionConfidence}
+            actions={completionActions}
+            onExport={handleExportResults}
+            exportDone={exportDone}
           />
         )}
 
@@ -609,7 +751,7 @@ export function GuidedInvestigation() {
         </div>
       )}
 
-      {/* Bottom Bar — Turn counter + Pause */}
+      {/* Bottom Bar — Turn counter + Complete + Pause */}
       <div className="border-t border-[#1F2937] px-4 md:px-8 py-2 bg-brand-800/30 flex items-center justify-between shrink-0">
         <div>
           {isFree && !isCompleted && (
@@ -620,15 +762,26 @@ export function GuidedInvestigation() {
           )}
         </div>
 
-        {!isCompleted && (
-          <button
-            onClick={handlePauseAndSave}
-            className="flex items-center gap-1.5 text-xs text-[#64748B] hover:text-[#94A3B8] transition-colors"
-          >
-            <Pause className="w-3.5 h-3.5" />
-            Pause & Save
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {!isCompleted && turnCount >= 3 && (
+            <Button
+              onClick={handleComplete}
+              size="sm"
+              className="bg-green-600 hover:bg-green-700 text-white text-xs"
+            >
+              ✓ Complete Investigation
+            </Button>
+          )}
+          {!isCompleted && (
+            <button
+              onClick={handlePauseAndSave}
+              className="flex items-center gap-1.5 text-xs text-[#64748B] hover:text-[#94A3B8] transition-colors"
+            >
+              <Pause className="w-3.5 h-3.5" />
+              Pause & Save
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
