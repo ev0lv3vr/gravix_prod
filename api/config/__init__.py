@@ -1,4 +1,9 @@
-"""Application configuration using Pydantic Settings."""
+"""Application configuration using Pydantic Settings.
+
+This file was originally api/config.py. Moved into api/config/__init__.py
+so that config/ can be a Python package (housing plan_features.py)
+while keeping all existing `from config import settings` imports working.
+"""
 
 from pydantic_settings import BaseSettings
 from typing import Dict, Any, Optional, List
@@ -53,6 +58,7 @@ class Settings(BaseSettings):
         "free": {"analyses": 5, "specs": 5},
         "pro": {"analyses": 999999, "specs": 999999},
         "team": {"analyses": 999999, "specs": 999999},
+        "quality": {"analyses": 999999, "specs": 999999},
         "enterprise": {"analyses": 999999, "specs": 999999},
     }
 

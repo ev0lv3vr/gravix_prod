@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
 
 from dependencies import get_current_user
+from middleware.plan_gate import plan_gate
 from database import get_supabase
 from services.pdf_generator import generate_analysis_pdf, generate_spec_pdf
 
@@ -18,6 +19,7 @@ router = APIRouter(prefix="/reports", tags=["reports"])
 async def download_analysis_pdf(
     analysis_id: str,
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("history.export_pdf")),
 ):
     """Generate and download a PDF report for a failure analysis."""
     db = get_supabase()
@@ -52,6 +54,7 @@ async def download_analysis_pdf(
 async def download_spec_pdf(
     spec_id: str,
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("history.export_pdf")),
 ):
     """Generate and download a PDF report for a spec request."""
     db = get_supabase()

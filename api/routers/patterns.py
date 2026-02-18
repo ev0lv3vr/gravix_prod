@@ -12,6 +12,7 @@ from collections import defaultdict
 from fastapi import APIRouter, Depends, HTTPException, status, Header, Query
 
 from dependencies import get_current_user
+from middleware.plan_gate import plan_gate
 from database import get_supabase
 from config import settings
 from schemas.patterns import (
@@ -214,6 +215,7 @@ async def detect_patterns(
 async def list_pattern_alerts(
     status_filter: str = Query(None, alias="status"),
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("intelligence.alerts")),
 ):
     """List pattern alerts. Defaults to active alerts."""
     db = get_supabase()

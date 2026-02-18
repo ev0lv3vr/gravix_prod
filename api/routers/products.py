@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Query
 
 from dependencies import get_current_user
+from middleware.plan_gate import plan_gate
 from database import get_supabase
 from schemas.products import (
     ProductSpecificationCreate,
@@ -37,6 +38,7 @@ router = APIRouter(prefix="/v1/products", tags=["products"])
 async def extract_tds(
     file: UploadFile = File(...),
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("products.extract_tds")),
 ):
     """Upload a TDS PDF and extract structured product specification data via Claude.
     

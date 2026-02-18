@@ -133,6 +133,7 @@ export const STRENGTH_OPTIONS = [
 export const PLAN_LIMITS = {
   free: { analyses: 5, specs: 5 },
   pro: { analyses: 999999, specs: 999999 },
+  quality: { analyses: 999999, specs: 999999 },
   team: { analyses: 999999, specs: 999999 },
   enterprise: { analyses: 999999, specs: 999999 },
 };

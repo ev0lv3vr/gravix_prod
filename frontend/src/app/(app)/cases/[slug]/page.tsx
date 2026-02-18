@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Lock } from 'lucide-react';
+import { usePlanGate } from '@/hooks/usePlanGate';
 
 // Mock case data (in real app, fetched by slug)
 const CASE_DATA: Record<string, {
@@ -53,6 +54,27 @@ export default function CaseDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
   const caseData = CASE_DATA[slug];
+  const { allowed: canViewDetails, requiredPlan } = usePlanGate('cases.details');
+
+  if (!canViewDetails) {
+    return (
+      <div className="container mx-auto px-6 py-10">
+        <nav className="flex items-center gap-2 text-sm text-[#64748B] mb-8">
+          <Link href="/cases" className="hover:text-white transition-colors">Case Library</Link>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-[#94A3B8]">Case Details</span>
+        </nav>
+        <div className="max-w-md mx-auto text-center py-20">
+          <Lock className="w-12 h-12 text-accent-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-white mb-2">Full Case Details Require {requiredPlan === 'pro' ? 'Pro' : 'an Upgrade'}</h2>
+          <p className="text-sm text-[#94A3B8] mb-6">Upgrade to access detailed root cause analyses, solutions, and lessons learned from real-world cases.</p>
+          <Link href="/pricing" className="inline-block bg-accent-500 hover:bg-accent-600 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+            View Plans →
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (!caseData) {
     return (

@@ -3,8 +3,10 @@
 import logging
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 
+from dependencies import get_current_user
+from middleware.plan_gate import plan_gate
 from database import get_supabase
 from schemas.case import CaseListItem, CaseDetail
 
@@ -46,7 +48,11 @@ async def list_cases(
 
 
 @router.get("/{case_id}", response_model=CaseDetail)
-async def get_case(case_id: str):
+async def get_case(
+    case_id: str,
+    user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("cases.details")),
+):
     """Get a specific case by ID or slug."""
     db = get_supabase()
 
