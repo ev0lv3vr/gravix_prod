@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePlan } from '@/contexts/PlanContext';
 
 interface UsageData {
   used: number;
@@ -10,121 +10,54 @@ interface UsageData {
   isExhausted: boolean;
 }
 
-const FREE_TIER_LIMIT = 5;
-
+/**
+ * Usage tracking hook — reads from PlanContext (backend-backed /users/me/usage).
+ *
+ * Free-tier users see their real server-side counts.
+ * Paid users (pro/quality/enterprise) and admins always get { isExhausted: false }.
+ *
+ * NOTE: incrementUsage() is kept for backwards compat but is now a no-op.
+ * The backend increments on /analyze and /specify calls. PlanContext polls
+ * /users/me/usage every 60s to refresh.
+ */
 export function useUsageTracking(): UsageData {
   const { user } = useAuth();
-  const [used, setUsed] = useState(0);
+  const { plan, usage, isAdmin } = usePlan();
 
-  useEffect(() => {
-    if (!user) {
-      // Anonymous user: use localStorage
-      const storageKey = 'gravix_usage';
-      const stored = localStorage.getItem(storageKey);
-      
-      if (stored) {
-        try {
-          const data = JSON.parse(stored);
-          const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
-          
-          if (data.month === currentMonth) {
-            setUsed(data.count || 0);
-          } else {
-            // New month, reset
-            localStorage.setItem(
-              storageKey,
-              JSON.stringify({ month: currentMonth, count: 0 })
-            );
-            setUsed(0);
-          }
-        } catch {
-          setUsed(0);
-        }
-      } else {
-        // Initialize
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        localStorage.setItem(
-          storageKey,
-          JSON.stringify({ month: currentMonth, count: 0 })
-        );
-        setUsed(0);
-      }
-    } else {
-      // Authenticated user: fetch from Supabase
-      // TODO: Implement Supabase usage tracking
-      // For now, use localStorage as fallback
-      const storageKey = `gravix_usage_${user.id}`;
-      const stored = localStorage.getItem(storageKey);
-      
-      if (stored) {
-        try {
-          const data = JSON.parse(stored);
-          const currentMonth = new Date().toISOString().slice(0, 7);
-          
-          if (data.month === currentMonth) {
-            setUsed(data.count || 0);
-          } else {
-            localStorage.setItem(
-              storageKey,
-              JSON.stringify({ month: currentMonth, count: 0 })
-            );
-            setUsed(0);
-          }
-        } catch {
-          setUsed(0);
-        }
-      } else {
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        localStorage.setItem(
-          storageKey,
-          JSON.stringify({ month: currentMonth, count: 0 })
-        );
-        setUsed(0);
-      }
-    }
-  }, [user]);
+  // Not logged in — can't track, defer to auth gating
+  if (!user) {
+    return { used: 0, limit: 5, remaining: 5, isExhausted: false };
+  }
 
-  const remaining = Math.max(0, FREE_TIER_LIMIT - used);
-  const isExhausted = used >= FREE_TIER_LIMIT;
+  // Admins and paid plans — unlimited
+  if (isAdmin || plan !== 'free') {
+    return { used: 0, limit: 999999, remaining: 999999, isExhausted: false };
+  }
 
-  return {
-    used,
-    limit: FREE_TIER_LIMIT,
-    remaining,
-    isExhausted,
-  };
+  // Free tier — read from backend via PlanContext
+  if (usage) {
+    const used = usage.analyses_used ?? 0;
+    const limit = usage.analyses_limit ?? 5;
+    const remaining = Math.max(0, limit - used);
+    return {
+      used,
+      limit,
+      remaining,
+      isExhausted: used >= limit,
+    };
+  }
+
+  // Usage not loaded yet — default to non-exhausted so we don't block the form
+  return { used: 0, limit: 5, remaining: 5, isExhausted: false };
 }
 
-export function incrementUsage(user: { id: string } | null): void {
-  const storageKey = user ? `gravix_usage_${user.id}` : 'gravix_usage';
-  const stored = localStorage.getItem(storageKey);
-  const currentMonth = new Date().toISOString().slice(0, 7);
-
-  if (stored) {
-    try {
-      const data = JSON.parse(stored);
-      if (data.month === currentMonth) {
-        localStorage.setItem(
-          storageKey,
-          JSON.stringify({ month: currentMonth, count: (data.count || 0) + 1 })
-        );
-      } else {
-        // New month
-        localStorage.setItem(
-          storageKey,
-          JSON.stringify({ month: currentMonth, count: 1 })
-        );
-      }
-    } catch {
-      localStorage.setItem(
-        storageKey,
-        JSON.stringify({ month: currentMonth, count: 1 })
-      );
-    }
-  } else {
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify({ month: currentMonth, count: 1 })
-    );
-  }
+/**
+ * @deprecated No-op. Backend increments usage on /analyze and /specify.
+ * PlanContext polls /users/me/usage every 60s for fresh counts.
+ * Kept for backwards compat — callers can remove this.
+ */
+export function incrementUsage(_user: { id: string } | null): void {
+  void _user; // suppress unused warning
+  // No-op — backend handles incrementing.
+  // PlanContext.refreshPlan() will pick up the new count on next poll.
 }

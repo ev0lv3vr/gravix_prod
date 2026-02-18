@@ -29,22 +29,28 @@ async def list_cases(
     response.headers["Cache-Control"] = "public, max-age=120"
     
     db = get_supabase()
-    query = db.table("cases").select("*")
 
-    if material_category:
-        query = query.eq("material_category", material_category)
-    if failure_mode:
-        query = query.eq("failure_mode", failure_mode)
-    if industry:
-        query = query.eq("industry", industry)
+    try:
+        query = db.table("cases").select("*")
 
-    result = (
-        query.order("created_at", desc=True)
-        .range(offset, offset + limit - 1)
-        .execute()
-    )
+        if material_category:
+            query = query.eq("material_category", material_category)
+        if failure_mode:
+            query = query.eq("failure_mode", failure_mode)
+        if industry:
+            query = query.eq("industry", industry)
 
-    return [CaseListItem(**item) for item in result.data]
+        result = (
+            query.order("created_at", desc=True)
+            .range(offset, offset + limit - 1)
+            .execute()
+        )
+
+        return [CaseListItem(**item) for item in result.data]
+    except Exception as e:
+        # Guard: cases table may not exist yet — return empty list instead of 500
+        logger.warning(f"Cases query failed (table may not exist): {e}")
+        return []
 
 
 @router.get("/{case_id}", response_model=CaseDetail)
@@ -56,12 +62,17 @@ async def get_case(
     """Get a specific case by ID or slug."""
     db = get_supabase()
 
-    # Try by ID first
-    result = db.table("cases").select("*").eq("id", case_id).execute()
+    try:
+        # Try by ID first
+        result = db.table("cases").select("*").eq("id", case_id).execute()
 
-    # If not found, try by slug
-    if not result.data:
-        result = db.table("cases").select("*").eq("slug", case_id).execute()
+        # If not found, try by slug
+        if not result.data:
+            result = db.table("cases").select("*").eq("slug", case_id).execute()
+    except Exception as e:
+        # Guard: cases table may not exist yet
+        logger.warning(f"Cases detail query failed (table may not exist): {e}")
+        raise HTTPException(status_code=404, detail="Case library is not yet available")
 
     if not result.data:
         raise HTTPException(status_code=404, detail="Case not found")
