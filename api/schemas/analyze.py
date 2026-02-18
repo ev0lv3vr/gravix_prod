@@ -1,7 +1,11 @@
-"""Schemas for failure analysis."""
+"""Schemas for failure analysis.
 
-from pydantic import BaseModel, Field
-from typing import Optional, List
+Sprint 4 (Form Field Expansion): Updated to accept expanded multi-select fields
+from the frontend while maintaining backward compatibility with legacy payloads.
+"""
+
+from pydantic import BaseModel, Field, model_validator
+from typing import Optional, List, Union
 from datetime import datetime
 
 
@@ -24,28 +28,52 @@ class FailureAnalysisCreate(BaseModel):
     material_category: str
     material_subcategory: Optional[str] = None
     material_product: Optional[str] = None
-    failure_mode: str
+    failure_mode: str  # expanded: now includes "unknown_visual" option
     failure_description: Optional[str] = None
     substrate_a: Optional[str] = None
     substrate_b: Optional[str] = None
     # New structured fields (optional)
-    industry: Optional[str] = None
+    industry: Optional[str] = None  # expanded option list
     production_impact: Optional[str] = None
 
     temperature_range: Optional[str] = None
     humidity: Optional[str] = None
-    chemical_exposure: Optional[str] = None
+    # chemical_exposure: accept both str and list[str] for backward compat
+    chemical_exposure: Optional[Union[str, List[str]]] = None
+    chemical_exposure_detail: Optional[List[str]] = None  # new: ["chem:brake_fluid", ...]
+    chemical_exposure_other: Optional[str] = None  # new: free-form
     time_to_failure: Optional[str] = None
     application_method: Optional[str] = None
-    surface_preparation: Optional[str] = None
+    # surface_preparation: accept both str and list[str] for backward compat
+    surface_preparation: Optional[Union[str, List[str]]] = None
+    surface_prep_detail: Optional[str] = None  # new: free-form detail
     cure_conditions: Optional[str] = None
     photos: Optional[List[str]] = None
     test_results: Optional[str] = None
     additional_notes: Optional[str] = None
+    # Environment: accept expanded list of env:* tags
+    environment: Optional[List[str]] = None  # new: ["env:high_humidity", "env:salt_spray", ...]
+    sterilization_methods: Optional[List[str]] = None  # new: ["sterilization:autoclave", ...]
 
     # Sprint 11: AI-Forward fields
     product_name: Optional[str] = None
     defect_photos: Optional[List[str]] = None
+
+    # Backward compat: accept legacy field name surface_prep → surface_preparation
+    surface_prep: Optional[str] = None
+
+    @model_validator(mode="after")
+    def _backward_compat(self):
+        """Coerce legacy single-value fields into the new format."""
+        # surface_prep → surface_preparation
+        if self.surface_prep and not self.surface_preparation:
+            self.surface_preparation = self.surface_prep
+        # Coerce str → list for multi-select fields
+        if isinstance(self.surface_preparation, str):
+            self.surface_preparation = [self.surface_preparation]
+        if isinstance(self.chemical_exposure, str):
+            self.chemical_exposure = [self.chemical_exposure]
+        return self
 
 
 class VisualAnalysisResult(BaseModel):
@@ -78,14 +106,19 @@ class FailureAnalysisResponse(BaseModel):
 
     temperature_range: Optional[str] = None
     humidity: Optional[str] = None
-    chemical_exposure: Optional[str] = None
+    chemical_exposure: Optional[Union[str, List[str]]] = None
+    chemical_exposure_detail: Optional[List[str]] = None
+    chemical_exposure_other: Optional[str] = None
     time_to_failure: Optional[str] = None
     application_method: Optional[str] = None
-    surface_preparation: Optional[str] = None
+    surface_preparation: Optional[Union[str, List[str]]] = None
+    surface_prep_detail: Optional[str] = None
     cure_conditions: Optional[str] = None
     photos: Optional[List[str]] = None
     test_results: Optional[str] = None
     additional_notes: Optional[str] = None
+    environment: Optional[List[str]] = None
+    sterilization_methods: Optional[List[str]] = None
     root_causes: List[RootCause] = []
     contributing_factors: List[str] = []
     recommendations: List[Recommendation] = []
