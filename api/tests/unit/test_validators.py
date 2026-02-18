@@ -1,4 +1,4 @@
-"""Unit tests for Pydantic schemas (analyze + feedback)."""
+"""Unit tests for Pydantic schemas (analyze + feedback + specify)."""
 
 import pytest
 from pydantic import ValidationError
@@ -8,6 +8,12 @@ from schemas.analyze import (
     FailureAnalysisResponse,
     RootCause,
     Recommendation,
+)
+from schemas.specify import (
+    SpecRequestCreate,
+    BondRequirements,
+    EnvironmentalConditions,
+    CureConstraints,
 )
 from schemas.feedback import (
     FeedbackCreate,
@@ -473,3 +479,363 @@ class TestFailureAnalysisResponse:
         )
         assert resp.status == "completed"
         assert len(resp.root_causes) == 1
+
+
+# =====================================================================
+# Sprint 4: Form Field Expansion — Schema backward compatibility tests
+# =====================================================================
+
+class TestFailureAnalysisFieldExpansion:
+    """Sprint 4: New multi-select fields + backward compat."""
+
+    def test_surface_prep_as_string_coerced_to_list(self):
+        obj = FailureAnalysisCreate(
+            material_category="epoxy",
+            failure_mode="delamination",
+            surface_preparation="grit blast + solvent wipe",
+        )
+        assert obj.surface_preparation == ["grit blast + solvent wipe"]
+
+    def test_surface_prep_as_list_accepted(self):
+        obj = FailureAnalysisCreate(
+            material_category="epoxy",
+            failure_mode="delamination",
+            surface_preparation=["prep:solvent_wipe", "prep:abrasion"],
+        )
+        assert obj.surface_preparation == ["prep:solvent_wipe", "prep:abrasion"]
+
+    def test_legacy_surface_prep_field_coerced(self):
+        obj = FailureAnalysisCreate(
+            material_category="epoxy",
+            failure_mode="delamination",
+            surface_prep="IPA wipe",
+        )
+        assert obj.surface_preparation == ["IPA wipe"]
+
+    def test_chemical_exposure_str_coerced_to_list(self):
+        obj = FailureAnalysisCreate(
+            material_category="epoxy",
+            failure_mode="cracking",
+            chemical_exposure="MEK",
+        )
+        assert obj.chemical_exposure == ["MEK"]
+
+    def test_chemical_exposure_list_accepted(self):
+        obj = FailureAnalysisCreate(
+            material_category="epoxy",
+            failure_mode="cracking",
+            chemical_exposure=["env:chemical", "env:salt_spray"],
+        )
+        assert obj.chemical_exposure == ["env:chemical", "env:salt_spray"]
+
+    def test_new_chemical_detail_fields(self):
+        obj = FailureAnalysisCreate(
+            material_category="epoxy",
+            failure_mode="cracking",
+            chemical_exposure_detail=["chem:brake_fluid", "chem:mek"],
+            chemical_exposure_other="proprietary solvent X",
+        )
+        assert len(obj.chemical_exposure_detail) == 2
+        assert obj.chemical_exposure_other == "proprietary solvent X"
+
+    def test_sterilization_methods(self):
+        obj = FailureAnalysisCreate(
+            material_category="epoxy",
+            failure_mode="cracking",
+            sterilization_methods=["sterilization:autoclave", "sterilization:eto"],
+        )
+        assert len(obj.sterilization_methods) == 2
+
+    def test_surface_prep_detail(self):
+        obj = FailureAnalysisCreate(
+            material_category="epoxy",
+            failure_mode="cracking",
+            surface_prep_detail="IPA wipe followed by 5 min air dry",
+        )
+        assert obj.surface_prep_detail == "IPA wipe followed by 5 min air dry"
+
+    def test_environment_list(self):
+        obj = FailureAnalysisCreate(
+            material_category="epoxy",
+            failure_mode="cracking",
+            environment=["env:high_humidity", "env:thermal_cycling"],
+        )
+        assert len(obj.environment) == 2
+
+    def test_unknown_visual_failure_mode(self):
+        obj = FailureAnalysisCreate(
+            material_category="epoxy",
+            failure_mode="unknown_visual",
+        )
+        assert obj.failure_mode == "unknown_visual"
+
+
+class TestSpecRequestFieldExpansion:
+    """Sprint 4: Spec engine schema expansion + backward compat."""
+
+    def test_minimal_valid(self):
+        obj = SpecRequestCreate(
+            material_category="adhesive",
+            substrate_a="aluminum",
+            substrate_b="steel",
+        )
+        assert obj.substrate_a == "aluminum"
+
+    def test_bond_requirements_load_types(self):
+        obj = SpecRequestCreate(
+            material_category="adhesive",
+            substrate_a="aluminum",
+            substrate_b="steel",
+            bond_requirements=BondRequirements(
+                load_types=["load:shear", "load:peel", "load:vibration_fatigue"],
+            ),
+        )
+        assert len(obj.bond_requirements.load_types) == 3
+
+    def test_bond_requirements_legacy_load_type_coerced(self):
+        obj = SpecRequestCreate(
+            material_category="adhesive",
+            substrate_a="aluminum",
+            substrate_b="steel",
+            bond_requirements=BondRequirements(
+                load_type="structural",
+            ),
+        )
+        assert obj.bond_requirements.load_types == ["structural"]
+
+    def test_bond_requirements_gap_type(self):
+        obj = SpecRequestCreate(
+            material_category="adhesive",
+            substrate_a="aluminum",
+            substrate_b="steel",
+            bond_requirements=BondRequirements(
+                gap_fill="2.5mm",
+                gap_type="gap_type:structural",
+            ),
+        )
+        assert obj.bond_requirements.gap_type == "gap_type:structural"
+
+    def test_env_conditions_expanded(self):
+        obj = SpecRequestCreate(
+            material_category="adhesive",
+            substrate_a="aluminum",
+            substrate_b="steel",
+            environment=EnvironmentalConditions(
+                conditions=["env:high_humidity", "env:salt_spray", "env:chemical"],
+                chemical_exposure_detail=["chem:brake_fluid", "chem:mek"],
+                chemical_exposure_other="custom solvent",
+                sterilization_methods=["sterilization:autoclave"],
+            ),
+        )
+        assert len(obj.environment.conditions) == 3
+        assert len(obj.environment.chemical_exposure_detail) == 2
+        assert obj.environment.chemical_exposure_other == "custom solvent"
+        assert len(obj.environment.sterilization_methods) == 1
+
+    def test_env_chemical_exposure_str_coerced(self):
+        env = EnvironmentalConditions(chemical_exposure="jet fuel")
+        assert env.chemical_exposure == ["jet fuel"]
+
+    def test_cure_constraints_expanded(self):
+        obj = SpecRequestCreate(
+            material_category="adhesive",
+            substrate_a="aluminum",
+            substrate_b="steel",
+            cure_constraints=CureConstraints(
+                process_capabilities=[
+                    "cure_constraint:oven_available",
+                    "cure_constraint:primer_ok",
+                    "cure_constraint:two_part_ok",
+                ],
+                max_cure_temp_c=80,
+                uv_shadow_areas=True,
+            ),
+        )
+        assert len(obj.cure_constraints.process_capabilities) == 3
+        assert obj.cure_constraints.max_cure_temp_c == 80
+        assert obj.cure_constraints.uv_shadow_areas is True
+
+    def test_cure_constraints_legacy_coerced(self):
+        cure = CureConstraints(cure_constraint="room_temp")
+        assert cure.process_capabilities == ["room_temp"]
+
+    def test_product_considered_field(self):
+        obj = SpecRequestCreate(
+            material_category="adhesive",
+            substrate_a="aluminum",
+            substrate_b="steel",
+            product_considered="Loctite 480",
+        )
+        assert obj.product_considered == "Loctite 480"
+
+
+# =====================================================================
+# Sprint 4: Prompt builder tests
+# =====================================================================
+
+class TestSpecEnginePromptBuilder:
+    """Sprint 4: Verify expanded prompt builder output."""
+
+    def test_load_types_in_prompt(self):
+        from prompts.spec_engine import build_user_prompt
+        data = {
+            "material_category": "adhesive",
+            "substrate_a": "aluminum",
+            "substrate_b": "steel",
+            "bond_requirements": {
+                "load_types": ["load:shear", "load:peel", "load:vibration_fatigue"],
+            },
+        }
+        prompt = build_user_prompt(data)
+        assert "Shear" in prompt
+        assert "Peel" in prompt
+        assert "Vibration / Fatigue" in prompt
+
+    def test_gap_type_combined_in_prompt(self):
+        from prompts.spec_engine import build_user_prompt
+        data = {
+            "material_category": "adhesive",
+            "substrate_a": "aluminum",
+            "substrate_b": "steel",
+            "bond_requirements": {
+                "gap_fill": "2.5mm",
+                "gap_type": "gap_type:structural",
+            },
+        }
+        prompt = build_user_prompt(data)
+        assert "2.5mm" in prompt
+        assert "Structural gap fill" in prompt
+
+    def test_cure_constraints_in_prompt(self):
+        from prompts.spec_engine import build_user_prompt
+        data = {
+            "material_category": "adhesive",
+            "substrate_a": "aluminum",
+            "substrate_b": "steel",
+            "cure_constraints": {
+                "process_capabilities": [
+                    "cure_constraint:oven_available",
+                    "cure_constraint:two_part_ok",
+                ],
+                "max_cure_temp_c": 80,
+                "uv_shadow_areas": True,
+            },
+        }
+        prompt = build_user_prompt(data)
+        assert "Oven / heat available" in prompt
+        assert "Two-part mixing OK" in prompt
+        assert "80°C" in prompt
+        assert "shadow" in prompt.lower()
+
+    def test_chemical_detail_in_prompt(self):
+        from prompts.spec_engine import build_user_prompt
+        data = {
+            "material_category": "adhesive",
+            "substrate_a": "aluminum",
+            "substrate_b": "steel",
+            "environment": {
+                "chemical_exposure_detail": ["chem:brake_fluid", "chem:mek"],
+                "chemical_exposure_other": "proprietary solvent",
+            },
+        }
+        prompt = build_user_prompt(data)
+        assert "Brake fluid" in prompt
+        assert "MEK" in prompt
+        assert "proprietary solvent" in prompt
+
+    def test_sterilization_in_prompt(self):
+        from prompts.spec_engine import build_user_prompt
+        data = {
+            "material_category": "adhesive",
+            "substrate_a": "aluminum",
+            "substrate_b": "steel",
+            "environment": {
+                "sterilization_methods": ["sterilization:autoclave", "sterilization:eto"],
+            },
+        }
+        prompt = build_user_prompt(data)
+        assert "Autoclave" in prompt
+        assert "EtO" in prompt
+
+    def test_env_conditions_in_prompt(self):
+        from prompts.spec_engine import build_user_prompt
+        data = {
+            "material_category": "adhesive",
+            "substrate_a": "aluminum",
+            "substrate_b": "steel",
+            "environment": {
+                "conditions": ["env:high_humidity", "env:salt_spray"],
+            },
+        }
+        prompt = build_user_prompt(data)
+        assert "High humidity" in prompt
+        assert "Salt spray" in prompt
+
+
+class TestFailureAnalysisPromptBuilder:
+    """Sprint 4: Verify expanded failure analysis prompt builder output."""
+
+    def test_surface_prep_list_in_prompt(self):
+        from prompts.failure_analysis import build_user_prompt
+        data = {
+            "material_category": "epoxy",
+            "failure_mode": "delamination",
+            "surface_preparation": ["prep:solvent_wipe", "prep:abrasion"],
+        }
+        prompt = build_user_prompt(data)
+        assert "Solvent wipe" in prompt
+        assert "Abrasion" in prompt
+
+    def test_surface_prep_detail_in_prompt(self):
+        from prompts.failure_analysis import build_user_prompt
+        data = {
+            "material_category": "epoxy",
+            "failure_mode": "delamination",
+            "surface_prep_detail": "IPA wipe followed by 80-grit scuff",
+        }
+        prompt = build_user_prompt(data)
+        assert "IPA wipe followed by 80-grit scuff" in prompt
+
+    def test_env_tags_in_prompt(self):
+        from prompts.failure_analysis import build_user_prompt
+        data = {
+            "material_category": "epoxy",
+            "failure_mode": "cracking",
+            "chemical_exposure": ["env:high_humidity", "env:thermal_cycling"],
+        }
+        prompt = build_user_prompt(data)
+        assert "High humidity" in prompt
+        assert "Thermal cycling" in prompt
+
+    def test_chemical_detail_in_prompt(self):
+        from prompts.failure_analysis import build_user_prompt
+        data = {
+            "material_category": "epoxy",
+            "failure_mode": "cracking",
+            "chemical_exposure_detail": ["chem:brake_fluid", "chem:mek"],
+            "chemical_exposure_other": "custom degreaser",
+        }
+        prompt = build_user_prompt(data)
+        assert "Brake fluid" in prompt
+        assert "MEK" in prompt
+        assert "custom degreaser" in prompt
+
+    def test_sterilization_in_prompt(self):
+        from prompts.failure_analysis import build_user_prompt
+        data = {
+            "material_category": "epoxy",
+            "failure_mode": "cracking",
+            "sterilization_methods": ["sterilization:autoclave", "sterilization:gamma"],
+        }
+        prompt = build_user_prompt(data)
+        assert "Autoclave" in prompt
+        assert "Gamma" in prompt
+
+    def test_unknown_visual_failure_mode_in_prompt(self):
+        from prompts.failure_analysis import build_user_prompt
+        data = {
+            "material_category": "epoxy",
+            "failure_mode": "unknown_visual",
+        }
+        prompt = build_user_prompt(data)
+        assert "visual evidence" in prompt.lower() or "Unknown" in prompt
