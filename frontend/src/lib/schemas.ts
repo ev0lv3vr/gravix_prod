@@ -12,7 +12,12 @@ export const failureAnalysisSchema = z.object({
   timeToFailure: z.string().optional(),
   industry: z.string().optional(),
   environment: z.array(z.string()).optional().default([]),
+  chemicalExposureDetail: z.array(z.string()).optional().default([]),
+  chemicalExposureOther: z.string().optional().default(''),
+  sterilizationMethods: z.array(z.string()).optional().default([]),
   surfacePrep: z.string().optional(),
+  surfacePreps: z.array(z.string()).optional().default([]),
+  surfacePrepDetail: z.string().optional().default(''),
   productionImpact: z.string().optional(),
   additionalContext: z.string().optional(),
   // Sprint 11: AI-Forward fields

@@ -76,53 +76,9 @@ const CURE_CONSTRAINT_OPTIONS: ChipOption[] = [
   { value: 'no_primer', label: 'No Primer (One-Step Only)', tooltip: 'Cannot add surface treatment steps — adhesive must bond as-is', excludes: ['primer_ok'] },
 ];
 
-// ─── Environment Options (15) ──────────────────────────────────
-const ENVIRONMENT_OPTIONS: ChipOption[] = [
-  { value: 'high_humidity', label: 'High Humidity (>80% RH)', tooltip: 'Sustained exposure to high relative humidity' },
-  { value: 'submersion', label: 'Submersion / Water Contact', tooltip: 'Partial or full water immersion, water spray, condensation cycling' },
-  { value: 'salt_spray', label: 'Salt Spray / Marine', tooltip: 'Salt fog, coastal atmosphere, de-icing salt, per ASTM B117' },
-  { value: 'chemical', label: 'Chemical Exposure', tooltip: 'Solvents, fuels, oils, cleaning agents — specify below' },
-  { value: 'uv_outdoor', label: 'UV / Outdoor Weathering', tooltip: 'Sunlight, rain, temperature swings, per ASTM G154/G155' },
-  { value: 'high_temp_steady', label: 'High Temperature (Steady)', tooltip: 'Continuous operation above 80°C — specify in Temperature Range' },
-  { value: 'low_temp_steady', label: 'Low Temperature (Steady)', tooltip: 'Continuous operation below -20°C — specify in Temperature Range' },
-  { value: 'thermal_cycling', label: 'Thermal Cycling', tooltip: 'Repeated hot-cold cycles, specify range in Temperature Range' },
-  { value: 'vibration', label: 'Vibration / Dynamic', tooltip: 'Engine vibration, road loads, machinery vibration' },
-  { value: 'cleanroom_low_outgassing', label: 'Cleanroom / Low Outgassing', tooltip: 'Restricted outgassing per NASA ASTM E595 or ISO 14644 cleanroom' },
-  { value: 'sterilization', label: 'Sterilization Required', tooltip: 'Bond must survive sterilization cycles — specify method below' },
-  { value: 'vacuum', label: 'Vacuum / Low Pressure', tooltip: 'Space, high altitude, or vacuum chamber exposure' },
-  { value: 'radiation', label: 'Radiation Exposure', tooltip: 'Gamma, X-ray, UV sterilization, or nuclear environment' },
-  { value: 'food_contact', label: 'Food Contact / FDA', tooltip: 'Must comply with FDA 21 CFR or EU 10/2011 food contact regulations' },
-  { value: 'electrical_insulation', label: 'Electrical Insulation', tooltip: 'Bond must provide or maintain electrical isolation' },
-  { value: 'standard_indoor', label: 'Standard Indoor', tooltip: 'Controlled indoor environment, no special exposures', exclusive: true },
-];
-
-// ─── Chemical Exposure Detail (14) ─────────────────────────────
-const CHEMICAL_OPTIONS: ChipOption[] = [
-  { value: 'motor_oil', label: 'Motor Oil' },
-  { value: 'hydraulic_fluid', label: 'Hydraulic Fluid' },
-  { value: 'brake_fluid', label: 'Brake Fluid (DOT 3/4)' },
-  { value: 'coolant_glycol', label: 'Coolant / Glycol' },
-  { value: 'fuel_hydrocarbon', label: 'Gasoline / Diesel' },
-  { value: 'jet_fuel', label: 'Jet Fuel (Jet-A, JP-8)' },
-  { value: 'ipa', label: 'IPA (Isopropanol)' },
-  { value: 'acetone', label: 'Acetone' },
-  { value: 'mek', label: 'MEK' },
-  { value: 'aromatic_solvent', label: 'Toluene / Xylene' },
-  { value: 'bleach', label: 'Bleach / NaOCl' },
-  { value: 'acid', label: 'Acids (specify below)' },
-  { value: 'caustic', label: 'Bases / Caustics' },
-  { value: 'cleaning_agents', label: 'Cleaning Agents' },
-];
-
-// ─── Sterilization Methods (6) ─────────────────────────────────
-const STERILIZATION_OPTIONS: ChipOption[] = [
-  { value: 'autoclave', label: 'Autoclave (steam 121-134°C)', tooltip: 'High temp + moisture + pressure — eliminates many adhesives' },
-  { value: 'eto', label: 'EtO (ethylene oxide)', tooltip: 'Chemical attack — some adhesives absorb EtO and outgas later' },
-  { value: 'gamma', label: 'Gamma Radiation', tooltip: 'Radiation degrades some polymers; dose matters (25-50 kGy typical)' },
-  { value: 'ebeam', label: 'E-beam', tooltip: 'Similar to gamma but higher dose rate, different degradation profile' },
-  { value: 'h2o2_plasma', label: 'Hydrogen Peroxide Plasma', tooltip: 'Oxidative — affects some silicones and acrylics' },
-  { value: 'dry_heat', label: 'Dry Heat (160-180°C)', tooltip: 'Extreme temperature — limits adhesive choices severely' },
-];
+// ─── Shared Options (imported from shared constants) ───────────
+// Environment, Chemical, and Sterilization options are shared with Failure Analysis form
+import { ENVIRONMENT_OPTIONS, CHEMICAL_OPTIONS, STERILIZATION_OPTIONS } from '@/lib/form-constants';
 
 // ─── Gap Type Options ──────────────────────────────────────────
 const GAP_TYPE_OPTIONS = [

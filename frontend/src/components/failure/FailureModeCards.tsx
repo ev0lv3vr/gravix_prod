@@ -14,25 +14,36 @@ const FAILURE_MODES = [
     value: 'adhesive',
     label: 'Adhesive Failure',
     description: 'Clean separation from surface',
+    enhancedDescription: 'Clean separation — adhesive peeled off one surface entirely. Little or no residue on one side.',
     diagram: AdhesiveFailureSVG,
   },
   {
     value: 'cohesive',
     label: 'Cohesive Failure',
     description: 'Failure within adhesive itself',
+    enhancedDescription: 'Adhesive itself tore apart — residue on BOTH surfaces. The adhesive was weaker than its bond to either surface.',
     diagram: CohesiveFailureSVG,
   },
   {
     value: 'mixed',
     label: 'Mixed Mode',
     description: 'Both adhesive and cohesive',
+    enhancedDescription: 'Combination — some areas show clean separation, other areas show torn adhesive. Inconsistent bond quality.',
     diagram: MixedFailureSVG,
   },
   {
     value: 'substrate',
     label: 'Substrate Failure',
     description: 'Substrate tears before bond',
+    enhancedDescription: 'The substrate broke, not the bond — adhesive held but the material around it cracked or delaminated.',
     diagram: SubstrateFailureSVG,
+  },
+  {
+    value: 'unknown_visual',
+    label: "Can't Determine",
+    description: 'Not sure from visual inspection',
+    enhancedDescription: 'Upload photos and our AI will help identify the failure mode.',
+    diagram: UnknownFailureSVG,
   },
 ];
 
@@ -47,7 +58,7 @@ export function FailureModeCards({ value, onChange, error }: FailureModeCardsPro
             <button
               key={mode.value}
               type="button"
-              onClick={() => onChange(mode.value)}
+              onClick={() => onChange(isSelected ? '' : mode.value)}
               className={cn(
                 'relative p-4 rounded-lg border-2 transition-all text-left flex flex-col',
                 isSelected
@@ -65,7 +76,8 @@ export function FailureModeCards({ value, onChange, error }: FailureModeCardsPro
               <h3 className={cn('text-sm font-semibold mb-1', isSelected ? 'text-accent-500' : 'text-white')}>
                 {mode.label}
               </h3>
-              <p className="text-xs text-[#64748B] leading-tight">{mode.description}</p>
+              {/* Enhanced description */}
+              <p className="text-xs text-[#64748B] leading-tight">{mode.enhancedDescription}</p>
 
               {isSelected && (
                 <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-accent-500 flex items-center justify-center">
@@ -155,6 +167,25 @@ function SubstrateFailureSVG({ selected }: { selected: boolean }) {
       {/* Bottom substrate (intact) */}
       <rect x="5" y="20" width="70" height="12" rx="1" fill="#374151" />
       <text x="50" y="40" fill="#EF4444" fontSize="6" fontFamily="monospace">tear</text>
+    </svg>
+  );
+}
+
+function UnknownFailureSVG({ selected }: { selected: boolean }) {
+  const accent = selected ? '#3B82F6' : '#64748B';
+  return (
+    <svg viewBox="0 0 80 48" className="w-20 h-12">
+      {/* Top substrate */}
+      <rect x="5" y="2" width="70" height="12" rx="1" fill="#374151" />
+      {/* Adhesive layer with question marks */}
+      <rect x="5" y="14" width="70" height="6" rx="0" fill={accent} opacity="0.3" />
+      {/* Bottom substrate */}
+      <rect x="5" y="20" width="70" height="12" rx="1" fill="#374151" />
+      {/* Question mark */}
+      <text x="34" y="19" fill={accent} fontSize="8" fontWeight="bold" fontFamily="sans-serif">?</text>
+      {/* Camera icon hint */}
+      <rect x="30" y="36" width="20" height="10" rx="2" fill="none" stroke={accent} strokeWidth="1" opacity="0.6" />
+      <circle cx="40" cy="41" r="3" fill="none" stroke={accent} strokeWidth="1" opacity="0.6" />
     </svg>
   );
 }
