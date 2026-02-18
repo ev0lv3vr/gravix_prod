@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { FileText, ChevronDown, ChevronUp, Package } from 'lucide-react';
 import { ConfidenceBadge } from '../shared/ConfidenceBadge';
 import { FeedbackPrompt } from '../results/FeedbackPrompt';
 import { KnownRisksSection, type KnownRiskData } from './KnownRisksSection';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
+import type { MatchingProduct } from '@/lib/types';
 
 interface SpecResultsProps {
   status: 'idle' | 'loading' | 'success' | 'error';
@@ -24,6 +25,7 @@ interface SpecResultData {
     chemistry: string;
     subcategory: string;
     rationale: string;
+    exampleProducts?: string[];
   };
   productCharacteristics: {
     viscosityRange?: string;
@@ -48,13 +50,14 @@ interface SpecResultData {
     disadvantages: string[];
     whenToUse: string;
   }>;
+  matchingProducts?: MatchingProduct[];
   confidenceScore: number;
   knowledgeEvidenceCount?: number;
   knownRisks?: string[];
   knownRiskData?: KnownRiskData;
 }
 
-export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis, isFree: _isFree = true }: SpecResultsProps) {
+export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis, isFree = true }: SpecResultsProps) {
   const [loadingPhase, setLoadingPhase] = useState(1);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [expandedAlts, setExpandedAlts] = useState<number[]>([]);
@@ -141,6 +144,11 @@ export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis,
           <div>
             <h2 className="text-2xl font-bold text-white">{data.recommendedSpec.materialType}</h2>
             <p className="text-sm text-[#94A3B8] mt-1">{data.recommendedSpec.chemistry}</p>
+            {data.recommendedSpec.exampleProducts && data.recommendedSpec.exampleProducts.length > 0 && (
+              <p className="text-sm text-accent-500 mt-1.5 font-medium">
+                e.g., {data.recommendedSpec.exampleProducts.join(' · ')}
+              </p>
+            )}
           </div>
           <ConfidenceBadge score={pct} caseCount={data.knowledgeEvidenceCount} />
         </div>
@@ -263,10 +271,118 @@ export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis,
           </div>
         )}
 
-        {/* 8. Feedback prompt */}
+        {/* 8. Matching Products */}
+        {(() => {
+          const allProducts = data.matchingProducts || [];
+          const visibleProducts = isFree ? allProducts.slice(0, 1) : allProducts;
+          const hiddenCount = isFree ? Math.max(0, allProducts.length - 1) : 0;
+
+          if (allProducts.length > 0) {
+            return (
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                  <Package className="w-4 h-4 text-accent-500" />
+                  Products Matching This Spec
+                </h3>
+                {visibleProducts.map((product, i) => (
+                  <div key={i} className="bg-brand-800 border border-[#1F2937] rounded-lg p-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="text-white font-medium">
+                          {product.product_name}
+                          {product.tds_available && (
+                            <span className="ml-2 text-[10px] bg-accent-500/20 text-accent-500 px-1.5 py-0.5 rounded">
+                              ✓ TDS on file
+                            </span>
+                          )}
+                        </h4>
+                        <p className="text-xs text-[#64748B] mt-0.5">
+                          {[product.manufacturer, product.chemistry_type].filter(Boolean).join(' · ')}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Key specs */}
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-1 mt-3 text-xs">
+                      {product.operating_temp && (
+                        <div>
+                          <span className="text-[#64748B]">Temp Range</span>
+                          <span className="text-white ml-2">{product.operating_temp}</span>
+                        </div>
+                      )}
+                      {product.shear_strength && (
+                        <div>
+                          <span className="text-[#64748B]">Shear Strength</span>
+                          <span className="text-white ml-2">{product.shear_strength}</span>
+                        </div>
+                      )}
+                      {product.cure_time && (
+                        <div>
+                          <span className="text-[#64748B]">Cure</span>
+                          <span className="text-white ml-2">{product.cure_time}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Match reasons */}
+                    {product.reasons && product.reasons.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {product.reasons.map((r, j) => (
+                          <span key={j} className="text-[10px] bg-green-500/10 text-green-400 px-2 py-0.5 rounded">
+                            ✓ {r}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Link to product page */}
+                    {product.product_id && (
+                      <a
+                        href={`/products/${product.product_id}`}
+                        className="text-xs text-accent-500 hover:underline mt-2 inline-block"
+                      >
+                        View full product data →
+                      </a>
+                    )}
+                  </div>
+                ))}
+
+                {/* Free user upgrade prompt */}
+                {isFree && hiddenCount > 0 && (
+                  <div className="border border-accent-500/20 rounded-lg p-3 text-center">
+                    <p className="text-sm text-[#94A3B8]">
+                      {hiddenCount} more matching product{hiddenCount > 1 ? 's' : ''} available
+                    </p>
+                    <a href="/pricing" className="text-xs text-accent-500 hover:underline">
+                      Upgrade to Pro to see all matches →
+                    </a>
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          // No products matched — show CTA
+          return (
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                <Package className="w-4 h-4 text-accent-500" />
+                Products Matching This Spec
+              </h3>
+              <p className="text-sm text-[#64748B]">
+                No products in the Gravix database match this specification yet.{' '}
+                <a href="/products" className="text-accent-500 hover:underline">
+                  Upload a TDS to add products →
+                </a>
+              </p>
+            </div>
+          );
+        })()}
+
+        {/* 9. Feedback prompt */}
         {specId && <FeedbackPrompt specId={specId} />}
 
-        {/* 9. Action bar */}
+        {/* 10. Action bar */}
         <div className="fixed bottom-0 left-0 right-0 md:left-[calc(45%+1px)] bg-[#0A1628] border-t border-[#1F2937] p-4 z-50">
           <div className="flex flex-col sm:flex-row gap-3">
             <Button 

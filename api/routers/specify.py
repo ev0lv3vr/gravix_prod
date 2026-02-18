@@ -14,6 +14,7 @@ from schemas.specify import (
     SpecRequestListItem,
 )
 from services.ai_engine import generate_spec
+from services.product_matching import find_matching_products
 from services.usage_service import can_use_spec, increment_spec_usage
 
 logger = logging.getLogger(__name__)
@@ -68,6 +69,13 @@ async def create_spec(
     try:
         ai_result = await generate_spec(data_dict)
 
+        # Product matching — non-fatal, wrapped in try/except
+        matching_products = []
+        try:
+            matching_products = await find_matching_products(ai_result, data_dict)
+        except Exception as pm_err:
+            logger.warning(f"Product matching failed (non-fatal): {pm_err}")
+
         update_data = {
             "recommended_spec": ai_result.get("recommended_spec"),
             "product_characteristics": ai_result.get("product_characteristics"),
@@ -81,8 +89,16 @@ async def create_spec(
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
 
-        db.table("spec_requests").update(update_data).eq("id", spec_id).execute()
+        # Try to save matching_products to DB — skip if column doesn't exist yet
+        try:
+            db_update = {**update_data, "matching_products": matching_products}
+            db.table("spec_requests").update(db_update).eq("id", spec_id).execute()
+        except Exception as db_err:
+            logger.warning(f"Could not save matching_products to DB (column may not exist): {db_err}")
+            db.table("spec_requests").update(update_data).eq("id", spec_id).execute()
+
         record.update(update_data)
+        record["matching_products"] = matching_products
 
         # Increment usage
         increment_spec_usage(user["id"])

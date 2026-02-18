@@ -28,7 +28,7 @@ export default function SpecToolPage() {
 
   const { user } = useAuth();
   const { isExhausted } = useUsageTracking();
-  const { refreshPlan } = usePlan();
+  const { plan, refreshPlan } = usePlan();
 
   // Core submission logic (no auth check — caller is responsible)
   const executeSubmit = useCallback(async (formData: SpecFormData) => {
@@ -111,12 +111,15 @@ export default function SpecToolPage() {
       const responseWarnings = response.warnings || [];
       const responseAlts = response.alternatives || [];
 
+      const matchingProducts = response.matching_products || response.matchingProducts || [];
+
       const mapped: SpecResultData = {
         recommendedSpec: {
           materialType: recSpec.title || 'Unknown',
           chemistry: recSpec.chemistry || 'Unknown',
           subcategory: 'General',
           rationale: recSpec.rationale || '',
+          exampleProducts: recSpec.example_products || [],
         },
         productCharacteristics: {
           viscosityRange: prodChars.viscosity || prodChars.viscosity_range || 'Unknown',
@@ -139,6 +142,7 @@ export default function SpecToolPage() {
           disadvantages: alt.cons || [],
           whenToUse: 'See advantages/disadvantages',
         })),
+        matchingProducts: matchingProducts,
         confidenceScore: response.confidence_score || response.confidenceScore || 0.85,
         knowledgeEvidenceCount: response.knowledge_evidence_count ?? response.knowledgeEvidenceCount ?? undefined,
         knownRisks: response.known_risks || response.knownRisks || undefined,
@@ -235,7 +239,7 @@ export default function SpecToolPage() {
     <>
       <ToolLayout
         formPanel={<><UsageCounter /><SpecForm onSubmit={handleSubmit} isLoading={status === 'loading'} /></>}
-        resultsPanel={<SpecResults status={resultsStatus} data={resultData} specId={specId} errorMessage={errorMessage} onNewAnalysis={handleNewAnalysis} isFree={!user} />}
+        resultsPanel={<SpecResults status={resultsStatus} data={resultData} specId={specId} errorMessage={errorMessage} onNewAnalysis={handleNewAnalysis} isFree={!user || plan === 'free'} />}
       />
       <UpgradeModal open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen} onUpgrade={() => window.location.href = '/pricing'} />
       <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} onSuccess={handleAuthSuccess} fromFormSubmit />
