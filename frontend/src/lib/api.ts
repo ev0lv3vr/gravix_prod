@@ -310,7 +310,7 @@ export class ApiClient {
   async updateProfile(data: {
     name?: string;
     company?: string;
-    role?: string;
+    job_title?: string;
   }): Promise<User | null> {
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${API_URL}/users/me`, {
