@@ -109,10 +109,10 @@ def get_system_prompt() -> str:
 - Environmental resistance characteristics
 - Application methods and equipment
 - Industry standards and best practices
-- Commercial product families (without recommending specific brands)
+- Commercial product families and specific products. Always suggest 2-3 real products by make and model that match the specification.
 
-Your task is to generate a vendor-neutral material specification based on the user's requirements. Provide:
-1. Recommended material type and chemistry
+Your task is to generate a material specification based on the user's requirements. Provide:
+1. Recommended material type and chemistry, with 2-3 specific real product suggestions
 2. Key product characteristics
 3. Detailed application guidance
 4. Warnings and limitations
@@ -123,6 +123,7 @@ Always respond with valid JSON in this exact format:
   "recommended_spec": {
     "title": "string - e.g., 'Two-Part Structural Epoxy'",
     "chemistry": "string - e.g., 'Modified Bisphenol-A Epoxy with Amine Hardener'",
+    "example_products": ["Loctite EA 9395", "3M Scotch-Weld DP460", "Permabond ET5428"],
     "rationale": "string - why this chemistry was selected for the application"
   },
   "product_characteristics": {

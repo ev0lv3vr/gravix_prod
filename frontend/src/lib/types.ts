@@ -128,7 +128,21 @@ export interface CureConstraints {
 export interface RecommendedSpec {
   title: string;
   chemistry: string;
+  example_products?: string[];
   rationale: string;
+}
+
+export interface MatchingProduct {
+  product_name: string;
+  manufacturer?: string;
+  chemistry_type?: string;
+  score: number;
+  reasons: string[];
+  operating_temp?: string;
+  shear_strength?: string;
+  cure_time?: string;
+  product_id?: string;
+  tds_available: boolean;
 }
 
 export interface ProductCharacteristics {
@@ -348,6 +362,8 @@ export interface ApiSpecResponse {
   applicationGuidance?: ApplicationGuidance | ApiApplicationGuidance;
   warnings?: string[];
   alternatives?: Alternative[] | ApiAlternative[];
+  matching_products?: MatchingProduct[];
+  matchingProducts?: MatchingProduct[];
   confidence_score?: number;
   confidenceScore?: number;
   knowledge_evidence_count?: number;

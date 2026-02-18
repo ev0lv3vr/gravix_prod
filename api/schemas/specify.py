@@ -104,6 +104,7 @@ class SpecRequestResponse(BaseModel):
     application_guidance: Optional[dict] = None
     warnings: Optional[List[str]] = None
     alternatives: Optional[List[dict]] = None
+    matching_products: Optional[List[dict]] = None
     confidence_score: Optional[float] = None
     knowledge_evidence_count: Optional[int] = None
     similar_cases: Optional[List[dict]] = None
