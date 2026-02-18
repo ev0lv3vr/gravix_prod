@@ -10,7 +10,8 @@ import { GuidedInvestigation } from '@/components/failure/GuidedInvestigation';
 import { UpgradeModal } from '@/components/shared/UpgradeModal';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { useAuth } from '@/contexts/AuthContext';
-import { useUsageTracking, incrementUsage } from '@/hooks/useUsageTracking';
+import { useUsageTracking } from '@/hooks/useUsageTracking';
+import { usePlan } from '@/contexts/PlanContext';
 import { api } from '@/lib/api';
 import { startGuidedSession } from '@/lib/products';
 import { UsageCounter } from '@/components/shared/UsageCounter';
@@ -44,6 +45,7 @@ function StandardFailureAnalysis() {
 
   const { user } = useAuth();
   const { isExhausted } = useUsageTracking();
+  const { refreshPlan } = usePlan();
 
   // Core submission logic (no auth check — caller is responsible)
   const executeSubmit = useCallback(async (formData: FailureFormData) => {
@@ -174,7 +176,8 @@ function StandardFailureAnalysis() {
 
       setResultData(mapped);
       setStatus('complete');
-      incrementUsage(user);
+      // Refresh plan/usage from backend so UsageCounter updates immediately
+      refreshPlan();
 
       // Clear saved form state on success
       try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(AUTO_SUBMIT_KEY); } catch { /* noop */ }
@@ -183,7 +186,7 @@ function StandardFailureAnalysis() {
       setErrorMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
       setStatus('error');
     }
-  }, [isExhausted, user]);
+  }, [isExhausted, user, refreshPlan]);
 
   // Public submit handler — gates on auth
   const handleSubmit = async (formData: FailureFormData) => {

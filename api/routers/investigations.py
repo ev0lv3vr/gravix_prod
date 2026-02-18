@@ -232,6 +232,9 @@ async def create_investigation(
                 "what_failed": analysis.get("failure_description"),
                 "root_causes": analysis.get("root_causes"),
                 "analysis_id": data.analysis_id,
+                "substrate_a": analysis.get("substrate_a"),
+                "substrate_b": analysis.get("substrate_b"),
+                "failure_mode": analysis.get("failure_mode"),
             }
     
     record = {
@@ -713,12 +716,33 @@ async def analyze_investigation(
             detail="Only Team Lead or Champion can run AI analysis"
         )
     
-    # Build analysis data from investigation D2 fields
+    # Build analysis data from investigation D2 fields.
+    # If substrates are missing, fall back to the linked failure_analyses record.
+    substrate_a = investigation.get("substrate_a")
+    substrate_b = investigation.get("substrate_b")
+    failure_mode = investigation.get("failure_mode")
+
+    if (not substrate_a or substrate_a == "Unknown") and investigation.get("analysis_id"):
+        try:
+            fa_result = (
+                db.table("failure_analyses")
+                .select("substrate_a, substrate_b, failure_mode")
+                .eq("id", investigation["analysis_id"])
+                .execute()
+            )
+            if fa_result.data:
+                fa = fa_result.data[0]
+                substrate_a = substrate_a or fa.get("substrate_a") or "Unknown"
+                substrate_b = substrate_b or fa.get("substrate_b") or "Unknown"
+                failure_mode = failure_mode or fa.get("failure_mode")
+        except Exception as e:
+            logger.warning(f"Could not fetch linked analysis for substrates: {e}")
+
     analysis_data = {
         "failure_description": investigation.get("what_failed", ""),
-        "substrate_a": investigation.get("substrate_a", "Unknown"),
-        "substrate_b": investigation.get("substrate_b", "Unknown"),
-        "failure_mode": investigation.get("failure_mode"),
+        "substrate_a": substrate_a or "Unknown",
+        "substrate_b": substrate_b or "Unknown",
+        "failure_mode": failure_mode,
         "temperature_range": investigation.get("temperature_range"),
         "humidity": investigation.get("humidity"),
         "time_to_failure": investigation.get("time_to_failure"),

@@ -5,6 +5,8 @@ Frontend reads the same gate keys via /users/me response.
 """
 
 PLAN_FEATURES: dict[str, dict] = {
+    # "quality" is the frontend/Stripe name; "team" is the canonical backend key.
+    # Both map to the same feature set — see "team" entry below.
     "free": {
         "analysis.failure": True,
         "analysis.spec": True,
@@ -147,6 +149,9 @@ PLAN_FEATURES: dict[str, dict] = {
         },
     },
 }
+
+# Alias: "quality" (frontend/Stripe) → same features as "team" (backend canonical).
+PLAN_FEATURES["quality"] = PLAN_FEATURES["team"]
 
 MINIMUM_PLAN: dict[str, str] = {
     "analysis.photos": "pro",

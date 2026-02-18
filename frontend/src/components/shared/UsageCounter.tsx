@@ -2,25 +2,32 @@
 
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { useUsageTracking } from '@/hooks/useUsageTracking';
+import { usePlan } from '@/contexts/PlanContext';
 
 /**
  * Usage counter shown above the analysis form for free-tier users.
- * Shows remaining analyses and a link to upgrade.
+ * Reads real usage from PlanContext (backend-backed via /users/me/usage).
  *
  * "3 of 5 free analyses remaining this month [Pro →]"
+ *
+ * Hidden for paid plans (pro/quality/enterprise) — they have unlimited analyses.
  */
 export function UsageCounter() {
   const { user } = useAuth();
-  const { limit, remaining, isExhausted } = useUsageTracking();
+  const { plan, usage, isAdmin } = usePlan();
 
-  // Only show for free tier users (no subscription / free plan)
-  // For now we don't have plan info on client; show for all authenticated users
-  // who are tracked against the free limit. Hidden if limit is > FREE_TIER_LIMIT
-  // (i.e., paid users with unlimited won't see this since limit stays at 5 for free).
-  // TODO: Check actual plan once available in auth context.
-
+  // Only show for logged-in free-tier users
   if (!user) return null;
+  if (isAdmin) return null;
+  if (plan !== 'free') return null;
+
+  // Still loading usage from backend
+  if (!usage) return null;
+
+  const used = usage.analyses_used ?? 0;
+  const limit = usage.analyses_limit ?? 5;
+  const remaining = Math.max(0, limit - used);
+  const isExhausted = used >= limit;
 
   if (isExhausted) {
     return (
