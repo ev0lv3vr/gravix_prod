@@ -54,16 +54,19 @@ CREATE INDEX IF NOT EXISTS idx_product_specs_chemistry ON public.product_specifi
 -- RLS
 ALTER TABLE public.product_specifications ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Authenticated users can read product_specifications" ON public.product_specifications;
 CREATE POLICY "Authenticated users can read product_specifications"
   ON public.product_specifications FOR SELECT
   TO authenticated
   USING (true);
 
+DROP POLICY IF EXISTS "Authenticated users can insert product_specifications" ON public.product_specifications;
 CREATE POLICY "Authenticated users can insert product_specifications"
   ON public.product_specifications FOR INSERT
   TO authenticated
   WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Authenticated users can update product_specifications" ON public.product_specifications;
 CREATE POLICY "Authenticated users can update product_specifications"
   ON public.product_specifications FOR UPDATE
   TO authenticated
@@ -90,11 +93,13 @@ CREATE INDEX IF NOT EXISTS idx_visual_analysis_id ON public.visual_analysis_resu
 -- RLS
 ALTER TABLE public.visual_analysis_results ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Authenticated users can read visual_analysis_results" ON public.visual_analysis_results;
 CREATE POLICY "Authenticated users can read visual_analysis_results"
   ON public.visual_analysis_results FOR SELECT
   TO authenticated
   USING (true);
 
+DROP POLICY IF EXISTS "Authenticated users can insert visual_analysis_results" ON public.visual_analysis_results;
 CREATE POLICY "Authenticated users can insert visual_analysis_results"
   ON public.visual_analysis_results FOR INSERT
   TO authenticated
@@ -119,16 +124,19 @@ CREATE INDEX IF NOT EXISTS idx_inv_sessions_user ON public.investigation_session
 -- RLS
 ALTER TABLE public.investigation_sessions ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can read own investigation_sessions" ON public.investigation_sessions;
 CREATE POLICY "Users can read own investigation_sessions"
   ON public.investigation_sessions FOR SELECT
   TO authenticated
   USING (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can insert own investigation_sessions" ON public.investigation_sessions;
 CREATE POLICY "Users can insert own investigation_sessions"
   ON public.investigation_sessions FOR INSERT
   TO authenticated
   WITH CHECK (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can update own investigation_sessions" ON public.investigation_sessions;
 CREATE POLICY "Users can update own investigation_sessions"
   ON public.investigation_sessions FOR UPDATE
   TO authenticated
@@ -159,16 +167,19 @@ CREATE INDEX IF NOT EXISTS idx_pattern_alerts_type ON public.pattern_alerts(aler
 -- RLS
 ALTER TABLE public.pattern_alerts ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Authenticated users can read pattern_alerts" ON public.pattern_alerts;
 CREATE POLICY "Authenticated users can read pattern_alerts"
   ON public.pattern_alerts FOR SELECT
   TO authenticated
   USING (true);
 
+DROP POLICY IF EXISTS "Authenticated users can insert pattern_alerts" ON public.pattern_alerts;
 CREATE POLICY "Authenticated users can insert pattern_alerts"
   ON public.pattern_alerts FOR INSERT
   TO authenticated
   WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Authenticated users can update pattern_alerts" ON public.pattern_alerts;
 CREATE POLICY "Authenticated users can update pattern_alerts"
   ON public.pattern_alerts FOR UPDATE
   TO authenticated
