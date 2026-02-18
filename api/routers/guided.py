@@ -11,6 +11,8 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from dependencies import get_current_user
+from middleware.plan_gate import plan_gate
+from config.plan_features import PLAN_FEATURES
 from database import get_supabase
 from schemas.guided import (
     GuidedSessionStart,
@@ -29,6 +31,37 @@ def _escape_like(val: str) -> str:
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/guided", tags=["guided"])
+
+
+def _get_rate_limits(user: dict) -> dict:
+    """Get guided rate limits for the user's plan."""
+    if user.get("role") == "admin":
+        return {"guided_turns": 999999, "guided_sessions_monthly": None}
+    plan = (user.get("plan") or "free").lower()
+    # Resolve quality → team alias
+    if plan not in PLAN_FEATURES:
+        plan = "team" if plan == "quality" else "free"
+    features = PLAN_FEATURES.get(plan, PLAN_FEATURES["free"])
+    return features.get("rate_limits", {})
+
+
+def _count_user_sessions_this_month(db, user_id: str) -> int:
+    """Count guided sessions created by this user in the current calendar month."""
+    now = datetime.now(timezone.utc)
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0).isoformat()
+    result = (
+        db.table("investigation_sessions")
+        .select("id", count="exact")
+        .eq("user_id", user_id)
+        .gte("created_at", month_start)
+        .execute()
+    )
+    return result.count or 0
+
+
+def _count_user_turns(messages: list) -> int:
+    """Count user-role messages in a session's message list."""
+    return sum(1 for m in messages if isinstance(m, dict) and m.get("role") == "user")
 
 
 # ============================================================================
@@ -196,9 +229,27 @@ async def _execute_tool(db, tool_name: str, tool_input: dict) -> dict:
 async def start_guided_session(
     data: GuidedSessionStart,
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("analysis.guided")),
 ):
     """Start a new guided investigation session."""
     db = get_supabase()
+
+    # Check monthly session limit
+    limits = _get_rate_limits(user)
+    session_cap = limits.get("guided_sessions_monthly")
+    if session_cap is not None:
+        sessions_used = _count_user_sessions_this_month(db, user["id"])
+        if sessions_used >= session_cap:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={
+                    "error": "session_limit",
+                    "message": f"Monthly guided session limit reached ({session_cap} sessions). Upgrade your plan for unlimited sessions.",
+                    "current_plan": user.get("plan", "free"),
+                    "upgrade_url": "/pricing",
+                },
+            )
+
     session_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc).isoformat()
     
@@ -276,6 +327,7 @@ async def send_guided_message(
     session_id: str,
     data: GuidedMessage,
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("analysis.guided")),
 ):
     """Send a message in a guided session and get AI response with tool use.
     
@@ -306,6 +358,24 @@ async def send_guided_message(
     
     now = datetime.now(timezone.utc).isoformat()
     messages = session.get("messages", [])
+    
+    # Check turn limit
+    limits = _get_rate_limits(user)
+    turn_cap = limits.get("guided_turns")
+    if turn_cap is not None:
+        user_turns = _count_user_turns(messages)
+        if user_turns >= turn_cap:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={
+                    "error": "turn_limit",
+                    "message": f"Session message limit reached ({turn_cap} messages). Upgrade your plan for more messages per session.",
+                    "turns_used": user_turns,
+                    "turn_limit": turn_cap,
+                    "current_plan": user.get("plan", "free"),
+                    "upgrade_url": "/pricing",
+                },
+            )
     
     # Add user message to stored history
     messages.append({
@@ -394,6 +464,7 @@ async def send_guided_message(
 async def get_guided_session(
     session_id: str,
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("analysis.guided")),
 ):
     """Get a guided session's state and messages."""
     db = get_supabase()
@@ -417,6 +488,7 @@ async def complete_guided_session(
     session_id: str,
     data: GuidedSessionComplete,
     user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("analysis.guided")),
 ):
     """Complete a guided session and generate a summary."""
     db = get_supabase()

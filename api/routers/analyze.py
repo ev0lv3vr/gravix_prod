@@ -22,6 +22,7 @@ from schemas.analyze import (
 )
 from services.ai_engine import analyze_failure
 from services.usage_service import can_use_analysis, increment_analysis_usage
+from services.ai_output_filter import filter_ai_output
 from utils.normalizer import normalize_substrate
 from utils.classifier import classify_root_cause_category
 
@@ -177,7 +178,11 @@ async def create_analysis(
         ).eq("id", analysis_id).execute()
         record["status"] = "failed"
 
-    return FailureAnalysisResponse(**record)
+    # Filter AI output based on user's plan tier (store full, serve filtered)
+    user_plan = user.get("plan", "free")
+    filtered = filter_ai_output(record, user_plan)
+
+    return FailureAnalysisResponse(**filtered)
 
 
 @router.get("", response_model=list[FailureAnalysisListItem])
@@ -213,7 +218,11 @@ async def get_analysis(
     if not result.data:
         raise HTTPException(status_code=404, detail="Analysis not found")
 
-    return FailureAnalysisResponse(**result.data[0])
+    # Filter AI output based on user's plan tier (store full, serve filtered)
+    user_plan = user.get("plan", "free")
+    filtered = filter_ai_output(result.data[0], user_plan)
+
+    return FailureAnalysisResponse(**filtered)
 
 
 @router.post("/upload-photo")
