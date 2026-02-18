@@ -68,6 +68,7 @@ export interface GuidedMessage {
   phase?: string;
   tool_calls?: Array<{ tool: string; input: Record<string, unknown> }>;
   tool_results?: Array<{ tool: string; result: Record<string, unknown> }>;
+  suggestions?: string[];
 }
 
 export interface GuidedMessageResponse {
@@ -76,6 +77,7 @@ export interface GuidedMessageResponse {
   tool_calls?: Array<{ tool: string; input: Record<string, unknown> }> | null;
   tool_results?: Array<{ tool: string; result: Record<string, unknown> }> | null;
   phase?: string | null;
+  suggestions?: string[] | null;
 }
 
 export interface GuidedSessionListItem {

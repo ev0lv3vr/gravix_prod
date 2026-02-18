@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePlan } from '@/contexts/PlanContext';
 import {
   getGuidedSession,
   sendGuidedMessage,
@@ -39,7 +40,13 @@ function ToolCallCard({ tool, result }: { tool: string; result?: Record<string, 
   );
 }
 
-function MessageBubble({ message }: { message: GuidedMessage }) {
+function MessageBubble({
+  message,
+  onSuggestionClick,
+}: {
+  message: GuidedMessage;
+  onSuggestionClick?: (text: string) => void;
+}) {
   const isUser = message.role === 'user';
 
   return (
@@ -65,6 +72,21 @@ function MessageBubble({ message }: { message: GuidedMessage }) {
         ) : (
           <div className="prose prose-invert prose-sm max-w-none prose-headings:text-white prose-h2:text-base prose-h2:font-semibold prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-[#94A3B8] prose-h3:text-sm prose-h3:font-medium prose-h3:mt-3 prose-h3:mb-1 prose-li:text-[#94A3B8] prose-strong:text-white prose-p:my-1.5">
             <ReactMarkdown>{message.content}</ReactMarkdown>
+          </div>
+        )}
+
+        {/* Suggestion chips */}
+        {message.suggestions && message.suggestions.length > 0 && onSuggestionClick && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {message.suggestions.map((s, i) => (
+              <button
+                key={i}
+                onClick={() => onSuggestionClick(s)}
+                className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#1F2937] hover:bg-[#374151] text-white border border-[#374151] transition-colors"
+              >
+                {s}
+              </button>
+            ))}
           </div>
         )}
 
@@ -127,6 +149,7 @@ export default function GuidedInvestigationPage() {
   const router = useRouter();
   const sessionId = params.id as string;
   const { user, loading: authLoading } = useAuth();
+  const { plan: userPlanFromContext, isAdmin } = usePlan();
 
   const [session, setSession] = useState<GuidedSession | null>(null);
   const [messages, setMessages] = useState<GuidedMessage[]>([]);
@@ -138,6 +161,11 @@ export default function GuidedInvestigationPage() {
   const [copyLabel, setCopyLabel] = useState('Copy Results');
   const [currentPhase, setCurrentPhase] = useState<string | undefined>('1');
   const [creatingInvestigation, setCreatingInvestigation] = useState(false);
+  const [turnCount, setTurnCount] = useState(0);
+
+  // Plan-based gating
+  const isFree = userPlanFromContext === 'free' && !isAdmin;
+  const maxTurns = isFree ? 10 : 999;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -162,6 +190,9 @@ export default function GuidedInvestigationPage() {
         .then((s) => {
           setSession(s);
           setMessages(s.messages || []);
+          // Restore turn count from existing user messages
+          const userMsgCount = (s.messages || []).filter((m: GuidedMessage) => m.role === 'user').length;
+          setTurnCount(userMsgCount);
           // Extract current phase from last assistant message
           const lastPhaseMsg = (s.messages || [])
             .filter((m: GuidedMessage) => m.role === 'assistant' && m.phase)
@@ -173,15 +204,28 @@ export default function GuidedInvestigationPage() {
   }, [sessionId, authLoading, user]);
 
   // Send message
-  const handleSend = async () => {
-    if (!input.trim() || sending) return;
+  const handleSend = async (overrideText?: string) => {
+    const text = overrideText || input;
+    if (!text.trim() || sending) return;
+    if (isFree && turnCount >= maxTurns) return;
+
+    const newTurn = turnCount + 1;
+    setTurnCount(newTurn);
 
     const userMessage: GuidedMessage = {
       role: 'user',
-      content: input.trim(),
+      content: text.trim(),
       timestamp: new Date().toISOString(),
     };
 
+    // Remove suggestions from last assistant message
+    setMessages(prev =>
+      prev.map((m, i) =>
+        i === prev.length - 1 && m.role === 'assistant'
+          ? { ...m, suggestions: undefined }
+          : m
+      )
+    );
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setSending(true);
@@ -199,6 +243,7 @@ export default function GuidedInvestigationPage() {
         phase: response.phase || undefined,
         tool_calls: response.tool_calls || undefined,
         tool_results: response.tool_results || undefined,
+        suggestions: response.suggestions ?? undefined,
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -358,7 +403,15 @@ export default function GuidedInvestigationPage() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
         {messages.map((msg, i) => (
-          <MessageBubble key={i} message={msg} />
+          <MessageBubble
+            key={i}
+            message={msg}
+            onSuggestionClick={
+              (session.status === 'active' || session.status === 'paused') && !sending
+                ? (text) => { setInput(text); handleSend(text); }
+                : undefined
+            }
+          />
         ))}
 
         {sending && (
@@ -380,18 +433,44 @@ export default function GuidedInvestigationPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your response…"
+              placeholder={
+                isFree && turnCount >= maxTurns
+                  ? 'Turn limit reached — upgrade for unlimited messages'
+                  : 'Type your response…'
+              }
               className="flex-1 h-11 bg-[#111827] border-[#374151] rounded text-sm"
-              disabled={sending}
+              disabled={sending || (isFree && turnCount >= maxTurns)}
             />
             <Button
-              onClick={handleSend}
-              disabled={sending || !input.trim()}
+              onClick={() => handleSend()}
+              disabled={sending || !input.trim() || (isFree && turnCount >= maxTurns)}
               className="h-11 px-6 bg-accent-500 hover:bg-accent-600 text-white"
             >
               Send
             </Button>
           </div>
+          {isFree && (
+            <div className={cn(
+              'text-xs mt-2',
+              turnCount >= maxTurns ? 'text-red-400' :
+              turnCount >= maxTurns - 2 ? 'text-yellow-400' :
+              'text-text-tertiary'
+            )}>
+              Turn {turnCount} of {maxTurns}
+              {turnCount >= maxTurns - 2 && turnCount < maxTurns && (
+                <span className="ml-1">
+                  · {maxTurns - turnCount} remaining.{' '}
+                  <a href="/pricing" className="text-accent-500 hover:underline">Upgrade for unlimited</a>
+                </span>
+              )}
+              {turnCount >= maxTurns && (
+                <span className="ml-1">
+                  · Limit reached.{' '}
+                  <a href="/pricing" className="text-accent-500 hover:underline">Upgrade for unlimited →</a>
+                </span>
+              )}
+            </div>
+          )}
           {error && (
             <p className="text-danger text-xs mt-2">{error}</p>
           )}
