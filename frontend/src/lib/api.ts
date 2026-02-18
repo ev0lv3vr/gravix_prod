@@ -163,6 +163,29 @@ export class ApiClient {
     const {
       data: { session },
     } = await supabase.auth.getSession();
+
+    // Backfill localStorage so future page loads use the fast path
+    if (session?.access_token && typeof window !== 'undefined') {
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+        const ref = supabaseUrl.match(/\/\/([^.]+)\./)?.[1] || '';
+        if (ref) {
+          localStorage.setItem(
+            `sb-${ref}-auth-token`,
+            JSON.stringify({
+              access_token: session.access_token,
+              refresh_token: session.refresh_token,
+              expires_at: session.expires_at,
+              token_type: session.token_type,
+              user: session.user,
+            }),
+          );
+        }
+      } catch {
+        /* quota exceeded — ignore */
+      }
+    }
+
     return {
       'Content-Type': 'application/json',
       ...(session?.access_token && {
