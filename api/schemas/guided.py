@@ -20,6 +20,7 @@ class GuidedMessageResponse(BaseModel):
     content: str
     tool_calls: Optional[List[Dict[str, Any]]] = None
     tool_results: Optional[List[Dict[str, Any]]] = None
+    phase: Optional[str] = None
 
 
 class GuidedSessionResponse(BaseModel):
@@ -38,3 +39,12 @@ class GuidedSessionComplete(BaseModel):
     root_causes: Optional[List[Dict[str, Any]]] = None
     recommendations: Optional[List[str]] = None
     create_investigation: bool = False
+
+
+class GuidedSessionListItem(BaseModel):
+    id: str
+    status: str
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    summary_preview: Optional[str] = None
+    message_count: int = 0
