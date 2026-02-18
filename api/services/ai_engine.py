@@ -22,6 +22,8 @@ async def _call_claude(
     system_prompt: str,
     user_prompt: str,
     max_tokens: int = 4096,
+    *,
+    log_meta: dict | None = None,
 ) -> dict:
     """Call Claude API directly via httpx with retry logic."""
     headers = {
@@ -36,6 +38,40 @@ async def _call_claude(
         "system": system_prompt,
         "messages": [{"role": "user", "content": user_prompt}],
     }
+
+    # Audit log helper (best-effort, never blocks)
+    _log_start = time.time()
+    _log_written = False
+
+    def _write_audit_log(success: bool, result: dict | None = None, error_msg: str | None = None):
+        nonlocal _log_written
+        if _log_written:
+            return
+        _log_written = True
+        try:
+            from database import get_supabase
+            import uuid
+            latency = int((time.time() - _log_start) * 1000)
+            meta = dict(log_meta) if log_meta else {}
+            if result:
+                meta["knowledge_patterns_injected"] = meta.get("knowledge_patterns_injected", 0)
+                meta["confidence_raw"] = result.get("confidence_score")
+            db = get_supabase()
+            db.table("ai_engine_logs").insert({
+                "id": str(uuid.uuid4()),
+                "analysis_id": (meta.get("analysis_id") or meta.get("investigation_id")),
+                "user_id": meta.get("user_id"),
+                "engine": meta.get("engine", "claude"),
+                "model": settings.anthropic_model,
+                "prompt_tokens": None,
+                "completion_tokens": None,
+                "latency_ms": latency,
+                "success": success,
+                "error": error_msg[:500] if error_msg else None,
+                "meta": meta,
+            }).execute()
+        except Exception as log_exc:
+            logger.debug(f"ai_engine_log write failed (ignored): {log_exc}")
 
     last_error = None
     for attempt in range(settings.max_retries_ai):
@@ -55,17 +91,25 @@ async def _call_claude(
                     text = content[0]["text"]
                     # Try to parse as JSON
                     try:
-                        return json.loads(text)
+                        parsed = json.loads(text)
+                        _write_audit_log(True, parsed)
+                        return parsed
                     except json.JSONDecodeError:
                         # Try to extract JSON from markdown code blocks
                         if "```json" in text:
                             json_str = text.split("```json")[1].split("```")[0].strip()
-                            return json.loads(json_str)
+                            parsed = json.loads(json_str)
+                            _write_audit_log(True, parsed)
+                            return parsed
                         elif "```" in text:
                             json_str = text.split("```")[1].split("```")[0].strip()
-                            return json.loads(json_str)
+                            parsed = json.loads(json_str)
+                            _write_audit_log(True, parsed)
+                            return parsed
+                        _write_audit_log(True, {"raw_text": text})
                         return {"raw_text": text}
 
+                _write_audit_log(False, error_msg="No content in response")
                 return {"error": "No content in response"}
 
         except httpx.HTTPStatusError as e:
@@ -85,6 +129,7 @@ async def _call_claude(
             logger.warning(f"Claude API connection error (attempt {attempt + 1}): {e}")
             await _async_sleep(2 ** attempt)
 
+    _write_audit_log(False, error_msg=str(last_error))
     raise Exception(f"Claude API failed after {settings.max_retries_ai} attempts: {last_error}")
 
 
@@ -132,7 +177,10 @@ async def analyze_failure(analysis_data: dict) -> dict:
         logger.info(f"Injected {len(patterns)} knowledge patterns into failure analysis prompt")
 
     start_time = time.time()
-    result = await _call_claude(system_prompt, user_prompt)
+    result = await _call_claude(system_prompt, user_prompt, log_meta={
+        "engine": "failure_analysis",
+        "knowledge_patterns_injected": len(patterns),
+    })
     processing_time_ms = int((time.time() - start_time) * 1000)
 
     result["processing_time_ms"] = processing_time_ms
@@ -203,7 +251,10 @@ async def generate_spec(spec_data: dict) -> dict:
         logger.info(f"Injected {len(patterns)} knowledge patterns into spec prompt")
 
     start_time = time.time()
-    result = await _call_claude(system_prompt, user_prompt)
+    result = await _call_claude(system_prompt, user_prompt, log_meta={
+        "engine": "spec_engine",
+        "knowledge_patterns_injected": len(patterns),
+    })
     processing_time_ms = int((time.time() - start_time) * 1000)
 
     result["processing_time_ms"] = processing_time_ms
