@@ -89,6 +89,34 @@ class RequestLogItem(BaseModel):
     created_at: Optional[str] = None
 
 
+class EngineHealthStats(BaseModel):
+    # AI call stats (last 7 days)
+    total_ai_calls: int = 0
+    successful_ai_calls: int = 0
+    failed_ai_calls: int = 0
+    avg_latency_ms: Optional[float] = None
+    calls_by_engine: dict[str, int] = {}
+
+    # Knowledge injection stats
+    calls_with_knowledge: int = 0
+    injection_rate_pct: Optional[float] = None
+    avg_patterns_per_call: Optional[float] = None
+
+    # Knowledge base health
+    total_knowledge_patterns: int = 0
+    patterns_with_strong_evidence: int = 0  # evidence_count >= 3
+    total_feedback_entries: int = 0
+
+    # Cron health
+    last_aggregation_run: Optional[str] = None
+    last_aggregation_status: Optional[str] = None
+    last_aggregation_patterns_upserted: int = 0
+
+    # Confidence calibration
+    avg_confidence_raw: Optional[float] = None
+    avg_confidence_calibrated: Optional[float] = None
+
+
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
@@ -399,3 +427,109 @@ async def admin_request_logs(
         )
         for r in rows
     ]
+
+
+@router.get("/engine-health", response_model=EngineHealthStats)
+async def admin_engine_health(_admin: dict = Depends(get_admin_user)):
+    """Engine observability — AI call stats, knowledge injection rates, cron health."""
+    db = get_supabase()
+    now = datetime.now(timezone.utc)
+    week_ago = (now - timedelta(days=7)).isoformat()
+
+    stats = EngineHealthStats()
+
+    # --- AI call stats (last 7 days) ---
+    try:
+        logs = (
+            db.table("ai_engine_logs")
+            .select("success, latency_ms, meta, engine")
+            .gte("created_at", week_ago)
+            .order("created_at", desc=True)
+            .limit(1000)
+            .execute()
+        ).data or []
+
+        stats.total_ai_calls = len(logs)
+        stats.successful_ai_calls = sum(1 for l in logs if l.get("success"))
+        stats.failed_ai_calls = stats.total_ai_calls - stats.successful_ai_calls
+
+        latencies = [l["latency_ms"] for l in logs if l.get("latency_ms")]
+        stats.avg_latency_ms = round(sum(latencies) / len(latencies)) if latencies else None
+
+        # Calls by engine type
+        engine_counts: dict[str, int] = {}
+        for l in logs:
+            eng = (l.get("engine") or (l.get("meta") or {}).get("engine", "unknown"))
+            engine_counts[eng] = engine_counts.get(eng, 0) + 1
+        stats.calls_by_engine = engine_counts
+
+        # Knowledge injection rate
+        calls_with_knowledge = sum(
+            1 for l in logs
+            if (l.get("meta") or {}).get("knowledge_patterns_injected", 0) > 0
+        )
+        stats.calls_with_knowledge = calls_with_knowledge
+        stats.injection_rate_pct = (
+            round(calls_with_knowledge / len(logs) * 100, 1)
+            if logs else None
+        )
+
+        pattern_counts = [
+            (l.get("meta") or {}).get("knowledge_patterns_injected", 0)
+            for l in logs
+            if (l.get("meta") or {}).get("knowledge_patterns_injected", 0) > 0
+        ]
+        stats.avg_patterns_per_call = (
+            round(sum(pattern_counts) / len(pattern_counts), 1)
+            if pattern_counts else None
+        )
+
+        # Confidence stats
+        raw_scores = [
+            (l.get("meta") or {}).get("confidence_raw")
+            for l in logs
+            if (l.get("meta") or {}).get("confidence_raw") is not None
+        ]
+        if raw_scores:
+            stats.avg_confidence_raw = round(sum(raw_scores) / len(raw_scores), 3)
+    except Exception as exc:
+        logger.warning(f"Failed to query ai_engine_logs: {exc}")
+
+    # --- Knowledge base health ---
+    try:
+        kp = db.table("knowledge_patterns").select("id", count="exact").execute()
+        stats.total_knowledge_patterns = kp.count or 0
+
+        strong = (
+            db.table("knowledge_patterns")
+            .select("id", count="exact")
+            .gte("evidence_count", 3)
+            .execute()
+        )
+        stats.patterns_with_strong_evidence = strong.count or 0
+
+        fb = db.table("analysis_feedback").select("id", count="exact").execute()
+        stats.total_feedback_entries = fb.count or 0
+    except Exception as exc:
+        logger.warning(f"Failed to query knowledge stats: {exc}")
+
+    # --- Cron health ---
+    try:
+        last_run = (
+            db.table("cron_run_log")
+            .select("*")
+            .eq("job_name", "aggregate-knowledge")
+            .order("created_at", desc=True)
+            .limit(1)
+            .execute()
+        )
+        if last_run.data:
+            row = last_run.data[0]
+            stats.last_aggregation_run = str(row.get("created_at"))
+            stats.last_aggregation_status = row.get("status")
+            result_data = row.get("result") or {}
+            stats.last_aggregation_patterns_upserted = result_data.get("patterns_upserted", 0)
+    except Exception as exc:
+        logger.warning(f"Failed to query cron_run_log: {exc}")
+
+    return stats

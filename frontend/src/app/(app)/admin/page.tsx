@@ -135,15 +135,19 @@ function PatternAlertCard({
   );
 }
 
+type EngineHealthData = Awaited<ReturnType<typeof api.getAdminEngineHealth>>;
+
 export default function AdminOverviewPage() {
   const [data, setData] = useState<OverviewData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [alerts, setAlerts] = useState<PatternAlert[]>([]);
   const [alertsError, setAlertsError] = useState<string | null>(null);
+  const [engineHealth, setEngineHealth] = useState<EngineHealthData | null>(null);
 
   useEffect(() => {
     api.getAdminOverview().then(setData).catch((e) => setError(e.message));
     getPatternAlerts().then(setAlerts).catch((e) => setAlertsError(e.message));
+    api.getAdminEngineHealth().then(setEngineHealth).catch(() => {});
   }, []);
 
   const handleAcknowledge = async (id: string) => {
@@ -289,6 +293,55 @@ export default function AdminOverviewPage() {
           />
         ))}
       </div>
+
+      {/* Engine Health Card */}
+      {engineHealth && (
+        <div className="mt-8">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <FlaskConical className="w-5 h-5 text-accent-500" />
+            Engine Health (last 7 days)
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <StatCard label="AI Calls" value={engineHealth.total_ai_calls}
+              sub={`${engineHealth.failed_ai_calls} failed`}
+              icon={FlaskConical} color="bg-accent-500/10 text-accent-500" />
+            <StatCard label="Avg Latency" value={`${engineHealth.avg_latency_ms ?? 0}ms`}
+              icon={TrendingUp} color="bg-emerald-500/10 text-emerald-500" />
+            <StatCard label="Knowledge Injection" value={`${engineHealth.injection_rate_pct ?? 0}%`}
+              sub={`${engineHealth.calls_with_knowledge} calls enriched`}
+              icon={CheckCircle} color="bg-purple-500/10 text-purple-500" />
+            <StatCard label="Knowledge Patterns" value={engineHealth.total_knowledge_patterns}
+              sub={`${engineHealth.patterns_with_strong_evidence} with strong evidence`}
+              icon={FileText} color="bg-blue-500/10 text-blue-500" />
+          </div>
+
+          {/* Feedback flywheel + Cron status */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div className="bg-brand-800 border border-brand-600 rounded p-5">
+              <h3 className="text-sm font-medium text-text-secondary mb-3">Feedback Flywheel</h3>
+              <div className="text-2xl font-bold font-mono text-white">{engineHealth.total_feedback_entries}</div>
+              <div className="text-xs text-text-tertiary mt-1">total feedback entries</div>
+              <div className="mt-3 text-xs text-text-secondary">
+                {engineHealth.total_feedback_entries === 0 ? (
+                  <span className="text-warning">⚠ No feedback yet — engine running on zero empirical data</span>
+                ) : (
+                  <span className="text-emerald-400">✓ Flywheel active</span>
+                )}
+              </div>
+            </div>
+            <div className="bg-brand-800 border border-brand-600 rounded p-5">
+              <h3 className="text-sm font-medium text-text-secondary mb-3">Last Aggregation Cron</h3>
+              <div className="text-sm font-mono text-white">
+                {engineHealth.last_aggregation_run ?? "Never run"}
+              </div>
+              <div className="text-xs text-text-tertiary mt-1">
+                Status: {engineHealth.last_aggregation_status ?? "unknown"} •{' '}
+                {engineHealth.last_aggregation_patterns_upserted} patterns upserted
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

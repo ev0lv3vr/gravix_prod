@@ -485,6 +485,33 @@ export class ApiClient {
     return response.json();
   }
 
+  async getAdminEngineHealth(): Promise<{
+    total_ai_calls: number;
+    successful_ai_calls: number;
+    failed_ai_calls: number;
+    avg_latency_ms: number | null;
+    calls_by_engine: Record<string, number>;
+    calls_with_knowledge: number;
+    injection_rate_pct: number | null;
+    avg_patterns_per_call: number | null;
+    total_knowledge_patterns: number;
+    patterns_with_strong_evidence: number;
+    total_feedback_entries: number;
+    last_aggregation_run: string | null;
+    last_aggregation_status: string | null;
+    last_aggregation_patterns_upserted: number;
+    avg_confidence_raw: number | null;
+    avg_confidence_calibrated: number | null;
+  }> {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${API_URL}/v1/admin/engine-health`, { headers });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error((error as { detail?: string }).detail || 'Failed to fetch engine health');
+    }
+    return response.json();
+  }
+
   async getAdminUsers(search?: string): Promise<
     {
       id: string;

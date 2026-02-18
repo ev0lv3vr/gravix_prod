@@ -7,6 +7,10 @@ import logging
 from typing import Optional
 
 from services.ai_engine import _call_claude
+from services.knowledge_service import (
+    get_relevant_patterns,
+    format_knowledge_for_prompt,
+)
 from prompts.investigation_prompts import (
     get_five_why_system_prompt,
     build_five_why_user_prompt,
@@ -52,12 +56,29 @@ async def generate_five_why(
         substrate_b=substrate_b,
         additional_context=additional_context,
     )
-    
+
+    # Knowledge injection — ground 5-Why with confirmed production data
+    patterns: list[dict] = []
+    try:
+        adhesive_family = (additional_context or {}).get("material_subcategory")
+        patterns = await get_relevant_patterns(
+            substrate_a=substrate_a,
+            substrate_b=substrate_b,
+            adhesive_family=adhesive_family,
+        )
+        knowledge_text = format_knowledge_for_prompt(patterns)
+        if knowledge_text:
+            user_prompt = user_prompt + "\n\n" + knowledge_text
+            logger.info(f"Injected {len(patterns)} knowledge patterns into 5-Why prompt")
+    except Exception as exc:
+        logger.warning(f"Knowledge injection failed for 5-Why (non-fatal): {exc}")
+
     try:
         result = await _call_claude(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             max_tokens=2048,
+            log_meta={"engine": "five_why", "knowledge_patterns_injected": len(patterns)},
         )
         logger.info(f"5-Why chain generated for root cause: {root_cause[:50]}")
         return result
@@ -92,12 +113,33 @@ async def generate_8d_narrative(investigation_data: dict) -> dict:
     """
     system_prompt = get_8d_narrative_system_prompt()
     user_prompt = build_8d_narrative_user_prompt(investigation_data)
-    
+
+    # Knowledge injection — enrich narrative with empirical evidence
+    patterns: list[dict] = []
+    try:
+        # Extract substrate info from investigation or linked analysis
+        substrate_a = investigation_data.get("substrate_a", "")
+        substrate_b = investigation_data.get("substrate_b", "")
+        # Fallback: parse from what_failed description (best effort)
+        if not substrate_a and investigation_data.get("what_failed"):
+            substrate_a = investigation_data["what_failed"][:50]
+        patterns = await get_relevant_patterns(
+            substrate_a=substrate_a,
+            substrate_b=substrate_b,
+        )
+        knowledge_text = format_knowledge_for_prompt(patterns)
+        if knowledge_text:
+            user_prompt = user_prompt + "\n\n" + knowledge_text
+            logger.info(f"Injected {len(patterns)} knowledge patterns into 8D narrative prompt")
+    except Exception as exc:
+        logger.warning(f"Knowledge injection failed for 8D narrative (non-fatal): {exc}")
+
     try:
         result = await _call_claude(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             max_tokens=4096,
+            log_meta={"engine": "8d_narrative", "knowledge_patterns_injected": len(patterns)},
         )
         logger.info(f"8D narrative generated for investigation {investigation_data.get('investigation_number')}")
         return result
@@ -133,12 +175,28 @@ async def analyze_escape_point(
         where_in_process=where_in_process,
         process_description=process_description,
     )
-    
+
+    # Knowledge injection — find similar escape points from pattern history
+    patterns: list[dict] = []
+    try:
+        # Extract root cause category from first root cause
+        root_cat = root_causes[0].get("category") if root_causes else None
+        patterns = await get_relevant_patterns(
+            root_cause_category=root_cat,
+        )
+        knowledge_text = format_knowledge_for_prompt(patterns)
+        if knowledge_text:
+            user_prompt = user_prompt + "\n\n" + knowledge_text
+            logger.info(f"Injected {len(patterns)} knowledge patterns into escape point prompt")
+    except Exception as exc:
+        logger.warning(f"Knowledge injection failed for escape point (non-fatal): {exc}")
+
     try:
         result = await _call_claude(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             max_tokens=1024,
+            log_meta={"engine": "escape_point", "knowledge_patterns_injected": len(patterns)},
         )
         logger.info(f"Escape point analysis completed: {result.get('escape_point', 'N/A')[:50]}")
         return result

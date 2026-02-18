@@ -1,10 +1,13 @@
 """Cron job endpoints — protected by X-Cron-Secret header."""
 
 import logging
+import time
+import uuid
 
 from fastapi import APIRouter, Header, HTTPException, status
 
 from config import settings
+from database import get_supabase
 from services.feedback_email import send_pending_followups
 from services.knowledge_aggregator import run_knowledge_aggregation, run_metrics_aggregation
 
@@ -22,12 +25,34 @@ def _verify_cron_secret(x_cron_secret: str = Header(...)):
         )
 
 
+def _log_cron_run(job_name: str, start_time: float, result: dict, error: str | None = None):
+    """Best-effort cron execution log."""
+    try:
+        db = get_supabase()
+        db.table("cron_run_log").insert({
+            "id": str(uuid.uuid4()),
+            "job_name": job_name,
+            "status": "error" if error else "success",
+            "duration_ms": int((time.time() - start_time) * 1000),
+            "result": result,
+            "error": error[:500] if error else None,
+        }).execute()
+    except Exception as exc:
+        logger.debug(f"cron log write failed (ignored): {exc}")
+
+
 @router.post("/send-followups")
 async def send_followups(x_cron_secret: str = Header(...)):
     """Send follow-up emails for analyses awaiting feedback."""
     _verify_cron_secret(x_cron_secret)
-    result = await send_pending_followups()
-    return result
+    start = time.time()
+    try:
+        result = await send_pending_followups()
+        _log_cron_run("send-followups", start, result)
+        return result
+    except Exception as exc:
+        _log_cron_run("send-followups", start, {}, str(exc))
+        raise
 
 
 @router.post("/aggregate-knowledge")
@@ -39,8 +64,14 @@ async def aggregate_knowledge(x_cron_secret: str = Header(...)):
     computes success rates, and upserts into knowledge_patterns.
     """
     _verify_cron_secret(x_cron_secret)
-    result = await run_knowledge_aggregation()
-    return result
+    start = time.time()
+    try:
+        result = await run_knowledge_aggregation()
+        _log_cron_run("aggregate-knowledge", start, result)
+        return result
+    except Exception as exc:
+        _log_cron_run("aggregate-knowledge", start, {}, str(exc))
+        raise
 
 
 @router.post("/detect-patterns")
@@ -50,11 +81,17 @@ async def detect_patterns_cron(x_cron_secret: str = Header(...)):
     Sprint 11: Delegates to the patterns router's detection logic.
     """
     _verify_cron_secret(x_cron_secret)
-    from routers.patterns import detect_patterns as _detect
-    # Create a minimal admin user dict for the cron context
-    admin_user = {"id": "cron", "role": "admin"}
-    result = await _detect(x_cron_secret=x_cron_secret, user=admin_user)
-    return result
+    start = time.time()
+    try:
+        from routers.patterns import detect_patterns as _detect
+        # Create a minimal admin user dict for the cron context
+        admin_user = {"id": "cron", "role": "admin"}
+        result = await _detect(x_cron_secret=x_cron_secret, user=admin_user)
+        _log_cron_run("detect-patterns", start, result)
+        return result
+    except Exception as exc:
+        _log_cron_run("detect-patterns", start, {}, str(exc))
+        raise
 
 
 @router.post("/aggregate-metrics")
@@ -65,5 +102,11 @@ async def aggregate_metrics(x_cron_secret: str = Header(...)):
     adhesive families. Upserts into daily_metrics.
     """
     _verify_cron_secret(x_cron_secret)
-    result = await run_metrics_aggregation()
-    return result
+    start = time.time()
+    try:
+        result = await run_metrics_aggregation()
+        _log_cron_run("aggregate-metrics", start, result)
+        return result
+    except Exception as exc:
+        _log_cron_run("aggregate-metrics", start, {}, str(exc))
+        raise
