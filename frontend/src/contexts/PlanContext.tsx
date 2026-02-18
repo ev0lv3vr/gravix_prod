@@ -81,7 +81,7 @@ const PlanContext = createContext<PlanContextValue | undefined>(undefined);
 const POLL_INTERVAL_MS = 60_000; // 60 seconds
 
 export function PlanProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const [plan, setPlan] = useState<PlanTier>(() => {
     const cached = readCache();
@@ -126,6 +126,9 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
 
   // Reset when user logs out, fetch when user logs in
   useEffect(() => {
+    // Auth still resolving — keep loading, don't flash 'free'
+    if (authLoading) return;
+
     if (!user) {
       setPlan('free');
       setIsAdmin(false);
@@ -146,14 +149,16 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
       setIsAdmin(cached.isAdmin ?? false);
       setUsage(cached.usage);
       setIsLoading(false); // Cache is fresh — stop loading immediately
+    } else {
+      setIsLoading(true); // No cache — keep skeleton until API responds
     }
 
     fetchPlan();
-  }, [user, fetchPlan]);
+  }, [user, authLoading, fetchPlan]);
 
   // Periodic re-poll (only when tab is visible)
   useEffect(() => {
-    if (!user) return;
+    if (!user || authLoading) return;
 
     const interval = setInterval(() => {
       if (!document.hidden) {
@@ -162,7 +167,7 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
     }, POLL_INTERVAL_MS);
 
     return () => clearInterval(interval);
-  }, [user, fetchPlan]);
+  }, [user, authLoading, fetchPlan]);
 
   const value: PlanContextValue = {
     plan,
