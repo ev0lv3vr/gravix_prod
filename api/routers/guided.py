@@ -6,8 +6,11 @@ Sprint 11: AI-Forward — Conversational investigation with tool use.
 import logging
 import uuid
 import json
+import base64
 from datetime import datetime, timezone
+from urllib.parse import urlparse
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from dependencies import get_current_user
@@ -390,12 +393,128 @@ async def send_guided_message(
             )
     
     # Add user message to stored history
-    messages.append({
+    user_msg_record: dict = {
         "role": "user",
         "content": data.content,
         "timestamp": now,
-    })
-    
+    }
+    if data.photo_urls:
+        user_msg_record["photo_urls"] = [str(u) for u in data.photo_urls[:3]]
+    messages.append(user_msg_record)
+
+    # -----------------------------------------------------------------
+    # Photo-aware path: if photo_urls provided, build multimodal request
+    # -----------------------------------------------------------------
+    if data.photo_urls:
+        from config import settings
+
+        supabase_host = settings.supabase_url.replace("https://", "").replace("http://", "")
+        image_blocks: list[dict] = []
+
+        for photo_url in data.photo_urls[:3]:
+            try:
+                parsed = urlparse(photo_url)
+                if parsed.scheme != "https" or supabase_host not in parsed.netloc:
+                    logger.warning(f"Blocked non-Supabase guided photo URL: {photo_url}")
+                    continue
+
+                async with httpx.AsyncClient(timeout=30) as img_client:
+                    img_resp = await img_client.get(photo_url)
+                    img_resp.raise_for_status()
+
+                img_b64 = base64.standard_b64encode(img_resp.content).decode("utf-8")
+                content_type = img_resp.headers.get("content-type", "image/jpeg")
+
+                image_blocks.append({
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": content_type,
+                        "data": img_b64,
+                    },
+                })
+            except Exception as e:
+                logger.warning(f"Failed to fetch guided photo {photo_url}: {e}")
+
+        if image_blocks:
+            # Build conversation context from recent messages
+            conv_lines = []
+            for m in messages[-20:]:
+                role_label = "User" if m.get("role") == "user" else "Assistant"
+                conv_lines.append(f"{role_label}: {m.get('content', '')}")
+            conversation_context = "\n\n".join(conv_lines)
+
+            api_headers = {
+                "x-api-key": settings.anthropic_api_key,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            }
+            payload = {
+                "model": settings.anthropic_model,
+                "max_tokens": 2048,
+                "system": GUIDED_SYSTEM_PROMPT,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": [
+                            *image_blocks,
+                            {
+                                "type": "text",
+                                "text": (
+                                    f"{conversation_context}\n\n"
+                                    "The user has uploaded a defect photo for analysis. "
+                                    "Analyze the failure surface visible in the image, "
+                                    "classify the failure mode (adhesive, cohesive, mixed, substrate), "
+                                    "describe what you observe, and continue the investigation with follow-up questions."
+                                ),
+                            },
+                        ],
+                    }
+                ],
+            }
+
+            try:
+                async with httpx.AsyncClient(timeout=settings.ai_timeout_seconds) as ai_client:
+                    ai_resp = await ai_client.post(
+                        "https://api.anthropic.com/v1/messages",
+                        headers=api_headers,
+                        json=payload,
+                    )
+                    ai_resp.raise_for_status()
+                    ai_data = ai_resp.json()
+
+                response_text = ""
+                for block in ai_data.get("content", []):
+                    if block.get("type") == "text":
+                        response_text += block["text"]
+
+                assistant_msg = {
+                    "role": "assistant",
+                    "content": response_text,
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "tool_calls": [{"tool": "visual_analysis", "input": {"photo_count": len(image_blocks)}}],
+                }
+                messages.append(assistant_msg)
+
+                db.table("investigation_sessions").update({
+                    "messages": messages,
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                }).eq("id", session_id).execute()
+
+                return GuidedMessageResponse(
+                    role="assistant",
+                    content=response_text,
+                    tool_calls=[{"tool": "visual_analysis", "input": {"photo_count": len(image_blocks)}}],
+                    tool_results=None,
+                )
+            except Exception as e:
+                logger.warning(f"Multimodal guided call failed, falling through to text: {e}")
+                # Fall through to normal text flow below
+
+    # -----------------------------------------------------------------
+    # Standard text-only path
+    # -----------------------------------------------------------------
+
     # Build Claude Messages API conversation from stored history (last 20 msgs)
     claude_messages = []
     for m in messages[-20:]:

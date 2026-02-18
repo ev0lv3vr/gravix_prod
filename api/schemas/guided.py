@@ -12,6 +12,7 @@ class GuidedSessionStart(BaseModel):
 
 class GuidedMessage(BaseModel):
     content: str
+    photo_urls: Optional[List[str]] = None
 
 
 class GuidedMessageResponse(BaseModel):
