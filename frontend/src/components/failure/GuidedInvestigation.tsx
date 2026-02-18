@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Paperclip, Send, Pause, FileText, Check, Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePlan } from '@/contexts/PlanContext';
 import ReactMarkdown from 'react-markdown';
 import {
   sendGuidedMessage,
@@ -312,6 +313,7 @@ function ResultsCard({
 export function GuidedInvestigation() {
   const router = useRouter();
   const { user } = useAuth();
+  const { plan: userPlanFromContext, isAdmin } = usePlan();
 
   // Session state
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -322,6 +324,7 @@ export function GuidedInvestigation() {
   const [isCompleted, setIsCompleted] = useState(false);
   const [useApi, setUseApi] = useState(true);
   const [exportDone, setExportDone] = useState(false);
+  const [showPhotoUpgrade, setShowPhotoUpgrade] = useState(false);
 
   // Completion data (Patch 2 — dynamic summary card)
   const [completionRootCause, setCompletionRootCause] = useState('');
@@ -334,10 +337,10 @@ export function GuidedInvestigation() {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Determine plan (mock — in production, use actual plan from user context)
-  const userPlan = (user as unknown as { plan?: string })?.plan || 'free';
-  const isFree = userPlan === 'free' || !user;
-  const isQualityPlus = userPlan === 'quality' || userPlan === 'enterprise';
+  // Plan-based feature gating
+  const canUploadPhotos = isAdmin || (userPlanFromContext !== 'free');
+  const isFree = userPlanFromContext === 'free' && !isAdmin;
+  const isQualityPlus = userPlanFromContext === 'quality' || userPlanFromContext === 'enterprise' || isAdmin;
   const maxTurns = isFree ? 10 : 999;
 
   // Scroll to bottom
@@ -471,54 +474,68 @@ export function GuidedInvestigation() {
     }
   };
 
-  // Handle photo upload
+  // Handle photo upload — sends to backend for real Claude visual analysis
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!sessionId || !useApi) return;
 
     setSending(true);
 
     try {
+      // Upload to Supabase storage
       let photoUrl: string;
       try {
         const result = await uploadDefectPhoto(file);
         photoUrl = result.url;
       } catch {
-        // Fallback: create local URL
         photoUrl = URL.createObjectURL(file);
       }
 
+      // Show photo in chat as user message
       const photoMsg: ChatMessage = {
         id: `user-photo-${Date.now()}`,
         role: 'user',
-        content: 'Uploaded defect photo',
+        content: 'Uploaded defect photo for analysis',
         timestamp: new Date().toISOString(),
         photoUrl,
       };
-
       setMessages((prev) => [...prev, photoMsg]);
 
-      // AI responds to photo
+      // Send to backend WITH the photo URL — let Claude actually analyze it
       const newTurn = turnCount + 1;
       setTurnCount(newTurn);
 
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      const response = await sendGuidedMessage(
+        sessionId,
+        'Please analyze this defect photo',
+        [photoUrl]
+      );
 
       const aiResponse: ChatMessage = {
         id: `ai-photo-${Date.now()}`,
         role: 'assistant',
-        content:
-          "I can see the fracture surface. Let me analyze the failure pattern...\n\nThe photo shows clean substrate on one side with full adhesive transfer to the other, which is consistent with an adhesive failure mode. This typically indicates a surface energy or preparation issue rather than a cohesive (adhesive material) failure.\n\nWas any surface treatment applied before bonding?",
+        content: response.content,
         timestamp: new Date().toISOString(),
-        toolCalls: [
-          { tool: 'visual_analysis', label: 'Analyzing fracture surface photo...' },
-        ],
-        quickReplies: ['IPA wipe only', 'Abrasion + solvent', 'Primer applied', 'No treatment'],
+        toolCalls: response.tool_calls?.map((tc) => ({
+          tool: tc.tool,
+          label: getToolLabel(tc.tool),
+        })),
       };
-
       setMessages((prev) => [...prev, aiResponse]);
+
+      if (newTurn >= maxTurns) {
+        await handleComplete();
+      }
     } catch (err) {
       console.error('Photo upload error:', err);
+      const errorMsg: ChatMessage = {
+        id: `err-photo-${Date.now()}`,
+        role: 'assistant',
+        content: 'Sorry, I could not analyze the photo. Please try again or describe the failure surface in text.',
+        timestamp: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, errorMsg]);
     } finally {
       setSending(false);
       if (photoInputRef.current) photoInputRef.current.value = '';
@@ -712,12 +729,40 @@ export function GuidedInvestigation() {
           <div className="flex items-end gap-2 max-w-4xl mx-auto">
             {/* Photo upload */}
             <button
-              onClick={() => photoInputRef.current?.click()}
+              onClick={() => {
+                if (!canUploadPhotos) {
+                  setShowPhotoUpgrade(true);
+                  return;
+                }
+                photoInputRef.current?.click();
+              }}
               className="shrink-0 p-2.5 rounded-lg text-[#64748B] hover:text-accent-500 hover:bg-[#1F2937] transition-colors"
               title="Upload defect photo"
             >
               <Paperclip className="w-5 h-5" />
             </button>
+            {showPhotoUpgrade && (
+              <div className="absolute bottom-20 left-4 z-10 bg-brand-800 border border-accent-500/30 rounded-lg p-4 max-w-xs shadow-xl">
+                <p className="text-sm text-white font-medium mb-1">📸 Photo analysis requires Pro</p>
+                <p className="text-xs text-[#94A3B8] mb-3">
+                  Visual AI defect analysis is available on Pro ($49/mo) and above.
+                </p>
+                <div className="flex gap-2">
+                  <a
+                    href="/pricing"
+                    className="px-3 py-1.5 text-xs font-medium bg-accent-500 hover:bg-accent-600 text-white rounded transition-colors"
+                  >
+                    Upgrade →
+                  </a>
+                  <button
+                    onClick={() => setShowPhotoUpgrade(false)}
+                    className="px-3 py-1.5 text-xs font-medium text-[#64748B] hover:text-white transition-colors"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            )}
             <input
               ref={photoInputRef}
               type="file"

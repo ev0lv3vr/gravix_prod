@@ -178,13 +178,16 @@ export async function startGuidedSession(params: {
 
 export async function sendGuidedMessage(
   sessionId: string,
-  content: string
+  content: string,
+  photoUrls?: string[]
 ): Promise<GuidedMessageResponse> {
   const headers = await getAuthHeaders();
+  const body: Record<string, unknown> = { content };
+  if (photoUrls?.length) body.photo_urls = photoUrls;
   const response = await fetch(`${API_URL}/v1/guided/${sessionId}/message`, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ content }),
+    body: JSON.stringify(body),
   });
   if (!response.ok) throw new Error('Failed to send message');
   return response.json();
