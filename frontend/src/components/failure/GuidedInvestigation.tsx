@@ -14,6 +14,7 @@ import {
   completeGuidedSession,
   pauseGuidedSession,
   uploadDefectPhoto,
+  createInvestigationFromGuided,
   type GuidedMessageResponse,
 } from '@/lib/products';
 
@@ -226,6 +227,7 @@ function ResultsCard({
   actions,
   onExport,
   exportDone,
+  creatingInvestigation,
 }: {
   onOpenInvestigation: () => void;
   showInvestigationButton: boolean;
@@ -234,6 +236,7 @@ function ResultsCard({
   actions: string[];
   onExport: () => void;
   exportDone: boolean;
+  creatingInvestigation?: boolean;
 }) {
   return (
     <div className="bg-brand-800 border border-accent-500/30 rounded-lg p-5 w-full">
@@ -279,9 +282,10 @@ function ResultsCard({
         {showInvestigationButton && (
           <Button
             onClick={onOpenInvestigation}
-            className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white text-sm"
+            disabled={creatingInvestigation}
+            className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white text-sm disabled:opacity-50"
           >
-            Open 8D Investigation →
+            {creatingInvestigation ? 'Creating…' : 'Create 8D Investigation →'}
           </Button>
         )}
         <Button
@@ -302,6 +306,52 @@ function ResultsCard({
           )}
         </Button>
       </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// Phase Progress Bar
+// ============================================================================
+
+const PHASES = [
+  { num: 1, label: 'Problem' },
+  { num: 2, label: 'Containment' },
+  { num: 3, label: 'Data Collection' },
+  { num: 4, label: 'Root Cause' },
+  { num: 5, label: 'Verification' },
+  { num: 6, label: 'Corrective Actions' },
+];
+
+function PhaseProgressBar({ currentPhase }: { currentPhase: string | undefined }) {
+  const isComplete = currentPhase === 'complete';
+  const phaseNum = isComplete ? 7 : Number(currentPhase) || 0;
+
+  if (!currentPhase) return null;
+
+  return (
+    <div className="px-4 md:px-8 py-2 border-b border-[#1F2937]">
+      <div className="flex items-center gap-1">
+        {PHASES.map((p) => (
+          <div key={p.num} className="flex items-center gap-1 flex-1">
+            <div className={cn(
+              'h-1.5 flex-1 rounded-full transition-colors',
+              phaseNum >= p.num ? 'bg-accent-500' : 'bg-brand-700'
+            )} />
+            <span className={cn(
+              'text-[10px] whitespace-nowrap hidden sm:inline',
+              phaseNum >= p.num ? 'text-accent-500' : 'text-[#64748B]'
+            )}>
+              {p.label}
+            </span>
+          </div>
+        ))}
+      </div>
+      {isComplete && (
+        <p className="text-xs text-green-400 mt-1.5">
+          ✓ Investigation complete — finalize and create an 8D report below.
+        </p>
+      )}
     </div>
   );
 }
@@ -331,6 +381,10 @@ export function GuidedInvestigation() {
   const [completionConfidence, setCompletionConfidence] = useState<number | null>(null);
   const [completionActions, setCompletionActions] = useState<string[]>([]);
 
+  // Phase tracking
+  const [currentPhase, setCurrentPhase] = useState<string | undefined>(undefined);
+  const [creatingInvestigation, setCreatingInvestigation] = useState(false);
+
   // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -340,7 +394,7 @@ export function GuidedInvestigation() {
   // Plan-based feature gating
   const canUploadPhotos = isAdmin || (userPlanFromContext !== 'free');
   const isFree = userPlanFromContext === 'free' && !isAdmin;
-  const isQualityPlus = userPlanFromContext === 'quality' || userPlanFromContext === 'enterprise' || isAdmin;
+  const isQualityPlus = ['quality', 'team', 'enterprise'].includes(userPlanFromContext) || isAdmin;
   const maxTurns = isFree ? 10 : 999;
 
   // Scroll to bottom
@@ -425,6 +479,9 @@ export function GuidedInvestigation() {
       }
 
       if (response) {
+        // Track phase from AI response
+        if (response.phase) setCurrentPhase(response.phase);
+
         const aiMsg: ChatMessage = {
           id: `ai-${Date.now()}`,
           role: 'assistant',
@@ -511,6 +568,9 @@ export function GuidedInvestigation() {
         'Please analyze this defect photo',
         [photoUrl]
       );
+
+      // Track phase from AI response
+      if (response.phase) setCurrentPhase(response.phase);
 
       const aiResponse: ChatMessage = {
         id: `ai-photo-${Date.now()}`,
@@ -672,6 +732,9 @@ export function GuidedInvestigation() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px-32px)] bg-[#0A1628]">
+      {/* Phase Progress Bar */}
+      <PhaseProgressBar currentPhase={currentPhase} />
+
       {/* Chat Messages */}
       <div
         ref={chatContainerRef}
@@ -705,18 +768,27 @@ export function GuidedInvestigation() {
         {isCompleted && (
           <ResultsCard
             showInvestigationButton={isQualityPlus}
-            onOpenInvestigation={() =>
-              router.push(
-                sessionId
-                  ? `/investigations/new?guided_session_id=${sessionId}`
-                  : '/investigations/new'
-              )
-            }
+            onOpenInvestigation={async () => {
+              if (!sessionId) {
+                router.push('/investigations/new');
+                return;
+              }
+              setCreatingInvestigation(true);
+              try {
+                const result = await createInvestigationFromGuided(sessionId);
+                router.push(`/investigations/${result.investigation_id}`);
+              } catch {
+                router.push(`/investigations/new?guided_session_id=${sessionId}`);
+              } finally {
+                setCreatingInvestigation(false);
+              }
+            }}
             rootCause={completionRootCause}
             confidence={completionConfidence}
             actions={completionActions}
             onExport={handleExportResults}
             exportDone={exportDone}
+            creatingInvestigation={creatingInvestigation}
           />
         )}
 

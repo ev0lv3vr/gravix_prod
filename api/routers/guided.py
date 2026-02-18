@@ -4,6 +4,7 @@ Sprint 11: AI-Forward — Conversational investigation with tool use.
 """
 
 import logging
+import re
 import uuid
 import json
 import base64
@@ -23,6 +24,7 @@ from schemas.guided import (
     GuidedMessageResponse,
     GuidedSessionResponse,
     GuidedSessionComplete,
+    GuidedSessionListItem,
 )
 from services.ai_engine import _call_claude
 from services.guided_ai import call_claude_with_tools, GUIDED_SYSTEM_PROMPT
@@ -34,6 +36,22 @@ def _escape_like(val: str) -> str:
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/guided", tags=["guided"])
+
+# Phase tag regex for stripping from display text
+_PHASE_RE = re.compile(r'<investigation_phase>(\w+)</investigation_phase>\s*')
+
+
+def _parse_and_strip_phase(text: str) -> tuple[str, str | None]:
+    """Extract investigation phase tag from AI response and strip it from display text.
+    
+    Returns (display_text, phase) where phase is "1"-"6" or "complete", or None.
+    """
+    match = _PHASE_RE.search(text)
+    if not match:
+        return text, None
+    phase = match.group(1)
+    display_text = _PHASE_RE.sub('', text).strip()
+    return display_text, phase
 
 
 def _get_rate_limits(user: dict) -> dict:
@@ -290,18 +308,22 @@ async def start_guided_session(
             max_tokens=1024,
         )
         
-        greeting_text = ai_response.get("raw_text", ai_response.get("message", "Welcome to the Gravix Guided Investigation. Let's identify the root cause of your bonding failure. Can you describe what failed and when you first noticed the issue?"))
+        raw_greeting = ai_response.get("raw_text", ai_response.get("message", "Welcome to the Gravix Guided Investigation. Let's identify the root cause of your bonding failure. Can you describe what failed and when you first noticed the issue?"))
+        greeting_text, greeting_phase = _parse_and_strip_phase(raw_greeting)
     except Exception as e:
         logger.warning(f"AI greeting generation failed: {e}")
         greeting_text = "Welcome to the Gravix Guided Investigation. Let's identify the root cause of your bonding failure. Can you describe what failed and when you first noticed the issue?"
+        greeting_phase = "1"
     
-    initial_messages = [
-        {
-            "role": "assistant",
-            "content": greeting_text,
-            "timestamp": now,
-        }
-    ]
+    initial_msg = {
+        "role": "assistant",
+        "content": greeting_text,
+        "timestamp": now,
+    }
+    if greeting_phase:
+        initial_msg["phase"] = greeting_phase
+    
+    initial_messages = [initial_msg]
     
     record = {
         "id": session_id,
@@ -483,10 +505,12 @@ async def send_guided_message(
                     ai_resp.raise_for_status()
                     ai_data = ai_resp.json()
 
-                response_text = ""
+                raw_response_text = ""
                 for block in ai_data.get("content", []):
                     if block.get("type") == "text":
-                        response_text += block["text"]
+                        raw_response_text += block["text"]
+
+                response_text, phase = _parse_and_strip_phase(raw_response_text)
 
                 assistant_msg = {
                     "role": "assistant",
@@ -494,6 +518,8 @@ async def send_guided_message(
                     "timestamp": datetime.now(timezone.utc).isoformat(),
                     "tool_calls": [{"tool": "visual_analysis", "input": {"photo_count": len(image_blocks)}}],
                 }
+                if phase:
+                    assistant_msg["phase"] = phase
                 messages.append(assistant_msg)
 
                 db.table("investigation_sessions").update({
@@ -506,6 +532,7 @@ async def send_guided_message(
                     content=response_text,
                     tool_calls=[{"tool": "visual_analysis", "input": {"photo_count": len(image_blocks)}}],
                     tool_results=None,
+                    phase=phase,
                 )
             except Exception as e:
                 logger.warning(f"Multimodal guided call failed, falling through to text: {e}")
@@ -549,8 +576,11 @@ async def send_guided_message(
             max_tokens=2048,
         )
         
-        response_text = result["text"]
+        raw_text = result["text"]
         tool_calls = result["tool_calls"]
+        
+        # Parse and strip phase tag from AI response
+        response_text, phase = _parse_and_strip_phase(raw_text)
         
         # Add assistant message to stored history
         assistant_msg = {
@@ -558,6 +588,8 @@ async def send_guided_message(
             "content": response_text,
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
+        if phase:
+            assistant_msg["phase"] = phase
         if tool_calls:
             assistant_msg["tool_calls"] = [
                 {"tool": tc["name"], "input": tc["input"]}
@@ -581,6 +613,7 @@ async def send_guided_message(
             content=response_text,
             tool_calls=[{"tool": tc["name"], "input": tc["input"]} for tc in tool_calls] or None,
             tool_results=[{"tool": tc["name"], "result": tc["result"]} for tc in tool_calls] or None,
+            phase=phase,
         )
     
     except Exception as e:
@@ -720,3 +753,121 @@ async def complete_guided_session(
         "summary": summary,
         "message": "Guided investigation completed",
     }
+
+
+@router.post("/{session_id}/create-investigation")
+async def create_investigation_from_guided(
+    session_id: str,
+    user: dict = Depends(get_current_user),
+):
+    """Create an 8D investigation pre-filled from a guided session."""
+    db = get_supabase()
+
+    session_result = (
+        db.table("investigation_sessions")
+        .select("*")
+        .eq("id", session_id)
+        .eq("user_id", user["id"])
+        .execute()
+    )
+
+    if not session_result.data:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    session = session_result.data[0]
+    state = session.get("session_state", {})
+    summary = state.get("summary", "")
+
+    # Generate investigation number
+    now = datetime.now(timezone.utc)
+    year = now.year
+    prefix = f"GQ-{year}-"
+    num_result = (
+        db.table("investigations")
+        .select("investigation_number")
+        .like("investigation_number", f"{prefix}%")
+        .order("investigation_number", desc=True)
+        .limit(1)
+        .execute()
+    )
+    if num_result.data:
+        try:
+            seq = int(num_result.data[0]["investigation_number"].split("-")[-1])
+            next_seq = seq + 1
+        except (ValueError, IndexError):
+            next_seq = 1
+    else:
+        next_seq = 1
+    investigation_number = f"{prefix}{next_seq:04d}"
+
+    # Build title from session context or timestamp
+    created_date = (session.get("created_at") or "")[:10]
+    title = f"Guided Investigation — {created_date}" if created_date else "Guided Investigation"
+
+    inv_id = str(uuid.uuid4())
+    now_iso = now.isoformat()
+
+    record = {
+        "id": inv_id,
+        "user_id": user["id"],
+        "created_by": user["id"],
+        "investigation_number": investigation_number,
+        "title": title,
+        "what_failed": summary[:2000] if summary else "Created from guided investigation",
+        "status": "open",
+        "severity": "major",
+        "analysis_id": session.get("analysis_id"),
+        "team_lead_user_id": user["id"],
+        "created_at": now_iso,
+        "updated_at": now_iso,
+    }
+
+    try:
+        db.table("investigations").insert(record).execute()
+
+        # Link session to the investigation
+        db.table("investigation_sessions").update({
+            "investigation_id": inv_id,
+        }).eq("id", session_id).execute()
+
+        return {"investigation_id": inv_id, "success": True}
+    except Exception as e:
+        logger.exception(f"Failed to create investigation from guided session: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to create investigation: {str(e)[:200]}",
+        )
+
+
+@router.get("/sessions/list", response_model=list[GuidedSessionListItem])
+async def list_guided_sessions(
+    user: dict = Depends(get_current_user),
+    limit: int = 20,
+):
+    """List user's guided investigation sessions."""
+    db = get_supabase()
+
+    result = (
+        db.table("investigation_sessions")
+        .select("id, status, created_at, updated_at, session_state, messages")
+        .eq("user_id", user["id"])
+        .order("created_at", desc=True)
+        .limit(min(limit, 50))
+        .execute()
+    )
+
+    items = []
+    for row in result.data or []:
+        state = row.get("session_state") or {}
+        summary = state.get("summary", "")
+        messages = row.get("messages") or []
+        items.append(GuidedSessionListItem(
+            id=row["id"],
+            status=row.get("status", "active"),
+            created_at=row.get("created_at"),
+            updated_at=row.get("updated_at"),
+            summary_preview=summary[:150] if summary else None,
+            message_count=len(messages),
+        ))
+
+    return items

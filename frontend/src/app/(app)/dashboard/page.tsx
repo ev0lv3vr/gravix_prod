@@ -12,6 +12,7 @@ import { PendingFeedbackBanner } from '@/components/dashboard/PendingFeedbackBan
 import { InvestigationsDashboardWidget } from '@/components/investigations/InvestigationsDashboardWidget';
 import { InvestigationsSummaryCard } from '@/components/dashboard/InvestigationsSummaryCard';
 import { PatternAlertsCard } from '@/components/dashboard/PatternAlertsCard';
+import { GuidedSessionsCard } from '@/components/dashboard/GuidedSessionsCard';
 
 type HistoryType = 'spec' | 'failure';
 
@@ -267,6 +268,11 @@ function DashboardContent() {
           {(profilePlan === 'enterprise' || isAdmin) && <PatternAlertsCard />}
         </div>
       )}
+
+      {/* Guided Sessions */}
+      <div className="mb-10">
+        <GuidedSessionsCard />
+      </div>
 
       {/* Component 6.3: Recent Analyses */}
       <div>

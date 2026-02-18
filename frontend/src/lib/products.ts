@@ -65,6 +65,7 @@ export interface GuidedMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp?: string;
+  phase?: string;
   tool_calls?: Array<{ tool: string; input: Record<string, unknown> }>;
   tool_results?: Array<{ tool: string; result: Record<string, unknown> }>;
 }
@@ -74,6 +75,16 @@ export interface GuidedMessageResponse {
   content: string;
   tool_calls?: Array<{ tool: string; input: Record<string, unknown> }> | null;
   tool_results?: Array<{ tool: string; result: Record<string, unknown> }> | null;
+  phase?: string | null;
+}
+
+export interface GuidedSessionListItem {
+  id: string;
+  status: string;
+  created_at?: string | null;
+  updated_at?: string | null;
+  summary_preview?: string | null;
+  message_count: number;
 }
 
 // ============================================================================
@@ -224,6 +235,30 @@ export async function pauseGuidedSession(
     headers,
   });
   if (!response.ok) throw new Error('Failed to pause session');
+  return response.json();
+}
+
+// Create Investigation from Guided Session
+export async function createInvestigationFromGuided(
+  sessionId: string
+): Promise<{ investigation_id: string; success: boolean }> {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${API_URL}/v1/guided/${sessionId}/create-investigation`, {
+    method: 'POST',
+    headers,
+  });
+  if (!response.ok) throw new Error('Failed to create investigation');
+  return response.json();
+}
+
+// List Guided Sessions
+export async function listGuidedSessions(
+  limit?: number
+): Promise<GuidedSessionListItem[]> {
+  const headers = await getAuthHeaders();
+  const params = limit ? `?limit=${limit}` : '';
+  const response = await fetch(`${API_URL}/v1/guided/sessions/list${params}`, { headers });
+  if (!response.ok) throw new Error('Failed to fetch guided sessions');
   return response.json();
 }
 

@@ -11,6 +11,7 @@ import {
   getGuidedSession,
   sendGuidedMessage,
   completeGuidedSession,
+  createInvestigationFromGuided,
   type GuidedSession,
   type GuidedMessage,
 } from '@/lib/products';
@@ -81,6 +82,46 @@ function MessageBubble({ message }: { message: GuidedMessage }) {
   );
 }
 
+const PHASES = [
+  { num: 1, label: 'Problem' },
+  { num: 2, label: 'Containment' },
+  { num: 3, label: 'Data Collection' },
+  { num: 4, label: 'Root Cause' },
+  { num: 5, label: 'Verification' },
+  { num: 6, label: 'Corrective Actions' },
+];
+
+function PhaseProgressBar({ currentPhase }: { currentPhase: string | undefined }) {
+  const isComplete = currentPhase === 'complete';
+  const phaseNum = isComplete ? 7 : Number(currentPhase) || 0;
+
+  return (
+    <div className="px-6 py-2 border-b border-brand-600">
+      <div className="flex items-center gap-1">
+        {PHASES.map((p) => (
+          <div key={p.num} className="flex items-center gap-1 flex-1">
+            <div className={cn(
+              'h-1.5 flex-1 rounded-full transition-colors',
+              phaseNum >= p.num ? 'bg-accent-500' : 'bg-brand-700'
+            )} />
+            <span className={cn(
+              'text-[10px] whitespace-nowrap hidden sm:inline',
+              phaseNum >= p.num ? 'text-accent-500' : 'text-text-tertiary'
+            )}>
+              {p.label}
+            </span>
+          </div>
+        ))}
+      </div>
+      {isComplete && (
+        <p className="text-xs text-success mt-1.5">
+          ✓ Investigation complete — finalize and create an 8D report below.
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function GuidedInvestigationPage() {
   const params = useParams();
   const router = useRouter();
@@ -95,6 +136,8 @@ export default function GuidedInvestigationPage() {
   const [error, setError] = useState<string | null>(null);
   const [summary, setSummary] = useState<string | null>(null);
   const [copyLabel, setCopyLabel] = useState('Copy Results');
+  const [currentPhase, setCurrentPhase] = useState<string | undefined>(undefined);
+  const [creatingInvestigation, setCreatingInvestigation] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -119,6 +162,11 @@ export default function GuidedInvestigationPage() {
         .then((s) => {
           setSession(s);
           setMessages(s.messages || []);
+          // Extract current phase from last assistant message
+          const lastPhaseMsg = (s.messages || [])
+            .filter((m: GuidedMessage) => m.role === 'assistant' && m.phase)
+            .at(-1);
+          if (lastPhaseMsg?.phase) setCurrentPhase(lastPhaseMsg.phase);
         })
         .catch((e) => setError(e.message));
     }
@@ -141,10 +189,14 @@ export default function GuidedInvestigationPage() {
     try {
       const response = await sendGuidedMessage(sessionId, userMessage.content);
 
+      // Track phase from AI response
+      if (response.phase) setCurrentPhase(response.phase);
+
       const assistantMessage: GuidedMessage = {
         role: 'assistant',
         content: response.content,
         timestamp: new Date().toISOString(),
+        phase: response.phase || undefined,
         tool_calls: response.tool_calls || undefined,
         tool_results: response.tool_results || undefined,
       };
@@ -248,6 +300,9 @@ export default function GuidedInvestigationPage() {
         </div>
       </div>
 
+      {/* Phase Progress Bar */}
+      <PhaseProgressBar currentPhase={currentPhase} />
+
       {/* Summary (after completion) */}
       {summary && (
         <div className="bg-brand-800 border border-success/30 mx-6 mt-4 rounded-lg p-4">
@@ -260,9 +315,21 @@ export default function GuidedInvestigationPage() {
               size="sm"
               variant="outline"
               className="text-xs"
-              onClick={() => router.push(`/investigations/new?guided_session_id=${sessionId}`)}
+              disabled={creatingInvestigation}
+              onClick={async () => {
+                setCreatingInvestigation(true);
+                try {
+                  const result = await createInvestigationFromGuided(sessionId);
+                  router.push(`/investigations/${result.investigation_id}`);
+                } catch {
+                  // Fallback: navigate with session ID to pre-fill
+                  router.push(`/investigations/new?guided_session_id=${sessionId}`);
+                } finally {
+                  setCreatingInvestigation(false);
+                }
+              }}
             >
-              Create 8D Investigation →
+              {creatingInvestigation ? 'Creating…' : 'Create 8D Investigation →'}
             </Button>
             <Button
               size="sm"
