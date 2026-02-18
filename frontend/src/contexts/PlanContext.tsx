@@ -95,12 +95,15 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
     const cached = readCache();
     return cached?.usage ?? null;
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => {
+    // If we have fresh cache, show it immediately — no loading state
+    return readCache() === null;
+  });
 
   // Track latest fetch to avoid stale responses overwriting newer data
   const fetchIdRef = useRef(0);
 
-  const hasDataRef = useRef(false);
+  const hasDataRef = useRef(readCache() !== null);
 
   const fetchPlan = useCallback(async () => {
     const id = ++fetchIdRef.current;
@@ -130,8 +133,11 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
 
   // Reset when user logs out, fetch when user logs in
   useEffect(() => {
-    // Auth still resolving — keep loading, don't flash 'free'
-    if (authLoading) return;
+    // Auth still resolving — if we have cache, don't block on it
+    if (authLoading) {
+      // Cache already hydrated via useState initializers — nothing to do
+      return;
+    }
 
     if (!user) {
       setPlan('free');
@@ -147,16 +153,10 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // Hydrate from cache instantly, then fetch fresh data
-    const cached = readCache();
-    if (cached) {
-      setPlan(cached.plan);
-      setIsAdmin(cached.isAdmin ?? false);
-      setUsage(cached.usage);
-      hasDataRef.current = true;
-      setIsLoading(false); // Cache is fresh — stop loading immediately
-    } else {
-      setIsLoading(true); // No cache — keep skeleton until API responds
+    // User is authenticated — fetch fresh data in background
+    // Cache was already applied via useState initializers, so no flash
+    if (!hasDataRef.current) {
+      setIsLoading(true); // No cache — show skeleton
     }
 
     fetchPlan();
