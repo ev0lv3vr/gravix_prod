@@ -442,9 +442,6 @@ export function GuidedInvestigation() {
     if (!text.trim() || sending || isCompleted) return;
     if (turnCount >= maxTurns) return;
 
-    const newTurn = turnCount + 1;
-    setTurnCount(newTurn);
-
     const userMsg: ChatMessage = {
       id: `user-${Date.now()}`,
       role: 'user',
@@ -467,14 +464,24 @@ export function GuidedInvestigation() {
 
     try {
       let response: GuidedMessageResponse | null = null;
+      let newTurn = turnCount;
 
       if (useApi && sessionId) {
         try {
           response = await sendGuidedMessage(sessionId, text.trim());
+          // Only increment after successful API call
+          newTurn = turnCount + 1;
+          setTurnCount(newTurn);
         } catch {
           // Fall back to mock
           setUseApi(false);
         }
+      }
+
+      if (!response && !useApi) {
+        // Mock fallback — still increment
+        newTurn = turnCount + 1;
+        setTurnCount(newTurn);
       }
 
       if (response) {
@@ -560,9 +567,6 @@ export function GuidedInvestigation() {
       setMessages((prev) => [...prev, photoMsg]);
 
       // Send to backend WITH the photo URL — let Claude actually analyze it
-      const newTurn = turnCount + 1;
-      setTurnCount(newTurn);
-
       const response = await sendGuidedMessage(
         sessionId,
         'Please analyze this defect photo',
@@ -583,6 +587,10 @@ export function GuidedInvestigation() {
         })),
       };
       setMessages((prev) => [...prev, aiResponse]);
+
+      // Increment turn count after successful API call
+      const newTurn = turnCount + 1;
+      setTurnCount(newTurn);
 
       if (newTurn >= maxTurns) {
         await handleComplete();

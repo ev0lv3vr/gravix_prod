@@ -209,9 +209,6 @@ export default function GuidedInvestigationPage() {
     if (!text.trim() || sending) return;
     if (isFree && turnCount >= maxTurns) return;
 
-    const newTurn = turnCount + 1;
-    setTurnCount(newTurn);
-
     const userMessage: GuidedMessage = {
       role: 'user',
       content: text.trim(),
@@ -232,6 +229,9 @@ export default function GuidedInvestigationPage() {
 
     try {
       const response = await sendGuidedMessage(sessionId, userMessage.content);
+
+      // Only increment turn count after successful API call
+      setTurnCount(prev => prev + 1);
 
       // Track phase from AI response
       if (response.phase) setCurrentPhase(response.phase);
