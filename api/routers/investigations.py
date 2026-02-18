@@ -31,6 +31,14 @@ from schemas.investigations import (
     CloseInvestigationRequest,
 )
 from services.audit_service import log_event, log_field_changes
+from services.notification_service import (
+    notify_team_member_added,
+    notify_status_change,
+    notify_action_assigned,
+    notify_new_comment,
+    notify_investigation_closed,
+    create_notification,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -404,6 +412,14 @@ async def add_team_member(
             target_id=member_id,
         )
         
+        # Notify the added user
+        notify_team_member_added(
+            investigation_id=investigation_id,
+            added_user_id=data.user_id,
+            role=data.role,
+            actor_user_id=user["id"],
+        )
+        
         return TeamMemberResponse(**record)
     
     except Exception as e:
@@ -516,6 +532,21 @@ async def transition_status(
             actor_user_id=user["id"],
             diff_data={"old_status": old_status, "new_status": data.new_status, "notes": data.notes},
         )
+        
+        # Notify team members of status change
+        notify_status_change(
+            investigation_id=investigation_id,
+            old_status=old_status,
+            new_status=data.new_status,
+            actor_user_id=user["id"],
+        )
+        
+        # If closed, send additional closure notification
+        if data.new_status == "closed":
+            notify_investigation_closed(
+                investigation_id=investigation_id,
+                actor_user_id=user["id"],
+            )
         
         return StatusTransitionResponse(
             investigation_id=investigation_id,
@@ -792,6 +823,20 @@ async def analyze_investigation(
         )
         
         logger.info(f"AI analysis completed for investigation {investigation.get('investigation_number')}")
+        
+        # Notify team members that AI analysis is complete
+        from services.notification_service import _get_team_member_ids
+        team_ids = _get_team_member_ids(investigation_id, exclude_user_id=user["id"])
+        num_causes = len(result.get("root_causes", []))
+        for uid in team_ids:
+            create_notification(
+                user_id=uid,
+                investigation_id=investigation_id,
+                notification_type="ai_analysis_completed",
+                title="AI Analysis Complete",
+                message=f"AI root cause analysis identified {num_causes} root cause{'s' if num_causes != 1 else ''} for investigation {investigation.get('investigation_number', '')}.",
+                action_url=f"/investigations/{investigation_id}",
+            )
         
         return {
             "success": True,

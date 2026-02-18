@@ -1,6 +1,22 @@
 import { supabase } from './supabase';
 import type { FailureAnalysis, SpecRequest, Case, User } from './types';
 
+/**
+ * API error with HTTP status code preserved.
+ * Allows callers to distinguish 429 (rate limit) / 403 (plan gate) from other errors.
+ */
+export class ApiError extends Error {
+  status: number;
+  detail: unknown;
+
+  constructor(message: string, status: number, detail?: unknown) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.detail = detail;
+  }
+}
+
 // Feedback types
 export type FeedbackSubmitData = {
   analysis_id?: string;
@@ -206,7 +222,8 @@ export class ApiClient {
     });
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
-      throw new Error(error.detail || error.message || 'Failed to create analysis');
+      const msg = typeof error.detail === 'string' ? error.detail : (error.message || 'Failed to create analysis');
+      throw new ApiError(msg, response.status, error.detail);
     }
     return response.json();
   }
@@ -243,7 +260,8 @@ export class ApiClient {
     });
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
-      throw new Error(error.detail || error.message || 'Failed to create spec');
+      const msg = typeof error.detail === 'string' ? error.detail : (error.message || 'Failed to create spec');
+      throw new ApiError(msg, response.status, error.detail);
     }
     return response.json();
   }

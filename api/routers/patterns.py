@@ -172,6 +172,27 @@ async def detect_patterns(
             db.table("pattern_alerts").insert(alert_record).execute()
             alerts_created += 1
             logger.info(f"Pattern alert created: {alert_record['title']} (severity={severity}, z={z_score:.2f})")
+            
+            # Notify team/enterprise users who have intelligence.alerts access
+            try:
+                from services.notification_service import create_notification
+                team_users = (
+                    db.table("users")
+                    .select("id")
+                    .in_("plan", ["team", "quality", "enterprise"])
+                    .execute()
+                )
+                for u in (team_users.data or []):
+                    create_notification(
+                        user_id=u["id"],
+                        investigation_id=None,
+                        notification_type="pattern_alert",
+                        title=f"Pattern Alert: {alert_record['title']}",
+                        message=alert_record["description"][:200],
+                        action_url="/intelligence",
+                    )
+            except Exception:
+                logger.debug("Pattern alert notification skipped", exc_info=True)
         except Exception as e:
             logger.warning(f"Failed to create pattern alert: {e}")
     

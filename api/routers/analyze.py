@@ -171,6 +171,20 @@ async def create_analysis(
         # Increment usage
         increment_analysis_usage(user["id"])
 
+        # Schedule feedback request notification (non-blocking)
+        try:
+            from services.notification_service import create_notification
+            create_notification(
+                user_id=user["id"],
+                investigation_id=None,
+                notification_type="feedback_request",
+                title="How did your analysis go?",
+                message="Help improve Gravix by sharing whether the root causes were accurate.",
+                action_url=f"/dashboard?feedback={analysis_id}",
+            )
+        except Exception:
+            logger.debug("Feedback notification skipped", exc_info=True)
+
     except Exception as e:
         logger.exception(f"Analysis failed: {e}")
         db.table("failure_analyses").update(

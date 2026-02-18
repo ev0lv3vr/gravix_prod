@@ -12,7 +12,7 @@ import { AuthModal } from '@/components/auth/AuthModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { usePlan } from '@/contexts/PlanContext';
-import { api } from '@/lib/api';
+import { api, ApiError } from '@/lib/api';
 import { startGuidedSession } from '@/lib/products';
 import { UsageCounter } from '@/components/shared/UsageCounter';
 
@@ -183,8 +183,14 @@ function StandardFailureAnalysis() {
       try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(AUTO_SUBMIT_KEY); } catch { /* noop */ }
     } catch (err) {
       console.error('Failure analysis error:', err);
-      setErrorMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
-      setStatus('error');
+      // 429 (rate limit) or 403 (plan gate) → show upgrade modal instead of error
+      if (err instanceof ApiError && (err.status === 429 || err.status === 403)) {
+        setUpgradeModalOpen(true);
+        setStatus('idle');
+      } else {
+        setErrorMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+        setStatus('error');
+      }
     }
   }, [isExhausted, user, refreshPlan]);
 
