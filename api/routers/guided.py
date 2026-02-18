@@ -20,7 +20,7 @@ from schemas.guided import (
     GuidedSessionComplete,
 )
 from services.ai_engine import _call_claude
-from prompts.tds_extraction import get_guided_investigation_system_prompt
+from services.guided_ai import call_claude_with_tools, GUIDED_SYSTEM_PROMPT
 
 def _escape_like(val: str) -> str:
     """Escape SQL LIKE/ILIKE wildcards in user input."""
@@ -222,8 +222,8 @@ async def start_guided_session(
                 "material_subcategory": analysis.get("material_subcategory"),
             }
     
-    # Generate initial AI greeting
-    system_prompt = get_guided_investigation_system_prompt()
+    # Generate initial AI greeting (no tools needed for greeting)
+    system_prompt = GUIDED_SYSTEM_PROMPT
     greeting_prompt = "A new guided investigation session has started."
     if initial_context:
         greeting_prompt += f"\n\nInitial context:\n{json.dumps(initial_context, indent=2)}"
@@ -277,7 +277,11 @@ async def send_guided_message(
     data: GuidedMessage,
     user: dict = Depends(get_current_user),
 ):
-    """Send a message in a guided session and get AI response with tool use."""
+    """Send a message in a guided session and get AI response with tool use.
+    
+    Uses a proper agentic tool loop: Claude calls tools via native tool_use,
+    we execute them server-side, feed results back, repeat until pure text.
+    """
     db = get_supabase()
     
     # Fetch session
@@ -303,64 +307,65 @@ async def send_guided_message(
     now = datetime.now(timezone.utc).isoformat()
     messages = session.get("messages", [])
     
-    # Add user message
+    # Add user message to stored history
     messages.append({
         "role": "user",
         "content": data.content,
         "timestamp": now,
     })
     
-    # Build conversation for Claude
-    system_prompt = get_guided_investigation_system_prompt()
-    conversation_text = "\n\n".join([
-        f"{'User' if m['role'] == 'user' else 'Assistant'}: {m['content']}"
-        for m in messages[-20:]  # Last 20 messages for context window
-    ])
+    # Build Claude Messages API conversation from stored history (last 20 msgs)
+    claude_messages = []
+    for m in messages[-20:]:
+        role = m.get("role", "user")
+        content = m.get("content", "")
+        # Only include user and assistant roles; skip tool metadata
+        if role in ("user", "assistant") and isinstance(content, str) and content:
+            claude_messages.append({"role": role, "content": content})
+    
+    # Ensure conversation starts with a user message (Claude requirement)
+    if claude_messages and claude_messages[0]["role"] != "user":
+        claude_messages = claude_messages[1:]
+    
+    # Ensure no consecutive same-role messages (merge if needed)
+    merged = []
+    for msg in claude_messages:
+        if merged and merged[-1]["role"] == msg["role"]:
+            merged[-1]["content"] += "\n\n" + msg["content"]
+        else:
+            merged.append(dict(msg))
+    claude_messages = merged
+    
+    # Tool executor bound to current db connection
+    async def tool_executor(tool_name: str, tool_input: dict) -> dict:
+        return await _execute_tool(db, tool_name, tool_input)
     
     try:
-        ai_response = await _call_claude(
-            system_prompt=system_prompt,
-            user_prompt=conversation_text,
+        result = await call_claude_with_tools(
+            messages=claude_messages,
+            tool_executor=tool_executor,
+            system_prompt=GUIDED_SYSTEM_PROMPT,
             max_tokens=2048,
         )
         
-        response_text = ai_response.get("raw_text", "")
-        tool_calls = []
-        tool_results = []
+        response_text = result["text"]
+        tool_calls = result["tool_calls"]
         
-        # Check if AI wants to use a tool
-        if not response_text:
-            response_text = json.dumps(ai_response)
-        
-        # Parse for tool calls in the response
-        if "tool" in ai_response and "input" in ai_response:
-            tool_name = ai_response["tool"]
-            tool_input = ai_response["input"]
-            tool_calls.append({"tool": tool_name, "input": tool_input})
-            
-            # Execute the tool
-            tool_result = await _execute_tool(db, tool_name, tool_input)
-            tool_results.append({"tool": tool_name, "result": tool_result})
-            
-            # Get follow-up response from Claude with tool results
-            followup_prompt = f"{conversation_text}\n\nTool Result ({tool_name}): {json.dumps(tool_result)}\n\nBased on this tool result, continue the investigation."
-            followup_response = await _call_claude(
-                system_prompt=system_prompt,
-                user_prompt=followup_prompt,
-                max_tokens=2048,
-            )
-            response_text = followup_response.get("raw_text", json.dumps(followup_response))
-        
-        # Add assistant message
+        # Add assistant message to stored history
         assistant_msg = {
             "role": "assistant",
             "content": response_text,
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
         if tool_calls:
-            assistant_msg["tool_calls"] = tool_calls
-        if tool_results:
-            assistant_msg["tool_results"] = tool_results
+            assistant_msg["tool_calls"] = [
+                {"tool": tc["name"], "input": tc["input"]}
+                for tc in tool_calls
+            ]
+            assistant_msg["tool_results"] = [
+                {"tool": tc["name"], "result": tc["result"]}
+                for tc in tool_calls
+            ]
         
         messages.append(assistant_msg)
         
@@ -373,8 +378,8 @@ async def send_guided_message(
         return GuidedMessageResponse(
             role="assistant",
             content=response_text,
-            tool_calls=tool_calls or None,
-            tool_results=tool_results or None,
+            tool_calls=[{"tool": tc["name"], "input": tc["input"]} for tc in tool_calls] or None,
+            tool_results=[{"tool": tc["name"], "result": tc["result"]} for tc in tool_calls] or None,
         )
     
     except Exception as e:
