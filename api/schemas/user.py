@@ -25,7 +25,7 @@ class UserProfile(BaseModel):
 class UserUpdate(BaseModel):
     name: Optional[str] = None
     company: Optional[str] = None
-    role: Optional[str] = None
+    job_title: Optional[str] = None
 
 
 class UsageResponse(BaseModel):

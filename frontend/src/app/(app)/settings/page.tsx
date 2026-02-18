@@ -623,7 +623,7 @@ export default function SettingsPage() {
     setSaveSuccess(false);
 
     try {
-      const updated = await api.updateProfile({ name, company, role });
+      const updated = await api.updateProfile({ name, company, job_title: role });
       if (updated) setProfile(updated);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
