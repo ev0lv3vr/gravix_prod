@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   getGuidedSession,
   sendGuidedMessage,
@@ -84,6 +85,7 @@ export default function GuidedInvestigationPage() {
   const params = useParams();
   const router = useRouter();
   const sessionId = params.id as string;
+  const { user, loading: authLoading } = useAuth();
 
   const [session, setSession] = useState<GuidedSession | null>(null);
   const [messages, setMessages] = useState<GuidedMessage[]>([]);
@@ -92,8 +94,16 @@ export default function GuidedInvestigationPage() {
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [summary, setSummary] = useState<string | null>(null);
+  const [copyLabel, setCopyLabel] = useState('Copy Results');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auth guard
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/');
+    }
+  }, [authLoading, user, router]);
 
   // Scroll to bottom on new messages
   const scrollToBottom = useCallback(() => {
@@ -104,13 +114,15 @@ export default function GuidedInvestigationPage() {
 
   // Load session
   useEffect(() => {
-    getGuidedSession(sessionId)
-      .then((s) => {
-        setSession(s);
-        setMessages(s.messages || []);
-      })
-      .catch((e) => setError(e.message));
-  }, [sessionId]);
+    if (!authLoading && user) {
+      getGuidedSession(sessionId)
+        .then((s) => {
+          setSession(s);
+          setMessages(s.messages || []);
+        })
+        .catch((e) => setError(e.message));
+    }
+  }, [sessionId, authLoading, user]);
 
   // Send message
   const handleSend = async () => {
@@ -166,6 +178,17 @@ export default function GuidedInvestigationPage() {
       handleSend();
     }
   };
+
+  // Auth guard early returns (after all hooks)
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-400" />
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   if (error && !session) {
     return (
@@ -252,12 +275,14 @@ export default function GuidedInvestigationPage() {
                   .join('\n\n---\n\n');
                 try {
                   await navigator.clipboard.writeText(text);
+                  setCopyLabel('✓ Copied!');
                 } catch {
-                  // noop
+                  setCopyLabel('⚠ Copy failed');
                 }
+                setTimeout(() => setCopyLabel('Copy Results'), 2000);
               }}
             >
-              Copy Results
+              {copyLabel}
             </Button>
           </div>
         </div>

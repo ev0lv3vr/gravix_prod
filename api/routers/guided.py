@@ -358,10 +358,15 @@ async def send_guided_message(
 
     # Auto-resume paused sessions when user sends a message
     if session["status"] == "paused":
-        db.table("investigation_sessions").update({
+        resume_resp = db.table("investigation_sessions").update({
             "status": "active",
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }).eq("id", session_id).execute()
+        if not resume_resp.data:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to resume paused session",
+            )
     
     now = datetime.now(timezone.utc).isoformat()
     messages = session.get("messages", [])
@@ -518,10 +523,15 @@ async def pause_guided_session(
             detail="Only active sessions can be paused",
         )
 
-    db.table("investigation_sessions").update({
+    pause_resp = db.table("investigation_sessions").update({
         "status": "paused",
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }).eq("id", session_id).eq("user_id", user["id"]).execute()
+    if not pause_resp.data:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to pause session",
+        )
 
     return {"success": True, "session_id": session_id, "status": "paused"}
 
