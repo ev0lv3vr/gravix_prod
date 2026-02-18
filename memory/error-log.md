@@ -38,3 +38,8 @@
 2026-02-17: MoneySamurai sync trigger cron: initial run failed (MODULE_NOT_FOUND @supabase/supabase-js when script run from /tmp); fixed by running from api dir. Also amazon_accounts.status column does not exist; script should not select it. OTP verify failed when using hashed_token; use linkData.properties.email_otp with verifyOtp type='email'.
 
 - 2026-02-17: MoneySamurai sync trigger script: supabase sync_jobs schema lacks error_message column; use existing cron-moneysamurai-sync-trigger.cjs which verifies OTP via token_hash (hashed_token from generateLink), not by parsing token from action_link.
+
+## 2026-02-18 — Contradictory design feedback across revisions
+**What happened:** Gave Rev 2 label feedback that directly contradicted my Rev 1 feedback on 3 points (text order, N.W. prefix, address detail). The designer had already applied Rev 1 fixes correctly, and I told them to undo their fixes.
+**Root cause:** Didn't have Rev 1 feedback in context, compared against the raw brief copy instead of previous revision notes.
+**Fix:** Always check for previous revision feedback before reviewing a new revision. Store revision feedback in the project folder so it persists across sessions.

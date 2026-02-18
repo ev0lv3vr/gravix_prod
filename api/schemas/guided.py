@@ -21,6 +21,7 @@ class GuidedMessageResponse(BaseModel):
     tool_calls: Optional[List[Dict[str, Any]]] = None
     tool_results: Optional[List[Dict[str, Any]]] = None
     phase: Optional[str] = None
+    suggestions: Optional[List[str]] = None
 
 
 class GuidedSessionResponse(BaseModel):

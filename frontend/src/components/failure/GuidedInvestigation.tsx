@@ -426,6 +426,7 @@ export function GuidedInvestigation() {
             role: m.role as 'user' | 'assistant',
             content: m.content,
             timestamp: m.timestamp || new Date().toISOString(),
+            quickReplies: m.suggestions ?? undefined,
           }));
           setMessages(mapped);
         }
@@ -440,9 +441,6 @@ export function GuidedInvestigation() {
   const sendMessage = async (text: string) => {
     if (!text.trim() || sending || isCompleted) return;
     if (turnCount >= maxTurns) return;
-
-    const newTurn = turnCount + 1;
-    setTurnCount(newTurn);
 
     const userMsg: ChatMessage = {
       id: `user-${Date.now()}`,
@@ -466,14 +464,24 @@ export function GuidedInvestigation() {
 
     try {
       let response: GuidedMessageResponse | null = null;
+      let newTurn = turnCount;
 
       if (useApi && sessionId) {
         try {
           response = await sendGuidedMessage(sessionId, text.trim());
+          // Only increment after successful API call
+          newTurn = turnCount + 1;
+          setTurnCount(newTurn);
         } catch {
           // Fall back to mock
           setUseApi(false);
         }
+      }
+
+      if (!response && !useApi) {
+        // Mock fallback — still increment
+        newTurn = turnCount + 1;
+        setTurnCount(newTurn);
       }
 
       if (response) {
@@ -489,6 +497,7 @@ export function GuidedInvestigation() {
             tool: tc.tool,
             label: getToolLabel(tc.tool),
           })),
+          quickReplies: response.suggestions ?? undefined,
         };
         setMessages((prev) => [...prev, aiMsg]);
       } else {
@@ -558,9 +567,6 @@ export function GuidedInvestigation() {
       setMessages((prev) => [...prev, photoMsg]);
 
       // Send to backend WITH the photo URL — let Claude actually analyze it
-      const newTurn = turnCount + 1;
-      setTurnCount(newTurn);
-
       const response = await sendGuidedMessage(
         sessionId,
         'Please analyze this defect photo',
@@ -581,6 +587,10 @@ export function GuidedInvestigation() {
         })),
       };
       setMessages((prev) => [...prev, aiResponse]);
+
+      // Increment turn count after successful API call
+      const newTurn = turnCount + 1;
+      setTurnCount(newTurn);
 
       if (newTurn >= maxTurns) {
         await handleComplete();
@@ -847,17 +857,21 @@ export function GuidedInvestigation() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your answer or click a suggestion..."
+              placeholder={
+                isFree && turnCount >= maxTurns
+                  ? 'Turn limit reached — upgrade for unlimited messages'
+                  : 'Type your answer or click a suggestion...'
+              }
               rows={1}
               className="flex-1 bg-[#111827] border border-[#374151] text-white text-sm rounded-lg px-4 py-2.5 resize-none focus:outline-none focus:border-accent-500 transition-colors placeholder:text-[#64748B]"
               style={{ maxHeight: '96px' }}
-              disabled={sending}
+              disabled={sending || (isFree && turnCount >= maxTurns)}
             />
 
             {/* Send button */}
             <Button
               onClick={() => sendMessage(input)}
-              disabled={sending || !input.trim()}
+              disabled={sending || !input.trim() || (isFree && turnCount >= maxTurns)}
               className="shrink-0 h-10 w-10 p-0 bg-accent-500 hover:bg-accent-600 text-white rounded-lg disabled:opacity-40"
             >
               <Send className="w-4 h-4" />
@@ -870,9 +884,28 @@ export function GuidedInvestigation() {
       <div className="border-t border-[#1F2937] px-4 md:px-8 py-2 bg-brand-800/30 flex items-center justify-between shrink-0">
         <div>
           {isFree && !isCompleted && (
-            <span className="text-xs text-[#64748B]">
-              Turn {turnCount} of {maxTurns}{' '}
-              <span className="text-[#4B5563]">(Free tier)</span>
+            <span className={cn(
+              'text-xs',
+              turnCount >= maxTurns ? 'text-red-400' :
+              turnCount >= maxTurns - 2 ? 'text-yellow-400' :
+              'text-[#64748B]'
+            )}>
+              Turn {turnCount} of {maxTurns}
+              {turnCount >= maxTurns - 2 && turnCount < maxTurns && (
+                <span className="ml-1">
+                  · {maxTurns - turnCount} remaining.{' '}
+                  <a href="/pricing" className="text-accent-500 hover:underline">Upgrade for unlimited</a>
+                </span>
+              )}
+              {turnCount >= maxTurns && (
+                <span className="ml-1">
+                  · Limit reached.{' '}
+                  <a href="/pricing" className="text-accent-500 hover:underline">Upgrade for unlimited →</a>
+                </span>
+              )}
+              {turnCount < maxTurns - 2 && (
+                <span className="text-[#4B5563]"> (Free tier)</span>
+              )}
             </span>
           )}
         </div>

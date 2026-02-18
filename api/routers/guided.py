@@ -40,6 +40,23 @@ router = APIRouter(prefix="/v1/guided", tags=["guided"])
 # Phase tag regex for stripping from display text
 _PHASE_RE = re.compile(r'<investigation_phase>(\w+)</investigation_phase>\s*')
 
+# Suggestions tag regex
+_SUGGESTIONS_RE = re.compile(r'<suggestions>(.*?)</suggestions>\s*', re.DOTALL)
+
+
+def _parse_and_strip_suggestions(text: str) -> tuple[str, list[str] | None]:
+    """Extract suggestion chips from AI response and strip the tag.
+    
+    Returns (display_text, suggestions) where suggestions is a list of strings or None.
+    """
+    match = _SUGGESTIONS_RE.search(text)
+    if not match:
+        return text, None
+    raw = match.group(1).strip()
+    suggestions = [s.strip() for s in raw.split('|') if s.strip()]
+    display_text = _SUGGESTIONS_RE.sub('', text).strip()
+    return display_text, suggestions if suggestions else None
+
 
 def _parse_and_strip_phase(text: str) -> tuple[str, str | None]:
     """Extract investigation phase tag from AI response and strip it from display text.
@@ -310,16 +327,20 @@ async def start_guided_session(
         
         raw_greeting = ai_response.get("raw_text", ai_response.get("message", "Welcome to the Gravix Guided Investigation. Let's identify the root cause of your bonding failure. Can you describe what failed and when you first noticed the issue?"))
         greeting_text, greeting_phase = _parse_and_strip_phase(raw_greeting)
+        greeting_text, greeting_suggestions = _parse_and_strip_suggestions(greeting_text)
     except Exception as e:
         logger.warning(f"AI greeting generation failed: {e}")
         greeting_text = "Welcome to the Gravix Guided Investigation. Let's identify the root cause of your bonding failure. Can you describe what failed and when you first noticed the issue?"
         greeting_phase = "1"
+        greeting_suggestions = None
     
     initial_msg = {
         "role": "assistant",
         "content": greeting_text,
         "timestamp": now,
     }
+    if greeting_suggestions:
+        initial_msg["suggestions"] = greeting_suggestions
     if greeting_phase:
         initial_msg["phase"] = greeting_phase
     
@@ -511,6 +532,7 @@ async def send_guided_message(
                         raw_response_text += block["text"]
 
                 response_text, phase = _parse_and_strip_phase(raw_response_text)
+                response_text, suggestions = _parse_and_strip_suggestions(response_text)
 
                 assistant_msg = {
                     "role": "assistant",
@@ -520,6 +542,8 @@ async def send_guided_message(
                 }
                 if phase:
                     assistant_msg["phase"] = phase
+                if suggestions:
+                    assistant_msg["suggestions"] = suggestions
                 messages.append(assistant_msg)
 
                 db.table("investigation_sessions").update({
@@ -533,6 +557,7 @@ async def send_guided_message(
                     tool_calls=[{"tool": "visual_analysis", "input": {"photo_count": len(image_blocks)}}],
                     tool_results=None,
                     phase=phase,
+                    suggestions=suggestions,
                 )
             except Exception as e:
                 logger.warning(f"Multimodal guided call failed, falling through to text: {e}")
@@ -579,8 +604,9 @@ async def send_guided_message(
         raw_text = result["text"]
         tool_calls = result["tool_calls"]
         
-        # Parse and strip phase tag from AI response
+        # Parse and strip phase tag and suggestions from AI response
         response_text, phase = _parse_and_strip_phase(raw_text)
+        response_text, suggestions = _parse_and_strip_suggestions(response_text)
         
         # Add assistant message to stored history
         assistant_msg = {
@@ -590,6 +616,8 @@ async def send_guided_message(
         }
         if phase:
             assistant_msg["phase"] = phase
+        if suggestions:
+            assistant_msg["suggestions"] = suggestions
         if tool_calls:
             assistant_msg["tool_calls"] = [
                 {"tool": tc["name"], "input": tc["input"]}
@@ -614,6 +642,7 @@ async def send_guided_message(
             tool_calls=[{"tool": tc["name"], "input": tc["input"]} for tc in tool_calls] or None,
             tool_results=[{"tool": tc["name"], "result": tc["result"]} for tc in tool_calls] or None,
             phase=phase,
+            suggestions=suggestions,
         )
     
     except Exception as e:
