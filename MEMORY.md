@@ -70,7 +70,7 @@ Last updated: 2026-02-17
 - [ ] Google Search Console sitemap submission (needs manual access)
 - [ ] **Amazon CA / NARF** — disable NARF for chemical ASINs or submit SDS (Ev's call, flagged 2/15)
 - [x] ~~GSC indexing errors~~ — investigated 2/15: 5xx = Shopify transient 503s, 403 = correct robots.txt blocks. Non-issue.
-- [ ] **ShipBob PAT expired** — blocking fulfillment data cross-referencing (since 2/14)
+- [x] ~~ShipBob PAT expired~~ — PAT does NOT expire (confirmed 2/17). 403 errors on 2/14 were likely transient.
 - [ ] **ShipBob UROs accruing fees** — 2 shipments in On-Hold Receiving, $490 accrued (~$18/day), flagged 2/17
 - [ ] **Medium restock URGENT** — 8oz: ~5 days, 2oz: ~6 days as of 2/15 (deteriorating daily)
 - [ ] **Ethan Miller replacement** — order #5786, 4× Thick 16oz replacement not yet created at ShipBob

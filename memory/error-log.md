@@ -10,6 +10,17 @@
 - Sent follow-up email to Noveon Magnetics without showing Ev the draft first. External emails = ask first, always.
 - Asked about bottle size preference — B2B case orders are always 16oz. Don't ask what we should already know.
 
+## 2026-02-17 — NEVER create new ShipBob products via API
+- API order creation with wrong/missing product IDs silently creates NEW orphan inventory items
+- These orphan products have no Shopify link → if receiving orders are accidentally created against them, inventory is trapped and can't fulfill Shopify orders
+- Created 3 orphan products (Inv IDs: 22374746, 22373981, 22373980) during replacement/trial order attempts
+- **RULE:** Always use existing ShipBob product IDs. If the API can't match, STOP and ask Ev to do it manually in the dashboard. Never let the API create new products on the fly.
+
+## 2026-02-17 — ShipBob PAT does NOT expire
+- Was reporting "ShipBob PAT expired" since 2/14 based on HTTP 403 errors
+- PATs don't expire — the 403 was likely transient or a different issue
+- Don't assume token expiry from a single 403. Verify before flagging.
+
 ## 2026-02-17 — Himalaya attachments require MML multipart syntax
 - `<#part filename=...>` inside plain text body does NOT work — it gets sent as literal text
 - Must wrap in `<#multipart type=mixed>` with `<#part type=text/plain>` for body + `<#part filename=...>` for attachments
