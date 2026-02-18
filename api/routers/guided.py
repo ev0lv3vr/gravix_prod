@@ -350,11 +350,18 @@ async def send_guided_message(
     
     session = session_result.data[0]
     
-    if session["status"] != "active":
+    if session["status"] not in ("active", "paused"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Session is no longer active",
         )
+
+    # Auto-resume paused sessions when user sends a message
+    if session["status"] == "paused":
+        db.table("investigation_sessions").update({
+            "status": "active",
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }).eq("id", session_id).execute()
     
     now = datetime.now(timezone.utc).isoformat()
     messages = session.get("messages", [])
@@ -481,6 +488,42 @@ async def get_guided_session(
         raise HTTPException(status_code=404, detail="Session not found")
     
     return GuidedSessionResponse(**result.data[0])
+
+
+@router.post("/{session_id}/pause")
+async def pause_guided_session(
+    session_id: str,
+    user: dict = Depends(get_current_user),
+    _gate: None = Depends(plan_gate("analysis.guided")),
+):
+    """Pause a guided session so it can be resumed later."""
+    db = get_supabase()
+
+    # Verify session exists and belongs to user
+    session_result = (
+        db.table("investigation_sessions")
+        .select("id, status")
+        .eq("id", session_id)
+        .eq("user_id", user["id"])
+        .execute()
+    )
+
+    if not session_result.data:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    session = session_result.data[0]
+    if session["status"] not in ("active",):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only active sessions can be paused",
+        )
+
+    db.table("investigation_sessions").update({
+        "status": "paused",
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }).eq("id", session_id).eq("user_id", user["id"]).execute()
+
+    return {"success": True, "session_id": session_id, "status": "paused"}
 
 
 @router.post("/{session_id}/complete")

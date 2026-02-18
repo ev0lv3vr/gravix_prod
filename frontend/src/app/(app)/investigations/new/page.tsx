@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -8,6 +8,7 @@ import {
   type InvestigationCreatePayload,
   type InvestigationSeverity,
 } from '@/lib/investigations';
+import { getGuidedSession } from '@/lib/products';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -46,6 +47,7 @@ function CreateInvestigationContent() {
   const { user, loading: authLoading } = useAuth();
 
   const analysisIdParam = searchParams.get('analysis_id') || '';
+  const guidedSessionIdParam = searchParams.get('guided_session_id') || '';
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -62,6 +64,7 @@ function CreateInvestigationContent() {
   const [analysisId, setAnalysisId] = useState(analysisIdParam);
   const [analysisSearch, setAnalysisSearch] = useState('');
   const [showAnalysisSearch, setShowAnalysisSearch] = useState(false);
+  const [guidedSessionId, setGuidedSessionId] = useState(guidedSessionIdParam);
 
   // D2 pre-fill fields (optional at creation)
   const [whatFailed, setWhatFailed] = useState('');
@@ -70,6 +73,35 @@ function CreateInvestigationContent() {
   const [whyItMatters, setWhyItMatters] = useState('');
   const [howDetected, setHowDetected] = useState('');
   const [howManyAffected, setHowManyAffected] = useState('');
+
+  // Pre-fill from guided session (Patch 3)
+  useEffect(() => {
+    if (!guidedSessionIdParam) return;
+    getGuidedSession(guidedSessionIdParam)
+      .then((session) => {
+        const state = session.session_state || {};
+        if (state.summary && !whatFailed) {
+          setWhatFailed(String(state.summary).substring(0, 2000));
+        }
+        const rootCauses = state.root_causes as Array<{ description?: string }> | undefined;
+        if (rootCauses?.[0] && !title) {
+          const rcText = typeof rootCauses[0] === 'string'
+            ? rootCauses[0]
+            : rootCauses[0]?.description || JSON.stringify(rootCauses[0]);
+          setTitle(`Investigation: ${String(rcText).substring(0, 80)}`);
+        } else if (state.summary && !title) {
+          setTitle(`Investigation: ${String(state.summary).substring(0, 80)}`);
+        }
+        if (session.analysis_id) {
+          setAnalysisId(session.analysis_id);
+        }
+        setGuidedSessionId(guidedSessionIdParam);
+      })
+      .catch(() => {
+        // Guided session fetch failed — proceed without pre-fill
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guidedSessionIdParam]);
 
   if (authLoading) return null;
   if (!user) {
@@ -102,6 +134,7 @@ function CreateInvestigationContent() {
       if (howDetected.trim()) payload.how_detected = howDetected.trim();
       if (howManyAffected.trim()) payload.how_many_affected = parseInt(howManyAffected, 10) || undefined;
       if (analysisId) payload.analysis_id = analysisId;
+      if (guidedSessionId) (payload as unknown as Record<string, unknown>).guided_session_id = guidedSessionId;
 
       const created = await investigationsApi.create(payload);
       router.push(`/investigations/${created.id}`);
@@ -126,6 +159,7 @@ function CreateInvestigationContent() {
       <p className="text-sm text-[#94A3B8] mb-8">
         Start a new 8D quality investigation. Fill in the details below.
         {analysisIdParam && ' Pre-filling from your failure analysis.'}
+        {guidedSessionIdParam && ' Pre-filling from your guided investigation.'}
       </p>
 
       {error && (
