@@ -93,7 +93,7 @@ const PHASES = [
 
 function PhaseProgressBar({ currentPhase }: { currentPhase: string | undefined }) {
   const isComplete = currentPhase === 'complete';
-  const phaseNum = isComplete ? 7 : Number(currentPhase) || 0;
+  const phaseNum = isComplete ? 7 : Number(currentPhase) || 1;
 
   return (
     <div className="px-6 py-2 border-b border-brand-600">
@@ -136,7 +136,7 @@ export default function GuidedInvestigationPage() {
   const [error, setError] = useState<string | null>(null);
   const [summary, setSummary] = useState<string | null>(null);
   const [copyLabel, setCopyLabel] = useState('Copy Results');
-  const [currentPhase, setCurrentPhase] = useState<string | undefined>(undefined);
+  const [currentPhase, setCurrentPhase] = useState<string | undefined>('1');
   const [creatingInvestigation, setCreatingInvestigation] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);

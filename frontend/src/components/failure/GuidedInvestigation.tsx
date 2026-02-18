@@ -325,9 +325,7 @@ const PHASES = [
 
 function PhaseProgressBar({ currentPhase }: { currentPhase: string | undefined }) {
   const isComplete = currentPhase === 'complete';
-  const phaseNum = isComplete ? 7 : Number(currentPhase) || 0;
-
-  if (!currentPhase) return null;
+  const phaseNum = isComplete ? 7 : Number(currentPhase) || 1;
 
   return (
     <div className="px-4 md:px-8 py-2 border-b border-[#1F2937]">
@@ -382,7 +380,7 @@ export function GuidedInvestigation() {
   const [completionActions, setCompletionActions] = useState<string[]>([]);
 
   // Phase tracking
-  const [currentPhase, setCurrentPhase] = useState<string | undefined>(undefined);
+  const [currentPhase, setCurrentPhase] = useState<string | undefined>('1');
   const [creatingInvestigation, setCreatingInvestigation] = useState(false);
 
   // Refs

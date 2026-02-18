@@ -778,6 +778,11 @@ async def create_investigation_from_guided(
     state = session.get("session_state", {})
     summary = state.get("summary", "")
 
+    # Idempotency: if session already has an investigation, return it
+    existing_inv = session.get("investigation_id")
+    if existing_inv:
+        return {"investigation_id": existing_inv, "success": True}
+
     # Generate investigation number
     now = datetime.now(timezone.utc)
     year = now.year
@@ -822,21 +827,30 @@ async def create_investigation_from_guided(
         "updated_at": now_iso,
     }
 
-    try:
-        db.table("investigations").insert(record).execute()
+    # Retry loop for investigation_number race condition
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            db.table("investigations").insert(record).execute()
 
-        # Link session to the investigation
-        db.table("investigation_sessions").update({
-            "investigation_id": inv_id,
-        }).eq("id", session_id).execute()
+            # Link session to the investigation
+            db.table("investigation_sessions").update({
+                "investigation_id": inv_id,
+            }).eq("id", session_id).execute()
 
-        return {"investigation_id": inv_id, "success": True}
-    except Exception as e:
-        logger.exception(f"Failed to create investigation from guided session: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to create investigation: {str(e)[:200]}",
-        )
+            return {"investigation_id": inv_id, "success": True}
+        except Exception as e:
+            err_str = str(e)
+            # Retry on unique constraint violation for investigation_number
+            if "investigation_number" in err_str and attempt < max_retries - 1:
+                next_seq += 1
+                record["investigation_number"] = f"{prefix}{next_seq:04d}"
+                continue
+            logger.exception(f"Failed to create investigation from guided session: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to create investigation: {err_str[:200]}",
+            )
 
 
 @router.get("/sessions/list", response_model=list[GuidedSessionListItem])
