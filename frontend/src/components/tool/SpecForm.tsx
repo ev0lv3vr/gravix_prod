@@ -3,28 +3,37 @@
 import { useState, useRef, useCallback } from 'react';
 import { Combobox } from '@/components/ui/Combobox';
 import { ExpandableSection } from '@/components/ui/ExpandableSection';
+import { MultiSelectChips, type ChipOption } from '@/components/forms/MultiSelectChips';
+import { ConditionalSubField } from '@/components/forms/ConditionalSubField';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { specRequestSchema } from '@/lib/schemas';
 import { ZodError } from 'zod';
 import { SUBSTRATE_SUGGESTIONS } from '@/lib/substrate-suggestions';
 import type { SuggestionCategory } from '@/lib/substrate-suggestions';
 import { searchProducts, type ProductSpecification } from '@/lib/products';
 
-// Map the Zod schema to the internal form data structure
+// ─── Form Data Type ────────────────────────────────────────────
 interface SpecFormData {
   substrateA: string;
   substrateB: string;
   productConsidered: string;
-  loadType: string;
+  loadType: string;          // kept for backward compat (unused by new fields)
+  loadTypes: string[];       // multi-select load types
   environment: string[];
+  chemicalExposureDetail: string[];
+  chemicalExposureOther: string;
+  sterilizationMethods: string[];
   tempMin: number;
   tempMax: number;
-  cureConstraint: string;
+  cureConstraint: string;    // kept for backward compat
+  cureConstraints: string[]; // multi-select cure constraints
+  maxCureTempC: string;
+  uvShadowAreas: string;     // 'yes' | 'no' | ''
+  gapType: string;
   gapFill: string;
   additionalContext: string;
   productionVolume: string;
@@ -37,27 +46,123 @@ interface SpecFormProps {
   isLoading?: boolean;
 }
 
-const LOAD_TYPES = [
-  { value: 'structural', label: 'Structural' },
-  { value: 'semi-structural', label: 'Semi-structural' },
-  { value: 'non-structural', label: 'Non-structural' },
-  { value: 'sealing', label: 'Sealing' },
+// ─── Load Type Options (12) ────────────────────────────────────
+const LOAD_TYPE_OPTIONS: ChipOption[] = [
+  { value: 'shear', label: 'Shear', tooltip: 'Lap shear, sliding forces parallel to bond plane' },
+  { value: 'peel', label: 'Peel', tooltip: 'T-peel, 90° peel, forces pulling bond apart at edge' },
+  { value: 'tensile', label: 'Tensile', tooltip: 'Butt joint pull, forces perpendicular to bond plane' },
+  { value: 'compression', label: 'Compression', tooltip: 'Forces pressing bonded parts together' },
+  { value: 'cleavage', label: 'Cleavage', tooltip: 'Uneven pull — one end of bond loaded, other end fixed' },
+  { value: 'torsion', label: 'Torsion', tooltip: 'Rotational / twisting forces on the bond' },
+  { value: 'impact', label: 'Impact / Shock', tooltip: 'Sudden high-energy loads, drop testing, crash loads' },
+  { value: 'vibration_fatigue', label: 'Vibration / Fatigue', tooltip: 'Cyclic loading over time, engine vibration, road vibration' },
+  { value: 'creep', label: 'Creep (Sustained Static)', tooltip: 'Constant load over weeks/months/years, dead weight, spring tension' },
+  { value: 'thermal_stress_cte', label: 'Thermal Stress (CTE Mismatch)', tooltip: 'Stress from differential thermal expansion of dissimilar substrates' },
+  { value: 'flexural', label: 'Flexural / Bending', tooltip: 'Bending forces across the bond, panel flex' },
+  { value: 'unknown', label: 'Not Sure', tooltip: 'AI will assess based on application context', exclusive: true },
 ];
 
-const CURE_CONSTRAINTS = [
-  { value: 'room_temp', label: 'Room temp only' },
-  { value: 'heat_available', label: 'Heat available' },
-  { value: 'uv_available', label: 'UV available' },
-  { value: 'fast_fixture', label: 'Fast fixture needed (<5 min)' },
+// ─── Cure Constraint Options (10) ──────────────────────────────
+const CURE_CONSTRAINT_OPTIONS: ChipOption[] = [
+  { value: 'room_temp_only', label: 'Room Temp Only', tooltip: 'No ovens, IR heaters, or heat sources available', excludes: ['oven_available'] },
+  { value: 'oven_available', label: 'Oven / Heat Available', tooltip: 'Batch or conveyor oven on the production line', excludes: ['room_temp_only'] },
+  { value: 'uv_available', label: 'UV / Light Station', tooltip: 'UV lamp or LED cure station; specify if shadow areas exist' },
+  { value: 'induction_available', label: 'Induction Available', tooltip: 'Induction heating for metal substrates' },
+  { value: 'moisture_ok', label: 'Moisture-Initiated OK', tooltip: 'Ambient humidity or applied moisture can trigger cure' },
+  { value: 'anaerobic_ok', label: 'Anaerobic OK', tooltip: 'Metal-to-metal sealed gap, no air exposure during cure' },
+  { value: 'two_part_ok', label: 'Two-Part Mixing OK', tooltip: 'Metering/mixing equipment available or manual mixing acceptable', excludes: ['one_part_only'] },
+  { value: 'one_part_only', label: 'One-Part Only (No Mixing)', tooltip: 'Cannot do metering or mixing — single-component adhesive required', excludes: ['two_part_ok'] },
+  { value: 'primer_ok', label: 'Primer / Activator OK', tooltip: 'Extra surface treatment step before bonding is acceptable', excludes: ['no_primer'] },
+  { value: 'no_primer', label: 'No Primer (One-Step Only)', tooltip: 'Cannot add surface treatment steps — adhesive must bond as-is', excludes: ['primer_ok'] },
 ];
 
-const ENVIRONMENT_OPTIONS = [
-  'High humidity',
-  'Chemical exposure',
-  'UV/outdoor',
-  'Thermal cycling',
-  'Submersion',
-  'Vibration',
+// ─── Environment Options (15) ──────────────────────────────────
+const ENVIRONMENT_OPTIONS: ChipOption[] = [
+  { value: 'high_humidity', label: 'High Humidity (>80% RH)', tooltip: 'Sustained exposure to high relative humidity' },
+  { value: 'submersion', label: 'Submersion / Water Contact', tooltip: 'Partial or full water immersion, water spray, condensation cycling' },
+  { value: 'salt_spray', label: 'Salt Spray / Marine', tooltip: 'Salt fog, coastal atmosphere, de-icing salt, per ASTM B117' },
+  { value: 'chemical', label: 'Chemical Exposure', tooltip: 'Solvents, fuels, oils, cleaning agents — specify below' },
+  { value: 'uv_outdoor', label: 'UV / Outdoor Weathering', tooltip: 'Sunlight, rain, temperature swings, per ASTM G154/G155' },
+  { value: 'high_temp_steady', label: 'High Temperature (Steady)', tooltip: 'Continuous operation above 80°C — specify in Temperature Range' },
+  { value: 'low_temp_steady', label: 'Low Temperature (Steady)', tooltip: 'Continuous operation below -20°C — specify in Temperature Range' },
+  { value: 'thermal_cycling', label: 'Thermal Cycling', tooltip: 'Repeated hot-cold cycles, specify range in Temperature Range' },
+  { value: 'vibration', label: 'Vibration / Dynamic', tooltip: 'Engine vibration, road loads, machinery vibration' },
+  { value: 'cleanroom_low_outgassing', label: 'Cleanroom / Low Outgassing', tooltip: 'Restricted outgassing per NASA ASTM E595 or ISO 14644 cleanroom' },
+  { value: 'sterilization', label: 'Sterilization Required', tooltip: 'Bond must survive sterilization cycles — specify method below' },
+  { value: 'vacuum', label: 'Vacuum / Low Pressure', tooltip: 'Space, high altitude, or vacuum chamber exposure' },
+  { value: 'radiation', label: 'Radiation Exposure', tooltip: 'Gamma, X-ray, UV sterilization, or nuclear environment' },
+  { value: 'food_contact', label: 'Food Contact / FDA', tooltip: 'Must comply with FDA 21 CFR or EU 10/2011 food contact regulations' },
+  { value: 'electrical_insulation', label: 'Electrical Insulation', tooltip: 'Bond must provide or maintain electrical isolation' },
+  { value: 'standard_indoor', label: 'Standard Indoor', tooltip: 'Controlled indoor environment, no special exposures', exclusive: true },
+];
+
+// ─── Chemical Exposure Detail (14) ─────────────────────────────
+const CHEMICAL_OPTIONS: ChipOption[] = [
+  { value: 'motor_oil', label: 'Motor Oil' },
+  { value: 'hydraulic_fluid', label: 'Hydraulic Fluid' },
+  { value: 'brake_fluid', label: 'Brake Fluid (DOT 3/4)' },
+  { value: 'coolant_glycol', label: 'Coolant / Glycol' },
+  { value: 'fuel_hydrocarbon', label: 'Gasoline / Diesel' },
+  { value: 'jet_fuel', label: 'Jet Fuel (Jet-A, JP-8)' },
+  { value: 'ipa', label: 'IPA (Isopropanol)' },
+  { value: 'acetone', label: 'Acetone' },
+  { value: 'mek', label: 'MEK' },
+  { value: 'aromatic_solvent', label: 'Toluene / Xylene' },
+  { value: 'bleach', label: 'Bleach / NaOCl' },
+  { value: 'acid', label: 'Acids (specify below)' },
+  { value: 'caustic', label: 'Bases / Caustics' },
+  { value: 'cleaning_agents', label: 'Cleaning Agents' },
+];
+
+// ─── Sterilization Methods (6) ─────────────────────────────────
+const STERILIZATION_OPTIONS: ChipOption[] = [
+  { value: 'autoclave', label: 'Autoclave (steam 121-134°C)', tooltip: 'High temp + moisture + pressure — eliminates many adhesives' },
+  { value: 'eto', label: 'EtO (ethylene oxide)', tooltip: 'Chemical attack — some adhesives absorb EtO and outgas later' },
+  { value: 'gamma', label: 'Gamma Radiation', tooltip: 'Radiation degrades some polymers; dose matters (25-50 kGy typical)' },
+  { value: 'ebeam', label: 'E-beam', tooltip: 'Similar to gamma but higher dose rate, different degradation profile' },
+  { value: 'h2o2_plasma', label: 'Hydrogen Peroxide Plasma', tooltip: 'Oxidative — affects some silicones and acrylics' },
+  { value: 'dry_heat', label: 'Dry Heat (160-180°C)', tooltip: 'Extreme temperature — limits adhesive choices severely' },
+];
+
+// ─── Gap Type Options ──────────────────────────────────────────
+const GAP_TYPE_OPTIONS = [
+  { value: 'controlled', label: 'Controlled bondline — shims, spacers, or fixtures maintain precise gap' },
+  { value: 'variable', label: 'Variable gap — irregular surfaces, some areas thicker than others' },
+  { value: 'zero', label: 'Zero gap — press fit, interference fit, threaded' },
+  { value: 'cavity_fill', label: 'Large cavity — filling a void or potting (>5mm)' },
+  { value: 'unknown', label: 'Not applicable / unknown' },
+];
+
+const GAP_HELPER_TEXT: Record<string, string> = {
+  controlled: 'Target bondline thickness (mm), e.g., 0.15, 0.25, 0.5',
+  variable: 'Maximum expected gap (mm)',
+  cavity_fill: 'Cavity depth (mm), e.g., 10, 25, 50',
+  unknown: 'Gap in mm, if known',
+};
+
+// ─── Application Method Options (10 total) ─────────────────────
+const APPLICATION_METHOD_OPTIONS = [
+  { value: 'manual_syringe', label: 'Manual (Syringe / Cartridge Gun)' },
+  { value: 'manual_brush', label: 'Manual (Brush / Spatula / Trowel)' },
+  { value: 'automated_dispense', label: 'Automated Dispense (Meter-Mix)' },
+  { value: 'robotic_bead', label: 'Robotic Bead / Swirl Pattern' },
+  { value: 'spray', label: 'Spray' },
+  { value: 'roller_coat', label: 'Roller Coat' },
+  { value: 'film_tape', label: 'Film / Tape' },
+  { value: 'pre_applied', label: 'Pre-Applied (Microencapsulated)' },
+  { value: 'jetting', label: 'Jetting' },
+  { value: 'screen_print', label: 'Screen Print' },
+];
+
+// ─── Fixture Time Options (7 total, with new first option) ─────
+const FIXTURE_TIME_OPTIONS = [
+  { value: 'instant_contact', label: 'Instant / Contact Bond (zero fixture)' },
+  { value: '<1min', label: '< 1 minute' },
+  { value: '1-5min', label: '1-5 minutes' },
+  { value: '5-30min', label: '5-30 minutes' },
+  { value: '30min-2hr', label: '30 min - 2 hours' },
+  { value: '>2hr', label: '> 2 hours acceptable' },
+  { value: 'not_critical', label: 'Not critical' },
 ];
 
 const PRODUCTION_VOLUME_OPTIONS = [
@@ -66,25 +171,6 @@ const PRODUCTION_VOLUME_OPTIONS = [
   { value: '100-1000/day', label: '100-1,000/day' },
   { value: '1000-10000/day', label: '1,000-10,000/day' },
   { value: '>10000/day', label: '>10,000/day' },
-];
-
-const APPLICATION_METHOD_OPTIONS = [
-  { value: 'manual_syringe', label: 'Manual (syringe/gun)' },
-  { value: 'manual_brush', label: 'Manual (brush/spatula)' },
-  { value: 'automated_dispense', label: 'Automated dispense' },
-  { value: 'spray', label: 'Spray' },
-  { value: 'film_tape', label: 'Film/tape' },
-  { value: 'jetting', label: 'Jetting' },
-  { value: 'screen_print', label: 'Screen print' },
-];
-
-const FIXTURE_TIME_OPTIONS = [
-  { value: '<1min', label: '< 1 minute' },
-  { value: '1-5min', label: '1-5 minutes' },
-  { value: '5-30min', label: '5-30 minutes' },
-  { value: '30min-2hr', label: '30 min - 2 hours' },
-  { value: '>2hr', label: '> 2 hours acceptable' },
-  { value: 'not_critical', label: 'Not critical' },
 ];
 
 // Product suggestions for the combobox
@@ -104,16 +190,25 @@ const PRODUCT_SUGGESTIONS: SuggestionCategory[] = [
   },
 ];
 
+// ─── Component ─────────────────────────────────────────────────
 export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
   const [formData, setFormData] = useState<SpecFormData>({
     substrateA: '',
     substrateB: '',
     productConsidered: '',
     loadType: '',
+    loadTypes: [],
     environment: [],
+    chemicalExposureDetail: [],
+    chemicalExposureOther: '',
+    sterilizationMethods: [],
     tempMin: -40,
     tempMax: 120,
     cureConstraint: '',
+    cureConstraints: [],
+    maxCureTempC: '',
+    uvShadowAreas: '',
+    gapType: '',
     gapFill: '',
     additionalContext: '',
     productionVolume: '',
@@ -161,8 +256,8 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
         substrateB: formData.substrateB,
         tempMin: formData.tempMin,
         tempMax: formData.tempMax,
-        bondType: formData.loadType || undefined,
-        cureMethod: formData.cureConstraint || undefined,
+        bondType: formData.loadTypes.length > 0 ? formData.loadTypes.join(',') : (formData.loadType || undefined),
+        cureMethod: formData.cureConstraints.length > 0 ? formData.cureConstraints.join(',') : (formData.cureConstraint || undefined),
         gapSize: formData.gapFill || undefined,
         additionalContext: formData.additionalContext || undefined,
         productionVolume: formData.productionVolume || undefined,
@@ -201,14 +296,6 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
   // Non-hook version for useCallback usage
   const updateFieldDirect = (key: keyof SpecFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const toggleEnvChip = (chip: string) => {
-    if (formData.environment.includes(chip)) {
-      updateField('environment', formData.environment.filter((v) => v !== chip));
-    } else {
-      updateField('environment', [...formData.environment, chip]);
-    }
   };
 
   return (
@@ -259,64 +346,135 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
           label="Add requirements for a more precise specification (optional)"
           persistKey="gravix_spec_form_expanded"
         >
-          {/* Load Type + Cure Constraints — side by side */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Load Type</Label>
-              <Select value={formData.loadType} onValueChange={(v) => updateField('loadType', v)}>
-                <SelectTrigger className="h-11 bg-[#111827] border-[#374151] rounded text-sm">
-                  <SelectValue placeholder="Select load type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {LOAD_TYPES.map((lt) => (
-                    <SelectItem key={lt.value} value={lt.value}>{lt.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Cure Constraints</Label>
-              <Select value={formData.cureConstraint} onValueChange={(v) => updateField('cureConstraint', v)}>
-                <SelectTrigger className="h-11 bg-[#111827] border-[#374151] rounded text-sm">
-                  <SelectValue placeholder="Select constraint" />
-                </SelectTrigger>
-                <SelectContent>
-                  {CURE_CONSTRAINTS.map((cc) => (
-                    <SelectItem key={cc.value} value={cc.value}>{cc.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          {/* ─── Load Type — Multi-Select Chips ─── */}
+          <div>
+            <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">
+              What loads does the bond experience? <span className="text-[#64748B] text-xs">(select all that apply)</span>
+            </Label>
+            <MultiSelectChips
+              options={LOAD_TYPE_OPTIONS}
+              selected={formData.loadTypes}
+              onChange={(v) => updateField('loadTypes', v)}
+            />
           </div>
 
-          {/* Environment — chips */}
+          {/* ─── Cure Constraints — Multi-Select + Conditional Sub-Fields ─── */}
+          <div>
+            <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">
+              What can your production process accommodate? <span className="text-[#64748B] text-xs">(select all that apply)</span>
+            </Label>
+            <MultiSelectChips
+              options={CURE_CONSTRAINT_OPTIONS}
+              selected={formData.cureConstraints}
+              onChange={(v) => updateField('cureConstraints', v)}
+            />
+
+            {/* Sub-Field B: Max cure temperature — conditional on "Oven / Heat Available" */}
+            <ConditionalSubField
+              parentChipValue="oven_available"
+              visible={formData.cureConstraints.includes('oven_available')}
+              label="Max cure temperature your substrate/process can tolerate"
+            >
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  min={30}
+                  max={400}
+                  step={5}
+                  value={formData.maxCureTempC}
+                  onChange={(e) => updateField('maxCureTempC', e.target.value)}
+                  placeholder="80"
+                  className="h-11 bg-[#111827] border-[#374151] rounded text-sm w-[100px]"
+                />
+                <span className="text-[#94A3B8] text-sm">°C</span>
+              </div>
+              <p className="text-[#64748B] text-xs mt-1.5">
+                Common: 60°C (most plastics), 80°C (engineering plastics), 120°C (metals/composites), 180°C (aerospace metals)
+              </p>
+            </ConditionalSubField>
+
+            {/* Sub-Field C: UV shadow areas — conditional on "UV / Light Station" */}
+            <ConditionalSubField
+              parentChipValue="uv_available"
+              visible={formData.cureConstraints.includes('uv_available')}
+              label="Does the bond geometry have shadow areas UV light can't reach?"
+            >
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => updateField('uvShadowAreas', 'yes')}
+                  className={`px-3 py-1.5 rounded-full text-[13px] font-medium transition-all border ${
+                    formData.uvShadowAreas === 'yes'
+                      ? 'bg-accent-500/20 border-[#3B82F6] text-accent-500'
+                      : 'bg-brand-800 border-[#374151] text-[#94A3B8] hover:border-accent-500 hover:text-white'
+                  }`}
+                >
+                  Yes — some areas won&apos;t get direct UV
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateField('uvShadowAreas', 'no')}
+                  className={`px-3 py-1.5 rounded-full text-[13px] font-medium transition-all border ${
+                    formData.uvShadowAreas === 'no'
+                      ? 'bg-accent-500/20 border-[#3B82F6] text-accent-500'
+                      : 'bg-brand-800 border-[#374151] text-[#94A3B8] hover:border-accent-500 hover:text-white'
+                  }`}
+                >
+                  No — full UV exposure possible
+                </button>
+              </div>
+            </ConditionalSubField>
+          </div>
+
+          {/* ─── Environment — 15 Chips + Conditional Sub-Fields ─── */}
           <div>
             <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">
               Environment <span className="text-[#64748B] text-xs">(select all that apply)</span>
             </Label>
-            <div className="flex flex-wrap gap-2">
-              {ENVIRONMENT_OPTIONS.map((env) => {
-                const isSelected = formData.environment.includes(env);
-                return (
-                  <button
-                    key={env}
-                    type="button"
-                    onClick={() => toggleEnvChip(env)}
-                    className={cn(
-                      'px-3 py-1.5 rounded-full text-sm font-medium transition-all border',
-                      isSelected
-                        ? 'bg-accent-500/15 border-accent-500 text-accent-500'
-                        : 'bg-[#1F2937] border-[#374151] text-[#94A3B8] hover:border-accent-500 hover:text-white'
-                    )}
-                  >
-                    {env}
-                  </button>
-                );
-              })}
-            </div>
+            <MultiSelectChips
+              options={ENVIRONMENT_OPTIONS}
+              selected={formData.environment}
+              onChange={(v) => updateField('environment', v)}
+            />
+
+            {/* Conditional: Chemical Exposure Detail */}
+            <ConditionalSubField
+              parentChipValue="chemical"
+              visible={formData.environment.includes('chemical')}
+              label="Which chemicals? (select all that apply)"
+            >
+              <MultiSelectChips
+                options={CHEMICAL_OPTIONS}
+                selected={formData.chemicalExposureDetail}
+                onChange={(v) => updateField('chemicalExposureDetail', v)}
+              />
+              <div className="mt-3">
+                <Input
+                  type="text"
+                  value={formData.chemicalExposureOther}
+                  onChange={(e) => updateField('chemicalExposureOther', e.target.value)}
+                  placeholder="e.g., Skydrol, hydrazine, customer-specific fluids"
+                  className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
+                />
+                <p className="text-[#64748B] text-xs mt-1">Other chemicals not listed above</p>
+              </div>
+            </ConditionalSubField>
+
+            {/* Conditional: Sterilization Method */}
+            <ConditionalSubField
+              parentChipValue="sterilization"
+              visible={formData.environment.includes('sterilization')}
+              label="Sterilization method (select all that apply)"
+            >
+              <MultiSelectChips
+                options={STERILIZATION_OPTIONS}
+                selected={formData.sterilizationMethods}
+                onChange={(v) => updateField('sterilizationMethods', v)}
+              />
+            </ConditionalSubField>
           </div>
 
-          {/* Temperature Range */}
+          {/* ─── Temperature Range ─── */}
           <div>
             <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Temperature Range (°C)</Label>
             <div className="flex items-center gap-3">
@@ -338,7 +496,48 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
             </div>
           </div>
 
-          {/* Production Volume + Application Method — side by side */}
+          {/* ─── Gap Fill — Context Radio + Conditional Number Input ─── */}
+          <div>
+            <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Bond Gap Characteristics</Label>
+            <div className="space-y-2">
+              {GAP_TYPE_OPTIONS.map((opt) => (
+                <label key={opt.value} className="flex items-start gap-2 cursor-pointer group">
+                  <input
+                    type="radio"
+                    name="gapType"
+                    value={opt.value}
+                    checked={formData.gapType === opt.value}
+                    onChange={(e) => updateField('gapType', e.target.value)}
+                    className="mt-1 accent-accent-500"
+                  />
+                  <span className={`text-sm ${
+                    formData.gapType === opt.value ? 'text-white' : 'text-[#94A3B8] group-hover:text-white'
+                  } transition-colors`}>
+                    {opt.label}
+                  </span>
+                </label>
+              ))}
+            </div>
+            {formData.gapType !== 'zero' && (
+              <div className="mt-3">
+                <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Gap Dimension (mm)</Label>
+                <Input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  value={formData.gapFill}
+                  onChange={(e) => updateField('gapFill', e.target.value)}
+                  placeholder={GAP_HELPER_TEXT[formData.gapType] || 'Maximum gap between substrates'}
+                  className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
+                />
+                {formData.gapType && GAP_HELPER_TEXT[formData.gapType] && (
+                  <p className="text-[#64748B] text-xs mt-1">{GAP_HELPER_TEXT[formData.gapType]}</p>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* ─── Production Volume + Application Method — side by side ─── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Production Volume</Label>
@@ -368,7 +567,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
             </div>
           </div>
 
-          {/* Required Fixture Time */}
+          {/* ─── Required Fixture Time ─── */}
           <div>
             <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Required Fixture Time</Label>
             <Select value={formData.requiredFixtureTime} onValueChange={(v) => updateField('requiredFixtureTime', v)}>
@@ -383,21 +582,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
             </Select>
           </div>
 
-          {/* Gap Fill */}
-          <div>
-            <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Gap Fill (mm)</Label>
-            <Input
-              type="number"
-              step="0.1"
-              min="0"
-              value={formData.gapFill}
-              onChange={(e) => updateField('gapFill', e.target.value)}
-              placeholder="Maximum gap between substrates"
-              className="h-11 bg-[#111827] border-[#374151] rounded text-sm"
-            />
-          </div>
-
-          {/* Additional Context */}
+          {/* ─── Additional Context ─── */}
           <div>
             <Label className="text-[13px] font-medium text-[#94A3B8] mb-1.5 block">Additional Context</Label>
             <Textarea

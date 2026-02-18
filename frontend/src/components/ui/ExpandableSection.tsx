@@ -71,7 +71,7 @@ export function ExpandableSection({
       <div
         className={cn(
           'overflow-hidden transition-all duration-300 ease-out',
-          expanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+          expanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'
         )}
       >
         <div ref={contentRef} className={cn('pt-4 space-y-5', !hasHydrated && 'invisible')}>

@@ -35,35 +35,61 @@ export default function SpecToolPage() {
 
     try {
       const envConditions: string[] = formData.environment || [];
+      const loadTypes: string[] = formData.loadTypes || [];
+      const cureConstraints: string[] = formData.cureConstraints || [];
+
       const requestData: Record<string, unknown> = {
         material_category: 'adhesive',
         substrate_a: formData.substrateA,
         substrate_b: formData.substrateB,
         bond_requirements: {
+          // New multi-select load types
+          load_types: loadTypes.length > 0
+            ? loadTypes.map(lt => `load:${lt}`)
+            : undefined,
+          // Legacy single-select fallback
           shear_strength: formData.loadType === 'structural' ? 'High (>3000 psi)' :
                           formData.loadType === 'semi-structural' ? 'Medium (1000-3000 psi)' :
                           formData.loadType === 'non-structural' ? 'Low (<1000 psi)' : undefined,
           gap_fill: formData.gapFill ? `${formData.gapFill}mm` : undefined,
+          gap_type: formData.gapType ? `gap_type:${formData.gapType}` : undefined,
           flexibility_required: formData.loadType === 'sealing',
           other_requirements: formData.loadType || undefined,
         },
         environment: {
           temp_min: `${formData.tempMin}°C`,
           temp_max: `${formData.tempMax}°C`,
-          chemical_exposure: envConditions.filter(e => e.includes('Chemical')).length > 0
-            ? envConditions.filter(e => e.includes('Chemical'))
+          conditions: envConditions.length > 0
+            ? envConditions.map(e => `env:${e}`)
             : undefined,
-          uv_exposure: envConditions.includes('UV/outdoor'),
-          outdoor_use: envConditions.includes('UV/outdoor'),
-          humidity: envConditions.includes('High humidity') ? 'High' : undefined,
+          chemical_exposure: envConditions.includes('chemical')
+            ? [
+                ...(formData.chemicalExposureDetail || []).map(c => `chem:${c}`),
+                ...(formData.chemicalExposureOther ? [`chem_other:${formData.chemicalExposureOther}`] : []),
+              ]
+            : undefined,
+          sterilization_methods: envConditions.includes('sterilization') && formData.sterilizationMethods?.length > 0
+            ? formData.sterilizationMethods.map(s => `sterilization:${s}`)
+            : undefined,
+          uv_exposure: envConditions.includes('uv_outdoor'),
+          outdoor_use: envConditions.includes('uv_outdoor'),
+          humidity: envConditions.includes('high_humidity') ? 'High' : undefined,
         },
         cure_constraints: {
+          // New multi-select cure constraints
+          process_capabilities: cureConstraints.length > 0
+            ? cureConstraints.map(cc => `cure_constraint:${cc}`)
+            : undefined,
+          max_cure_temp_c: formData.maxCureTempC ? Number(formData.maxCureTempC) : undefined,
+          uv_shadow_areas: formData.uvShadowAreas === 'yes' ? true :
+                           formData.uvShadowAreas === 'no' ? false : undefined,
+          // Legacy single-select fallback
           preferred_method: formData.cureConstraint === 'room_temp' ? 'Room temperature' :
                            formData.cureConstraint === 'heat_available' ? 'Heat cure' :
                            formData.cureConstraint === 'uv_available' ? 'UV cure' :
                            formData.cureConstraint === 'fast_fixture' ? 'Fast fixture (<5 min)' : undefined,
-          heat_available: formData.cureConstraint === 'heat_available',
-          uv_available: formData.cureConstraint === 'uv_available',
+          heat_available: cureConstraints.includes('oven_available') || formData.cureConstraint === 'heat_available',
+          uv_available: cureConstraints.includes('uv_available') || formData.cureConstraint === 'uv_available',
         },
         additional_requirements: formData.additionalContext || undefined,
         production_volume: formData.productionVolume || undefined,
