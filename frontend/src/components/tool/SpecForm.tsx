@@ -265,7 +265,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Combobox
             label="Substrate 1"
-            placeholder="e.g., Aluminum 6061, ABS, Polycarbonate"
+            placeholder="Search or type your own — e.g., Aluminum 6061, ABS"
             suggestions={SUBSTRATE_SUGGESTIONS}
             value={formData.substrateA}
             onChange={(v) => updateField('substrateA', v)}
@@ -276,7 +276,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
           />
           <Combobox
             label="Substrate 2"
-            placeholder="Material bonded to Substrate 1"
+            placeholder="Search or type — e.g., Steel, Polycarbonate"
             suggestions={SUBSTRATE_SUGGESTIONS}
             value={formData.substrateB}
             onChange={(v) => updateField('substrateB', v)}
@@ -289,7 +289,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
         {/* 2. Product Considered — combobox with TDS search */}
         <Combobox
           label="Product Considered"
-          placeholder="e.g., Loctite 495, 3M DP420 — we'll check field performance"
+          placeholder="Search or type — e.g., Loctite 495, 3M DP420"
           suggestions={productSuggestions}
           value={formData.productConsidered}
           onChange={handleProductChange}

@@ -82,15 +82,6 @@ export function Combobox({
     } catch { /* noop */ }
   }, [recentKey]);
 
-  const saveToRecent = useCallback((name: string) => {
-    if (!recentKey || !name) return;
-    const updated = [name, ...recentSelections.filter((s) => s !== name)].slice(0, 3);
-    setRecentSelections(updated);
-    try {
-      localStorage.setItem(recentKey, JSON.stringify(updated));
-    } catch { /* noop */ }
-  }, [recentKey, recentSelections]);
-
   // Flatten all suggestions for searching
   const flatItems = useMemo<FlatItem[]>(() => {
     const items: FlatItem[] = [];
@@ -101,6 +92,20 @@ export function Combobox({
     }
     return items;
   }, [suggestions]);
+
+  const saveToRecent = useCallback((name: string) => {
+    if (!recentKey || !name) return;
+    // Only save recognized suggestions — don't persist typos or custom freeform entries
+    const isKnownItem = flatItems.some(
+      (item) => item.name.toLowerCase() === name.toLowerCase()
+    );
+    if (!isKnownItem) return;
+    const updated = [name, ...recentSelections.filter((s) => s !== name)].slice(0, 3);
+    setRecentSelections(updated);
+    try {
+      localStorage.setItem(recentKey, JSON.stringify(updated));
+    } catch { /* noop */ }
+  }, [recentKey, recentSelections, flatItems]);
 
   // Filter & match logic
   const { matched, fuzzyMatched, hasExactMatch } = useMemo(() => {
@@ -448,6 +453,13 @@ export function Combobox({
           {groupedResults.length === 0 && fuzzyMatched.length === 0 && !showUseAsEntered && (
             <div className="px-3 py-4 text-sm text-[#64748B] text-center">
               Start typing to search substrates…
+            </div>
+          )}
+
+          {/* Hint: custom input is allowed — shown when browsing (no query) */}
+          {!inputValue.trim() && groupedResults.length > 0 && (
+            <div className="px-3 py-2 text-[11px] text-[#64748B] text-center border-t border-[#1F2937]">
+              Don&apos;t see yours? Just type it in and press Enter
             </div>
           )}
         </div>

@@ -250,7 +250,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Combobox
             label="Substrate 1"
-            placeholder="e.g., Aluminum 6061, ABS, Polycarbonate"
+            placeholder="Search or type your own — e.g., Aluminum 6061, ABS"
             suggestions={SUBSTRATE_SUGGESTIONS}
             value={formData.substrateA}
             onChange={(v) => updateField('substrateA', v)}
@@ -260,7 +260,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
           />
           <Combobox
             label="Substrate 2"
-            placeholder="Material bonded to Substrate 1"
+            placeholder="Search or type — e.g., Steel, Polycarbonate"
             suggestions={SUBSTRATE_SUGGESTIONS}
             value={formData.substrateB}
             onChange={(v) => updateField('substrateB', v)}
@@ -273,7 +273,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
         {/* 3. Product / Adhesive Used — merged single combobox */}
         <Combobox
           label="Product / Adhesive Used"
-          placeholder="e.g., Loctite 495, 3M DP420, generic 2-part epoxy, unknown"
+          placeholder="Search or type — e.g., Loctite 495, 3M DP420, generic epoxy"
           suggestions={productSuggestions}
           value={formData.productName || formData.adhesiveUsed || ''}
           onChange={handleProductValueChange}
