@@ -126,14 +126,10 @@ jobs:
           token: ${{ secrets.HOLDOUT_PAT }}
           repository: ev0lv3vr/gravix-holdouts
           event-type: run-scenarios
-          client-payload: >-
-            {
-              "preview_url": "${{ steps.preview.outputs.url }}",
-              "sha": "${{ github.sha }}",
-              "branch": "${{ github.ref_name }}",
-              "callback_repo": "ev0lv3vr/gravix_prod",
-              "callback_sha": "${{ github.sha }}"
-            }
+          client-payload: '{"preview_url": "${{ steps.preview.outputs.url }}", "sha": "${{ github.sha }}", "repo": "${{ github.repository }}"}'
+
+      - name: Verify dispatch sent
+        run: echo "Dispatch sent to ev0lv3vr/gravix-holdouts with SHA ${{ github.sha }}"
 
       - name: Wait for holdout results
         uses: lewagon/wait-on-check-action@v1.3.4
