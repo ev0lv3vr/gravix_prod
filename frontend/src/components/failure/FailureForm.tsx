@@ -257,6 +257,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
             required
             recentKey="gravix_recent_substrates_a"
             error={errors.substrateA}
+            data-testid="substrate-a"
           />
           <Combobox
             label="Substrate 2"
@@ -267,6 +268,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
             required
             recentKey="gravix_recent_substrates_b"
             error={errors.substrateB}
+            data-testid="substrate-b"
           />
         </div>
 
@@ -499,6 +501,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
                 : 'bg-accent-500 hover:bg-accent-600 text-white'
             )}
             disabled={isLoading || !!isAtLimit}
+            data-testid="analyze-submit"
           >
             {submitLabel}
           </Button>

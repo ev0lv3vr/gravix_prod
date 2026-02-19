@@ -18,6 +18,8 @@ export interface ComboboxProps {
   showTdsBadge?: boolean;
   error?: string;
   autoFocus?: boolean;
+  /** data-testid applied to the text input for test automation */
+  'data-testid'?: string;
 }
 
 /** Compute Levenshtein distance between two strings. */
@@ -58,6 +60,7 @@ export function Combobox({
   showTdsBadge,
   error,
   autoFocus,
+  'data-testid': dataTestId,
 }: ComboboxProps) {
   const [inputValue, setInputValue] = useState(value);
   const [isOpen, setIsOpen] = useState(false);
@@ -338,6 +341,7 @@ export function Combobox({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           autoFocus={autoFocus}
+          data-testid={dataTestId}
           className={cn(
             'w-full h-11 pl-10 pr-10 bg-[#0F1629] border rounded text-sm text-white placeholder:text-[#64748B] outline-none transition-all',
             isOpen

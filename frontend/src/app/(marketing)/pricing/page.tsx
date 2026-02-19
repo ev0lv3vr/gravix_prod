@@ -408,6 +408,7 @@ function PricingCard({
       <button
         onClick={onCTA}
         disabled={isLoading}
+        data-testid={`upgrade-${plan.name.toLowerCase()}`}
         className={`block w-full text-center py-3 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${ctaClass}`}
       >
         {isLoading ? 'Loading…' : plan.ctaLabel}

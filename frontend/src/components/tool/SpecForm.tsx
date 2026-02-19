@@ -273,6 +273,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
             autoFocus
             recentKey="gravix_recent_substrates_a"
             error={errors.substrateA}
+            data-testid="substrate-a"
           />
           <Combobox
             label="Substrate 2"
@@ -283,6 +284,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
             required
             recentKey="gravix_recent_substrates_b"
             error={errors.substrateB}
+            data-testid="substrate-b"
           />
         </div>
 
@@ -440,6 +442,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
                 onChange={(e) => updateField('tempMin', Number(e.target.value))}
                 placeholder="-40"
                 className="h-11 bg-[#111827] border-[#374151] rounded text-sm flex-1"
+                data-testid="temp-min"
               />
               <span className="text-[#64748B]">to</span>
               <Input
@@ -448,6 +451,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
                 onChange={(e) => updateField('tempMax', Number(e.target.value))}
                 placeholder="120"
                 className="h-11 bg-[#111827] border-[#374151] rounded text-sm flex-1"
+                data-testid="temp-max"
               />
             </div>
           </div>
@@ -556,6 +560,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
           type="submit"
           className="w-full h-12 bg-accent-500 hover:bg-accent-600 text-white text-base font-medium mt-8"
           disabled={isLoading}
+          data-testid="analyze-submit"
         >
           {isLoading ? 'Generating…' : 'Generate Specification →'}
         </Button>

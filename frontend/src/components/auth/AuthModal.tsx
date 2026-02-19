@@ -354,6 +354,7 @@ export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = fals
                 <button
                   onClick={() => switchView('sign-up')}
                   className="text-accent-500 hover:text-accent-400 font-medium"
+                  data-testid="auth-signup-link"
                 >
                   Sign up
                 </button>

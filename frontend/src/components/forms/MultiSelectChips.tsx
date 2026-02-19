@@ -66,6 +66,8 @@ function ChipWithTooltip({
         disabled={disabled}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        data-testid={`chip-${option.value}`}
+        data-value={option.value}
         className={cn(
           'px-3 py-1.5 rounded-full text-[13px] font-medium transition-all border whitespace-nowrap',
           disabled && 'opacity-50 cursor-not-allowed',
