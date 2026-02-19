@@ -120,43 +120,29 @@ jobs:
           echo "url=${PREVIEW_URL}" >> "$GITHUB_OUTPUT"
           echo "📎 Preview URL: ${PREVIEW_URL}"
 
-      # ── Phase 2: Holdout Scenario Trigger ──────────────────
-      # TODO: Uncomment when gravix-holdouts has a scenario runner workflow.
-      #
-      # - name: Trigger holdout scenarios
-      #   uses: peter-evans/repository-dispatch@v3
-      #   with:
-      #     token: ${{ secrets.HOLDOUT_PAT }}
-      #     repository: ev0lv3vr/gravix-holdouts
-      #     event-type: run-scenarios
-      #     client-payload: >-
-      #       {
-      #         "preview_url": "${{ steps.preview.outputs.url }}",
-      #         "sha": "${{ github.sha }}",
-      #         "branch": "${{ github.ref_name }}",
-      #         "callback_repo": "ev0lv3vr/gravix_prod",
-      #         "callback_sha": "${{ github.sha }}"
-      #       }
-      #
-      # - name: Wait for holdout results
-      #   uses: lewagon/wait-on-check-action@v1.3.4
-      #   with:
-      #     ref: ${{ github.sha }}
-      #     check-name: holdout-results
-      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     wait-interval: 15
-      #     allowed-conclusions: success,neutral
+      - name: Trigger holdout scenarios
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.HOLDOUT_PAT }}
+          repository: ev0lv3vr/gravix-holdouts
+          event-type: run-scenarios
+          client-payload: >-
+            {
+              "preview_url": "${{ steps.preview.outputs.url }}",
+              "sha": "${{ github.sha }}",
+              "branch": "${{ github.ref_name }}",
+              "callback_repo": "ev0lv3vr/gravix_prod",
+              "callback_sha": "${{ github.sha }}"
+            }
 
-      - name: Holdout scenarios (placeholder)
-        run: |
-          echo "⏳ Holdout scenario dispatch is Phase 2."
-          echo "   Preview URL: ${{ steps.preview.outputs.url }}"
-          echo "   Commit SHA:  ${{ github.sha }}"
-          echo ""
-          echo "Once gravix-holdouts has a runner workflow, uncomment the"
-          echo "dispatch + wait steps above and add HOLDOUT_PAT secret."
-          echo ""
-          echo "For now, run holdouts locally: ./scripts/converge.sh"
+      - name: Wait for holdout results
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.sha }}
+          check-name: holdout-results
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 15
+          allowed-conclusions: success,neutral
 
   # ─── Report ──────────────────────────────────────────────
   # Posts convergence results to the PR.
@@ -172,14 +158,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # TODO Phase 2: Download holdout results artifact and parse scores.
-      # For now, post a status comment indicating gates passed.
+      - name: Fetch holdout check run results
+        id: holdout
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Look for the holdout-results check run on this commit
+            const { data: checkRuns } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              check_name: 'holdout-results',
+            });
+
+            const run = checkRuns.check_runs[0];
+            if (run) {
+              core.setOutput('score', run.output.title || 'N/A');
+              core.setOutput('summary', run.output.summary || 'No summary available.');
+              core.setOutput('conclusion', run.conclusion || 'unknown');
+              core.setOutput('found', 'true');
+            } else {
+              core.setOutput('score', 'N/A');
+              core.setOutput('summary', 'Holdout check run not found.');
+              core.setOutput('conclusion', 'unknown');
+              core.setOutput('found', 'false');
+            }
 
       - name: Post convergence report
         uses: actions/github-script@v7
         with:
           script: |
-            // Find the PR for this branch
             const { data: prs } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -194,8 +202,12 @@ jobs:
 
             const pr = prs[0];
             const sha = context.sha.substring(0, 7);
+            const holdoutScore = '${{ steps.holdout.outputs.score }}';
+            const holdoutSummary = `${{ steps.holdout.outputs.summary }}`;
+            const holdoutConclusion = '${{ steps.holdout.outputs.conclusion }}';
+            const holdoutFound = '${{ steps.holdout.outputs.found }}' === 'true';
+            const holdoutIcon = holdoutConclusion === 'success' ? '✅' : holdoutConclusion === 'failure' ? '❌' : '⏳';
 
-            // TODO Phase 2: Parse actual holdout scores from artifact/check run
             const body = [
               `## 🔬 Convergence Report`,
               ``,
@@ -209,17 +221,17 @@ jobs:
               `| Backend (pytest) | ✅ Pass |`,
               ``,
               `### Holdout Scenarios`,
-              `⏳ *Phase 2 — not yet wired. Run \`./scripts/converge.sh\` locally.*`,
+              `| Metric | Result |`,
+              `|--------|--------|`,
+              `| Score | ${holdoutFound ? holdoutScore : '⏳ Pending'} |`,
+              `| Status | ${holdoutIcon} ${holdoutConclusion} |`,
               ``,
-              `<!-- TODO Phase 2: Add scenario score table -->`,
-              `<!-- | Scenario | Priority | Score | Status | -->`,
-              `<!-- |----------|----------|-------|--------| -->`,
+              holdoutFound ? holdoutSummary : '*Waiting for holdout results...*',
               ``,
               `---`,
               `*Posted by the [Convergence Pipeline](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})*`,
             ].join('\n');
 
-            // Upsert: find existing convergence comment and update it
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -238,7 +250,6 @@ jobs:
                 comment_id: existing.id,
                 body,
               });
-              console.log(`Updated existing comment #${existing.id}`);
             } else {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
@@ -246,5 +257,4 @@ jobs:
                 issue_number: pr.number,
                 body,
               });
-              console.log('Created new convergence comment');
             }
