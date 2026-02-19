@@ -1,0 +1,13 @@
+{
+  "name": "mock-stripe",
+  "version": "1.0.0",
+  "description": "Mock Stripe API server for Gravix local development",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
