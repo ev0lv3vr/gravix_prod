@@ -106,19 +106,54 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Vercel preview URLs are auto-created by the Vercel GitHub integration.
-      # We construct the expected URL from the branch name.
-      - name: Determine preview URL
+      # Vercel preview URLs use random hashes, not predictable branch names.
+      # We poll the Vercel API to find the deployment for this commit SHA.
+      - name: Wait for Vercel deployment
         id: preview
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          # Vercel auto-deploys preview URLs on push. Format varies by project config.
-          # Default pattern: https://<project>-git-<branch>-<team>.vercel.app
-          # Fallback: use branch-based URL
-          BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
-          SANITIZED=$(echo "$BRANCH" | tr '/' '-' | tr '[:upper:]' '[:lower:]')
-          PREVIEW_URL="https://gravix-prod-git-${SANITIZED}-ev0lv3vr.vercel.app"
-          echo "url=${PREVIEW_URL}" >> "$GITHUB_OUTPUT"
-          echo "📎 Preview URL: ${PREVIEW_URL}"
+          SHA="${{ github.sha }}"
+          PROJECT_ID="${{ secrets.VERCEL_PROJECT_ID }}"
+          TEAM_ID="${{ secrets.VERCEL_TEAM_ID }}"
+          
+          # If no Vercel token/project, fall back to production URL
+          if [ -z "$VERCEL_TOKEN" ] || [ -z "$PROJECT_ID" ]; then
+            echo "⚠️  No VERCEL_TOKEN or VERCEL_PROJECT_ID — falling back to gravix.com"
+            echo "url=https://gravix.com" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          
+          echo "⏳ Waiting for Vercel deployment of ${SHA:0:7}..."
+          
+          for i in $(seq 1 40); do
+            RESPONSE=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+              "https://api.vercel.com/v6/deployments?projectId=${PROJECT_ID}&teamId=${TEAM_ID}&limit=5&state=READY")
+            
+            # Find deployment matching this commit
+            DEPLOY_URL=$(echo "$RESPONSE" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          for d in data.get('deployments', []):
+              meta = d.get('meta', {})
+              if meta.get('githubCommitSha', '').startswith('${SHA:0:12}'):
+                  print('https://' + d['url'])
+                  break
+          " 2>/dev/null)
+            
+            if [ -n "$DEPLOY_URL" ]; then
+              echo "✅ Found deployment: $DEPLOY_URL"
+              echo "url=${DEPLOY_URL}" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            
+            echo "   Attempt $i/40 — not ready yet, waiting 15s..."
+            sleep 15
+          done
+          
+          echo "❌ Timed out waiting for Vercel deployment"
+          echo "url=https://gravix.com" >> "$GITHUB_OUTPUT"
+          echo "⚠️  Falling back to production URL"
 
       - name: Trigger holdout scenarios
         uses: peter-evans/repository-dispatch@v3
