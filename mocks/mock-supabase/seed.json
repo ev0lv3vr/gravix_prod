@@ -1,0 +1,238 @@
+{
+  "auth_users": [
+    {
+      "id": "66075c9d-a16f-429d-a81b-f9e3aae2f74a",
+      "email": "free1@test.gravix.com",
+      "password_hash": "$2a$10$ZjtgS8sWLM0S0jZlLE/awuXX5quNQ0wYW4LuhMoW.iR3p7wFmiL6m",
+      "created_at": "2026-02-19T04:33:42.219Z"
+    },
+    {
+      "id": "c2594296-5248-4570-81e5-ed1ac2572caa",
+      "email": "free2@test.gravix.com",
+      "password_hash": "$2a$10$ZjtgS8sWLM0S0jZlLE/awuXX5quNQ0wYW4LuhMoW.iR3p7wFmiL6m",
+      "created_at": "2026-02-19T04:33:42.219Z"
+    },
+    {
+      "id": "fbecb58b-e26f-44cd-9f69-56127ee93392",
+      "email": "pro1@test.gravix.com",
+      "password_hash": "$2a$10$ZjtgS8sWLM0S0jZlLE/awuXX5quNQ0wYW4LuhMoW.iR3p7wFmiL6m",
+      "created_at": "2026-02-19T04:33:42.219Z"
+    },
+    {
+      "id": "44896a34-976e-4b71-b8c4-4372378fc940",
+      "email": "pro2@test.gravix.com",
+      "password_hash": "$2a$10$ZjtgS8sWLM0S0jZlLE/awuXX5quNQ0wYW4LuhMoW.iR3p7wFmiL6m",
+      "created_at": "2026-02-19T04:33:42.219Z"
+    },
+    {
+      "id": "9060d806-4407-4243-8d71-91b25b81908c",
+      "email": "pro3@test.gravix.com",
+      "password_hash": "$2a$10$ZjtgS8sWLM0S0jZlLE/awuXX5quNQ0wYW4LuhMoW.iR3p7wFmiL6m",
+      "created_at": "2026-02-19T04:33:42.219Z"
+    },
+    {
+      "id": "3043832b-bfde-410d-b8cb-9f290aaaa2df",
+      "email": "quality1@test.gravix.com",
+      "password_hash": "$2a$10$ZjtgS8sWLM0S0jZlLE/awuXX5quNQ0wYW4LuhMoW.iR3p7wFmiL6m",
+      "created_at": "2026-02-19T04:33:42.219Z"
+    },
+    {
+      "id": "e0ea92d3-14b2-47ca-9e3d-b461e603a7f2",
+      "email": "quality2@test.gravix.com",
+      "password_hash": "$2a$10$ZjtgS8sWLM0S0jZlLE/awuXX5quNQ0wYW4LuhMoW.iR3p7wFmiL6m",
+      "created_at": "2026-02-19T04:33:42.219Z"
+    },
+    {
+      "id": "c24d7ed5-d95c-4a87-9de9-dd01adb75a4f",
+      "email": "quality3@test.gravix.com",
+      "password_hash": "$2a$10$ZjtgS8sWLM0S0jZlLE/awuXX5quNQ0wYW4LuhMoW.iR3p7wFmiL6m",
+      "created_at": "2026-02-19T04:33:42.219Z"
+    },
+    {
+      "id": "c6fc3ada-1f35-431a-95b5-a8d4369b500d",
+      "email": "enterprise1@test.gravix.com",
+      "password_hash": "$2a$10$ZjtgS8sWLM0S0jZlLE/awuXX5quNQ0wYW4LuhMoW.iR3p7wFmiL6m",
+      "created_at": "2026-02-19T04:33:42.219Z"
+    },
+    {
+      "id": "60cb4aa4-b4e1-451d-be05-c9527cf1afff",
+      "email": "enterprise2@test.gravix.com",
+      "password_hash": "$2a$10$ZjtgS8sWLM0S0jZlLE/awuXX5quNQ0wYW4LuhMoW.iR3p7wFmiL6m",
+      "created_at": "2026-02-19T04:33:42.219Z"
+    }
+  ],
+  "tables": {
+    "users": [
+      {
+        "id": "66075c9d-a16f-429d-a81b-f9e3aae2f74a",
+        "email": "free1@test.gravix.com",
+        "role": "user",
+        "plan": "free",
+        "display_name": null,
+        "avatar_url": null,
+        "analysis_count": 0,
+        "spec_count": 0,
+        "investigation_count": 0,
+        "monthly_analysis_count": 0,
+        "monthly_spec_count": 0,
+        "stripe_customer_id": null,
+        "stripe_subscription_id": null,
+        "created_at": "2026-02-19T04:33:42.219Z",
+        "updated_at": "2026-02-19T04:33:42.219Z"
+      },
+      {
+        "id": "c2594296-5248-4570-81e5-ed1ac2572caa",
+        "email": "free2@test.gravix.com",
+        "role": "user",
+        "plan": "free",
+        "display_name": null,
+        "avatar_url": null,
+        "analysis_count": 0,
+        "spec_count": 0,
+        "investigation_count": 0,
+        "monthly_analysis_count": 0,
+        "monthly_spec_count": 0,
+        "stripe_customer_id": null,
+        "stripe_subscription_id": null,
+        "created_at": "2026-02-19T04:33:42.219Z",
+        "updated_at": "2026-02-19T04:33:42.219Z"
+      },
+      {
+        "id": "fbecb58b-e26f-44cd-9f69-56127ee93392",
+        "email": "pro1@test.gravix.com",
+        "role": "user",
+        "plan": "pro",
+        "display_name": null,
+        "avatar_url": null,
+        "analysis_count": 0,
+        "spec_count": 0,
+        "investigation_count": 0,
+        "monthly_analysis_count": 0,
+        "monthly_spec_count": 0,
+        "stripe_customer_id": null,
+        "stripe_subscription_id": null,
+        "created_at": "2026-02-19T04:33:42.219Z",
+        "updated_at": "2026-02-19T04:33:42.219Z"
+      },
+      {
+        "id": "44896a34-976e-4b71-b8c4-4372378fc940",
+        "email": "pro2@test.gravix.com",
+        "role": "user",
+        "plan": "pro",
+        "display_name": null,
+        "avatar_url": null,
+        "analysis_count": 0,
+        "spec_count": 0,
+        "investigation_count": 0,
+        "monthly_analysis_count": 0,
+        "monthly_spec_count": 0,
+        "stripe_customer_id": null,
+        "stripe_subscription_id": null,
+        "created_at": "2026-02-19T04:33:42.219Z",
+        "updated_at": "2026-02-19T04:33:42.219Z"
+      },
+      {
+        "id": "9060d806-4407-4243-8d71-91b25b81908c",
+        "email": "pro3@test.gravix.com",
+        "role": "user",
+        "plan": "pro",
+        "display_name": null,
+        "avatar_url": null,
+        "analysis_count": 0,
+        "spec_count": 0,
+        "investigation_count": 0,
+        "monthly_analysis_count": 0,
+        "monthly_spec_count": 0,
+        "stripe_customer_id": null,
+        "stripe_subscription_id": null,
+        "created_at": "2026-02-19T04:33:42.219Z",
+        "updated_at": "2026-02-19T04:33:42.219Z"
+      },
+      {
+        "id": "3043832b-bfde-410d-b8cb-9f290aaaa2df",
+        "email": "quality1@test.gravix.com",
+        "role": "user",
+        "plan": "quality",
+        "display_name": null,
+        "avatar_url": null,
+        "analysis_count": 0,
+        "spec_count": 0,
+        "investigation_count": 0,
+        "monthly_analysis_count": 0,
+        "monthly_spec_count": 0,
+        "stripe_customer_id": null,
+        "stripe_subscription_id": null,
+        "created_at": "2026-02-19T04:33:42.219Z",
+        "updated_at": "2026-02-19T04:33:42.219Z"
+      },
+      {
+        "id": "e0ea92d3-14b2-47ca-9e3d-b461e603a7f2",
+        "email": "quality2@test.gravix.com",
+        "role": "user",
+        "plan": "quality",
+        "display_name": null,
+        "avatar_url": null,
+        "analysis_count": 0,
+        "spec_count": 0,
+        "investigation_count": 0,
+        "monthly_analysis_count": 0,
+        "monthly_spec_count": 0,
+        "stripe_customer_id": null,
+        "stripe_subscription_id": null,
+        "created_at": "2026-02-19T04:33:42.219Z",
+        "updated_at": "2026-02-19T04:33:42.219Z"
+      },
+      {
+        "id": "c24d7ed5-d95c-4a87-9de9-dd01adb75a4f",
+        "email": "quality3@test.gravix.com",
+        "role": "user",
+        "plan": "quality",
+        "display_name": null,
+        "avatar_url": null,
+        "analysis_count": 0,
+        "spec_count": 0,
+        "investigation_count": 0,
+        "monthly_analysis_count": 0,
+        "monthly_spec_count": 0,
+        "stripe_customer_id": null,
+        "stripe_subscription_id": null,
+        "created_at": "2026-02-19T04:33:42.219Z",
+        "updated_at": "2026-02-19T04:33:42.219Z"
+      },
+      {
+        "id": "c6fc3ada-1f35-431a-95b5-a8d4369b500d",
+        "email": "enterprise1@test.gravix.com",
+        "role": "admin",
+        "plan": "enterprise",
+        "display_name": null,
+        "avatar_url": null,
+        "analysis_count": 0,
+        "spec_count": 0,
+        "investigation_count": 0,
+        "monthly_analysis_count": 0,
+        "monthly_spec_count": 0,
+        "stripe_customer_id": null,
+        "stripe_subscription_id": null,
+        "created_at": "2026-02-19T04:33:42.219Z",
+        "updated_at": "2026-02-19T04:33:42.219Z"
+      },
+      {
+        "id": "60cb4aa4-b4e1-451d-be05-c9527cf1afff",
+        "email": "enterprise2@test.gravix.com",
+        "role": "user",
+        "plan": "enterprise",
+        "display_name": null,
+        "avatar_url": null,
+        "analysis_count": 0,
+        "spec_count": 0,
+        "investigation_count": 0,
+        "monthly_analysis_count": 0,
+        "monthly_spec_count": 0,
+        "stripe_customer_id": null,
+        "stripe_subscription_id": null,
+        "created_at": "2026-02-19T04:33:42.219Z",
+        "updated_at": "2026-02-19T04:33:42.219Z"
+      }
+    ]
+  }
+}
