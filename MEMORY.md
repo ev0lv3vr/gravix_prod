@@ -131,6 +131,18 @@ Last updated: 2026-02-17
 - `gluemasters-bizdev/tools/weekly-report-generator.sh` — 8-week BI report with charts
 - `gluemasters-bizdev/tools/customer-issues.md` — issue tracker (pattern: 3 ShipBob pick errors in 3 weeks)
 
+### Amazon Ads Smart Flywheel (started 2/18)
+- **Plan:** `moneysamurai/plans/ads-flywheel.md`
+- **Status:** Building — Week 1 (daily pull + digest)
+- **Architecture:** Daily data pull (6AM) → rules engine (6:30AM) → digest to Telegram (7AM)
+- **3 tiers:** Full autopilot (bids/negatives) → auto+notify (harvest/scale) → approval needed (big changes)
+- **Week 1:** Daily report pull script + data storage + cron + daily digest
+- **Week 2:** Rules engine + Tier 1 auto-optimization + safety guardrails
+- **Week 3:** Search term harvester + weekly reports + Tier 2
+- **Week 4:** Anomaly detection, competitor monitoring, dashboard, Tier 3
+- **Campaign IDs:** Core `371542846682866`, Defense `512471542344934`, Conquest `448241611300692`
+- **Cerebro analysis:** `moneysamurai/data/cerebro/cerebro-analysis.md`
+
 ## Lessons Learned
 - **Don't use separate gateways for multi-agent** — use `openclaw agents add` + multi-account Telegram on one gateway. Separate gateways cause lock conflicts and the `--profile` flag has bugs with `isLoaded` detection.
 - **Don't use opacity-0 for scroll animations** — breaks mobile if JS doesn't fire
