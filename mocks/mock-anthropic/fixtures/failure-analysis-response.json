@@ -1,0 +1,18 @@
+{
+  "id": "msg_mock_failure_analysis_02def",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-sonnet-4-20250514",
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"root_causes\": [\n    {\n      \"cause\": \"Insufficient surface preparation on aluminum substrate — oxide layer not adequately removed prior to bonding\",\n      \"confidence\": 89,\n      \"category\": \"surface_preparation\",\n      \"corrective_actions\": [\n        \"Abrade aluminum surface with 180-grit aluminum oxide paper in cross-hatch pattern immediately before bonding\",\n        \"Verify surface energy with water break test (continuous film for ≥30 seconds)\",\n        \"Apply chromate conversion coating (Alodine 1200S) or sol-gel treatment for long-term durability\",\n        \"Reduce time between surface preparation and adhesive application to <4 hours\"\n      ],\n      \"8d_discipline\": \"D4\"\n    },\n    {\n      \"cause\": \"Cure temperature 25°C below minimum specified in TDS — incomplete cross-linking of epoxy network\",\n      \"confidence\": 76,\n      \"category\": \"cure_process\",\n      \"corrective_actions\": [\n        \"Verify oven temperature profile with thermocouples on bondline (not air temperature)\",\n        \"Ensure minimum cure temperature of 120°C is maintained for full 60-minute dwell\",\n        \"Implement thermal mapping of cure oven to identify cold spots\",\n        \"Add temperature recording as mandatory quality checkpoint\"\n      ],\n      \"8d_discipline\": \"D4\"\n    },\n    {\n      \"cause\": \"Excessive bondline thickness (>0.5 mm) causing cohesive weakness under peel loading\",\n      \"confidence\": 52,\n      \"category\": \"application_process\",\n      \"corrective_actions\": [\n        \"Use 0.15 mm glass bead spacers to control bondline thickness\",\n        \"Verify clamping pressure is uniform across bond area (0.05–0.10 MPa)\",\n        \"Inspect squeeze-out pattern to confirm full coverage and consistent thickness\"\n      ],\n      \"8d_discipline\": \"D5\"\n    }\n  ],\n  \"failure_mode_classification\": \"adhesive_failure\",\n  \"visual_indicators\": [\n    \"Clean aluminum surface visible on one substrate (mirror-like reflection)\",\n    \"Adhesive residue only on composite side — no transfer to aluminum\",\n    \"No evidence of fiber tear on composite substrate\"\n  ],\n  \"tds_compliance\": {\n    \"violations\": [\n      \"Cure temperature below TDS minimum (120°C required, 95°C reported)\",\n      \"Surface preparation method not per TDS recommendation (no abrasion performed)\"\n    ],\n    \"warnings\": [\n      \"Bondline thickness at upper limit of specification range\",\n      \"Open time between surface prep and bonding exceeds recommended 4-hour window\"\n    ]\n  },\n  \"recommended_next_steps\": [\n    \"Perform lap shear coupon tests with corrected surface preparation to validate fix\",\n    \"Implement incoming surface energy inspection using contact angle measurement\",\n    \"Review and update work instructions to include mandatory quality checkpoints\"\n  ],\n  \"confidence\": 84\n}"
+    }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "usage": {
+    "input_tokens": 2104,
+    "output_tokens": 891
+  }
+}

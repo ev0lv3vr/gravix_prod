@@ -1,0 +1,18 @@
+{
+  "id": "msg_mock_spec_engine_01abc",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-sonnet-4-20250514",
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"recommended_spec\": {\n    \"title\": \"Two-Part Structural Epoxy\",\n    \"chemistry\": \"Modified Bisphenol-A Epoxy with Amine Hardener\",\n    \"example_products\": [\"Loctite EA 9395\", \"3M Scotch-Weld DP460\"],\n    \"rationale\": \"This epoxy system provides excellent adhesion to both aluminum and carbon fiber composite substrates. The modified bisphenol-A resin offers high lap shear strength (35+ MPa) with good resistance to vibration fatigue. The amine hardener enables room-temperature cure with optional heat acceleration, making it suitable for production environments without autoclave access.\"\n  },\n  \"product_characteristics\": {\n    \"viscosity\": \"Thixotropic paste, non-sag\",\n    \"work_life\": \"90 minutes at 25°C (2:1 mix ratio by volume)\",\n    \"fixture_time\": \"8–12 hours at 25°C, or 1 hour at 66°C\",\n    \"full_cure\": \"5 days at 25°C or 1 hour at 150°C\",\n    \"service_temp_range\": \"-55°C to 177°C\",\n    \"lap_shear_aluminum\": \"35 MPa (ASTM D1002)\",\n    \"lap_shear_composite\": \"28 MPa (fiber-tear failure mode)\"\n  },\n  \"application_guidance\": \"1. Degrease aluminum surfaces with acetone or MEK wipe. 2. Abrade with 180-grit aluminum oxide paper in cross-hatch pattern. 3. Peel-ply composite surfaces or lightly sand with 320-grit. 4. Apply adhesive within 4 hours of surface preparation. 5. Maintain bondline thickness of 0.10–0.25 mm using glass bead spacers. 6. Apply uniform clamping pressure of 0.05–0.10 MPa. 7. Cure per selected schedule — heat cure strongly recommended for structural applications.\",\n  \"alternatives\": [\n    {\n      \"title\": \"Toughened Epoxy Film Adhesive\",\n      \"chemistry\": \"Rubber-toughened epoxy film (supported)\",\n      \"example_products\": [\"Henkel EA 9696\", \"Solvay FM 300-2\"],\n      \"rationale\": \"Superior peel strength and damage tolerance. Requires autoclave cure (120°C/175°C at 0.3 MPa). Preferred for primary aerospace structures where peel and impact resistance are critical.\"\n    },\n    {\n      \"title\": \"Methacrylate Structural Adhesive\",\n      \"chemistry\": \"Methyl methacrylate (MMA)\",\n      \"example_products\": [\"Plexus MA310\", \"Lord 406/19\"],\n      \"rationale\": \"Faster fixture time (15–20 minutes) and more tolerant of oily or minimally prepared surfaces. Lower service temperature limit (120°C) but excellent for rapid production throughput.\"\n    }\n  ],\n  \"confidence\": 87\n}"
+    }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "usage": {
+    "input_tokens": 1583,
+    "output_tokens": 742
+  }
+}
