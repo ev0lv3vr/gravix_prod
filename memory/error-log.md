@@ -39,6 +39,14 @@
 
 - 2026-02-17: MoneySamurai sync trigger script: supabase sync_jobs schema lacks error_message column; use existing cron-moneysamurai-sync-trigger.cjs which verifies OTP via token_hash (hashed_token from generateLink), not by parsing token from action_link.
 
+## 2026-02-18 — Wrong SKU/ASIN mapping for GM2M
+**What happened:** Mapped B01MDNS8QB as "Thick 16oz" throughout campaign creation and analysis. Ev corrected: GM2M / B01MDNS8QB = **2oz Medium**.
+**Impact:** Campaign product ad labels were wrong in docs (ads still work since they target by ASIN). Inventory alerts incorrectly flagged wrong product.
+**Correct mapping:**
+- GM2M / B01MDNS8QB = 2oz Medium
+- B00WHEM0UA = 2oz Thick (SKU: 2OZTHICKCAGM)
+- B01CDPIJ0W = 16oz Thick (SKU: 16OZ1500CAGM)
+
 ## 2026-02-18 — Contradictory design feedback across revisions
 **What happened:** Gave Rev 2 label feedback that directly contradicted my Rev 1 feedback on 3 points (text order, N.W. prefix, address detail). The designer had already applied Rev 1 fixes correctly, and I told them to undo their fixes.
 **Root cause:** Didn't have Rev 1 feedback in context, compared against the raw brief copy instead of previous revision notes.
