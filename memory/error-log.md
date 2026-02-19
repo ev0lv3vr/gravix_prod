@@ -43,3 +43,28 @@
 **What happened:** Gave Rev 2 label feedback that directly contradicted my Rev 1 feedback on 3 points (text order, N.W. prefix, address detail). The designer had already applied Rev 1 fixes correctly, and I told them to undo their fixes.
 **Root cause:** Didn't have Rev 1 feedback in context, compared against the raw brief copy instead of previous revision notes.
 **Fix:** Always check for previous revision feedback before reviewing a new revision. Store revision feedback in the project folder so it persists across sessions.
+2026-02-19: MoneySamurai sync trigger script attempt failed: verifyOtp with token (not token_hash/hashed_token) -> 'Token has expired or is invalid'. Use existing cron-trigger-sync.cjs flow with token_hash=properties.hashed_token.
+
+## 2026-02-18 — OAuth listener timeout during active flow
+**What happened:** OAuth callback listener (node http server on :9998) kept getting killed by exec timeout while user was actively going through Amazon's auth flow. User completed auth, got redirected to localhost, but server was dead.
+**Fix:** Had user copy the full URL from browser bar (had auth code in it), then exchanged manually via curl. For future: use longer timeout or persistent server.
+
+## 2026-02-18 — `source .env` leaks all env vars to stdout
+**What happened:** Used `source <(grep -v '^#' .env | sed 's/^/export /')` in bash to load env, but the command output printed ALL env vars (including API keys, tokens) to stdout.
+**Fix:** Use python to read .env files, or grep individual values. Never `source` in exec commands.
+
+## 2026-02-18 — Amazon Ads product ads require SKU field
+**What happened:** Creating product ads with only ASIN failed — API requires `sku` (merchantSku) field too.
+**Fix:** First list existing product ads to get ASIN→SKU mapping, then include SKU in create calls.
+
+## 2026-02-18 — Amazon report API rate limit (HTTP 425)
+**What happened:** Requesting multiple reports back-to-back triggers HTTP 425 "Too Early".
+**Fix:** Add 3-5 second delays between report requests. Use retries with backoff.
+
+## 2026-02-18 — Python stdout buffering in background exec
+**What happened:** `python3` in background exec produced no visible output for minutes — all buffered.
+**Fix:** Use `python3 -u` flag or `flush=True` on every print statement.
+
+## 2026-02-18 — Amazon spTargeting report 400 error
+**What happened:** `spTargeting` reportTypeId with columns `keywordText`, `matchType` returned 400.
+**Fix:** Need to check valid columns for spTargeting reports — different from spSearchTerm.

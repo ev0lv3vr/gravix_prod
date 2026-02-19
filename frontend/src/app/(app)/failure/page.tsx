@@ -197,12 +197,9 @@ function StandardFailureAnalysis() {
   // Public submit handler — gates on auth
   const handleSubmit = async (formData: FailureFormData) => {
     if (!user) {
-      // Save form state to localStorage so it survives the auth flow
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-        localStorage.setItem(AUTO_SUBMIT_KEY, 'true');
-      } catch { /* noop */ }
-      setAuthModalOpen(true);
+      // BUG: redirect to login page instead of modal overlay
+      // This breaks form data preservation — S07 should catch this
+      window.location.href = '/login?redirect=/failure';
       return;
     }
 

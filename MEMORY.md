@@ -97,6 +97,27 @@ Last updated: 2026-02-17
 - **Status:** Running, automated data syncs via cron (products, orders, inventory, financial, restock)
 - **Note:** ESM project — use `import` not `require()`, scripts need .mjs or type=module
 
+### Amazon Ads API — CONNECTED (2/18)
+- **OAuth complete**, refresh token + profile ID in moneysamurai/api/.env
+- **US Seller profile:** 866359650840311 (Glue Masters LLC, $750/day cap)
+- **4 profiles:** US Seller ✅, CA Seller, US Agency (Attribution), US Vendor
+- **LWA app:** MoneySamurai (client ID: amzn1...cfe0f4), scopes: advertising::campaign_management
+- **Redirect URI:** http://localhost:9998/callback (registered in LWA Web Settings)
+- **First analysis done:** 100 campaigns, 2468 search terms, $7K/mo spend at 68% ACoS
+- **Actions taken:** Paused 2 bleeders (-$4K/mo), cut catch-all 50%, created Super Glue Exact campaign, added 26 negatives, boosted medium/thick bids
+- **Files:** amazon-ads-report-30d.json, amazon-ads-searchterms-30d.json in moneysamurai/api/
+- **Gotchas:** Product ads need SKU field, report API rate limits (HTTP 425), spTargeting report columns differ from spSearchTerm
+
+### Amazon Ads Strategy (2/18)
+- **Plan doc:** `moneysamurai/plans/amazon-ads-strategy.md` (comprehensive)
+- **Helium10 onboarding:** `moneysamurai/plans/helium10-onboarding.md`
+- **Strategy:** Phase out Teikametrics (it created the bleeders), keep Helium10 for KW research/rank tracking, use our Ads API for execution
+- **Teikametrics** — auto-created "AMC-RTP" catch-all (81% ACoS) + "presets" campaigns (194-356% ACoS), biggest source of waste
+- **Action:** Disable Teikametrics auto-bidding → verify 7 days → cancel subscription (~$199/mo saved)
+- **Helium10** — use Cerebro (reverse ASIN), Magnet (KW discovery), Keyword Tracker (daily rank monitoring)
+- **MoneySamurai Ads API** — weekly performance reports, search term harvesting, bid adjustments, budget pacing
+- **Target:** ACoS from 68% → <30%, ROAS from 1.46x → 3.0x+ within 30 days
+
 ## Tools & Setup
 - Shopify CLI installed (`shopify` v3.90.0) — auth has been problematic (device code timeouts)
 - himalaya for email (sales@gluemasters.com, `save-copy = false`)
