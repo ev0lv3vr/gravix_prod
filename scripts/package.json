@@ -1,0 +1,9 @@
+{
+  "name": "gravix-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gravix convergence scripts — scenario runner and helpers",
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}
