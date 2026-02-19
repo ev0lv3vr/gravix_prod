@@ -1,45 +1,14 @@
-2026-02-16: Ev reported that a previous replacement shipment used SKUs that do not exist. Likely cause: ShipBob replacement order API created a NEW inventory item (e.g., 22374746) due to missing Package Preference (PackagePreferenceNotSet) instead of using the existing SKU/inventory (e.g., Thick inv 8696102). Need to ensure replacements reference existing ShipBob inventory IDs/SKUs and package preferences are set before creating replacements.
+# Error Log
 
-## 2026-02-16: MoneySamurai sync auth — correct OTP flow
-- `supabase.auth.admin.generateLink({type:'magiclink'})` returns `properties.email_otp` (raw numeric OTP)
-- Use `verifyOtp({ email, token: email_otp, type: 'email' })` — NOT the hashed_token, NOT the URL token param
-- The URL `token` param and `hashed_token` are for browser redirect flows and expire immediately for programmatic use
-- Fixed in `moneysamurai/api/trigger-sync.mjs`
-
-## 2026-02-17 — B2B email sent without approval + wrong assumption
-- Sent follow-up email to Noveon Magnetics without showing Ev the draft first. External emails = ask first, always.
-- Asked about bottle size preference — B2B case orders are always 16oz. Don't ask what we should already know.
-
-## 2026-02-17 — NEVER create new ShipBob products via API
-- API order creation with wrong/missing product IDs silently creates NEW orphan inventory items
-- These orphan products have no Shopify link → if receiving orders are accidentally created against them, inventory is trapped and can't fulfill Shopify orders
-- Created 3 orphan products (Inv IDs: 22374746, 22373981, 22373980) during replacement/trial order attempts
-- **RULE:** Always use existing ShipBob product IDs. If the API can't match, STOP and ask Ev to do it manually in the dashboard. Never let the API create new products on the fly.
-
-## 2026-02-17 — ShipBob PAT does NOT expire
-- Was reporting "ShipBob PAT expired" since 2/14 based on HTTP 403 errors
-- PATs don't expire — the 403 was likely transient or a different issue
-- Don't assume token expiry from a single 403. Verify before flagging.
-
-## 2026-02-17 — Himalaya attachments require MML multipart syntax
-- `<#part filename=...>` inside plain text body does NOT work — it gets sent as literal text
-- Must wrap in `<#multipart type=mixed>` with `<#part type=text/plain>` for body + `<#part filename=...>` for attachments
-- See references/message-composition.md for correct syntax
-
-## 2026-02-17 — Sent customer email from wrong account (evgueni@ instead of sales@)
-- Replied to Ryan Belnap from default `gluemasters` account (evgueni@) instead of `--account sales` (sales@)
-- Also didn't reply to thread — sent a fresh email instead of using In-Reply-To
-- **Rule:** Customer/B2B replies ALWAYS use `--account sales` and reply to the thread (get Message-ID from original, set In-Reply-To + References headers)
-
-## 2026-02-17 — Wrong himalaya account for sales emails
-- Customer/B2B emails come into `--account sales` (sales@gluemasters.com), NOT the default `gluemasters` account (evgueni@gluemasters.com)
-- The sales monitor cron already uses the sales account — always check `--account sales` first for customer correspondence
-- Default account (gluemasters) is evgueni@ which gets newsletters, Amazon, ShipBob, etc.
-2026-02-17: MoneySamurai sync trigger cron: initial run failed (MODULE_NOT_FOUND @supabase/supabase-js when script run from /tmp); fixed by running from api dir. Also amazon_accounts.status column does not exist; script should not select it. OTP verify failed when using hashed_token; use linkData.properties.email_otp with verifyOtp type='email'.
-
-- 2026-02-17: MoneySamurai sync trigger script: supabase sync_jobs schema lacks error_message column; use existing cron-moneysamurai-sync-trigger.cjs which verifies OTP via token_hash (hashed_token from generateLink), not by parsing token from action_link.
-
-## 2026-02-18 — Contradictory design feedback across revisions
-**What happened:** Gave Rev 2 label feedback that directly contradicted my Rev 1 feedback on 3 points (text order, N.W. prefix, address detail). The designer had already applied Rev 1 fixes correctly, and I told them to undo their fixes.
-**Root cause:** Didn't have Rev 1 feedback in context, compared against the raw brief copy instead of previous revision notes.
-**Fix:** Always check for previous revision feedback before reviewing a new revision. Store revision feedback in the project folder so it persists across sessions.
+## 2026-02-19 — Wrong B2B pricing quoted to Pacmin Studios
+- **What:** Sent Moises Bobadilla wholesale quote with wrong case size (12 instead of 30) and wrong price tier (40% off instead of 20% intro tier)
+- **Root cause:** Used template in `retail-to-wholesale-sequences.md` which had "MOQ: 1 case (12 bottles)" and "40% off retail" as defaults — neither was correct
+- **Correct case packs:** 16oz = 30 units, 8oz = 20 units, 2oz = 120 units
+- **Correct intro pricing:** 1-49 bottles/mo = $34.39 (20% off), NOT $25.79 (that's 200+/mo tier)
+- **Fix:** Sent correction email, updated templates + playbook
+- **Lesson:** Always verify case sizes and pricing tiers against the LIVE wholesale page (gluemasters.com/pages/wholesale) before quoting. Don't trust playbook/template defaults — they were out of date. The live page is the source of truth.
+- **Live pricing (16oz):** Starter $39/bottle (30 units), Growth $34.50 (90+), Pro $30 (150+), Partner $26 (300+)
+- **Case packs:** 16oz = 30, 8oz = 20, 2oz = 120
+- **Sent 3 emails to correct this.** Embarrassing. Check the live page first next time.
+- **ALSO sent a fake /pages/wholesale URL** that doesn't exist — Moises reported 404. Correct pages are /pages/b2b (overview) and /pages/order-cases (direct case ordering). Added Shopify redirect /pages/wholesale → /pages/b2b.
+- **Key URLs to remember:** B2B = /pages/b2b, Case orders = /pages/order-cases. NEVER guess URLs.

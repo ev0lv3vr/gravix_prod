@@ -1,48 +1,50 @@
-# KANBAN — Last updated: 2026-02-17 6:00 PM PST
+# KANBAN — Last updated: 2026-02-19 2:00 PM PST
 
 ## 🔴 URGENT / BLOCKED
-- [ ] **Medium restock** — 8oz: ~5 days, 2oz: ~6 days (could be OOS by weekend) — needs Ev to place PO
-- [ ] **ShipBob PAT expired** — blocking fulfillment data since 2/14 — needs Ev to regenerate
-- [ ] **ShipBob UROs accruing fees** — 2 shipments On-Hold Receiving, ~$490 accrued (~$18/day) — needs Ev action
-- [ ] **Ethan Miller replacement** — order #5786, 4× Thick 16oz not yet created at ShipBob
-- [ ] **Josue Saravia (#5852)** — wants both bottles switched to Ultra Thin — Shopify order edit needed
+- [ ] **Medium restock** — 8oz: ~3-4 days left, 2oz: ~4-5 days (OOS by weekend) — needs Ev to place PO
+- [ ] **ShipBob UROs accruing fees** — 2 shipments On-Hold Receiving, ~$530+ accrued (~$18/day) — needs Ev action
+- [ ] **Ethan Miller replacement** — order #5786, ShipBob spot-check initiated, awaiting result → create replacement
+- [ ] **OOS products running ads** — $668/mo waste (Thick 2oz, Gel 20g, Accelerator) — pause keywords or restock
+- [ ] **Josue Saravia (#5852)** — order edit to Ultra Thin still pending in Shopify
 
 ## 🟡 NEEDS EV / WAITING
-- [ ] **Amazon CA/NARF** — disable for chemical ASINs or submit SDS (30-day clock from ~2/15)
-- [ ] **Designcoffers** — 1st revision delivered on Fiverr, awaiting Ev's review
+- [ ] **Designcoffers** — FINAL files + 3D mockups delivered on Fiverr, needs Ev's review
+- [ ] **Teikametrics** — disable auto-bidding (our API handles it now), set budget cap, then cancel
+- [ ] **Amazon CA/NARF** — disable for chemical ASINs or submit SDS (~30-day clock from 2/15)
 - [ ] **Oversold inventory** — Gel 20g (-6), Thick 2oz (-1)
+- [ ] **Optimizer dry-run → execute** — switch ads optimizer + harvester from --dry-run to --execute after 3-5 day verification
 - [ ] **Back-in-stock notification app** — Shopify App Store
 - [ ] **Refund policy** — still links to gravixadhesives.com (needs `write_legal_policies` scope)
 - [ ] **Google Search Console** — sitemap submission (needs manual access)
 - [ ] **Opinew reviews** — verify 1,183 imported (needs dashboard login)
 
 ## 🔵 IN PROGRESS
-- [x] **Amazon Ads API** — LWA registration submitted 2/17, awaiting approval (up to 72h)
-- [x] **Noveon Magnetics** — PDF quote sent ($4,140), awaiting buyer approval
-- [x] **Quintex Molding** — trial kit + order #5836 in transit, USPS redelivery scheduled 2/17
-- [x] **OTL (Mitch Hamilton)** — follow-up email sent 2/16
+- [ ] **3 new Cerebro campaigns live TODAY** — CA Glue Core ($50/d), Defense Positions ($40/d), Competitor Conquest ($25/d) + Super Glue Exact ($30/d from yesterday) — monitoring first-day performance
+- [ ] **B2B follow-ups due TODAY** — Quintex (delivery confirm), OTL (nudge), Ethan Miller (spot-check), Donaldson (receipt confirm)
+- [ ] **Noveon Magnetics** — quote sent ($4,140), follow up by 2/20
+- [ ] **Amazon Ads optimizer** — running in dry-run mode, verifying actions (day 1 of 3-5)
+- [ ] **Ads War Room dashboard** — built, needs daily data refresh cycle
 
-## ✅ DONE TODAY (2/17)
-- [x] Quintex reply (sales@, in-thread, USPS tracking)
-- [x] Noveon quote PDF generated + emailed ($4,140, 4 cases Medium 16oz)
-- [x] B2B page updated (16oz in pricing heading)
-- [x] Amazon Ads API registration submitted (MoneySamurai)
-- [x] Memory maintenance (MEMORY.md + error-log updated)
-- [x] Morning + midday briefings delivered
-- [x] MoneySamurai daily sync ran successfully
-- [x] Gravix crons healthy (aggregate-knowledge + send-followups)
-- [x] **Gravix agent:** Form Field Expansion — 4 sprints shipped (PRs #30-33), 275+ tests, combined migration
-
-## ✅ DONE RECENTLY
-- [x] SEO blog post #3 published (CA Glue for Woodworking)
-- [x] Nightly build: Customer Intelligence, Competitive Intel, B2B Pipeline dashboards
-- [x] Morning Command Center dashboard + Restock PO Calculator
-- [x] GSC indexing investigation (non-issue confirmed)
-- [x] Full site audit, brand merge, product pages, SEO overhaul (2/12)
+## ✅ DONE (2/18-2/19)
+- [x] Amazon Ads API — connected, OAuth complete, first 30-day analysis done
+- [x] Paused 2 bleeding campaigns ($2,549/mo saved) + cut catch-all ($1,500/mo saved)
+- [x] Created Super Glue Exact campaign ($30/day)
+- [x] Cerebro analysis (2,533 competitor keywords) → 3 new campaigns created
+- [x] 26 negative keywords added to catch-all
+- [x] Boosted "Sales - 2oz thick & 8oz medium" $200→$250/day, bid $0.80→$1.20
+- [x] Ads War Room dashboard built (moneysamurai/data/ads/warroom.html)
+- [x] B2B follow-up tracker built (gluemasters-bizdev/tools/b2b-followup-tracker.py)
+- [x] Inventory × Ads waste calculator built ($668/mo waste identified)
+- [x] Morning War Room runner script built
+- [x] Amazon Ads strategy plan + H10 onboarding doc
+- [x] ShipBob WRO 903319 received & completed
+- [x] SEO blog post #4 auto-published (CA Glue Fogging and Blooming)
+- [x] Gravix agent: Alpha badge, Guided Investigation UX, Spec Engine Product Matching, 7 commits
 
 ## 📋 BACKLOG
+- [ ] Wire flywheel data into MoneySamurai PPC Diagnostic frontend
+- [ ] Search term harvesting pipeline (automated)
+- [ ] Weekly ads performance cron
+- [ ] Competitor ASIN identification (systematic)
 - [ ] Bundle offers (Phase 4 — needs product strategy)
-- [ ] Quintex follow-up email (due ~2/18)
-- [ ] Jaan Malik tracking email (overdue)
-- [ ] 8 queued B2B prospects (~$54K/mo pipeline)
-- [ ] Amazon Ads campaign data pull (after API approval)
+- [ ] 5 queued B2B prospects (~$17K/mo pipeline): Frame My TV, The Escape Game, Hess Pumice, Olympus Group, Crown Trophy

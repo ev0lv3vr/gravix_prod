@@ -61,6 +61,13 @@ Last updated: 2026-02-17
 - Reef2Reef section replaced with trust bar + dual CTA
 - Opinew duplicate script removed from theme.liquid
 
+#### Gluemasters — Key Pages & Pricing (⚠️ CHECK BEFORE EMAILING)
+- **B2B overview:** /pages/b2b
+- **Case order page:** /pages/order-cases
+- **Case packs:** 16oz = 30, 8oz = 20, 2oz = 120
+- **16oz volume tiers:** Starter $39 (1 case), Growth $34.50 (3+), Pro $30 (5+), Partner $26 (10+/mo)
+- **Full reference:** `gluemasters-bizdev/QUICK-REFERENCE.md`
+
 #### Gluemasters — Open Items
 - [ ] Verify Opinew has 1,183 reviews imported (needs dashboard login)
 - [ ] Fix oversold inventory: Gel 20g (-6), Thick 2oz (-1)
