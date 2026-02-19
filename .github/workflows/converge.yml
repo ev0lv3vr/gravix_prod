@@ -175,7 +175,7 @@ jobs:
           wait-interval: 15
           allowed-conclusions: success,neutral
           fail-on-no-checks: false
-        timeout-minutes: 12
+        timeout-minutes: 25
 
   # ─── Report ──────────────────────────────────────────────
   # Posts convergence results to the PR.
