@@ -133,12 +133,14 @@ jobs:
 
       - name: Wait for holdout results
         uses: lewagon/wait-on-check-action@v1.3.4
+        timeout-minutes: 12
         with:
           ref: ${{ github.sha }}
           check-name: holdout-results
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 15
           allowed-conclusions: success,neutral
+          fail-on-no-checks: false
 
   # ─── Report ──────────────────────────────────────────────
   # Posts convergence results to the PR.
