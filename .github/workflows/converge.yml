@@ -132,7 +132,7 @@ jobs:
         run: echo "Dispatch sent to ev0lv3vr/gravix-holdouts with SHA ${{ github.sha }}"
 
       - name: Wait for holdout results
-        uses: lewagon/wait-on-check-action@v1.3.4
+        uses: lewagon/wait-on-check-action@v1.5.0
         timeout-minutes: 12
         with:
           ref: ${{ github.sha }}
