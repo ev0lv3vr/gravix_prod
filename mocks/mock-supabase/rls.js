@@ -8,12 +8,20 @@
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('./auth');
 
+// Service keys bypass JWT verification (like Supabase service_role key)
+const SERVICE_KEYS = new Set([
+  'mock-service-key',
+  process.env.MOCK_SUPABASE_SERVICE_KEY || 'mock-service-key',
+]);
+
 /**
  * Middleware: extract and verify JWT, attach to req.jwtPayload.
+ * Service keys get a synthetic admin-level payload (bypasses RLS).
  * Does NOT reject unauthenticated requests — individual handlers decide.
  */
 function extractJwt(req, res, next) {
   req.jwtPayload = null;
+  req.isServiceRole = false;
 
   let token = null;
 
@@ -29,10 +37,16 @@ function extractJwt(req, res, next) {
   }
 
   if (token) {
-    try {
-      req.jwtPayload = jwt.verify(token, JWT_SECRET);
-    } catch (err) {
-      // Token invalid — leave jwtPayload null
+    // Check if it's a service key — bypass JWT verification
+    if (SERVICE_KEYS.has(token)) {
+      req.isServiceRole = true;
+      req.jwtPayload = { sub: 'service_role', role: 'service_role', aud: 'authenticated' };
+    } else {
+      try {
+        req.jwtPayload = jwt.verify(token, JWT_SECRET);
+      } catch (err) {
+        // Token invalid — leave jwtPayload null
+      }
     }
   }
 
@@ -49,8 +63,9 @@ function extractJwt(req, res, next) {
  * @param {Store} store - Data store (to look up user role)
  * @returns {Array} Filtered rows
  */
-function rlsFilterSelect(rows, schema, jwtPayload, store) {
+function rlsFilterSelect(rows, schema, jwtPayload, store, req) {
   if (!jwtPayload) return [];
+  if (req && req.isServiceRole) return rows; // Service role bypasses all RLS
   if (schema.adminOnly && !isAdmin(jwtPayload, store)) return [];
   if (!schema.userIdColumn) return rows; // No RLS column (public table)
   if (isAdmin(jwtPayload, store)) return rows; // Admin bypasses RLS
@@ -62,8 +77,9 @@ function rlsFilterSelect(rows, schema, jwtPayload, store) {
 /**
  * Inject user_id into a row for INSERT if not already provided.
  */
-function rlsInjectUserId(row, schema, jwtPayload) {
+function rlsInjectUserId(row, schema, jwtPayload, req) {
   if (!schema.userIdColumn || !jwtPayload) return row;
+  if (req && req.isServiceRole) return row; // Service role — don't inject, trust the payload
   if (schema.userIdColumn === 'id') return row; // Don't overwrite primary key
   if (!row[schema.userIdColumn]) {
     row[schema.userIdColumn] = jwtPayload.sub;
@@ -75,8 +91,9 @@ function rlsInjectUserId(row, schema, jwtPayload) {
  * Filter rows for UPDATE/DELETE scope.
  * Returns only rows owned by the current user (unless admin).
  */
-function rlsScopeWrite(rows, schema, jwtPayload, store) {
+function rlsScopeWrite(rows, schema, jwtPayload, store, req) {
   if (!jwtPayload) return [];
+  if (req && req.isServiceRole) return rows; // Service role bypasses RLS
   if (!schema.userIdColumn) return rows;
   if (isAdmin(jwtPayload, store)) return rows;
 

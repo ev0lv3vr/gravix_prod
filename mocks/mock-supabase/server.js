@@ -34,6 +34,11 @@ restApp.get('/health', (req, res) => {
   });
 });
 
+// JWKS endpoint on REST port (Supabase client may look for it here)
+restApp.get('/auth/v1/.well-known/jwks.json', (req, res) => {
+  res.json({ keys: [] });
+});
+
 // Mount REST routes
 restApp.use(createRestRouter(store));
 

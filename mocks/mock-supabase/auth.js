@@ -174,6 +174,13 @@ function createAuthRouter(store) {
     }
   });
 
+  // JWKS endpoint — Gravix backend tries to fetch this for JWT verification.
+  // Since we use HS256 (symmetric), return an empty JWKS. The backend should
+  // fall back to the shared secret (SUPABASE_JWT_SECRET).
+  router.get('/.well-known/jwks.json', (req, res) => {
+    res.json({ keys: [] });
+  });
+
   return router;
 }
 

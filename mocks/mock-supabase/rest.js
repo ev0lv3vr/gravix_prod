@@ -45,7 +45,7 @@ function createRestRouter(store) {
     let rows = store.getTableData(table) || [];
 
     // Apply RLS
-    rows = rlsFilterSelect(rows, schema, req.jwtPayload, store);
+    rows = rlsFilterSelect(rows, schema, req.jwtPayload, store, req);
 
     // Apply PostgREST-style filters from query params
     rows = applyFilters(rows, req.query);
@@ -105,7 +105,7 @@ function createRestRouter(store) {
       }
 
       // RLS: inject user_id
-      row = rlsInjectUserId(row, schema, req.jwtPayload);
+      row = rlsInjectUserId(row, schema, req.jwtPayload, req);
 
       tableData.push(row);
       insertedRows.push(row);
@@ -141,7 +141,7 @@ function createRestRouter(store) {
     let candidates = applyFilters(tableData, req.query);
 
     // RLS: scope to user's rows
-    candidates = rlsScopeWrite(candidates, schema, req.jwtPayload, store);
+    candidates = rlsScopeWrite(candidates, schema, req.jwtPayload, store, req);
 
     const updatedRows = [];
     for (const candidate of candidates) {
@@ -189,7 +189,7 @@ function createRestRouter(store) {
     let candidates = applyFilters(tableData, req.query);
 
     // RLS: scope to user's rows
-    candidates = rlsScopeWrite(candidates, schema, req.jwtPayload, store);
+    candidates = rlsScopeWrite(candidates, schema, req.jwtPayload, store, req);
 
     const deletedRows = [];
     for (const candidate of candidates) {
