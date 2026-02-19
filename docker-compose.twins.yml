@@ -1,0 +1,92 @@
+# docker-compose.twins.yml — Gravix "Digital Twins" local environment
+# Runs all 3 mock services + the Gravix API pointed at them.
+# Usage: docker-compose -f docker-compose.twins.yml up --build
+#   or:  ./scripts/twins-up.sh
+
+version: "3.8"
+
+services:
+  # ── Mock Services ──────────────────────────────────────────────
+
+  mock-anthropic:
+    build: ./mocks/mock-anthropic
+    ports:
+      - "3100:3100"
+    environment:
+      MOCK_ANTHROPIC_PORT: 3100
+      MOCK_MODE: replay
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3100/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  mock-supabase:
+    build: ./mocks/mock-supabase
+    ports:
+      - "3200:3200"
+      - "3201:3201"
+    environment:
+      MOCK_SUPABASE_REST_PORT: 3200
+      MOCK_SUPABASE_AUTH_PORT: 3201
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3200/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  mock-stripe:
+    build: ./mocks/mock-stripe
+    ports:
+      - "3300:3300"
+    environment:
+      MOCK_STRIPE_PORT: 3300
+      WEBHOOK_URL: http://gravix-api:8000/v1/billing/webhook
+      STRIPE_WEBHOOK_SECRET: whsec_test_mock
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3300/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  # ── Gravix API ─────────────────────────────────────────────────
+
+  gravix-api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    depends_on:
+      mock-anthropic:
+        condition: service_healthy
+      mock-supabase:
+        condition: service_healthy
+      mock-stripe:
+        condition: service_healthy
+    environment:
+      # Point at mock Supabase
+      SUPABASE_URL: http://mock-supabase:3200
+      SUPABASE_ANON_KEY: mock-anon-key
+      SUPABASE_SERVICE_KEY: mock-service-key
+      SUPABASE_JWT_SECRET: mock-supabase-jwt-secret
+
+      # Point at mock Anthropic
+      ANTHROPIC_API_KEY: sk-ant-mock-key
+      ANTHROPIC_MODEL: claude-sonnet-4-20250514
+
+      # Point at mock Stripe
+      STRIPE_SECRET_KEY: sk_test_mock
+      STRIPE_WEBHOOK_SECRET: whsec_test_mock
+      STRIPE_PRICE_ID_PRO: price_pro_monthly
+      STRIPE_PRICE_ID_TEAM: price_quality_monthly
+
+      # App config
+      ENVIRONMENT: development
+      FRONTEND_URL: http://localhost:3000
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8000
+      CRON_SECRET: mock-cron-secret
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
