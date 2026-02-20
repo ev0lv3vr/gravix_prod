@@ -113,8 +113,9 @@ async def get_current_user(
         analyses_this_month = int(holdout_claims.get("analyses_this_month", 0) or 0)
         specs_this_month = int(holdout_claims.get("specs_this_month", 0) or 0)
 
-        db = get_supabase()
-        new_user = {
+        # Return synthetic user dict directly — no DB dependency.
+        # This avoids Supabase RLS/schema issues for holdout test users.
+        return {
             "id": user_id,
             "email": email,
             "plan": plan,
@@ -122,11 +123,6 @@ async def get_current_user(
             "specs_this_month": specs_this_month,
             "role": "user",
         }
-        db.table("users").upsert(new_user).execute()
-        existing = db.table("users").select("*").eq("id", user_id).limit(1).execute()
-        if existing.data:
-            return existing.data[0]
-        return new_user
 
     try:
         payload = _verify_token(token)
