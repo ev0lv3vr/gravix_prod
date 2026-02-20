@@ -164,3 +164,5 @@ The convergence runner exits with:
 - [ ] Add `lewagon/wait-on-check-action` for holdout result polling
 - [ ] Parse holdout artifact in report job for PR comment scores
 - [ ] Add `HOLDOUT_PAT` secret to repo settings
+
+<!-- auth-baseline verification touch: test/verify-auth-baseline -->
