@@ -96,6 +96,7 @@ app.include_router(templates.router)
 app.include_router(email_inbound.router)
 # Sprint 11: AI-Forward routers
 app.include_router(products.router)
+app.include_router(products.public_router)
 app.include_router(guided.router)
 app.include_router(patterns.router)
 app.include_router(pricing.router)

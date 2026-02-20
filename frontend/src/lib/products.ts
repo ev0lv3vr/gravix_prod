@@ -124,9 +124,11 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
 
 // Products
 export async function searchProducts(search?: string): Promise<ProductSpecification[]> {
-  const headers = await getAuthHeaders();
-  const params = search ? `?search=${encodeURIComponent(search)}` : '';
-  const response = await fetch(`${API_URL}/v1/products${params}`, { headers });
+  if (!search || search.trim().length < 2) return [];
+  const params = `?q=${encodeURIComponent(search.trim())}`;
+  const response = await fetch(`${API_URL}/api/products/autocomplete${params}`, {
+    headers: { 'Content-Type': 'application/json' },
+  });
   if (!response.ok) throw new Error('Failed to fetch products');
   return response.json();
 }
