@@ -18,6 +18,7 @@ from database import get_supabase
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/stats", tags=["stats"])
+legacy_router = APIRouter(tags=["stats"])
 
 
 def _safe_int(value: Any, default: int = 0) -> int:
@@ -196,3 +197,13 @@ def _count_knowledge_patterns(db) -> int:
         return _safe_int(getattr(res, "count", None), 0)
     except Exception:
         return 0
+
+
+@legacy_router.get("/api/admin/stats", include_in_schema=False)
+async def get_public_stats_legacy_alias(response: Response) -> dict:
+    """L1 contract alias for public stats endpoint.
+
+    Mirrors GET /v1/stats/public to preserve backward compatibility while
+    aligning frontend fetch paths with specs/schema/api-contracts.md.
+    """
+    return await get_public_stats(response)
