@@ -13,7 +13,7 @@ import json
 from typing import Literal
 
 from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 from config import settings
 
@@ -21,7 +21,7 @@ router = APIRouter(prefix="/api/auth/test", tags=["auth-test"])
 
 
 class IssueTokenRequest(BaseModel):
-    email: EmailStr
+    email: str
     mode: Literal["signin", "signup"] = "signin"
 
 
