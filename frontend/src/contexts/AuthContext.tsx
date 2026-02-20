@@ -69,7 +69,78 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  const maybeHoldoutTestAuth = async (email: string): Promise<{ error: AuthError | null } | null> => {
+    const host = typeof window !== 'undefined' ? window.location.hostname : '';
+    const isPreviewHost = host.includes('.vercel.app');
+    const testMode = process.env.NEXT_PUBLIC_TEST_MODE === 'true' || isPreviewHost;
+    const normalized = email.trim().toLowerCase();
+    const isAllowed = normalized.startsWith('test-') && normalized.endsWith('@gravix.com');
+    if (!testMode || !isAllowed) return null;
+
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
+      const res = await fetch(`${API_URL}/api/auth/test/session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: normalized, mode: 'signin' }),
+      });
+      if (!res.ok) {
+        return { error: { message: 'Test auth unavailable' } as AuthError };
+      }
+
+      const json = await res.json();
+      const accessToken = json.access_token as string;
+      const userId = json.user?.id as string;
+      const plan = (json.plan || 'free') as string;
+
+      const fakeSession = {
+        access_token: accessToken,
+        token_type: 'bearer',
+        expires_in: 3600,
+        expires_at: Math.floor(Date.now() / 1000) + 3600,
+        refresh_token: 'holdout-refresh-token',
+        user: {
+          id: userId,
+          email: normalized,
+          app_metadata: { provider: 'holdout-test' },
+          user_metadata: { plan, holdout_test: true },
+          aud: 'authenticated',
+          role: 'authenticated',
+          created_at: new Date().toISOString(),
+        },
+      } as Session;
+
+      // Keep compatibility with existing AuthContext bypass
+      (window as any).__GRAVIX_TEST_SESSION__ = fakeSession;
+
+      // Keep compatibility with ApiClient localStorage fast-path auth header
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+      const ref = supabaseUrl.match(/\/\/([^.]+)\./)?.[1] || '';
+      if (ref) {
+        localStorage.setItem(
+          `sb-${ref}-auth-token`,
+          JSON.stringify({
+            access_token: accessToken,
+            expires_at: fakeSession.expires_at,
+            token_type: 'bearer',
+          })
+        );
+      }
+
+      setSession(fakeSession);
+      setUser(fakeSession.user as User);
+      setLoading(false);
+
+      return { error: null };
+    } catch {
+      return { error: { message: 'Test auth failed' } as AuthError };
+    }
+  };
+
   const signUp = async (email: string, password: string) => {
+    const test = await maybeHoldoutTestAuth(email);
+    if (test) return test;
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -81,6 +152,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
+    const test = await maybeHoldoutTestAuth(email);
+    if (test) return test;
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -107,7 +181,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // noop
+    }
+    if (typeof window !== 'undefined') {
+      delete (window as any).__GRAVIX_TEST_SESSION__;
+    }
     window.location.href = '/';
   };
 
