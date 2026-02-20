@@ -1,5 +1,7 @@
 # Convergence Pipeline
 
+<!-- baseline verification touch: test/verify-pipeline -->
+
 The Gravix convergence system validates code changes against **holdout scenarios** — real-world usage patterns that the codebase must satisfy before merging.
 
 ## Architecture
