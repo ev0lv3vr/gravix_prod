@@ -1,0 +1,181 @@
+{
+  "audit_date": "2026-02-19",
+  "repo": "ev0lv3vr/gravix_prod",
+  "baseline": "main@2026-02-19",
+  "features": [
+    {
+      "name": "Spec Engine",
+      "l1_spec": "specs/L1/spec-engine.md",
+      "status": "complete",
+      "implemented": [
+        "Route /tool with two-panel layout",
+        "Zone 1 + Zone 2 form architecture with ExpandableSection",
+        "Combobox substrate selectors and multi-select chips",
+        "Product autocomplete via product_specifications search",
+        "AI analysis + mapped results + product matching",
+        "Auth modal gate with localStorage persistence"
+      ],
+      "missing": [
+        "No dedicated /api/products/match endpoint (matching is embedded server-side in /specify flow)"
+      ],
+      "bugs": [],
+      "priority": "important",
+      "effort": "small"
+    },
+    {
+      "name": "Failure Analysis",
+      "l1_spec": "specs/L1/failure-analysis.md",
+      "status": "complete",
+      "implemented": [
+        "Route /failure with core + advanced fields",
+        "Photo upload endpoint /analyze/upload-photo",
+        "Visual AI + TDS compliance sections in results",
+        "Guided mode and session routes",
+        "Root cause ranking, recommendations, prevention plan",
+        "Auth modal gate with localStorage persistence"
+      ],
+      "missing": [
+        "API route naming diverges from L1 contract (uses /analyze and /v1/guided instead of /api/analyze/* contract naming)"
+      ],
+      "bugs": [],
+      "priority": "important",
+      "effort": "small"
+    },
+    {
+      "name": "Auth & Gating",
+      "l1_spec": "specs/L1/auth-and-gating.md",
+      "status": "partial",
+      "implemented": [
+        "Auth modal overlay on /tool and /failure",
+        "Form persistence + auto-submit after auth",
+        "Usage plan gates with upgrade modal",
+        "Stripe checkout/portal/webhook backend routes",
+        "Role-aware admin API protection"
+      ],
+      "missing": [
+        "L1 API contracts /api/auth/signup|signin|magic-link are not present as FastAPI routes (auth handled directly by Supabase client)",
+        "Seat-management endpoints in L1 are only partially represented in surfaced API/UI",
+        "Stable auth form test IDs are incomplete for automated holdouts (#email/#signup-email expectations mismatch)"
+      ],
+      "bugs": [],
+      "priority": "critical",
+      "effort": "medium"
+    },
+    {
+      "name": "Feedback & Knowledge",
+      "l1_spec": "specs/L1/feedback-and-knowledge.md",
+      "status": "complete",
+      "implemented": [
+        "Feedback prompt + backend feedback CRUD",
+        "Pending feedback queue endpoint",
+        "Knowledge aggregation cron + pattern storage",
+        "Knowledge injection into AI prompts",
+        "Public stats backed by daily_metrics fallback"
+      ],
+      "missing": [
+        "No obvious UI surface for full confidence-calibration trend analytics described at L1 level"
+      ],
+      "bugs": [],
+      "priority": "important",
+      "effort": "medium"
+    },
+    {
+      "name": "Quality Module",
+      "l1_spec": "specs/L1/quality-module.md",
+      "status": "partial",
+      "implemented": [
+        "Investigation list/new/detail routes",
+        "Action items, comments, attachments, signatures, share links, close flow",
+        "Backend report generation endpoint",
+        "Guided-to-investigation conversion"
+      ],
+      "missing": [
+        "Frontend route /investigations/[id]/report is missing",
+        "Frontend route shape differs from L1 for share link (/investigations/share/[token] vs /investigations/[id]/share/[token])",
+        "L1 API contract includes nested comments/signatures/email-in paths that differ from current router split"
+      ],
+      "bugs": [],
+      "priority": "critical",
+      "effort": "large"
+    },
+    {
+      "name": "Observability",
+      "l1_spec": "specs/L1/observability.md",
+      "status": "partial",
+      "implemented": [
+        "Request logging middleware to api_request_logs",
+        "AI engine logs capture token/latency metadata",
+        "Daily metrics aggregation and public stats endpoint",
+        "Admin request logs + engine health endpoints"
+      ],
+      "missing": [
+        "L1 /api/admin/metrics/* contract is not implemented as the exact endpoint set",
+        "No Sentry/Fabric external monitoring integration found in source",
+        "No dedicated frontend observability pages for ai-engine/engagement/knowledge/system"
+      ],
+      "bugs": [],
+      "priority": "critical",
+      "effort": "medium"
+    },
+    {
+      "name": "Admin Dashboard",
+      "l1_spec": "specs/L1/admin-dashboard.md",
+      "status": "partial",
+      "implemented": [
+        "Admin overview page with core KPIs",
+        "User management page",
+        "Recent activity and request log pages",
+        "Engine health metrics endpoint"
+      ],
+      "missing": [
+        "L1 route IA mismatch: /admin/overview, /admin/ai-engine, /admin/engagement, /admin/knowledge, /admin/system are not all present as frontend pages",
+        "Admin metric contracts are partially merged into existing endpoints rather than separated by domain"
+      ],
+      "bugs": [],
+      "priority": "critical",
+      "effort": "medium"
+    },
+    {
+      "name": "Product Catalog",
+      "l1_spec": "specs/L1/product-catalog.md",
+      "status": "partial",
+      "implemented": [
+        "Public frontend routes /products and /products/[manufacturer]/[slug]",
+        "TDS extraction + product CRUD backend",
+        "Product search used by spec/failure forms",
+        "Product performance view component"
+      ],
+      "missing": [
+        "Backend product list/detail APIs require auth (L1 expects public catalog endpoints)",
+        "No dedicated /api/products/match endpoint",
+        "No dedicated /api/products/autocomplete endpoint (search reuses list endpoint with query)"
+      ],
+      "bugs": [],
+      "priority": "critical",
+      "effort": "medium"
+    },
+    {
+      "name": "Landing Page",
+      "l1_spec": "specs/L1/landing-page.md",
+      "status": "partial",
+      "implemented": [
+        "Multi-section landing page with hero/social proof/problem/solution/pricing",
+        "Stats fetched from API with fallback values",
+        "Pricing page and plan CTAs",
+        "Marketing support routes (about/contact/privacy/terms)"
+      ],
+      "missing": [
+        "Pricing card prices are hardcoded in frontend constants (L1 requires live Stripe-driven pricing display)",
+        "L1 references /api/admin/stats naming, while implementation uses /v1/stats/public"
+      ],
+      "bugs": [],
+      "priority": "important",
+      "effort": "small"
+    }
+  ],
+  "status_summary": {
+    "complete": 3,
+    "partial": 6,
+    "not_started": 0
+  }
+}
