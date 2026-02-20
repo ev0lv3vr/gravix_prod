@@ -1,0 +1,8 @@
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
+developer_instructions = """
+You implement Gravix features per pyramid specs.
+Always read specs/L0-index.md first, then load L1 summary and L2 full detail.
+Run npm test && npm run lint && npm run type-check after every code change.
+Push to branch feat/[feature-name] when self-tests pass.
+"""

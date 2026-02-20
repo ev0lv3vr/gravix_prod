@@ -1,0 +1,14 @@
+[features]
+multi_agent = true
+
+[agents.coder]
+description = "Implements features per pyramid spec. Owns source files. Runs tests after every change."
+config_file = ".codex/agents/coder.toml"
+
+[agents.validator]
+description = "Runs holdout scenarios against coder's output. Reports satisfaction scores."
+config_file = ".codex/agents/validator.toml"
+
+[agents.reviewer]
+description = "Reads PR diff against L2 spec. Flags spec violations."
+config_file = ".codex/agents/reviewer.toml"

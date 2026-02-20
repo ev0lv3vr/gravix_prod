@@ -144,7 +144,7 @@ The scenario runner provides these template variables:
 
 ## Convergence Criteria
 
-From `CLAUDE.md`:
+From `AGENTS.md`:
 
 > A task is DONE when:
 > - All in-repo tests pass
