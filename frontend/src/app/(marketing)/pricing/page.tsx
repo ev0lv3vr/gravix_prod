@@ -7,6 +7,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Check, ChevronDown, ChevronUp, Star, Calculator, Calendar } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AuthModal } from '@/components/auth/AuthModal';
+import { fetchPlanPricing, DEFAULT_PLAN_PRICES, type PlanKey } from '@/lib/pricing';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
 
@@ -21,7 +22,6 @@ interface PlanFeature {
 interface PlanData {
   name: string;
   persona: string;
-  price: number;
   period?: string;
   seatInfo?: string;
   features: PlanFeature[];
@@ -38,7 +38,6 @@ const PLANS: PlanData[] = [
   {
     name: 'Free',
     persona: 'For evaluation',
-    price: 0,
     features: [
       { text: '5 failure analyses per month', included: true },
       { text: '5 spec analyses per month', included: true },
@@ -54,7 +53,6 @@ const PLANS: PlanData[] = [
   {
     name: 'Pro',
     persona: 'For individual engineers',
-    price: 79,
     period: '/mo',
     features: [
       { text: 'Unlimited analyses', included: true, bold: true },
@@ -77,7 +75,6 @@ const PLANS: PlanData[] = [
   {
     name: 'Quality',
     persona: 'For quality teams running 8D',
-    price: 299,
     period: '/mo',
     seatInfo: '3 seats included',
     features: [
@@ -100,7 +97,6 @@ const PLANS: PlanData[] = [
   {
     name: 'Enterprise',
     persona: 'For quality departments',
-    price: 799,
     period: '/mo',
     seatInfo: '10 seats included',
     features: [
@@ -170,7 +166,12 @@ export default function PricingPage() {
   const { session } = useAuth();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [prices, setPrices] = useState(DEFAULT_PLAN_PRICES);
   const pendingCheckoutRef = useRef<{ priceEnvKey: string } | null>(null);
+
+  useEffect(() => {
+    fetchPlanPricing().then(setPrices).catch(() => setPrices(DEFAULT_PLAN_PRICES));
+  }, []);
 
   const handleCheckout = useCallback(
     async (priceEnvKey: string) => {
@@ -261,6 +262,7 @@ export default function PricingPage() {
                 <PricingCard
                   key={plan.name}
                   plan={plan}
+                  price={prices[(plan.name.toLowerCase() as PlanKey)] ?? 0}
                   mobileOrder={mobileOrder}
                   desktopOrder={idx + 1}
                   isLoading={isLoading}
@@ -325,12 +327,14 @@ export default function PricingPage() {
 
 function PricingCard({
   plan,
+  price,
   mobileOrder,
   desktopOrder: _desktopOrder,
   isLoading,
   onCTA,
 }: {
   plan: PlanData;
+  price: number;
   mobileOrder: number;
   desktopOrder: number;
   isLoading: boolean;
@@ -384,7 +388,7 @@ function PricingCard({
       {/* Price */}
       <div className="mb-2">
         <span className="text-[48px] font-bold text-white font-mono leading-none">
-          ${plan.price}
+          ${price}
         </span>
         {plan.period && (
           <span className="text-sm text-[#64748B] ml-1">{plan.period}</span>

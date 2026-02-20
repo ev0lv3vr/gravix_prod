@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Check, Factory, Plane, Heart, Cpu, HardHat } from 'lucide-react';
+import { fetchPlanPricing, formatUsd, DEFAULT_PLAN_PRICES } from '@/lib/pricing';
 
 export default function LandingPage() {
   return (
@@ -99,8 +100,12 @@ function SocialProofBar() {
 
   useEffect(() => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
-    fetch(`${API_URL}/v1/stats/public`)
-      .then(res => res.json())
+    fetch(`${API_URL}/api/admin/stats`)
+      .then(res => {
+        if (!res.ok) throw new Error('primary stats endpoint failed');
+        return res.json();
+      })
+      .catch(() => fetch(`${API_URL}/v1/stats/public`).then(res => res.json()))
       .then(data => {
         const analysesCount = data.analyses_completed_count || 0;
         const specsCount = data.specs_completed_count || 0;
@@ -833,10 +838,16 @@ function HowItWorks() {
    Component 1.7: Pricing Preview — 4 Tiers
    ============================================================ */
 function PricingPreview() {
+  const [prices, setPrices] = useState(DEFAULT_PLAN_PRICES);
+
+  useEffect(() => {
+    fetchPlanPricing().then(setPrices).catch(() => setPrices(DEFAULT_PLAN_PRICES));
+  }, []);
+
   const tiers = [
     {
       name: 'Free',
-      price: '$0',
+      price: formatUsd(prices.free),
       period: '',
       highlight: '5/month analyses',
       cta: 'Start Free',
@@ -847,7 +858,7 @@ function PricingPreview() {
     },
     {
       name: 'Pro',
-      price: '$79',
+      price: formatUsd(prices.pro),
       period: '/mo',
       highlight: 'Unlimited analyses',
       cta: 'Start Pro →',
@@ -858,7 +869,7 @@ function PricingPreview() {
     },
     {
       name: 'Quality',
-      price: '$299',
+      price: formatUsd(prices.quality),
       period: '/mo',
       highlight: '3 seats + 8D investigations',
       cta: 'Start Quality →',
@@ -869,7 +880,7 @@ function PricingPreview() {
     },
     {
       name: 'Enterprise',
-      price: '$799',
+      price: formatUsd(prices.enterprise),
       period: '/mo',
       highlight: '10 seats + all features + API',
       cta: 'Contact Sales →',
