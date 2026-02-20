@@ -61,6 +61,10 @@ class ProductSpecificationResponse(BaseModel):
     tds_file_url: Optional[str] = None
     extraction_confidence: Optional[Dict[str, Any]] = {}
     manufacturer_claimed: Optional[bool] = False
+    # Quality+ gated fields (public detail endpoint redacts for non-Quality tiers)
+    field_failure_rate: Optional[float] = None
+    common_failure_modes: Optional[List[str]] = []
+    field_data: Optional[Dict[str, Any]] = {}
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
