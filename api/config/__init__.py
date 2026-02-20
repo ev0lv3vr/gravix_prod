@@ -53,6 +53,10 @@ class Settings(BaseSettings):
     stripe_price_id_pro: str = ""
     stripe_price_id_team: str = ""
 
+    # Holdout test auth (preview-only safety valve)
+    enable_holdout_test_auth: bool = False
+    holdout_test_auth_secret: str = ""
+
     # Plan limits
     plan_limits: Dict[str, Dict[str, int]] = {
         "free": {"analyses": 5, "specs": 5},

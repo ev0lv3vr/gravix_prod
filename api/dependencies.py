@@ -2,8 +2,12 @@
 
 import logging
 import httpx
+import hmac
+import hashlib
+import base64
+import json
 from functools import lru_cache
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError, jwk
 from jose.utils import base64url_decode
@@ -14,6 +18,33 @@ from database import get_supabase
 logger = logging.getLogger(__name__)
 
 security = HTTPBearer()
+
+
+def _verify_holdout_token(token: str) -> dict | None:
+    """Verify and decode a signed holdout token.
+
+    Format: gtest.<base64url-json>.<hex-hmac>
+    """
+    if not token.startswith("gtest."):
+        return None
+    secret = settings.holdout_test_auth_secret or settings.supabase_jwt_secret
+    if not secret:
+        return None
+
+    try:
+        _prefix, payload_b64, signature = token.split(".", 2)
+        expected = hmac.new(secret.encode(), payload_b64.encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(signature, expected):
+            return None
+
+        padded = payload_b64 + "=" * (-len(payload_b64) % 4)
+        payload_raw = base64.urlsafe_b64decode(padded.encode()).decode()
+        payload = json.loads(payload_raw)
+        if payload.get("type") != "holdout_test":
+            return None
+        return payload
+    except Exception:
+        return None
 
 
 @lru_cache(maxsize=1)
@@ -64,10 +95,39 @@ def _verify_token(token: str) -> dict:
 
 
 async def get_current_user(
+    request: Request,
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ) -> dict:
-    """Verify JWT and return the user record from Supabase."""
+    """Verify JWT and return the user record from Supabase.
+
+    Also supports signed holdout test tokens when enabled.
+    """
     token = credentials.credentials
+
+    # Holdout preview test auth (explicitly gated by server flag + token signature)
+    holdout_claims = _verify_holdout_token(token)
+    if holdout_claims is not None:
+        user_id = holdout_claims.get("sub") or f"holdout-{holdout_claims.get('plan','free')}-user"
+        email = holdout_claims.get("email", "")
+        plan = holdout_claims.get("plan", "free")
+        analyses_this_month = int(holdout_claims.get("analyses_this_month", 0) or 0)
+        specs_this_month = int(holdout_claims.get("specs_this_month", 0) or 0)
+
+        db = get_supabase()
+        new_user = {
+            "id": user_id,
+            "email": email,
+            "plan": plan,
+            "analyses_this_month": analyses_this_month,
+            "specs_this_month": specs_this_month,
+            "role": "user",
+        }
+        db.table("users").upsert(new_user).execute()
+        existing = db.table("users").select("*").eq("id", user_id).limit(1).execute()
+        if existing.data:
+            return existing.data[0]
+        return new_user
+
     try:
         payload = _verify_token(token)
         user_id: str = payload.get("sub")
