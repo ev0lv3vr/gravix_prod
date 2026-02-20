@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Query
 from pydantic import BaseModel
 
-from dependencies import get_current_user
+from dependencies import get_current_user, get_optional_user
 from middleware.plan_gate import plan_gate
 from database import get_supabase
 from schemas.products import (
@@ -117,6 +117,21 @@ def _cure_score(cure_schedule: dict | None, requested_cure: str | None) -> tuple
     if req in text:
         return 1.0, ["cure method match"]
     return 0.0, []
+
+
+def _is_quality_plus(user: dict | None) -> bool:
+    if not user:
+        return False
+    plan = (user.get("plan") or "free").lower()
+    return plan in {"quality", "enterprise", "team"}
+
+
+def _redact_field_performance(item: dict) -> dict:
+    redacted = dict(item)
+    redacted["field_failure_rate"] = None
+    redacted["common_failure_modes"] = []
+    redacted["field_data"] = {}
+    return redacted
 
 
 @router.post("/extract-tds", response_model=TDSExtractionResponse)
@@ -347,8 +362,17 @@ async def list_products_public(
 
 
 @public_router.get("/{manufacturer}/{slug}", response_model=ProductSpecificationResponse)
-async def get_product_public(manufacturer: str, slug: str):
-    """Public product detail endpoint by manufacturer + slug (L1 parity)."""
+async def get_product_public(
+    manufacturer: str,
+    slug: str,
+    user: dict | None = Depends(get_optional_user),
+):
+    """Public product detail endpoint by manufacturer + slug (L1 parity).
+
+    Field performance data is Quality+ gated:
+    - Quality/Enterprise (and legacy team alias): full response
+    - Unauthenticated / Free / Pro: field performance fields omitted
+    """
     db = get_supabase()
     # Narrow by manufacturer first, then slugify product_name for match
     rows = (
@@ -360,17 +384,21 @@ async def get_product_public(manufacturer: str, slug: str):
     ).data or []
 
     target_m = _slugify(manufacturer)
+    quality_plus = _is_quality_plus(user)
+
     for item in rows:
         m_slug = _slugify(item.get("manufacturer") or "")
         p_slug = _slugify(item.get("product_name") or "")
         if m_slug == target_m and p_slug == slug:
-            return ProductSpecificationResponse(**item)
+            payload = item if quality_plus else _redact_field_performance(item)
+            return ProductSpecificationResponse(**payload)
 
     # fallback broader scan when manufacturer normalization differs
     rows2 = db.table("product_specifications").select("*").limit(1000).execute().data or []
     for item in rows2:
         if _slugify(item.get("manufacturer") or "") == target_m and _slugify(item.get("product_name") or "") == slug:
-            return ProductSpecificationResponse(**item)
+            payload = item if quality_plus else _redact_field_performance(item)
+            return ProductSpecificationResponse(**payload)
 
     raise HTTPException(status_code=404, detail="Product not found")
 
