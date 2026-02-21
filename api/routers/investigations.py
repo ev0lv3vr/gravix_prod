@@ -43,6 +43,7 @@ from services.notification_service import (
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/investigations", tags=["investigations"])
+api_router = APIRouter(prefix="/api/investigations", tags=["investigations"])
 
 
 def _generate_investigation_number(db) -> str:
@@ -1009,6 +1010,7 @@ async def delete_attachment(
 
 
 @router.post("/{investigation_id}/sign/{discipline}", response_model=SignatureResponse)
+@api_router.post("/{investigation_id}/sign/{discipline}", response_model=SignatureResponse, include_in_schema=False)
 async def sign_discipline(
     investigation_id: str,
     discipline: str,
@@ -1068,7 +1070,21 @@ async def sign_discipline(
         )
 
 
+@api_router.post("/{investigation_id}/signatures", response_model=SignatureResponse, include_in_schema=False)
+async def sign_discipline_l1(
+    investigation_id: str,
+    data: SignatureCreate,
+    user: dict = Depends(get_current_user),
+):
+    """L1 contract alias for signature creation.
+
+    L1 path expects POST /api/investigations/{id}/signatures with discipline in body.
+    """
+    return await sign_discipline(investigation_id=investigation_id, discipline=data.discipline, user=user)
+
+
 @router.get("/{investigation_id}/report")
+@api_router.get("/{investigation_id}/report", include_in_schema=False)
 async def get_report(
     investigation_id: str,
     template: str = Query("generic_8d", pattern="^(generic_8d|ford_global_8d)$"),
@@ -1110,6 +1126,7 @@ async def get_report(
 
 
 @router.post("/{investigation_id}/share", response_model=ShareLinkResponse)
+@api_router.post("/{investigation_id}/share", response_model=ShareLinkResponse, include_in_schema=False)
 async def create_share_link(
     investigation_id: str,
     data: ShareLinkCreate,
@@ -1153,7 +1170,7 @@ async def create_share_link(
         
         # Build share URL
         from config import settings
-        share_url = f"{settings.frontend_url}/investigations/share/{share_token}"
+        share_url = f"{settings.frontend_url}/investigations/{investigation_id}/share/{share_token}"
         
         return ShareLinkResponse(
             investigation_id=investigation_id,
@@ -1172,7 +1189,8 @@ async def create_share_link(
 
 
 @router.get("/share/{token}")
-async def get_shared_investigation(token: str):
+@api_router.get("/{investigation_id}/share/{token}", include_in_schema=False)
+async def get_shared_investigation(token: str, investigation_id: str | None = None):
     """Public endpoint (no auth) - returns read-only investigation data for OEM reps.
     
     Validates token and expiry, returns investigation + actions.
@@ -1191,6 +1209,8 @@ async def get_shared_investigation(token: str):
         raise HTTPException(status_code=404, detail="Shared investigation not found")
     
     investigation = result.data[0]
+    if investigation_id and investigation.get("id") != investigation_id:
+        raise HTTPException(status_code=404, detail="Shared investigation not found")
     
     # Check expiry
     if investigation.get("share_expires_at"):

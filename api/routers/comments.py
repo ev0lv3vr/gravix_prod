@@ -20,6 +20,7 @@ from services.audit_service import log_event
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/investigations", tags=["comments"])
+api_router = APIRouter(prefix="/api/investigations", tags=["comments"])
 
 _MENTION_RE = re.compile(r"@([\w.\-]+)")
 
@@ -70,6 +71,7 @@ def _check_lead_or_champion(investigation: dict, user_id: str) -> bool:
 
 
 @router.post("/{investigation_id}/comments", response_model=CommentResponse)
+@api_router.post("/{investigation_id}/comments", response_model=CommentResponse, include_in_schema=False)
 async def create_comment(
     investigation_id: str,
     data: CommentCreate,
@@ -166,6 +168,7 @@ async def create_comment(
 
 
 @router.get("/{investigation_id}/comments", response_model=list[CommentResponse])
+@api_router.get("/{investigation_id}/comments", response_model=list[CommentResponse], include_in_schema=False)
 async def list_comments(
     investigation_id: str,
     user: dict = Depends(get_current_user),
@@ -190,6 +193,7 @@ async def list_comments(
 
 
 @router.patch("/{investigation_id}/comments/{comment_id}", response_model=CommentResponse)
+@api_router.patch("/{investigation_id}/comments/{comment_id}", response_model=CommentResponse, include_in_schema=False)
 async def update_comment(
     investigation_id: str,
     comment_id: str,
@@ -247,6 +251,7 @@ async def update_comment(
 
 
 @router.delete("/{investigation_id}/comments/{comment_id}")
+@api_router.delete("/{investigation_id}/comments/{comment_id}", include_in_schema=False)
 async def delete_comment(
     investigation_id: str,
     comment_id: str,
@@ -306,6 +311,7 @@ async def delete_comment(
 
 
 @router.patch("/{investigation_id}/comments/{comment_id}/pin", response_model=CommentToggleResponse)
+@api_router.patch("/{investigation_id}/comments/{comment_id}/pin", response_model=CommentToggleResponse, include_in_schema=False)
 async def toggle_pin_comment(
     investigation_id: str,
     comment_id: str,
@@ -365,6 +371,7 @@ async def toggle_pin_comment(
 
 
 @router.patch("/{investigation_id}/comments/{comment_id}/resolve", response_model=CommentToggleResponse)
+@api_router.patch("/{investigation_id}/comments/{comment_id}/resolve", response_model=CommentToggleResponse, include_in_schema=False)
 async def toggle_resolve_comment(
     investigation_id: str,
     comment_id: str,
