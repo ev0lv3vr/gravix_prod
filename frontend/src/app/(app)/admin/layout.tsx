@@ -1,21 +1,49 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
-import { Shield, Users, Activity, FileText, BarChart3 } from 'lucide-react';
+import { Shield, BarChart3, Cpu, Users, Brain, Server } from 'lucide-react';
 
 const sidebarLinks = [
-  { href: '/admin', label: 'Overview', icon: BarChart3 },
-  { href: '/admin/users', label: 'Users', icon: Users },
-  { href: '/admin/activity', label: 'Activity', icon: Activity },
-  { href: '/admin/logs', label: 'Request Logs', icon: FileText },
+  { href: '/admin/overview', label: 'Overview', icon: BarChart3 },
+  { href: '/admin/ai-engine', label: 'AI Engine', icon: Cpu },
+  { href: '/admin/engagement', label: 'Engagement', icon: Users },
+  { href: '/admin/knowledge', label: 'Knowledge', icon: Brain },
+  { href: '/admin/system', label: 'System', icon: Server },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [authorized, setAuthorized] = useState<boolean | null>(null);
+  const [query, setQuery] = useState<URLSearchParams>(new URLSearchParams());
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setQuery(new URLSearchParams(window.location.search));
+    }
+  }, [pathname]);
+
+  const range = query.get('range') || '7d';
+  const startDate = query.get('start_date') || '';
+  const endDate = query.get('end_date') || '';
+
+  const updateRange = (nextRange: string, nextStart?: string, nextEnd?: string) => {
+    const params = new URLSearchParams(query.toString());
+    params.set('range', nextRange);
+    if (nextRange === 'custom') {
+      if (nextStart) params.set('start_date', nextStart);
+      if (nextEnd) params.set('end_date', nextEnd);
+    } else {
+      params.delete('start_date');
+      params.delete('end_date');
+    }
+    router.replace(`${pathname}?${params.toString()}`);
+  };
 
   useEffect(() => {
     api.getCurrentUser().then((u) => {
@@ -64,7 +92,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               return (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={`${link.href}?${query.toString()}`}
                   className={`flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors ${
                     isActive
                       ? 'bg-brand-700 text-white'
@@ -81,7 +109,38 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 overflow-auto">{children}</div>
+      <div className="flex-1 overflow-auto">
+        <div className="border-b border-brand-600 bg-brand-900/40 px-4 py-3 flex items-center gap-3">
+          <span className="text-xs text-text-secondary uppercase tracking-wide">Date range</span>
+          <select
+            value={range}
+            onChange={(e) => updateRange(e.target.value)}
+            className="bg-brand-800 border border-brand-600 text-white text-sm rounded px-2 py-1"
+          >
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+            <option value="90d">Last 90 days</option>
+            <option value="custom">Custom</option>
+          </select>
+          {range === 'custom' && (
+            <>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => updateRange('custom', e.target.value, endDate)}
+                className="bg-brand-800 border border-brand-600 text-white text-sm rounded px-2 py-1"
+              />
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => updateRange('custom', startDate, e.target.value)}
+                className="bg-brand-800 border border-brand-600 text-white text-sm rounded px-2 py-1"
+              />
+            </>
+          )}
+        </div>
+        {children}
+      </div>
     </div>
   );
 }

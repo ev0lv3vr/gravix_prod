@@ -629,6 +629,56 @@ export class ApiClient {
     }
     return response.json();
   }
+
+  private _metricsQuery(range = '7d', startDate?: string, endDate?: string): string {
+    const params = new URLSearchParams();
+    params.set('range', range);
+    if (range === 'custom') {
+      if (startDate) params.set('start_date', startDate);
+      if (endDate) params.set('end_date', endDate);
+    }
+    return params.toString();
+  }
+
+  async getAdminMetricsOverview(range = '7d', startDate?: string, endDate?: string) {
+    const headers = await this.getAuthHeaders();
+    const q = this._metricsQuery(range, startDate, endDate);
+    const res = await fetch(`${API_URL}/api/admin/metrics/overview?${q}`, { headers });
+    if (!res.ok) throw new Error('Failed to fetch metrics overview');
+    return res.json();
+  }
+
+  async getAdminMetricsAiEngine(range = '7d', startDate?: string, endDate?: string) {
+    const headers = await this.getAuthHeaders();
+    const q = this._metricsQuery(range, startDate, endDate);
+    const res = await fetch(`${API_URL}/api/admin/metrics/ai-engine?${q}`, { headers });
+    if (!res.ok) throw new Error('Failed to fetch AI engine metrics');
+    return res.json();
+  }
+
+  async getAdminMetricsEngagement(range = '7d', startDate?: string, endDate?: string) {
+    const headers = await this.getAuthHeaders();
+    const q = this._metricsQuery(range, startDate, endDate);
+    const res = await fetch(`${API_URL}/api/admin/metrics/engagement?${q}`, { headers });
+    if (!res.ok) throw new Error('Failed to fetch engagement metrics');
+    return res.json();
+  }
+
+  async getAdminMetricsKnowledge(range = '7d', startDate?: string, endDate?: string) {
+    const headers = await this.getAuthHeaders();
+    const q = this._metricsQuery(range, startDate, endDate);
+    const res = await fetch(`${API_URL}/api/admin/metrics/knowledge?${q}`, { headers });
+    if (!res.ok) throw new Error('Failed to fetch knowledge metrics');
+    return res.json();
+  }
+
+  async getAdminMetricsSystem(range = '7d', startDate?: string, endDate?: string) {
+    const headers = await this.getAuthHeaders();
+    const q = this._metricsQuery(range, startDate, endDate);
+    const res = await fetch(`${API_URL}/api/admin/metrics/system?${q}`, { headers });
+    if (!res.ok) throw new Error('Failed to fetch system metrics');
+    return res.json();
+  }
 }
 
 export const api = new ApiClient();
