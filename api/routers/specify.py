@@ -20,9 +20,12 @@ from services.usage_service import can_use_spec, increment_spec_usage
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/specify", tags=["specify"])
+api_router = APIRouter(prefix="/api", tags=["specify"])
 
 
 @router.post("", response_model=SpecRequestResponse)
+@api_router.post("/specify", response_model=SpecRequestResponse, include_in_schema=False)
+@api_router.post("/spec", response_model=SpecRequestResponse, include_in_schema=False)
 async def create_spec(
     data: SpecRequestCreate,
     user: dict = Depends(get_current_user),
@@ -120,6 +123,8 @@ async def create_spec(
 
 
 @router.get("", response_model=list[SpecRequestListItem])
+@api_router.get("/specify", response_model=list[SpecRequestListItem], include_in_schema=False)
+@api_router.get("/spec", response_model=list[SpecRequestListItem], include_in_schema=False)
 async def list_specs(user: dict = Depends(get_current_user)):
     """List all spec requests for the current user."""
     db = get_supabase()
@@ -135,6 +140,8 @@ async def list_specs(user: dict = Depends(get_current_user)):
 
 
 @router.get("/{spec_id}", response_model=SpecRequestResponse)
+@api_router.get("/specify/{spec_id}", response_model=SpecRequestResponse, include_in_schema=False)
+@api_router.get("/spec/{spec_id}", response_model=SpecRequestResponse, include_in_schema=False)
 async def get_spec(
     spec_id: str,
     user: dict = Depends(get_current_user),
