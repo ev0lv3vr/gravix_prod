@@ -1,8 +1,10 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Shield, BarChart3, Cpu, Users, Brain, Server } from 'lucide-react';
 
@@ -17,15 +19,21 @@ const sidebarLinks = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [authorized, setAuthorized] = useState<boolean | null>(null);
+  const [query, setQuery] = useState<URLSearchParams>(new URLSearchParams());
 
-  const range = searchParams.get('range') || '7d';
-  const startDate = searchParams.get('start_date') || '';
-  const endDate = searchParams.get('end_date') || '';
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setQuery(new URLSearchParams(window.location.search));
+    }
+  }, [pathname]);
+
+  const range = query.get('range') || '7d';
+  const startDate = query.get('start_date') || '';
+  const endDate = query.get('end_date') || '';
 
   const updateRange = (nextRange: string, nextStart?: string, nextEnd?: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(query.toString());
     params.set('range', nextRange);
     if (nextRange === 'custom') {
       if (nextStart) params.set('start_date', nextStart);
@@ -84,7 +92,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               return (
                 <Link
                   key={link.href}
-                  href={`${link.href}?${searchParams.toString()}`}
+                  href={`${link.href}?${query.toString()}`}
                   className={`flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors ${
                     isActive
                       ? 'bg-brand-700 text-white'

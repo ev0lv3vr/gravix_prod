@@ -1,14 +1,22 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 
 export default function AdminKnowledgePage() {
-  const sp = useSearchParams();
-  const range = sp.get('range') || '7d';
-  const startDate = sp.get('start_date') || undefined;
-  const endDate = sp.get('end_date') || undefined;
+  const [range, setRange] = useState('7d');
+  const [startDate, setStartDate] = useState<string | undefined>(undefined);
+  const [endDate, setEndDate] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const sp = new URLSearchParams(window.location.search);
+    setRange(sp.get('range') || '7d');
+    setStartDate(sp.get('start_date') || undefined);
+    setEndDate(sp.get('end_date') || undefined);
+  }, []);
   const [data, setData] = useState<any>(null);
 
   useEffect(() => {
