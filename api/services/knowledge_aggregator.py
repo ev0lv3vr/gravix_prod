@@ -249,23 +249,47 @@ async def run_metrics_aggregation() -> dict:
     stats = {"day": today, "inserted": False, "errors": []}
 
     try:
-        # 1. Count completed analyses
-        analyses_res = (
-            db.table("failure_analyses")
-            .select("id", count="exact")
-            .eq("status", "completed")
-            .execute()
-        )
-        analyses_count = getattr(analyses_res, "count", None) or 0
+        # 1. Count completed analyses/spec requests.
+        # Prefer observability telemetry (`ai_engine_logs`) for L1 parity, fallback
+        # to domain tables if telemetry is missing.
+        analyses_count = 0
+        spec_requests_count = 0
+        try:
+            telemetry_rows = (
+                db.table("ai_engine_logs")
+                .select("meta, success")
+                .eq("success", True)
+                .limit(100000)
+                .execute()
+            ).data or []
+            for row in telemetry_rows:
+                meta = row.get("meta") or {}
+                req_type = str(meta.get("request_type") or meta.get("engine") or "").lower()
+                if "spec" in req_type:
+                    spec_requests_count += 1
+                else:
+                    analyses_count += 1
+        except Exception:
+            analyses_count = 0
+            spec_requests_count = 0
 
-        # 2. Count completed spec requests
-        specs_res = (
-            db.table("spec_requests")
-            .select("id", count="exact")
-            .eq("status", "completed")
-            .execute()
-        )
-        spec_requests_count = getattr(specs_res, "count", None) or 0
+        if analyses_count == 0:
+            analyses_res = (
+                db.table("failure_analyses")
+                .select("id", count="exact")
+                .eq("status", "completed")
+                .execute()
+            )
+            analyses_count = getattr(analyses_res, "count", None) or 0
+
+        if spec_requests_count == 0:
+            specs_res = (
+                db.table("spec_requests")
+                .select("id", count="exact")
+                .eq("status", "completed")
+                .execute()
+            )
+            spec_requests_count = getattr(specs_res, "count", None) or 0
 
         # 3. Resolution rate from feedback
         resolution_rate = None

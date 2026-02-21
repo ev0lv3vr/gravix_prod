@@ -56,6 +56,21 @@ async def _call_claude(
             if result:
                 meta["knowledge_patterns_injected"] = meta.get("knowledge_patterns_injected", 0)
                 meta["confidence_raw"] = result.get("confidence_score")
+            # Pull usage telemetry when available from Anthropic response metadata.
+            usage = meta.get("usage") or {}
+            prompt_tokens = usage.get("input_tokens")
+            completion_tokens = usage.get("output_tokens")
+
+            if prompt_tokens is None:
+                # lightweight estimate fallback (4 chars ~= 1 token)
+                prompt_source = str(meta.get("system_prompt", "")) + str(meta.get("user_prompt", ""))
+                prompt_tokens = max(1, len(prompt_source) // 4) if prompt_source else None
+            if completion_tokens is None and result is not None:
+                completion_tokens = max(1, len(str(result)) // 4)
+
+            if error_msg:
+                meta["error_type"] = meta.get("error_type") or "ai_engine_error"
+
             db = get_supabase()
             db.table("ai_engine_logs").insert({
                 "id": str(uuid.uuid4()),
@@ -63,12 +78,16 @@ async def _call_claude(
                 "user_id": meta.get("user_id"),
                 "engine": meta.get("engine", "claude"),
                 "model": settings.anthropic_model,
-                "prompt_tokens": None,
-                "completion_tokens": None,
+                "prompt_tokens": prompt_tokens,
+                "completion_tokens": completion_tokens,
                 "latency_ms": latency,
                 "success": success,
                 "error": error_msg[:500] if error_msg else None,
-                "meta": meta,
+                "meta": {
+                    **meta,
+                    "request_type": meta.get("request_type") or meta.get("engine") or "analysis",
+                    "retry_count": meta.get("retry_count", 0),
+                },
             }).execute()
         except Exception as log_exc:
             logger.debug(f"ai_engine_log write failed (ignored): {log_exc}")
@@ -84,6 +103,8 @@ async def _call_claude(
                 )
                 response.raise_for_status()
                 data = response.json()
+                if isinstance(data, dict) and data.get("usage"):
+                    (log_meta or {}).update({"usage": data.get("usage")})
 
                 # Extract text content
                 content = data.get("content", [])
@@ -114,6 +135,9 @@ async def _call_claude(
 
         except httpx.HTTPStatusError as e:
             last_error = e
+            if log_meta is not None:
+                log_meta["retry_count"] = attempt + 1
+                log_meta["error_type"] = f"http_{e.response.status_code}"
             logger.warning(
                 f"Claude API HTTP error (attempt {attempt + 1}): {e.response.status_code}"
             )
@@ -126,6 +150,9 @@ async def _call_claude(
                 raise
         except (httpx.TimeoutException, httpx.ConnectError) as e:
             last_error = e
+            if log_meta is not None:
+                log_meta["retry_count"] = attempt + 1
+                log_meta["error_type"] = "connection_error"
             logger.warning(f"Claude API connection error (attempt {attempt + 1}): {e}")
             await _async_sleep(2 ** attempt)
 

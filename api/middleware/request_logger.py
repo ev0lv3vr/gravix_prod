@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 _SKIP_PATHS = {
     "/health",
     "/v1/stats/public",
+    "/favicon.ico",
 }
 
 
@@ -105,6 +106,13 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
                         user_plan = None
 
                 db = get_supabase()
+                client_ip = _get_client_ip(request)
+                error_code = None
+                if err:
+                    error_code = "exception"
+                elif status_code is not None and status_code >= 400:
+                    error_code = str(status_code)
+
                 db.table("api_request_logs").insert(
                     {
                         "id": str(uuid.uuid4()),
@@ -115,11 +123,15 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
                         "path": path,
                         "status_code": status_code,
                         "duration_ms": duration_ms,
-                        "ip": _get_client_ip(request),
+                        "ip": client_ip,
                         "user_agent": request.headers.get("user-agent"),
                         "error": err,
                         "meta": {
                             "query": dict(request.query_params),
+                            # L1 contract aliases (keep canonical columns above).
+                            "latency_ms": duration_ms,
+                            "ip_address": client_ip,
+                            "error_code": error_code,
                         },
                     }
                 ).execute()
