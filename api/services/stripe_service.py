@@ -50,6 +50,7 @@ def create_checkout_session(
     price_id: str | None = None,
     success_url: str | None = None,
     cancel_url: str | None = None,
+    quantity: int = 1,
 ) -> str:
     """Create a Stripe checkout session. Returns the checkout URL."""
     # Use provided price_id or default to pro
@@ -74,7 +75,7 @@ def create_checkout_session(
     session = stripe.checkout.Session.create(
         customer=customer_id,
         mode="subscription",
-        line_items=[{"price": price_id, "quantity": 1}],
+        line_items=[{"price": price_id, "quantity": max(1, int(quantity))}],
         success_url=success_url or f"{frontend_url}/dashboard?checkout=success",
         cancel_url=cancel_url or f"{frontend_url}/pricing?checkout=cancel",
         metadata={"user_id": user["id"]},
