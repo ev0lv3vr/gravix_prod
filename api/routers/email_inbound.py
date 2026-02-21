@@ -20,6 +20,7 @@ from database import get_supabase
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/webhooks", tags=["webhooks"])
+api_router = APIRouter(prefix="/api/investigations", tags=["webhooks"])
 
 
 class EmailAttachment(BaseModel):
@@ -53,6 +54,7 @@ def _extract_structured_data(subject: str, body: str) -> dict:
 
 
 @router.post("/email-inbound")
+@api_router.post("/email-in", include_in_schema=False)
 async def email_inbound(request: Request):
     """Receive Resend inbound email webhook and create a draft investigation."""
     try:
