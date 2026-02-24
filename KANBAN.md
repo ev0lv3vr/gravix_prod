@@ -1,17 +1,19 @@
-# KANBAN — Last updated: 2026-02-19 6:00 PM PST
+# KANBAN — Last updated: 2026-02-23 6:00 PM PST
 
 ## 🔴 URGENT / BLOCKED
-- [ ] **Medium restock** — 8oz ~3d, 2oz ~4d (OOS risk THIS WEEKEND) — needs Ev to place PO NOW
-- [ ] **ShipBob UROs accruing fees** — 2 shipments On-Hold Receiving, ~$530+ accrued (~$18/day) — needs Ev action
-- [ ] **Ethan Miller replacement** — order #5786, 4× Thick 16oz not yet created at ShipBob (spot-check done at Grapevine FC, $42 credit issued)
+- [ ] **Medium restock** — 10+ DAYS OVERDUE, likely OOS — needs Ev to place PO IMMEDIATELY
+- [ ] **Noveon fulfillment** — PO# 4500000676 CLOSED, $4,140 PAID. Ship 4 cases Medium 700cps 16oz through DMS ASAP
+- [ ] **ShipBob UROs accruing fees** — 2 shipments On-Hold Receiving, ~$600+ accrued (~$18/day) — needs Ev action
+- [ ] **Ethan Miller replacement** — order #5786, 4× Thick 16oz not yet created at ShipBob
 - [ ] **Josue Saravia (#5852)** — wants both bottles switched to Ultra Thin — Shopify order edit still pending
 - [ ] **OOS products still running ads** — $668/mo waste on Thick 2oz, Gel 20g, Accelerator keywords
+- [ ] **OpenAI embedding quota exhausted** — memory search broken, needs top-up or provider switch
 
 ## 🟡 NEEDS EV / WAITING
-- [ ] **Amazon CA/NARF** — disable for chemical ASINs or submit SDS (30-day clock from ~2/15)
+- [ ] **Ads optimizer** — soak COMPLETE (5+ days), ready to switch from --dry-run to --execute — needs Ev approval
+- [ ] **Amazon CA/NARF** — disable for chemical ASINs or submit SDS (30-day clock from ~2/15, ~9 days left)
 - [ ] **Designcoffers** — FINAL files + 3D mockups delivered, needs Ev's review on Fiverr
 - [ ] **Teikametrics** — disable auto-bidding + set budget cap (phasing out, our API handles it now)
-- [ ] **Ads optimizer** — switch from --dry-run to --execute (after 3-5 days soak)
 - [ ] **Oversold inventory** — Gel 20g (-6), Thick 2oz (-1)
 - [ ] **Back-in-stock notification app** — Shopify App Store
 - [ ] **Refund policy** — still links to gravixadhesives.com (needs `write_legal_policies` scope)
@@ -19,15 +21,22 @@
 - [ ] **Opinew reviews** — verify 1,183 imported (needs dashboard login)
 - [ ] **Thomas Routzon (FEDCON)** — gov't contracting coach, wants to reconnect (Ev's call)
 - [ ] **Google Cloud** — set up budget alerts on new paid account
+- [ ] **ShipBob manufacturing invoice** — needed for missing inventory reimbursement (Medium 16oz: 5, Thick 2oz: 3, Gel 20g: 6)
 
 ## 🔵 IN PROGRESS
-- [ ] **Noveon Magnetics** — PDF quote sent ($4,140), awaiting buyer approval
-- [ ] **Quintex Molding** — trial kit + order #5836, USPS redelivery was 2/17 (unconfirmed)
-- [ ] **OTL (Mitch Hamilton)** — follow-up sent 2/16, no reply (3 days)
-- [ ] **New Cerebro campaigns** — 3 launched 2/19 + Super Glue Exact from 2/18. Monitoring first-day performance (+$145/day budget)
-- [ ] **Ads optimizer soak** — running in dry-run mode, verifying actions are sane
+- [ ] **Quintex Molding** — case pricing sent 2/20 ($39/bottle 1 case, $34.50 at 3+), waiting on Ryan
+- [ ] **OTL (Mitch Hamilton)** — asked for shipping address 2/23, waiting on reply
+- [ ] **Cerebro campaigns** — 3 launched 2/19 + Super Glue Exact from 2/18. Monitoring performance.
+- [ ] **Ads optimizer soak** — COMPLETE, pending switch to --execute
+- [ ] **New product pipeline (Xtralok)** — Black CA 8oz approved ($9.50), rubber-toughened CA sample coming, debonder pricing TBD
 
-## ✅ DONE TODAY (2/19)
+## ✅ DONE TODAY (2/23)
+- [x] **Noveon Magnetics** — PO CLOSED, $4,140 paid via PayPal ✅
+- [x] **OTL** — shipping address request sent
+- [x] **Xtralok product expansion** — discussed Black CA, rubber-toughened CA, debonder with Joe
+- [x] All automated crons ran (email monitors, ads flywheel, SEO)
+
+## ✅ DONE RECENTLY (2/19-2/22)
 
 ### Amazon Ads — Major Buildout 🚀
 - [x] Amazon Ads API connected — OAuth complete, refresh token + profile ID saved

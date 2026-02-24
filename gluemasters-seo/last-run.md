@@ -1,33 +1,32 @@
-# Gluemasters SEO Blog — Last Run
+# Gluemasters SEO Blog - Last Run
 
-**Date:** 2026-02-18 (Wednesday)
-**Article #4 of ~20**
+**Date:** Monday, February 23, 2026 at 6:00 AM PST
 
-## Published Today
+**Article Published:**
 
-| Field | Value |
-|-------|-------|
-| **Title** | CA Glue Fogging and Blooming: Why It Happens and How to Prevent White Haze |
-| **URL** | https://gluemasters.com/blogs/articles/ca-glue-fogging-and-blooming-why-it-happens-and-how-to-prevent-white-haze |
-| **Target Keyword** | CA glue fogging and blooming |
-| **Cluster** | Troubleshooting |
-| **Article ID** | 565778088113 |
-| **Word Count** | ~1,210 |
-| **Published At** | 2026-02-18T06:03:54-08:00 |
+**Title:** CA Glue for RC Cars and Model Building: Instant Repairs, Gap Filling, and Assembly Tips
 
-## Clusters Used So Far
-- ✅ reef/coral (2/13)
-- ✅ 3D printing (2/16)
-- ✅ woodworking/finishes (2/17)
-- ✅ troubleshooting — fogging/blooming (2/18)
+**Target Keyword:** CA glue for RC cars and model building
 
-## Clusters Remaining
-- model/RC
-- furniture repair
-- manufacturing/B2B
-- viscosity/CPS education
-- accelerator/debonder/how-to
-- safety/storage/shelf-life
-- bonding specific substrates
-- troubleshooting — brittle bond
-- troubleshooting — wicking too far
+**Keyword Cluster:** model/RC
+
+**URL:** https://gluemasters.com/blogs/articles/ca-glue-for-rc-cars-and-model-building-instant-repairs-gap-filling-and-assembly-tips
+
+**Article ID:** 565794996401
+
+**Word Count:** ~1,350 words
+
+**Content Overview:**
+- Complete guide to using thin, medium, and thick CA glue for RC hobbyists
+- Coverage of RC cars, aircraft (balsa/foam), and plastic model kits
+- Practical applications: crash repairs, tire gluing, assembly, gap filling
+- Instructions for using CA accelerator and debonder
+- Common mistakes section (fogging, over-accelerating, skin bonding)
+- Storage and shelf life tips
+- 6-question FAQ section targeting featured snippets
+- Internal links to product pages (thin CA, medium CA, thick CA, accelerator, debonder)
+- Strong CTA linking to collections page
+
+**Status:** ✅ Successfully published to Shopify blog (articles)
+
+**Next Scheduled Cluster:** furniture repair OR manufacturing/B2B
