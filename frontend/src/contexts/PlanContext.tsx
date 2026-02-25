@@ -26,24 +26,55 @@ interface PlanContextValue {
 }
 
 // ---------------------------------------------------------------------------
-// Cache helpers  (key: gravix_plan_cache, TTL 5 min)
+// Cache helpers  (key: gravix_plan_cache:${userId}, TTL 5 min)
 // ---------------------------------------------------------------------------
 
-const CACHE_KEY = 'gravix_plan_cache';
+const CACHE_PREFIX = 'gravix_plan_cache';
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 interface PlanCache {
+  userId: string;
   plan: PlanTier;
   isAdmin: boolean;
   usage: UsageResponse | null;
   cachedAt: number;
 }
 
-function readCache(): PlanCache | null {
+function getCacheKey(userId: string): string {
+  return `${CACHE_PREFIX}:${userId}`;
+}
+
+function purgeMismatchedCache(currentUserId: string | null): void {
   try {
-    const raw = localStorage.getItem(CACHE_KEY);
+    // Remove legacy global key if present
+    localStorage.removeItem(CACHE_PREFIX);
+
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key || !key.startsWith(`${CACHE_PREFIX}:`)) continue;
+      if (!currentUserId || key !== getCacheKey(currentUserId)) {
+        keysToRemove.push(key);
+      }
+    }
+
+    for (const key of keysToRemove) {
+      localStorage.removeItem(key);
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
+function readCache(userId: string): PlanCache | null {
+  try {
+    const raw = localStorage.getItem(getCacheKey(userId));
     if (!raw) return null;
     const data: PlanCache = JSON.parse(raw);
+
+    // User mismatch guard — ignore stale cross-account cache
+    if (!data?.userId || data.userId !== userId) return null;
+
     if (Date.now() - data.cachedAt > CACHE_TTL_MS) return null;
     return data;
   } catch {
@@ -51,10 +82,10 @@ function readCache(): PlanCache | null {
   }
 }
 
-function writeCache(plan: PlanTier, isAdmin: boolean, usage: UsageResponse | null): void {
+function writeCache(userId: string, plan: PlanTier, isAdmin: boolean, usage: UsageResponse | null): void {
   try {
-    const data: PlanCache = { plan, isAdmin, usage, cachedAt: Date.now() };
-    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    const data: PlanCache = { userId, plan, isAdmin, usage, cachedAt: Date.now() };
+    localStorage.setItem(getCacheKey(userId), JSON.stringify(data));
   } catch {
     /* quota exceeded — ignore */
   }
@@ -82,30 +113,21 @@ const POLL_INTERVAL_MS = 60_000; // 60 seconds
 
 export function PlanProvider({ children }: { children: React.ReactNode }) {
   const { user, loading: authLoading } = useAuth();
+  const userId = user?.id ?? null;
 
-  const [plan, setPlan] = useState<PlanTier>(() => {
-    const cached = readCache();
-    return cached?.plan ?? 'free';
-  });
-  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
-    const cached = readCache();
-    return cached?.isAdmin ?? false;
-  });
-  const [usage, setUsage] = useState<UsageResponse | null>(() => {
-    const cached = readCache();
-    return cached?.usage ?? null;
-  });
-  const [isLoading, setIsLoading] = useState(() => {
-    // If we have fresh cache, show it immediately — no loading state
-    return readCache() === null;
-  });
+  const [plan, setPlan] = useState<PlanTier>('free');
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [usage, setUsage] = useState<UsageResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Track latest fetch to avoid stale responses overwriting newer data
   const fetchIdRef = useRef(0);
 
-  const hasDataRef = useRef(readCache() !== null);
+  const hasDataRef = useRef(false);
 
   const fetchPlan = useCallback(async () => {
+    if (!userId) return;
+
     const id = ++fetchIdRef.current;
     // Only show loading skeleton if we have no data yet
     if (!hasDataRef.current) setIsLoading(true);
@@ -123,48 +145,54 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
       setIsAdmin(admin);
       setUsage(usageResp);
       hasDataRef.current = true;
-      writeCache(normalized, admin, usageResp);
+      writeCache(userId, normalized, admin, usageResp);
     } catch {
       // keep existing state
     } finally {
       if (id === fetchIdRef.current) setIsLoading(false);
     }
-  }, []);
+  }, [userId]);
 
-  // Reset when user logs out, fetch when user logs in
+  // Reset when user logs out, hydrate cache + fetch when user logs in/switches
   useEffect(() => {
-    // Auth still resolving — if we have cache, don't block on it
-    if (authLoading) {
-      // Cache already hydrated via useState initializers — nothing to do
-      return;
-    }
+    if (authLoading) return;
 
-    if (!user) {
+    if (!userId) {
+      purgeMismatchedCache(null);
       setPlan('free');
       setIsAdmin(false);
       setUsage(null);
       hasDataRef.current = false;
       setIsLoading(false);
-      try {
-        localStorage.removeItem(CACHE_KEY);
-      } catch {
-        /* ignore */
-      }
       return;
     }
 
-    // User is authenticated — fetch fresh data in background
-    // Cache was already applied via useState initializers, so no flash
-    if (!hasDataRef.current) {
-      setIsLoading(true); // No cache — show skeleton
+    // User logged in or switched — keep only current user's cache
+    purgeMismatchedCache(userId);
+
+    // Hydrate from user-scoped cache (if valid)
+    const cached = readCache(userId);
+    if (cached) {
+      setPlan(cached.plan);
+      setIsAdmin(cached.isAdmin);
+      setUsage(cached.usage);
+      hasDataRef.current = true;
+      setIsLoading(false);
+    } else {
+      setPlan('free');
+      setIsAdmin(false);
+      setUsage(null);
+      hasDataRef.current = false;
+      setIsLoading(true);
     }
 
+    // Always fetch fresh in background
     fetchPlan();
-  }, [user, authLoading, fetchPlan]);
+  }, [userId, authLoading, fetchPlan]);
 
   // Periodic re-poll (only when tab is visible)
   useEffect(() => {
-    if (!user || authLoading) return;
+    if (!userId || authLoading) return;
 
     const interval = setInterval(() => {
       if (!document.hidden) {
@@ -173,7 +201,7 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
     }, POLL_INTERVAL_MS);
 
     return () => clearInterval(interval);
-  }, [user, authLoading, fetchPlan]);
+  }, [userId, authLoading, fetchPlan]);
 
   const value: PlanContextValue = {
     plan,
