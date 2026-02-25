@@ -1,32 +1,23 @@
 # Gluemasters SEO Blog - Last Run
 
-**Date:** Monday, February 23, 2026 at 6:00 AM PST
+**Date:** February 24, 2026 (Tuesday)
 
 **Article Published:**
+- **Title:** Cyanoacrylate Glue for Furniture Repair: Fast Fixes for Wood Joints, Veneer, and Broken Parts
+- **Target Keyword:** cyanoacrylate glue for furniture repair
+- **Keyword Cluster:** furniture repair
+- **Word Count:** 1,265 words
+- **Article ID:** 565801943217
+- **URL:** https://gluemasters.com/blogs/articles/cyanoacrylate-glue-for-furniture-repair-fast-fixes-for-wood-joints-veneer-and-broken-parts
 
-**Title:** CA Glue for RC Cars and Model Building: Instant Repairs, Gap Filling, and Assembly Tips
+**Content Highlights:**
+- Comprehensive guide covering viscosity selection for different repair types
+- Step-by-step instructions for fixing loose joints, reattaching veneer, and filling damaged wood
+- Comparison table: CA glue vs. traditional wood glue
+- 6 FAQs targeting featured snippets (sanding/staining, strength comparison, outdoor use, antiques, blooming, glue removal)
+- Internal links to CA accelerator, debonder, and glue kit products
+- Strong CTA directing to Gluemasters product range
 
-**Target Keyword:** CA glue for RC cars and model building
+**Status:** ✅ Published successfully at 6:00 AM PST
 
-**Keyword Cluster:** model/RC
-
-**URL:** https://gluemasters.com/blogs/articles/ca-glue-for-rc-cars-and-model-building-instant-repairs-gap-filling-and-assembly-tips
-
-**Article ID:** 565794996401
-
-**Word Count:** ~1,350 words
-
-**Content Overview:**
-- Complete guide to using thin, medium, and thick CA glue for RC hobbyists
-- Coverage of RC cars, aircraft (balsa/foam), and plastic model kits
-- Practical applications: crash repairs, tire gluing, assembly, gap filling
-- Instructions for using CA accelerator and debonder
-- Common mistakes section (fogging, over-accelerating, skin bonding)
-- Storage and shelf life tips
-- 6-question FAQ section targeting featured snippets
-- Internal links to product pages (thin CA, medium CA, thick CA, accelerator, debonder)
-- Strong CTA linking to collections page
-
-**Status:** ✅ Successfully published to Shopify blog (articles)
-
-**Next Scheduled Cluster:** furniture repair OR manufacturing/B2B
+**Total Articles Published:** 6 (as of Feb 24, 2026)

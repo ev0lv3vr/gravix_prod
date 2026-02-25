@@ -1,7 +1,7 @@
-# KANBAN — Last updated: 2026-02-23 6:00 PM PST
+# KANBAN — Last updated: 2026-02-24 6:00 PM PST
 
 ## 🔴 URGENT / BLOCKED
-- [ ] **Medium restock** — 10+ DAYS OVERDUE, likely OOS — needs Ev to place PO IMMEDIATELY
+- [ ] **Medium restock** — 11+ DAYS OVERDUE, likely OOS — needs Ev to place PO IMMEDIATELY
 - [ ] **Noveon fulfillment** — PO# 4500000676 CLOSED, $4,140 PAID. Ship 4 cases Medium 700cps 16oz through DMS ASAP
 - [ ] **ShipBob UROs accruing fees** — 2 shipments On-Hold Receiving, ~$600+ accrued (~$18/day) — needs Ev action
 - [ ] **Ethan Miller replacement** — order #5786, 4× Thick 16oz not yet created at ShipBob
@@ -10,7 +10,7 @@
 - [ ] **OpenAI embedding quota exhausted** — memory search broken, needs top-up or provider switch
 
 ## 🟡 NEEDS EV / WAITING
-- [ ] **Ads optimizer** — soak COMPLETE (5+ days), ready to switch from --dry-run to --execute — needs Ev approval
+- [x] **Ads optimizer** — LIVE in --execute mode since 2/23 ✅
 - [ ] **Amazon CA/NARF** — disable for chemical ASINs or submit SDS (30-day clock from ~2/15, ~9 days left)
 - [ ] **Designcoffers** — FINAL files + 3D mockups delivered, needs Ev's review on Fiverr
 - [ ] **Teikametrics** — disable auto-bidding + set budget cap (phasing out, our API handles it now)
@@ -27,14 +27,21 @@
 - [ ] **Quintex Molding** — case pricing sent 2/20 ($39/bottle 1 case, $34.50 at 3+), waiting on Ryan
 - [ ] **OTL (Mitch Hamilton)** — asked for shipping address 2/23, waiting on reply
 - [ ] **Cerebro campaigns** — 3 launched 2/19 + Super Glue Exact from 2/18. Monitoring performance.
-- [ ] **Ads optimizer soak** — COMPLETE, pending switch to --execute
+- [x] **Ads optimizer** — switched to --execute mode 2/23 ✅
 - [ ] **New product pipeline (Xtralok)** — Black CA 8oz approved ($9.50), rubber-toughened CA sample coming, debonder pricing TBD
 
-## ✅ DONE TODAY (2/23)
+## ✅ DONE TODAY (2/24)
+- [x] SEO blog published: "Cyanoacrylate Glue for Furniture Repair" (1,265 words)
+- [x] Email monitors ran — no actionable items
+- [x] Ads optimizer + harvester running in --execute mode (autopilot)
+
+## ✅ DONE (2/23)
 - [x] **Noveon Magnetics** — PO CLOSED, $4,140 paid via PayPal ✅
 - [x] **OTL** — shipping address request sent
 - [x] **Xtralok product expansion** — discussed Black CA, rubber-toughened CA, debonder with Joe
-- [x] All automated crons ran (email monitors, ads flywheel, SEO)
+- [x] **Ads optimizer** — switched to --execute, harvested 30 exact-match keywords
+- [x] **B2B Kit** — product spec card, quick-start guide, price sheet created
+- [x] All automated crons ran
 
 ## ✅ DONE RECENTLY (2/19-2/22)
 

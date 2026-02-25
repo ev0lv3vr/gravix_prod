@@ -114,7 +114,7 @@ Last updated: 2026-02-23
 - **Sub-agents:** Opus 4.6 for spawned work
 
 #### Gluemasters — B2B Pipeline
-- **Noveon Magnetics** (Julie Doyle jdoyle@noveon.co + Jonathan Martinez jmartinez@noveon.co, San Marcos TX) — PO# 4500000676 CLOSED 2/23, 4 cases Medium 700cps 16oz, $4,140 paid via PayPal. Needs fulfillment through DMS.
+- **Noveon Magnetics** (Julie Doyle jdoyle@noveon.co + Jonathan Martinez jmartinez@noveon.co, San Marcos TX) — PO# 4500000676 SHIPPED 2/24 via UPS (4 tracking #s), $4,140 paid via PayPal. Confirmation email sent to Julie.
 - **Quintex Molding** (Ryan Belnap rbelnap@qntx.com, CC: Clyde Colbert CColbert@qntx.com, Nampa ID) — all shipments arrived, assemblers prefer Thick. Sent case pricing 2/20 ($39/bottle 1 case, $34.50 at 3+). Waiting on Ryan.
 - **OTL** (Mitch Hamilton hamiltonm3477@gmail.com, Jasper NY) — personalized gifts, needs low-odor. He said YES to sample 2/16. Asked for shipping address 2/23 (sent from gluemasters account). Waiting on address.
 - **Petite Keep** (Kaylee Hobbs kaylee@petitekeep.com) — white-label CA glue, was doing 1,500 units biweekly. Paused Jan 6, has ~4,000 bottles on hand. Said ~4 months to reorder (late May/June). PO was paused, never produced. **Follow up mid-March.**
@@ -128,10 +128,10 @@ Last updated: 2026-02-23
 #### Gluemasters — Supplier (Xtralok / A3 Partners)
 - **Joe Silvestro** (joe@a3partnersllc.com) + **Caroline Silvestro** (caroline@a3partnersllc.com) = Xtralok = manufacturer
 - **DMS** = warehouse/fulfillment (ships B2B orders, separate from ShipBob)
-- **New products in discussion (2/23):**
-  - Black CA 8oz 600 CPS — $9.50/unit from Joe, APPROVED, asked for MOQ/lead time
-  - Rubber-toughened CA (1400-2000 CPS) — sample coming, 6-8 weeks to stock
-  - Debonder 2oz nitromethane — $5.50 too high, need $3-3.50, asked Joe to sharpen price or quote acetone-based
+- **New products in discussion (2/23-2/24):**
+  - Black CA 8oz 600 CPS — $9.50/unit from Joe, APPROVED, MOQ 80 bottles (Joe replied 2/24)
+  - Rubber-toughened CA (1400-2000 CPS) — sample coming, confirming with UK supplier
+  - Debonder 2oz — Joe offered $3.50/bottle, 70% nitro / 30% acetone blend, 300-bottle MOQ, sample offered. Market research done: 2oz is the industry standard size (Starbond, BSI, Stick Fast, Dynamite all sell 2oz). Target retail $12.99-$14.99. Waiting on Ev to confirm sample request.
 - **Label quality issue** — Gemifly (Gabriel) flagged 70/135 bottles had defective labels (in-house printing). Joe says professional printed labels arriving last week of Feb.
 - **Gemifly** — white-label customer, ~235 bottles/month, based in Phoenix. Wants low-odor, low-bloom, crystal clear dry. Uses custom metal tips.
 
@@ -148,6 +148,7 @@ Last updated: 2026-02-23
 - **himalaya SMTP save-to-Sent causes retries** — set `save-copy = false` for Gmail
 - **himalaya has TWO accounts** — `gluemasters` (evgueni@, newsletters/Amazon/ShipBob) and `sales` (sales@, customer/B2B emails). Always use `--account sales` for customer replies.
 - **himalaya attachments need MML multipart** — must use `<#multipart type=mixed>` wrapper, not bare `<#part filename=...>` in plain text
+- **himalaya HTML emails need MML multipart/alternative** — `Content-Type: text/html` header alone doesn't work; must use `<#multipart type=alternative>` with `<#part type=text/html>` tag for HTML to render properly
 - **himalaya thread replies** — get Message-ID from original email, set In-Reply-To + References headers
 - **Shopify CLI device auth times out quickly** — may need Theme Access password approach
 - **Context compaction loses details** — write everything to files immediately
