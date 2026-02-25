@@ -1,33 +1,23 @@
-# Gluemasters SEO Blog — Last Run
+# Gluemasters SEO Blog - Last Run
 
-**Date:** 2026-02-18 (Wednesday)
-**Article #4 of ~20**
+**Date:** February 24, 2026 (Tuesday)
 
-## Published Today
+**Article Published:**
+- **Title:** Cyanoacrylate Glue for Furniture Repair: Fast Fixes for Wood Joints, Veneer, and Broken Parts
+- **Target Keyword:** cyanoacrylate glue for furniture repair
+- **Keyword Cluster:** furniture repair
+- **Word Count:** 1,265 words
+- **Article ID:** 565801943217
+- **URL:** https://gluemasters.com/blogs/articles/cyanoacrylate-glue-for-furniture-repair-fast-fixes-for-wood-joints-veneer-and-broken-parts
 
-| Field | Value |
-|-------|-------|
-| **Title** | CA Glue Fogging and Blooming: Why It Happens and How to Prevent White Haze |
-| **URL** | https://gluemasters.com/blogs/articles/ca-glue-fogging-and-blooming-why-it-happens-and-how-to-prevent-white-haze |
-| **Target Keyword** | CA glue fogging and blooming |
-| **Cluster** | Troubleshooting |
-| **Article ID** | 565778088113 |
-| **Word Count** | ~1,210 |
-| **Published At** | 2026-02-18T06:03:54-08:00 |
+**Content Highlights:**
+- Comprehensive guide covering viscosity selection for different repair types
+- Step-by-step instructions for fixing loose joints, reattaching veneer, and filling damaged wood
+- Comparison table: CA glue vs. traditional wood glue
+- 6 FAQs targeting featured snippets (sanding/staining, strength comparison, outdoor use, antiques, blooming, glue removal)
+- Internal links to CA accelerator, debonder, and glue kit products
+- Strong CTA directing to Gluemasters product range
 
-## Clusters Used So Far
-- ✅ reef/coral (2/13)
-- ✅ 3D printing (2/16)
-- ✅ woodworking/finishes (2/17)
-- ✅ troubleshooting — fogging/blooming (2/18)
+**Status:** ✅ Published successfully at 6:00 AM PST
 
-## Clusters Remaining
-- model/RC
-- furniture repair
-- manufacturing/B2B
-- viscosity/CPS education
-- accelerator/debonder/how-to
-- safety/storage/shelf-life
-- bonding specific substrates
-- troubleshooting — brittle bond
-- troubleshooting — wicking too far
+**Total Articles Published:** 6 (as of Feb 24, 2026)
