@@ -309,7 +309,12 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, { ...options, headers: { ...headers, ...options?.headers } });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.detail || body.message || `Request failed (${res.status})`);
+    const detail = body?.detail;
+    const detailMessage = typeof detail === 'string'
+      ? detail
+      : (detail && typeof detail === 'object' ? detail.message : null);
+
+    throw new Error(detailMessage || body?.message || `Request failed (${res.status})`);
   }
   return res.json();
 }
