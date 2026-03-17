@@ -4,6 +4,7 @@ Sprint 6: Knowledge injection — before calling Claude, query knowledge_pattern
 for matching substrate pair / adhesive family and inject empirical data into the prompt.
 """
 
+import asyncio
 import json
 import logging
 import time
@@ -16,18 +17,6 @@ from config import settings
 logger = logging.getLogger(__name__)
 
 CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
-
-# Shared httpx client — avoids per-request connection overhead and pool exhaustion
-_http_client = None
-
-
-def _get_http_client():
-    global _http_client
-    if _http_client is None or _http_client.is_closed:
-        _http_client = httpx.AsyncClient(
-            timeout=httpx.Timeout(settings.ai_timeout_seconds)
-        )
-    return _http_client
 
 
 async def _call_claude(
@@ -107,7 +96,6 @@ async def _call_claude(
     last_error = None
     for attempt in range(settings.max_retries_ai):
         try:
-            client = _get_http_client()
             logger.info(
                 f"DEBUG Claude call: url={CLAUDE_API_URL}, model={payload.get('model')}, "
                 f"key_prefix={headers.get('x-api-key', '')[:20]}, "
@@ -115,9 +103,12 @@ async def _call_claude(
                 f"prompt_length={len(str(payload.get('messages', '')))}, "
                 f"timeout={settings.ai_timeout_seconds}"
             )
-            response = await client.post(
-                CLAUDE_API_URL, headers=headers, json=payload
-            )
+
+            def _sync_post():
+                with httpx.Client(timeout=settings.ai_timeout_seconds) as client:
+                    return client.post(CLAUDE_API_URL, headers=headers, json=payload)
+
+            response = await asyncio.to_thread(_sync_post)
             response.raise_for_status()
             data = response.json()
             if isinstance(data, dict) and data.get("usage"):
@@ -178,7 +169,6 @@ async def _call_claude(
 
 
 async def _async_sleep(seconds: float):
-    import asyncio
     await asyncio.sleep(seconds)
 
 
