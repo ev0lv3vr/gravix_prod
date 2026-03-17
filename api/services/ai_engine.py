@@ -17,6 +17,18 @@ logger = logging.getLogger(__name__)
 
 CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
 
+# Shared httpx client — avoids per-request connection overhead and pool exhaustion
+_http_client = None
+
+
+def _get_http_client():
+    global _http_client
+    if _http_client is None or _http_client.is_closed:
+        _http_client = httpx.AsyncClient(
+            timeout=httpx.Timeout(settings.ai_timeout_seconds)
+        )
+    return _http_client
+
 
 async def _call_claude(
     system_prompt: str,
@@ -95,43 +107,41 @@ async def _call_claude(
     last_error = None
     for attempt in range(settings.max_retries_ai):
         try:
-            async with httpx.AsyncClient(
-                timeout=settings.ai_timeout_seconds
-            ) as client:
-                response = await client.post(
-                    CLAUDE_API_URL, headers=headers, json=payload
-                )
-                response.raise_for_status()
-                data = response.json()
-                if isinstance(data, dict) and data.get("usage"):
-                    (log_meta or {}).update({"usage": data.get("usage")})
+            client = _get_http_client()
+            response = await client.post(
+                CLAUDE_API_URL, headers=headers, json=payload
+            )
+            response.raise_for_status()
+            data = response.json()
+            if isinstance(data, dict) and data.get("usage"):
+                (log_meta or {}).update({"usage": data.get("usage")})
 
-                # Extract text content
-                content = data.get("content", [])
-                if content and content[0].get("type") == "text":
-                    text = content[0]["text"]
-                    # Try to parse as JSON
-                    try:
-                        parsed = json.loads(text)
+            # Extract text content
+            content = data.get("content", [])
+            if content and content[0].get("type") == "text":
+                text = content[0]["text"]
+                # Try to parse as JSON
+                try:
+                    parsed = json.loads(text)
+                    _write_audit_log(True, parsed)
+                    return parsed
+                except json.JSONDecodeError:
+                    # Try to extract JSON from markdown code blocks
+                    if "```json" in text:
+                        json_str = text.split("```json")[1].split("```")[0].strip()
+                        parsed = json.loads(json_str)
                         _write_audit_log(True, parsed)
                         return parsed
-                    except json.JSONDecodeError:
-                        # Try to extract JSON from markdown code blocks
-                        if "```json" in text:
-                            json_str = text.split("```json")[1].split("```")[0].strip()
-                            parsed = json.loads(json_str)
-                            _write_audit_log(True, parsed)
-                            return parsed
-                        elif "```" in text:
-                            json_str = text.split("```")[1].split("```")[0].strip()
-                            parsed = json.loads(json_str)
-                            _write_audit_log(True, parsed)
-                            return parsed
-                        _write_audit_log(True, {"raw_text": text})
-                        return {"raw_text": text}
+                    elif "```" in text:
+                        json_str = text.split("```")[1].split("```")[0].strip()
+                        parsed = json.loads(json_str)
+                        _write_audit_log(True, parsed)
+                        return parsed
+                    _write_audit_log(True, {"raw_text": text})
+                    return {"raw_text": text}
 
-                _write_audit_log(False, error_msg="No content in response")
-                return {"error": "No content in response"}
+            _write_audit_log(False, error_msg="No content in response")
+            return {"error": "No content in response"}
 
         except httpx.HTTPStatusError as e:
             last_error = e
@@ -153,7 +163,7 @@ async def _call_claude(
             if log_meta is not None:
                 log_meta["retry_count"] = attempt + 1
                 log_meta["error_type"] = "connection_error"
-            logger.warning(f"Claude API connection error (attempt {attempt + 1}): {e}")
+            logger.warning(f"Claude API connection error (attempt {attempt + 1}): {type(e).__name__}: {e!r}")
             await _async_sleep(2 ** attempt)
 
     _write_audit_log(False, error_msg=str(last_error))
