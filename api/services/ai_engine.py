@@ -96,12 +96,15 @@ async def _call_claude(
     last_error = None
     for attempt in range(settings.max_retries_ai):
         try:
+            payload_bytes = len(json.dumps(payload))
             logger.info(
                 f"DEBUG Claude call: url={CLAUDE_API_URL}, model={payload.get('model')}, "
                 f"key_prefix={headers.get('x-api-key', '')[:20]}, "
                 f"anthropic_version={headers.get('anthropic-version')}, "
                 f"prompt_length={len(str(payload.get('messages', '')))}, "
-                f"timeout={settings.ai_timeout_seconds}"
+                f"timeout={settings.ai_timeout_seconds}, "
+                f"payload_bytes={payload_bytes}, "
+                f"system_prompt_length={len(payload.get('system', ''))}"
             )
 
             def _sync_post():
