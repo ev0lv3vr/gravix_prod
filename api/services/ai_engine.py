@@ -108,6 +108,13 @@ async def _call_claude(
     for attempt in range(settings.max_retries_ai):
         try:
             client = _get_http_client()
+            logger.info(
+                f"DEBUG Claude call: url={CLAUDE_API_URL}, model={payload.get('model')}, "
+                f"key_prefix={headers.get('x-api-key', '')[:20]}, "
+                f"anthropic_version={headers.get('anthropic-version')}, "
+                f"prompt_length={len(str(payload.get('messages', '')))}, "
+                f"timeout={settings.ai_timeout_seconds}"
+            )
             response = await client.post(
                 CLAUDE_API_URL, headers=headers, json=payload
             )
