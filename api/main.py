@@ -110,6 +110,8 @@ app.include_router(patterns.router)
 app.include_router(pricing.router)
 app.include_router(auth_test.router)
 app.include_router(auth_facade.router)
+from routers import debug as debug_router  # TEMPORARY — remove after diagnosis
+app.include_router(debug_router.router)
 
 
 if __name__ == "__main__":
