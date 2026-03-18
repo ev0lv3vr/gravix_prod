@@ -107,6 +107,15 @@ async def _call_claude(
                 f"system_prompt_length={len(payload.get('system', ''))}"
             )
 
+            logger.info(
+                f"DEBUG full payload: {json.dumps(payload)[:3000]}"
+            )
+            logger.info(
+                f"DEBUG request params: max_tokens={payload.get('max_tokens')}, "
+                f"stream={'stream' in payload}, "
+                f"extra_keys={[k for k in payload if k not in ('model','max_tokens','system','messages')]}"
+            )
+
             def _sync_post():
                 with httpx.Client(timeout=settings.ai_timeout_seconds) as client:
                     return client.post(CLAUDE_API_URL, headers=headers, json=payload)
