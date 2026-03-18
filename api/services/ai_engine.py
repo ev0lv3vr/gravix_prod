@@ -102,7 +102,7 @@ async def _call_claude(
                 f"key_prefix={headers.get('x-api-key', '')[:20]}, "
                 f"anthropic_version={headers.get('anthropic-version')}, "
                 f"prompt_length={len(str(payload.get('messages', '')))}, "
-                f"timeout={settings.ai_timeout_seconds}, "
+                f"timeout=120(hardcoded), settings_val={settings.ai_timeout_seconds}, "
                 f"payload_bytes={payload_bytes}, "
                 f"system_prompt_length={len(payload.get('system', ''))}"
             )
@@ -117,7 +117,7 @@ async def _call_claude(
             )
 
             def _sync_post():
-                with httpx.Client(timeout=settings.ai_timeout_seconds) as client:
+                with httpx.Client(timeout=120) as client:  # TEMPORARY hardcode — revert to settings.ai_timeout_seconds
                     return client.post(CLAUDE_API_URL, headers=headers, json=payload)
 
             response = await asyncio.to_thread(_sync_post)
