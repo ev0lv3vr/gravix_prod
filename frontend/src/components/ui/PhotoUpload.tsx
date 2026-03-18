@@ -203,6 +203,7 @@ export function PhotoUpload({
         accept={ACCEPTED_EXTENSIONS.join(',')}
         multiple
         onChange={handleInputChange}
+        data-testid="failure-photo-upload"
         className="hidden"
       />
 

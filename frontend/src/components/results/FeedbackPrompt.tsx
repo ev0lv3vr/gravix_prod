@@ -78,7 +78,7 @@ export function FeedbackPrompt({
   // Done state
   if (stage === 'done' && result) {
     return (
-      <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-6 text-center">
+      <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-6 text-center" data-testid="feedback-success">
         <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-3" />
         <h3 className="text-lg font-semibold text-white mb-1">
           Thank you for your feedback!
@@ -103,6 +103,7 @@ export function FeedbackPrompt({
       <div className="flex gap-3 mb-4">
         <button
           onClick={() => handleThumbClick(true)}
+          data-testid="feedback-helpful"
           className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border-2 transition-all text-sm font-medium ${
             wasHelpful === true
               ? 'border-green-500 bg-green-500/10 text-green-400'
@@ -114,6 +115,7 @@ export function FeedbackPrompt({
         </button>
         <button
           onClick={() => handleThumbClick(false)}
+          data-testid="feedback-not-helpful"
           className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border-2 transition-all text-sm font-medium ${
             wasHelpful === false
               ? 'border-red-500 bg-red-500/10 text-red-400'

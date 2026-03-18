@@ -305,6 +305,7 @@ export default function HistoryPage() {
             <Link
               key={a.id}
               href={href}
+              data-testid="history-row"
               className="bg-brand-800 border border-[#1F2937] rounded-lg p-4 flex flex-col md:flex-row md:items-center gap-3 hover:border-accent-500/50 transition-colors"
             >
               <span

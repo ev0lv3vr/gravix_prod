@@ -237,6 +237,7 @@ export function Header() {
               className="text-white p-1"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
+              data-testid="nav-mobile-toggle"
             >
               {isMobileMenuOpen ? (
                 <X className="h-6 w-6" />

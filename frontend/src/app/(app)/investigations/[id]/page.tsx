@@ -251,7 +251,7 @@ export default function InvestigationDetailPage() {
   if (!investigation) return null;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" data-testid="investigation-detail">
       {/* Hidden file input */}
       <input
         ref={fileInputRef}
@@ -291,6 +291,7 @@ export default function InvestigationDetailPage() {
                 className="text-[#94A3B8] hover:text-white"
                 onClick={handleGenerateReport}
                 disabled={generatingReport}
+                data-testid="investigation-download-pdf"
               >
                 {generatingReport ? (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
