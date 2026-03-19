@@ -273,6 +273,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
             autoFocus
             recentKey="gravix_recent_substrates_a"
             error={errors.substrateA}
+            data-testid="spec-substrate-a"
           />
           <Combobox
             label="Substrate 2"
@@ -283,6 +284,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
             required
             recentKey="gravix_recent_substrates_b"
             error={errors.substrateB}
+            data-testid="spec-substrate-b"
           />
         </div>
 
@@ -301,6 +303,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
         <ExpandableSection
           label="Add requirements for a more precise specification (optional)"
           persistKey="gravix_spec_form_expanded"
+          data-testid="spec-zone2-expand"
         >
           {/* ─── Load Type — Multi-Select Chips ─── */}
           <div>
@@ -311,6 +314,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
               options={LOAD_TYPE_OPTIONS}
               selected={formData.loadTypes}
               onChange={(v) => updateField('loadTypes', v)}
+              testIdPrefix="spec-chip"
             />
           </div>
 
@@ -391,6 +395,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
               options={ENVIRONMENT_OPTIONS}
               selected={formData.environment}
               onChange={(v) => updateField('environment', v)}
+              testIdPrefix="spec-env-chip"
             />
 
             {/* Conditional: Chemical Exposure Detail */}
@@ -439,6 +444,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
                 value={formData.tempMin}
                 onChange={(e) => updateField('tempMin', Number(e.target.value))}
                 placeholder="-40"
+                data-testid="spec-temp-min"
                 className="h-11 bg-[#111827] border-[#374151] rounded text-sm flex-1"
               />
               <span className="text-[#64748B]">to</span>
@@ -447,6 +453,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
                 value={formData.tempMax}
                 onChange={(e) => updateField('tempMax', Number(e.target.value))}
                 placeholder="120"
+                data-testid="spec-temp-max"
                 className="h-11 bg-[#111827] border-[#374151] rounded text-sm flex-1"
               />
             </div>
@@ -546,6 +553,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
               onChange={(e) => updateField('additionalContext', e.target.value)}
               placeholder="Special requirements, regulatory, application constraints…"
               rows={3}
+              data-testid="spec-description"
               className="bg-[#111827] border-[#374151] rounded text-sm resize-none"
             />
           </div>
@@ -554,6 +562,7 @@ export function SpecForm({ onSubmit, isLoading = false }: SpecFormProps) {
         {/* ═══════════════════ Submit ═══════════════════ */}
         <Button
           type="submit"
+          data-testid="spec-submit"
           className="w-full h-12 bg-accent-500 hover:bg-accent-600 text-white text-base font-medium mt-8"
           disabled={isLoading}
         >

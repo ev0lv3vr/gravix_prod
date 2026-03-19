@@ -18,6 +18,8 @@ interface MultiSelectChipsProps {
   selected: string[];
   onChange: (selected: string[]) => void;
   disabled?: boolean;
+  /** Prefix for data-testid on each chip button (e.g., "spec-chip" → "spec-chip-shear") */
+  testIdPrefix?: string;
 }
 
 function ChipWithTooltip({
@@ -25,11 +27,13 @@ function ChipWithTooltip({
   isSelected,
   disabled,
   onToggle,
+  testIdPrefix,
 }: {
   option: ChipOption;
   isSelected: boolean;
   disabled?: boolean;
   onToggle: () => void;
+  testIdPrefix?: string;
 }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const tooltipTimeout = useRef<ReturnType<typeof setTimeout>>();
@@ -66,6 +70,7 @@ function ChipWithTooltip({
         disabled={disabled}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        data-testid={testIdPrefix ? `${testIdPrefix}-${option.value.replace(/_/g, '-')}` : undefined}
         className={cn(
           'px-3 py-1.5 rounded-full text-[13px] font-medium transition-all border whitespace-nowrap',
           disabled && 'opacity-50 cursor-not-allowed',
@@ -91,6 +96,7 @@ export function MultiSelectChips({
   selected,
   onChange,
   disabled = false,
+  testIdPrefix,
 }: MultiSelectChipsProps) {
   const handleToggle = (option: ChipOption) => {
     if (disabled) return;
@@ -142,6 +148,7 @@ export function MultiSelectChips({
           isSelected={selected.includes(option.value)}
           disabled={disabled}
           onToggle={() => handleToggle(option)}
+          testIdPrefix={testIdPrefix}
         />
       ))}
     </div>

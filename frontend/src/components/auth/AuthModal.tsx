@@ -282,7 +282,7 @@ export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = fals
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[440px] bg-brand-800 border-brand-700 rounded-2xl p-10">
+      <DialogContent data-testid="auth-modal" className="sm:max-w-[440px] bg-brand-800 border-brand-700 rounded-2xl p-10">
         {/* Sign In */}
         {view === 'sign-in' && (
           <>
@@ -305,6 +305,7 @@ export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = fals
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     autoFocus
+                    data-testid="auth-email"
                     className={inputClass}
                   />
                 </div>
@@ -328,6 +329,7 @@ export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = fals
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      data-testid="auth-password"
                       className={inputClass + ' pr-10'}
                     />
                     <PasswordToggle />
@@ -339,6 +341,7 @@ export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = fals
                 <Button
                   type="submit"
                   size="lg"
+                  data-testid="auth-signin-submit"
                   className="w-full bg-accent-500 hover:bg-accent-600 text-white h-12"
                   disabled={isLoading}
                 >
@@ -353,6 +356,7 @@ export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = fals
                 Don&apos;t have an account?{' '}
                 <button
                   onClick={() => switchView('sign-up')}
+                  data-testid="auth-signup-link"
                   className="text-accent-500 hover:text-accent-400 font-medium"
                 >
                   Sign up
@@ -390,6 +394,7 @@ export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = fals
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     autoFocus
+                    data-testid="auth-signup-email"
                     className={inputClass}
                   />
                 </div>
@@ -405,6 +410,7 @@ export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = fals
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       minLength={8}
+                      data-testid="auth-signup-password"
                       className={inputClass + ' pr-10'}
                     />
                     <PasswordToggle />
@@ -421,6 +427,7 @@ export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = fals
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
+                    data-testid="auth-confirm-password"
                     className={inputClass}
                   />
                 </div>
@@ -430,6 +437,7 @@ export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = fals
                 <Button
                   type="submit"
                   size="lg"
+                  data-testid="auth-create-account"
                   className="w-full bg-accent-500 hover:bg-accent-600 text-white h-12"
                   disabled={isLoading}
                 >
@@ -582,6 +590,7 @@ export function AuthModal({ open, onOpenChange, onSuccess, fromFormSubmit = fals
                 variant="ghost"
                 size="sm"
                 onClick={handleClose}
+                data-testid="auth-modal-close"
                 className="text-text-secondary hover:text-white"
               >
                 Close

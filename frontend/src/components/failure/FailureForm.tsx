@@ -236,6 +236,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
             placeholder="Describe the failure — what broke, when, how it looked, what conditions, what you've tried. The more detail you provide, the more accurate the diagnosis."
             rows={6}
             autoFocus
+            data-testid="failure-description"
             className={cn(
               'bg-[#0F1629] border-[#374151] rounded text-[15px] resize-none leading-relaxed',
               errors.failureDescription && 'border-red-500'
@@ -257,6 +258,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
             required
             recentKey="gravix_recent_substrates_a"
             error={errors.substrateA}
+            data-testid="failure-substrate-a"
           />
           <Combobox
             label="Substrate 2"
@@ -267,6 +269,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
             required
             recentKey="gravix_recent_substrates_b"
             error={errors.substrateB}
+            data-testid="failure-substrate-b"
           />
         </div>
 
@@ -279,6 +282,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
           onChange={handleProductValueChange}
           recentKey="gravix_recent_products"
           showTdsBadge
+          data-testid="failure-adhesive"
         />
 
         {/* 4. Photo Upload */}
@@ -492,6 +496,7 @@ export function FailureForm({ onSubmit, isLoading = false }: FailureFormProps) {
         <div>
           <Button
             type="submit"
+            data-testid="failure-submit"
             className={cn(
               'w-full h-12 text-base font-medium',
               isAtLimit

@@ -114,7 +114,7 @@ export default function FailureHistoryDetailPage({ params }: { params: { id: str
   if (authLoading || !authUser) return null;
 
   return (
-    <div className="container mx-auto px-6 py-10">
+    <div className="container mx-auto px-6 py-10" data-testid="analysis-detail">
       <div className="flex items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-white">Failure Analysis</h1>

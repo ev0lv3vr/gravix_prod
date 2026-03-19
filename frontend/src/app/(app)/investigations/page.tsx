@@ -78,7 +78,7 @@ function KanbanCard({
   const overdueActions = getOverdueActionCount(inv.id);
 
   return (
-    <Link href={`/investigations/${inv.id}`}>
+    <Link href={`/investigations/${inv.id}`} data-testid="investigation-row">
       <div
         draggable
         onDragStart={(e) => onDragStart(e, inv)}
@@ -160,7 +160,7 @@ function InvestigationListCard({ inv }: { inv: InvestigationListItem }) {
   const teamLead = getTeamMemberName(inv.team_lead_user_id);
 
   return (
-    <Link href={`/investigations/${inv.id}`}>
+    <Link href={`/investigations/${inv.id}`} data-testid="investigation-row">
       <div className="bg-brand-800 border border-[#1F2937] rounded-lg p-4 hover:border-accent-500/50 transition-colors">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
           <div className="flex-1 min-w-0">

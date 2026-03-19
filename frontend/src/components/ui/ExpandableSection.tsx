@@ -9,6 +9,7 @@ interface ExpandableSectionProps {
   persistKey: string;
   defaultExpanded?: boolean;
   children: React.ReactNode;
+  'data-testid'?: string;
 }
 
 export function ExpandableSection({
@@ -16,6 +17,7 @@ export function ExpandableSection({
   persistKey,
   defaultExpanded = false,
   children,
+  'data-testid': dataTestId,
 }: ExpandableSectionProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [hasHydrated, setHasHydrated] = useState(false);
@@ -56,6 +58,7 @@ export function ExpandableSection({
         ref={triggerRef}
         type="button"
         onClick={toggle}
+        data-testid={dataTestId}
         className="flex items-center gap-2 text-sm text-[#94A3B8] hover:text-white transition-colors py-2 w-full text-left"
       >
         <ChevronRight
