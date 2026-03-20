@@ -113,7 +113,9 @@ def handle_webhook(payload: bytes, sig_header: str) -> dict:
 
     db = get_supabase()
 
-    if event_type == "customer.subscription.created":
+    if event_type == "checkout.session.completed":
+        _handle_checkout_completed(db, data)
+    elif event_type == "customer.subscription.created":
         _handle_subscription_change(db, data, active=True)
     elif event_type == "customer.subscription.updated":
         status = data.get("status")
@@ -127,6 +129,41 @@ def handle_webhook(payload: bytes, sig_header: str) -> dict:
         # Could downgrade user or send notification
 
     return {"status": "ok", "event_type": event_type}
+
+
+def _handle_checkout_completed(db, session: dict):
+    """Handle checkout.session.completed — ensures plan is updated immediately.
+
+    This fires before subscription events in some Stripe flows, so we eagerly
+    update the user's plan based on the subscription created by the checkout.
+    """
+    customer_id = session.get("customer")
+    subscription_id = session.get("subscription")
+
+    if not customer_id:
+        logger.warning("checkout.session.completed without customer ID")
+        return
+
+    logger.info(f"Checkout completed: customer={customer_id}, subscription={subscription_id}")
+
+    # If there's a subscription, retrieve it and sync the plan
+    if subscription_id:
+        try:
+            sub = stripe.Subscription.retrieve(subscription_id)
+            _handle_subscription_change(db, sub, active=(sub.status == "active"))
+            return
+        except Exception as e:
+            logger.warning(f"Failed to retrieve subscription {subscription_id}: {e}")
+
+    # Fallback: look up user and set to pro (checkout implies paid plan)
+    result = db.table("users").select("id").eq("stripe_customer_id", customer_id).execute()
+    if not result.data:
+        logger.warning(f"checkout.session.completed: no user for customer {customer_id}")
+        return
+
+    user_id = result.data[0]["id"]
+    db.table("users").update({"plan": "pro"}).eq("id", user_id).execute()
+    logger.info(f"Checkout fallback: set user {user_id} to plan: pro")
 
 
 def _handle_subscription_change(db, subscription: dict, active: bool):
