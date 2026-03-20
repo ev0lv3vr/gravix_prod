@@ -1036,12 +1036,26 @@ async def sign_discipline(
     content_to_hash = f"{investigation_id}:{discipline}:{datetime.now(timezone.utc).isoformat()}"
     signature_hash = hashlib.sha256(content_to_hash.encode()).hexdigest()
     
+    # Determine user's role on the investigation team
+    team_members = investigation.get("team_members") or []
+    user_role = "Member"
+    for member in team_members:
+        if isinstance(member, dict) and member.get("user_id") == user["id"]:
+            user_role = member.get("role") or "Member"
+            break
+    if investigation.get("approver_user_id") == user["id"]:
+        user_role = "Approver"
+    elif investigation.get("owner_user_id") == user["id"]:
+        user_role = "Owner"
+
     signature_id = str(uuid.uuid4())
     record = {
         "id": signature_id,
         "investigation_id": investigation_id,
         "user_id": user["id"],
         "discipline": discipline,
+        "role": user_role,
+        "signature_type": "approval",
         "signature_hash": signature_hash,
         "signed_at": datetime.now(timezone.utc).isoformat(),
     }

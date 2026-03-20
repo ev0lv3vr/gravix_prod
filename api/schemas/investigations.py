@@ -252,6 +252,8 @@ class SignatureResponse(BaseModel):
     investigation_id: str
     user_id: str
     discipline: str
+    role: str = "Member"
+    signature_type: str = "approval"
     signature_hash: str
     signed_at: datetime
 
