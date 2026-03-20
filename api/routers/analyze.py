@@ -210,7 +210,7 @@ async def list_analyses(user: dict = Depends(get_current_user)):
     db = get_supabase()
     result = (
         db.table("failure_analyses")
-        .select("id, material_category, material_subcategory, failure_mode, confidence_score, status, created_at")
+        .select("id, material_category, material_subcategory, failure_mode, substrate_a, substrate_b, root_cause_category, confidence_score, status, created_at")
         .eq("user_id", user["id"])
         .order("created_at", desc=True)
         .limit(50)
