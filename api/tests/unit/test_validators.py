@@ -94,11 +94,9 @@ class TestFailureAnalysisCreate:
         errors = exc_info.value.errors()
         assert any(e["loc"] == ("material_category",) for e in errors)
 
-    def test_missing_failure_mode_fails(self):
-        with pytest.raises(ValidationError) as exc_info:
-            FailureAnalysisCreate(material_category="epoxy")
-        errors = exc_info.value.errors()
-        assert any(e["loc"] == ("failure_mode",) for e in errors)
+    def test_missing_failure_mode_defaults_to_none(self):
+        obj = FailureAnalysisCreate(material_category="epoxy")
+        assert obj.failure_mode is None
 
     def test_missing_both_required_fails(self):
         with pytest.raises(ValidationError):

@@ -28,7 +28,7 @@ class FailureAnalysisCreate(BaseModel):
     material_category: str
     material_subcategory: Optional[str] = None
     material_product: Optional[str] = None
-    failure_mode: str  # expanded: now includes "unknown_visual" option
+    failure_mode: Optional[str] = None  # optional — AI infers from description if not provided
     failure_description: Optional[str] = None
     substrate_a: Optional[str] = None
     substrate_b: Optional[str] = None
@@ -87,12 +87,13 @@ class VisualAnalysisResult(BaseModel):
 
 
 class FailureAnalysisResponse(BaseModel):
+    # Note: failure_mode can be None when user skips the field
     id: str
     user_id: str
     material_category: str
     material_subcategory: Optional[str] = None
     material_product: Optional[str] = None
-    failure_mode: str
+    failure_mode: Optional[str] = None
     failure_description: Optional[str] = None
     substrate_a: Optional[str] = None
     substrate_b: Optional[str] = None
@@ -141,7 +142,7 @@ class FailureAnalysisListItem(BaseModel):
     id: str
     material_category: str
     material_subcategory: Optional[str] = None
-    failure_mode: str
+    failure_mode: Optional[str] = None
     root_cause_category: Optional[str] = None
     confidence_score: Optional[float] = None
     status: str
