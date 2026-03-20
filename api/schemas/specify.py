@@ -117,8 +117,9 @@ class SpecRequestResponse(BaseModel):
 class SpecRequestListItem(BaseModel):
     id: str
     material_category: str
-    substrate_a: str
-    substrate_b: str
+    substrate_a: Optional[str] = None
+    substrate_b: Optional[str] = None
+    recommended_spec: Optional[dict] = None
     confidence_score: Optional[float] = None
     status: str
     created_at: Optional[datetime] = None

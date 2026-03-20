@@ -143,6 +143,8 @@ class FailureAnalysisListItem(BaseModel):
     material_category: str
     material_subcategory: Optional[str] = None
     failure_mode: Optional[str] = None
+    substrate_a: Optional[str] = None
+    substrate_b: Optional[str] = None
     root_cause_category: Optional[str] = None
     confidence_score: Optional[float] = None
     status: str

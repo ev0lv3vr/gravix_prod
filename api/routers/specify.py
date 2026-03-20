@@ -130,7 +130,7 @@ async def list_specs(user: dict = Depends(get_current_user)):
     db = get_supabase()
     result = (
         db.table("spec_requests")
-        .select("id, material_category, substrate_a, substrate_b, status, created_at")
+        .select("id, material_category, substrate_a, substrate_b, recommended_spec, confidence_score, status, created_at")
         .eq("user_id", user["id"])
         .order("created_at", desc=True)
         .limit(50)
