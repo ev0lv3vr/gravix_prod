@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Search, ClipboardList } from 'lucide-react';
+import { AnalysisProgress, FAILURE_STAGES } from '@/components/ui/AnalysisProgress';
 import { ConfidenceBadge } from '../shared/ConfidenceBadge';
 import { FeedbackPrompt } from '../results/FeedbackPrompt';
 import { VisualAnalysisSection, type VisualAnalysisItem } from './VisualAnalysisSection';
@@ -66,17 +66,6 @@ interface FailureResultData {
 }
 
 export function FailureResults({ status, data, analysisId, errorMessage, onNewAnalysis, onRunSpecAnalysis, isFree: _isFree = true }: FailureResultsProps) {
-  const [loadingPhase, setLoadingPhase] = useState(1);
-  const [elapsedTime, setElapsedTime] = useState(0);
-
-  useEffect(() => {
-    if (status !== 'loading') { setLoadingPhase(1); setElapsedTime(0); return; }
-    const t1 = setTimeout(() => setLoadingPhase(2), 2000);
-    const t2 = setTimeout(() => setLoadingPhase(3), 5000);
-    const iv = setInterval(() => setElapsedTime(t => t + 0.1), 100);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearInterval(iv); };
-  }, [status]);
-
   /* Empty State */
   if (status === 'idle') {
     return (
@@ -90,19 +79,7 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
 
   /* Loading State */
   if (status === 'loading') {
-    return (
-      <div className="h-full flex flex-col items-center justify-center px-8">
-        <div className="w-full max-w-md space-y-6">
-          <LoadStep active={loadingPhase >= 1} done={loadingPhase > 1} label="Analyzing failure patterns..." />
-          <LoadStep active={loadingPhase >= 2} done={loadingPhase > 2} label="Cross-referencing failure modes..." />
-          <LoadStep active={loadingPhase >= 3} done={false} label="Generating recommendations..." />
-          <div className="w-full h-1 bg-[#1F2937] rounded-full overflow-hidden">
-            <div className="h-full bg-accent-500 transition-all duration-500" style={{ width: `${Math.min(loadingPhase * 33, 95)}%` }} />
-          </div>
-          <div className="text-right"><span className="text-xs font-mono text-[#64748B]">{elapsedTime.toFixed(1)}s</span></div>
-        </div>
-      </div>
-    );
+    return <AnalysisProgress active stages={FAILURE_STAGES} />;
   }
 
   /* Error State */
@@ -335,15 +312,6 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
   }
 
   return null;
-}
-
-function LoadStep({ active, done, label }: { active: boolean; done: boolean; label: string }) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className={cn('w-3 h-3 rounded-full', done ? 'bg-emerald-500' : active ? 'bg-accent-500 animate-pulse' : 'bg-[#374151]')} />
-      <span className={cn('text-sm', active ? 'text-white' : 'text-[#64748B]')}>{label}</span>
-    </div>
-  );
 }
 
 export type { FailureResultData };

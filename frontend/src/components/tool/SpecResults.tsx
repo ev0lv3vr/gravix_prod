@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FileText, ChevronDown, ChevronUp, Package } from 'lucide-react';
+import { AnalysisProgress, SPEC_STAGES } from '@/components/ui/AnalysisProgress';
 import { ConfidenceBadge } from '../shared/ConfidenceBadge';
 import { FeedbackPrompt } from '../results/FeedbackPrompt';
 import { KnownRisksSection, type KnownRiskData } from './KnownRisksSection';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
 import type { MatchingProduct } from '@/lib/types';
 
@@ -58,17 +58,7 @@ interface SpecResultData {
 }
 
 export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis, isFree = true }: SpecResultsProps) {
-  const [loadingPhase, setLoadingPhase] = useState(1);
-  const [elapsedTime, setElapsedTime] = useState(0);
   const [expandedAlts, setExpandedAlts] = useState<number[]>([]);
-
-  useEffect(() => {
-    if (status !== 'loading') { setLoadingPhase(1); setElapsedTime(0); return; }
-    const t1 = setTimeout(() => setLoadingPhase(2), 2000);
-    const t2 = setTimeout(() => setLoadingPhase(3), 5000);
-    const iv = setInterval(() => setElapsedTime(t => t + 0.1), 100);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearInterval(iv); };
-  }, [status]);
 
   /* ===== Component 2.4: Empty State ===== */
   if (status === 'idle') {
@@ -87,27 +77,7 @@ export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis,
 
   /* ===== Component 2.5: Loading State ===== */
   if (status === 'loading') {
-    return (
-      <div className="h-full flex flex-col items-center justify-center px-8">
-        <div className="w-full max-w-md space-y-6">
-          <LoadingStep active={loadingPhase >= 1} done={loadingPhase > 1} label="Analyzing substrate pair..." />
-          <LoadingStep active={loadingPhase >= 2} done={loadingPhase > 2} label="Processing requirements..." />
-          <LoadingStep active={loadingPhase >= 3} done={false} label="Generating specification..." />
-
-          {/* Progress bar */}
-          <div className="w-full h-1 bg-[#1F2937] rounded-full overflow-hidden">
-            <div
-              className="h-full bg-accent-500 transition-all duration-500"
-              style={{ width: `${Math.min(loadingPhase * 33, 95)}%` }}
-            />
-          </div>
-
-          <div className="text-right">
-            <span className="text-xs font-mono text-[#64748B]">{elapsedTime.toFixed(1)}s</span>
-          </div>
-        </div>
-      </div>
-    );
+    return <AnalysisProgress active stages={SPEC_STAGES} />;
   }
 
   /* ===== Error State ===== */
@@ -415,18 +385,6 @@ export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis,
   }
 
   return null;
-}
-
-function LoadingStep({ active, done, label }: { active: boolean; done: boolean; label: string }) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className={cn(
-        'w-3 h-3 rounded-full',
-        done ? 'bg-success' : active ? 'bg-accent-500 animate-pulse' : 'bg-[#374151]'
-      )} />
-      <span className={cn('text-sm', active ? 'text-white' : 'text-[#64748B]')}>{label}</span>
-    </div>
-  );
 }
 
 export type { SpecResultData };
