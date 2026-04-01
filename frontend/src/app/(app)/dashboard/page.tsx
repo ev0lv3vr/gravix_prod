@@ -50,19 +50,34 @@ function DashboardContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [loading, setLoading] = useState(true);
-  const [recentAnalyses, setRecentAnalyses] = useState<HistoryItem[]>([]);
+  const CACHE_KEY = 'gravix_dashboard_cache';
+  const CACHE_FRESH_MS = 60_000;      // 0–60s: skip API entirely
+  const CACHE_STALE_MS = 5 * 60_000;  // 60s–5min: show cached, background refetch
 
-  // Hydrate recentAnalyses from cache immediately so returning users see data while API loads
-  useEffect(() => {
+  const readDashCache = useCallback((): { recentAnalyses: HistoryItem[]; cachedAt: number } | null => {
     try {
-      const cached = localStorage.getItem('gravix_dashboard_cache');
-      if (cached) {
-        const data = JSON.parse(cached);
-        if (data.recentAnalyses?.length > 0) setRecentAnalyses(data.recentAnalyses);
-      }
-    } catch { /* ignore */ }
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      if (!data?.recentAnalyses || !data?.cachedAt) return null;
+      return data;
+    } catch { return null; }
   }, []);
+
+  const writeDashCache = useCallback((analyses: HistoryItem[]) => {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ recentAnalyses: analyses, cachedAt: Date.now() }));
+    } catch { /* quota */ }
+  }, []);
+
+  // Hydrate from cache — skip loading state if cache is fresh enough
+  const [initialCache] = useState(() => readDashCache());
+  const hasFreshCache = initialCache && (Date.now() - initialCache.cachedAt < CACHE_STALE_MS);
+
+  const [loading, setLoading] = useState(!hasFreshCache);
+  const [recentAnalyses, setRecentAnalyses] = useState<HistoryItem[]>(
+    initialCache?.recentAnalyses ?? []
+  );
   const [checkoutBanner, setCheckoutBanner] = useState<'success' | 'cancel' | null>(null);
 
   // Checkout success/cancel URL param handling
@@ -90,74 +105,89 @@ function DashboardContent() {
     }
   }, [authUser, authLoading]);
 
+  const fetchAndMerge = useCallback(async (): Promise<HistoryItem[]> => {
+    const [specs, failures] = await Promise.all([
+      api.listSpecRequests().catch(() => [] as any[]),
+      api.listFailureAnalyses().catch(() => [] as any[]),
+    ]);
+
+    const specItems: HistoryItem[] = specs.map((s: any) => {
+      const substrateA = s.substrate_a ?? s.substrateA;
+      const substrateB = s.substrate_b ?? s.substrateB;
+      const recommended = s.recommended_spec ?? s.recommendedSpec;
+      const recommendedType = recommended?.material_type ?? recommended?.materialType;
+      const recommendedTitle = recommended?.title;
+      return {
+        id: s.id,
+        type: 'spec' as const,
+        substrates: substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—',
+        status: s.status,
+        date: s.created_at ?? s.createdAt ?? '',
+        title: recommendedType ?? recommendedTitle ?? (s.material_category ?? s.materialCategory ?? 'Spec'),
+        confidenceScore: s.confidence_score ?? s.confidenceScore,
+      };
+    });
+
+    const failureItems: HistoryItem[] = failures.map((f: any) => {
+      const substrateA = f.substrate_a ?? f.substrateA;
+      const substrateB = f.substrate_b ?? f.substrateB;
+      const substrates = substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—';
+      const failureMode = f.failure_mode ?? f.failureMode;
+      const materialSub = f.material_subcategory ?? f.materialSubcategory;
+      return {
+        id: f.id,
+        type: 'failure' as const,
+        substrates,
+        status: f.status,
+        date: f.created_at ?? f.createdAt ?? '',
+        title: failureMode ?? materialSub ?? (f.material_category ?? f.materialCategory ?? 'Failure analysis'),
+        confidenceScore: f.confidence_score ?? f.confidenceScore,
+      };
+    });
+
+    const merged = [...specItems, ...failureItems].sort((a, b) => {
+      const at = a.date ? new Date(a.date).getTime() : 0;
+      const bt = b.date ? new Date(b.date).getTime() : 0;
+      return bt - at;
+    });
+
+    return merged.slice(0, 5);
+  }, []);
+
   useEffect(() => {
     if (authLoading || !authUser) return;
 
     let cancelled = false;
+
+    // Check cache age to decide fetch strategy
+    const cached = readDashCache();
+    const cacheAge = cached ? Date.now() - cached.cachedAt : Infinity;
+
+    if (cacheAge < CACHE_FRESH_MS) {
+      // Fresh cache — skip API calls entirely
+      setLoading(false);
+      return;
+    }
+
+    if (cacheAge < CACHE_STALE_MS && cached) {
+      // Stale-while-revalidate — cached data already rendered, background refetch
+      setLoading(false);
+      fetchAndMerge().then(recent => {
+        if (cancelled) return;
+        setRecentAnalyses(recent);
+        writeDashCache(recent);
+      }).catch(() => {});
+      return () => { cancelled = true; };
+    }
+
+    // No cache or expired — full fetch with loading state
     async function load() {
       setLoading(true);
       try {
-        // Fetch analyses — plan + usage are handled by PlanContext
-        const [specs, failures] = await Promise.all([
-          api.listSpecRequests().catch(() => [] as any[]),
-          api.listFailureAnalyses().catch(() => [] as any[]),
-        ]);
-
+        const recent = await fetchAndMerge();
         if (cancelled) return;
-
-        const specItems: import('@/lib/types').HistoryItem[] = specs.map((s: any) => {
-          const substrateA = s.substrate_a ?? s.substrateA;
-          const substrateB = s.substrate_b ?? s.substrateB;
-          const recommended = s.recommended_spec ?? s.recommendedSpec;
-          const recommendedType = recommended?.material_type ?? recommended?.materialType;
-          const recommendedTitle = recommended?.title;
-
-          return {
-            id: s.id,
-            type: 'spec' as const,
-            substrates: substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—',
-            status: s.status,
-            date: s.created_at ?? s.createdAt ?? '',
-            title: recommendedType ?? recommendedTitle ?? (s.material_category ?? s.materialCategory ?? 'Spec'),
-            confidenceScore: s.confidence_score ?? s.confidenceScore,
-          };
-        });
-
-        const failureItems: import('@/lib/types').HistoryItem[] = failures.map((f: any) => {
-          const substrateA = f.substrate_a ?? f.substrateA;
-          const substrateB = f.substrate_b ?? f.substrateB;
-          const substrates = substrateA && substrateB ? `${substrateA} → ${substrateB}` : '—';
-          const failureMode = f.failure_mode ?? f.failureMode;
-          const materialSub = f.material_subcategory ?? f.materialSubcategory;
-
-          return {
-            id: f.id,
-            type: 'failure' as const,
-            substrates,
-            status: f.status,
-            date: f.created_at ?? f.createdAt ?? '',
-            title: failureMode ?? materialSub ?? (f.material_category ?? f.materialCategory ?? 'Failure analysis'),
-            confidenceScore: f.confidence_score ?? f.confidenceScore,
-          };
-        });
-
-        const merged = [...specItems, ...failureItems].sort((a, b) => {
-          const at = a.date ? new Date(a.date).getTime() : 0;
-          const bt = b.date ? new Date(b.date).getTime() : 0;
-          return bt - at;
-        });
-
-        const recent = merged.slice(0, 5);
         setRecentAnalyses(recent);
-
-        // Cache recentAnalyses for instant hydration on next visit
-        // (plan + usage are cached separately by PlanContext)
-        try {
-          localStorage.setItem('gravix_dashboard_cache', JSON.stringify({
-            recentAnalyses: recent,
-            cachedAt: Date.now(),
-          }));
-        } catch { /* quota exceeded, ignore */ }
+        writeDashCache(recent);
       } catch {
         // Individual calls already handle their own errors
       } finally {
@@ -166,9 +196,7 @@ function DashboardContent() {
     }
 
     load();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [authLoading, authUser]);
 
   const greeting = authUser?.email
