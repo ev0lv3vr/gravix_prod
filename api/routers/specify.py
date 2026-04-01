@@ -4,7 +4,7 @@ import logging
 import uuid
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 
 from dependencies import get_current_user
 from database import get_supabase
@@ -125,7 +125,9 @@ async def create_spec(
 @router.get("", response_model=list[SpecRequestListItem])
 @api_router.get("/specify", response_model=list[SpecRequestListItem], include_in_schema=False)
 @api_router.get("/spec", response_model=list[SpecRequestListItem], include_in_schema=False)
-async def list_specs(user: dict = Depends(get_current_user)):
+async def list_specs(user: dict = Depends(get_current_user), response: Response = None):
+    if response:
+        response.headers["Cache-Control"] = "private, max-age=30"
     """List all spec requests for the current user."""
     db = get_supabase()
     result = (

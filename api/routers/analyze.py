@@ -9,7 +9,7 @@ import base64
 import json
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, Response, status, UploadFile, File, Form
 from typing import Optional, List
 
 from dependencies import get_current_user
@@ -205,8 +205,10 @@ async def create_analysis(
 @router.get("", response_model=list[FailureAnalysisListItem])
 @api_router.get("/analyze", response_model=list[FailureAnalysisListItem], include_in_schema=False)
 @api_router.get("/failure-analysis", response_model=list[FailureAnalysisListItem], include_in_schema=False)
-async def list_analyses(user: dict = Depends(get_current_user)):
+async def list_analyses(user: dict = Depends(get_current_user), response: Response = None):
     """List all analyses for the current user."""
+    if response:
+        response.headers["Cache-Control"] = "private, max-age=30"
     db = get_supabase()
     result = (
         db.table("failure_analyses")

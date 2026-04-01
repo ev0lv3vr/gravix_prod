@@ -125,8 +125,14 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
 
   const hasDataRef = useRef(false);
 
-  const fetchPlan = useCallback(async () => {
+  const fetchPlan = useCallback(async (force = false) => {
     if (!userId) return;
+
+    // Skip API calls if cache is fresh (under 60s) unless forced
+    if (!force) {
+      const cached = readCache(userId);
+      if (cached && Date.now() - cached.cachedAt < 60_000) return;
+    }
 
     const id = ++fetchIdRef.current;
     // Only show loading skeleton if we have no data yet
@@ -207,7 +213,7 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
     plan,
     isAdmin,
     usage,
-    refreshPlan: fetchPlan,
+    refreshPlan: useCallback(() => fetchPlan(true), [fetchPlan]),
     isLoading,
   };
 

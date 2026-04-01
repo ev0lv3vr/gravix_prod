@@ -1,6 +1,6 @@
 """User profile and usage router."""
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import BaseModel
 from typing import Optional
 
@@ -26,8 +26,10 @@ class BrandingConfig(BaseModel):
 
 
 @router.get("/me", response_model=UserProfile)
-async def get_current_user_profile(user: dict = Depends(get_current_user)):
+async def get_current_user_profile(user: dict = Depends(get_current_user), response: Response = None):
     """Get the current user's profile."""
+    if response:
+        response.headers["Cache-Control"] = "private, max-age=60"
     return UserProfile(**user)
 
 
@@ -56,8 +58,10 @@ async def update_user_profile(
 
 
 @router.get("/me/usage", response_model=UsageResponse)
-async def get_current_user_usage(user: dict = Depends(get_current_user)):
+async def get_current_user_usage(user: dict = Depends(get_current_user), response: Response = None):
     """Get the current user's usage stats."""
+    if response:
+        response.headers["Cache-Control"] = "private, max-age=30"
     usage = get_usage(user)
     return UsageResponse(**usage)
 
