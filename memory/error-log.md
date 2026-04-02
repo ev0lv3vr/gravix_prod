@@ -39,6 +39,14 @@
 
 - 2026-02-17: MoneySamurai sync trigger script: supabase sync_jobs schema lacks error_message column; use existing cron-moneysamurai-sync-trigger.cjs which verifies OTP via token_hash (hashed_token from generateLink), not by parsing token from action_link.
 
+## 2026-03-31 — Reported $0 ad spend as fact without verifying data quality
+**What happened:** Told Ev ads were spending $0 based on the daily digest. Actually, campaigns were running fine — the ads-daily-pull script was silently saving empty arrays when Amazon Ads v3 reports timed out at 600s.
+**Root cause:** Trusted script output without checking logs. The digest showed $0 because underlying report data was empty, not because campaigns stopped.
+**Fix:** Increased timeout 600→1200s, added retry with fresh token, added DATA QUALITY WARNING banner in digest (commit eabf4e5). Always check `ads-daily-pull.log` for timeout errors before trusting digest numbers.
+
+## 2026-03-31 — Improvised B2B strategy instead of reading docs
+**What happened:** Ev asked about B2B sample kits, I gave generic advice. Ev pushed back — we have `whale-outreach-sequence.md` and `b2b-sales-playbook.md` with a complete 7-touch, 30-day cadence. Read them before improvising.
+
 ## 2026-02-18 — Contradictory design feedback across revisions
 **What happened:** Gave Rev 2 label feedback that directly contradicted my Rev 1 feedback on 3 points (text order, N.W. prefix, address detail). The designer had already applied Rev 1 fixes correctly, and I told them to undo their fixes.
 **Root cause:** Didn't have Rev 1 feedback in context, compared against the raw brief copy instead of previous revision notes.

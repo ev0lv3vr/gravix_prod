@@ -1,6 +1,6 @@
 # MEMORY.md — Long-Term Memory
 
-Last updated: 2026-02-17
+Last updated: 2026-04-02
 
 ## About My Human
 - Name: Евгений (Evgeny) Нечаев, goes by Ev / @Evolv3
@@ -71,9 +71,14 @@ Last updated: 2026-02-17
 - [ ] **Amazon CA / NARF** — disable NARF for chemical ASINs or submit SDS (Ev's call, flagged 2/15)
 - [x] ~~GSC indexing errors~~ — investigated 2/15: 5xx = Shopify transient 503s, 403 = correct robots.txt blocks. Non-issue.
 - [x] ~~ShipBob PAT expired~~ — PAT does NOT expire (confirmed 2/17). 403 errors on 2/14 were likely transient.
-- [ ] **ShipBob UROs accruing fees** — 2 shipments in On-Hold Receiving, $490 accrued (~$18/day), flagged 2/17
-- [ ] **Medium restock URGENT** — 8oz: ~5 days, 2oz: ~6 days as of 2/15 (deteriorating daily)
-- [ ] **Ethan Miller replacement** — order #5786, 4× Thick 16oz replacement not yet created at ShipBob
+- [ ] **ShipBob UROs accruing fees** — 53+ days, ~$954+ accrued (~$18/day). Harsh Khanna escalated 3/26, SLA expired. Check status.
+- [ ] **Shopify API token dead** — 39+ days (since ~2/21). No inventory visibility. Needs regen.
+- [ ] **Amazon CA deactivated** — 15+ days, ~$225+ lost revenue (~$15/day). Needs WHMIS SDS submission.
+- [ ] **Insurance audit overdue** — 60+ days. Insurer (Ashlin Hadden / Veracity) threatening non-renewal. Data ready: $637,650.12 (Amazon $531K + Shopify $106K). Ev needs to confirm + submit PDF.
+- [ ] **Heather (Amazon)** — 17+ days no reply. Seller health emergency. Draft ready in `drafts/q1-close-comms-2026-03-31.md`.
+- [ ] **Teikametrics charged $149** — INV33246 auto-charged CC 3/30 despite 2/24 cancellation. Needs dispute with ar@teikametrics.com.
+- [ ] **Ethan Miller replacement** — order #5786, 4× Thick 16oz replacement not yet created at ShipBob (9+ days overdue)
+- [ ] **Ops debt total:** ~$1,381+ at $33/day burn rate
 
 #### Pump Accelerator 8oz — Label & Listing Project
 - **Supplier:** Xtralok (Chicago) — pump spray bottle, same formula as existing aerosol
@@ -85,7 +90,7 @@ Last updated: 2026-02-17
   - 7 Amazon listing images (3D renders + infographics)
   - 5 Amazon A+ Content modules
   - 3D bottle mockups
-  - Status: reviewing feedback, updates in progress (as of 2/17)
+  - Status: revisions in progress with designer (as of 3/31)
 - **Competitor research done:** Starbond ($14.50), BSI, TotalBond, ASI, Chem-Set
 - **Target price:** $14.99
 - **Files:** `gluemasters-bizdev/labels/pump-accelerator-8oz/` (copy draft, designer brief, UPC, research)
@@ -117,8 +122,16 @@ Last updated: 2026-02-17
 - **Noveon Magnetics** (Jonathan Martinez, jmartinez@noveon.co, San Marcos TX) — 4 cases Medium 700cps 16oz, PDF quote sent ($4,140, free shipping), awaiting buyer approval (2/17)
 - **Quintex Molding** (Ryan Belnap, Nampa ID) — trial kit shipped 2/11 + original order #5836 (12x Thick 16oz) had USPS delivery fail (business closed 2/14), redelivery scheduled 2/17
 - **OTL** (Mitch Hamilton, Jasper NY) — inbound 2/15, personalized gifts, needs low-odor solution. Replied 2/16.
-- **Donaldson Company** (Rachael Fitzgerald) — B2B customer, had wrong-product shipment, replacement sent
-- **Ethan Miller** — order #5786, received Medium instead of Thick (ShipBob pick error), replacement promised but not yet created
+- **Donaldson Company** (Rachael Fitzgerald, 816-925-3041) — $2,340 PAID (Invoice #1001-0238), ship to 1801 W Vine St, Harrisonville MO 64701. Needs to ship ASAP.
+- **Garcor Supply** (David Young) — $4,806 PAID 3/25 via PayPal. CLOSED ✅
+- **R&R Fabrications** (Jeff Davis) — $1,289.70 PAID 3/25 via PayPal (Invoice #1001-0236). CLOSED ✅
+- **Ron Southern** — Invoice #1001-0237 paid 3/27 via PayPal. CLOSED ✅
+- **Dynasty Global** (Eli, Orange County CA) — dealer/distribution inquiry, e-comm + local distro. Awaiting Ev's decision.
+- **KMS, LLC** (Brittni) — wholesale distributor, inbound 3/19, Ev replied directly. Follow-up needed (13+ days).
+- **OTL** (Mitch Hamilton, Jasper NY) — inbound 2/15, personalized gifts, needs low-odor solution. Replied 2/16.
+- **Ethan Miller** — order #5786, received Medium instead of Thick (ShipBob pick error), replacement promised but not yet created (9+ days overdue)
+- **Josh Mintz** — 1× 8oz Medium sample to New Orleans, overdue since 3/24 (9+ days)
+- **Noveon Magnetics** (Jonathan Martinez, jmartinez@noveon.co, San Marcos TX) — $4,140 quote sent 2/17, 18+ days no response. Likely dead unless acted on immediately.
 - **B2B CRM dashboard:** `gluemasters-bizdev/b2b-crm.html` — 12+ prospects, ~$47K/mo pipeline potential
 - **Retail-to-wholesale email sequences:** `gluemasters-bizdev/b2b/retail-to-wholesale-sequences.md`
 - **B2B quote template:** `gluemasters-bizdev/quotes/` — PDF generator with GM logo, used for Noveon
@@ -147,3 +160,8 @@ Last updated: 2026-02-17
 - **MoneySamurai is ESM** — CommonJS `require()` fails; use imports or .cjs extension
 - **Amazon NARF auto-lists FBA inventory on .ca/.mx** — chemical products get flagged for SDS/CCCR compliance even if you don't intend to sell internationally
 - **MoneySamurai sync_status table doesn't exist** — use amazon_accounts table for sync status resets (fixed 2/15)
+- **Never report API-derived metrics as fact without verifying** — ads-daily-pull was saving empty arrays when Amazon Ads v3 reports timed out at 600s, causing digest to show $0 spend. Fixed 3/31 (commit eabf4e5): timeout 600→1200s, retry logic, DATA QUALITY WARNING banner. Always check `ads-daily-pull.log` before trusting digest numbers.
+- **Don't wing B2B strategy** — we have detailed docs (`whale-outreach-sequence.md`, `b2b-sales-playbook.md`). Read them before improvising.
+- **himalaya account syntax changed** — use `himalaya envelope list -a <account>` (flag inside subcommand), NOT `--account` at top level. Also `HIMALAYA_ACCOUNT=name` env var works.
+- **Shopify browser auth works** — when API token is dead, can use openclaw browser (profile: openclaw) to access Shopify admin. Date picker needs ShopifyQL URL params, not typed text input.
+- **A3 Partners** — active supplier. Caroline Silvestro, latest PO 28 (Gemiflex + caps), $3,312.37 invoice due 4/25. UPS tracking: 1Z43A99A0347637059, ETA Apr 3.
