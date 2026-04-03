@@ -10,7 +10,7 @@
 ## 🟡 NEEDS EV
 - [ ] **Donaldson $2,340** — paid, needs to ship. 1801 W Vine St, Harrisonville MO 64701.
 - [ ] **Dynasty Global (Eli)** — dealer inquiry, Ev decision needed.
-- [ ] **Teikametrics $149** — charged 3/30 despite 2/24 cancel. Dispute with ar@teikametrics.com.
+- [ ] **Teikametrics $149** — dispute email sent to ar@teikametrics.com 4/3. 7-day deadline (Apr 14). If no refund, chargeback.
 - [ ] **Ethan Miller** — order #5786, 4× Thick 16oz replacement not created at ShipBob.
 - [ ] **Josh Mintz** — 8oz Medium sample to New Orleans, overdue since 3/24.
 - [ ] **Walmart unshipped order** — auto-cancel risk.
