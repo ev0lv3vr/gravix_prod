@@ -1,21 +1,21 @@
-# KANBAN — Last updated: 2026-04-01 11:00 PM PST (Q2 Day 1)
+# KANBAN — Last updated: 2026-04-02 6:00 PM PST (Q2 Day 2)
 
 ## 🔴 URGENT / BLOCKED
-- [ ] **Heather (Amazon customer) — 17 DAYS** — seller health emergency. Reply IMMEDIATELY. 5 min fix. Draft ready in comms package.
-- [ ] **Insurance audit — 60 DAYS overdue** — policy GW7487, Ashlin Hadden. Sales data ready ($637,650.12). Ev must fill PDF and submit to audits@veracityins.com. Non-renewal risk is real.
-- [ ] **ShipBob UROs — 53 days, $954+ accrued** ($18/day) — 2 shipments On-Hold Receiving. Harsh Khanna (ShipBob) escalated to US West Hub ops 3/26. SLA likely expired. Needs Ev to check dashboard.
-- [ ] **Shopify API dead (39 days)** — both tokens return auth errors. Blocks inventory, orders, restock. 15 min fix: regen tokens in Partners dashboard.
-- [ ] **Amazon CA suppressed (15 days, $225+ lost)** — NARF/SDS compliance. All CA listings down. Submit WHMIS SDS appeal. ~55 min.
+- [ ] **Heather (Amazon customer) — 18 DAYS** — A-to-Z claim territory. Reply IMMEDIATELY. 5 min fix. Draft ready since 3/31.
+- [ ] **Insurance audit — 61 DAYS overdue** — policy GW7487, Ashlin Hadden. Sales data ready ($637,650.12). Ev must fill PDF and submit to audits@veracityins.com. Non-renewal risk escalating.
+- [ ] **ShipBob UROs — 54 days, $972+ accrued** ($18/day) — 2 shipments On-Hold Receiving. Harsh Khanna escalated 3/26. SLA likely expired.
+- [ ] **Shopify API dead (40 days)** — both tokens return auth errors. Blocks inventory, orders, restock. 15 min fix: regen tokens in Partners dashboard.
+- [ ] **Amazon CA suppressed (16 days, $240+ lost)** — NARF/SDS compliance. All CA listings down. Submit WHMIS SDS appeal. ~55 min.
 
 ## 🟡 NEEDS EV / WAITING
-- [ ] **Donaldson $2,340 — SHIP NOW** — Rachael paid, address confirmed (1801 W Vine St, Harrisonville MO 64701). Ship before Good Friday Apr 3.
-- [ ] **Dynasty Global (Eli)** — legit dealer inquiry 3/26, works with WD-40/3-in-1. Ev decision needed. 6 days waiting.
+- [ ] **Donaldson $2,340 — SHIP TODAY** — Rachael paid, address confirmed (1801 W Vine St, Harrisonville MO 64701). Rachael closed Good Friday Apr 3. Last chance before weekend.
+- [ ] **Dynasty Global (Eli)** — legit dealer inquiry 3/26, works with WD-40/3-in-1. Ev decision needed. 7 days waiting.
 - [ ] **Teikametrics $149 dispute** — INV33246 charged 3/30 despite 2/24 cancellation. Email ar@teikametrics.com. Draft ready.
 - [ ] **Walmart unshipped order** — past ship date, auto-cancellation warning received
 - [ ] **Ethan Miller replacement** — order #5786, 4× Thick 16oz, not created at ShipBob
-- [ ] **Josh Mintz sample** — 8oz Medium to 5008 2B Magazine St, New Orleans LA 70115. 9 days overdue, cooling.
-- [ ] **Christopher Robin Webber** — B2B inquiry, 9 days old, going cold. Draft reply ready (~$300/mo).
-- [ ] **KMS LLC (Brittni)** — wholesale distributor, 13 days silence. Draft follow-up ready (~$500/mo).
+- [ ] **Josh Mintz sample** — 8oz Medium to 5008 2B Magazine St, New Orleans LA 70115. 10 days overdue, going cold.
+- [ ] **Christopher Robin Webber** — B2B inquiry, 10 days old, going cold. Draft reply ready (~$300/mo).
+- [ ] **KMS LLC (Brittni)** — wholesale distributor, 14 days silence. Draft follow-up ready (~$500/mo).
 - [ ] **Jason F return** — decision pending
 - [ ] **B2B Batch 1 outreach** — EDCO, Crown Awards, PersonalizationMall. Strategy docs + templates ready. Awaiting Ev go.
 - [ ] **Vercel billing** — $53.31 card retry 3/20, site still up. Confirm payment.
@@ -62,18 +62,18 @@
 - [ ] Oversold inventory reconciliation (blocked by Shopify API)
 - [ ] PPC Scaling Planner review — $2K/day roadmap
 
-## 💸 OPS DEBT TRACKER (Q2 Day 1)
+## 💸 OPS DEBT TRACKER (Q2 Day 2)
 | Item | Days | Accrued | Rate | Fix Time |
 |------|------|---------|------|----------|
-| ShipBob UROs | 53 | ~$954 | $18/day | 15 min |
-| Amazon CA | 15 | ~$225 | $15/day | 55 min |
-| Teikametrics | 2 | $149 | one-time | 5 min |
-| Heather SLA | 17 | seller metrics | compounding | 5 min |
-| Shopify API | 39 | inventory blind | — | 15 min |
-| Insurance audit | 60 | non-renewal risk | — | 15 min |
+| ShipBob UROs | 54 | ~$972 | $18/day | 15 min |
+| Amazon CA | 16 | ~$240 | $15/day | 55 min |
+| Teikametrics | 3 | $149 | one-time | 5 min |
+| Heather SLA | 18 | seller metrics | compounding | 5 min |
+| Shopify API | 40 | inventory blind | — | 15 min |
+| Insurance audit | 61 | non-renewal risk | — | 15 min |
 | Vercel billing | — | $53.31 | one-time | 2 min |
 | **Daily burn** | — | **$33/day** | — | — |
-| **Total hard costs** | — | **$1,381+** | — | — |
+| **Total hard costs** | — | **$1,414+** | — | — |
 
 ## 📊 KEY METRICS (as of 3/31)
 - **Revenue run rate:** ~$638K (Amazon $531K + Shopify $107K)
