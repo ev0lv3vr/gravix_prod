@@ -1,4 +1,4 @@
-# KANBAN — Last updated: 2026-04-03
+# KANBAN — Last updated: 2026-04-03 EOD
 
 ## 🔴 URGENT
 - [ ] **Heather (Amazon)** — 18+ days no reply. A-to-Z claim risk. Draft ready in `drafts/`.
@@ -8,14 +8,16 @@
 - [ ] **Amazon CA suppressed** — 16+ days, ~$240+ lost ($15/day). Needs WHMIS SDS submission.
 
 ## 🟡 NEEDS EV
-- [ ] **Donaldson $2,340** — paid, needs to ship. 1801 W Vine St, Harrisonville MO 64701.
+- [ ] **Michael Nasholm** — 20% partial refund on Shopify PROMISED, NOT DONE. Customer followed up 4/3.
+- [ ] **Donaldson $2,340** — paid, needs to ship. 1801 W Vine St, Harrisonville MO 64701. Weekend lost.
+- [ ] **Gemifly LLC** — $1,513.23 PayPal invoice outstanding (auto-reminder sent 4/3).
 - [ ] **Dynasty Global (Eli)** — dealer inquiry, Ev decision needed.
 - [ ] **Teikametrics $149** — dispute email sent to ar@teikametrics.com 4/3. 7-day deadline (Apr 14). If no refund, chargeback.
 - [ ] **Ethan Miller** — order #5786, 4× Thick 16oz replacement not created at ShipBob.
-- [ ] **Josh Mintz** — 8oz Medium sample to New Orleans, overdue since 3/24.
+- [ ] **Josh Mintz** — 8oz Medium sample to New Orleans, overdue since 3/24 (12 days).
 - [ ] **Walmart unshipped order** — auto-cancel risk.
-- [ ] **KMS LLC (Brittni)** — wholesale distributor, 14+ days silence.
-- [ ] **Christopher Webber** — B2B inquiry, 10+ days.
+- [ ] **KMS LLC (Brittni)** — wholesale distributor, 15+ days silence.
+- [ ] **Christopher Webber** — B2B inquiry, 11+ days.
 - [ ] **Jason F return** — decision pending.
 - [ ] **Vercel billing** — $53.31 card retry.
 
@@ -39,12 +41,13 @@
 ## 💸 OPS DEBT ($33/day burn)
 | Item | Days | Accrued |
 |------|------|---------|
-| ShipBob UROs | 54+ | ~$972 |
-| Amazon CA | 16+ | ~$240 |
-| Teikametrics | 3 | $149 |
-| Shopify API | 40+ | blind |
-| Insurance | 61+ | non-renewal |
-| **Total** | | **$1,414+** |
+| ShipBob UROs | 55+ | ~$990 |
+| Amazon CA | 17+ | ~$255 |
+| Teikametrics | 4 | $149 |
+| Gemifly LLC | — | $1,513.23 |
+| Shopify API | 41+ | blind |
+| Insurance | 62+ | non-renewal |
+| **Total** | | **$2,960+** |
 
 ## 📅 REMINDERS
 - [ ] **2026-04-20** — Nudge Petite Keep (Kaylee Hobbs) re: reorder

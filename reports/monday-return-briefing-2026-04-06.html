@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monday Briefing — Apr 6, 2026</title>
+<style>
+  :root {
+    --bg: #0A1628; --surface: #111B2E; --surface-2: #1A2540;
+    --accent: #3B82F6; --danger: #EF4444; --warning: #F59E0B; --success: #10B981;
+    --text: #FFF; --text-2: #94A3B8; --text-3: #64748B; --border: #1E293B;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg); color:var(--text); padding:24px; max-width:900px; margin:0 auto; }
+  .mono { font-family:'JetBrains Mono',monospace; }
+  h1 { font-size:28px; font-weight:700; margin-bottom:4px; }
+  h2 { font-size:18px; margin:32px 0 16px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+  .subtitle { color:var(--text-2); font-size:14px; margin-bottom:24px; }
+  
+  .alert {
+    background:linear-gradient(135deg, #1a0505 0%, #2d0a0a 100%);
+    border:1px solid #7f1d1d;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:24px;
+  }
+  .alert h3 { color:var(--danger); font-size:16px; margin-bottom:8px; }
+  .alert p { color:#FCA5A5; font-size:14px; line-height:1.6; }
+  
+  .action-list { list-style:none; counter-reset:actions; }
+  .action-item {
+    counter-increment:actions;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px 16px 16px 56px;
+    margin-bottom:12px;
+    position:relative;
+    transition:border-color 0.15s;
+  }
+  .action-item:hover { border-color:var(--accent); }
+  .action-item::before {
+    content:counter(actions);
+    position:absolute;
+    left:16px;
+    top:16px;
+    width:28px;
+    height:28px;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:13px;
+  }
+  .action-item.p0::before { background:#7f1d1d; color:#FCA5A5; }
+  .action-item.p1::before { background:#78350f; color:#FCD34D; }
+  .action-item.p2::before { background:#1E3A5F; color:#93C5FD; }
+  
+  .action-item .title { font-weight:600; font-size:15px; }
+  .action-item .meta { color:var(--text-2); font-size:13px; margin-top:4px; }
+  .action-item .steps { color:var(--text-2); font-size:13px; margin-top:8px; line-height:1.6; }
+  .action-item .impact { display:inline-block; margin-top:6px; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:600; }
+  .impact-high { background:#7f1d1d; color:#FCA5A5; }
+  .impact-med { background:#78350f; color:#FCD34D; }
+  .impact-low { background:#064E3B; color:#6EE7B7; }
+  
+  .time-badge {
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:6px;
+    font-size:11px;
+    font-weight:600;
+    background:var(--surface-2);
+    color:var(--text-2);
+    margin-left:8px;
+  }
+  
+  .stats-row {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
+    gap:12px;
+    margin-bottom:24px;
+  }
+  .stat {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px;
+    text-align:center;
+  }
+  .stat .label { color:var(--text-3); font-size:11px; text-transform:uppercase; }
+  .stat .val { font-size:24px; font-weight:700; margin-top:4px; }
+  .stat .val.red { color:var(--danger); }
+  .stat .val.yellow { color:var(--warning); }
+  .stat .val.green { color:var(--success); }
+  .stat .val.blue { color:var(--accent); }
+  
+  .note {
+    background:var(--surface-2);
+    border-left:3px solid var(--accent);
+    padding:12px 16px;
+    border-radius:0 8px 8px 0;
+    font-size:13px;
+    color:var(--text-2);
+    line-height:1.6;
+    margin-top:24px;
+  }
+</style>
+</head>
+<body>
+
+<h1>📋 Monday Return Briefing</h1>
+<div class="subtitle">April 6, 2026 — You've been away 6 days. Here's what needs you.</div>
+
+<div class="stats-row">
+  <div class="stat"><div class="label">Days Away</div><div class="val red mono">6</div></div>
+  <div class="stat"><div class="label">Ops Debt</div><div class="val red mono">$2,960+</div></div>
+  <div class="stat"><div class="label">Daily Burn</div><div class="val yellow mono">$33/d</div></div>
+  <div class="stat"><div class="label">Fix Time</div><div class="val green mono">~2.5h</div></div>
+  <div class="stat"><div class="label">Revenue Blocked</div><div class="val blue mono">$4,002</div></div>
+</div>
+
+<div class="alert">
+  <h3>⚠️ Critical: 3 Items Need Immediate Action</h3>
+  <p>Heather's A-to-Z claim is likely filed (20+ days). Insurance audit risks non-renewal (63 days). Michael Nasholm's promised refund is 5 days late — chargeback territory.</p>
+</div>
+
+<h2>🔴 P0 — Do Before Lunch (45 min)</h2>
+<ol class="action-list">
+  <li class="action-item p0">
+    <div class="title">Reply to Heather (Amazon) <span class="time-badge">~5 min</span></div>
+    <div class="meta">20+ days no reply • A-to-Z claim risk • Seller metrics damage</div>
+    <div class="steps">→ Open Amazon Seller Central → Buyer-Seller Messages → Find Heather's thread → Send draft from <code>drafts/</code></div>
+    <span class="impact impact-high">SELLER METRICS AT RISK</span>
+  </li>
+  <li class="action-item p0">
+    <div class="title">Process Michael Nasholm 20% Refund <span class="time-badge">~5 min</span></div>
+    <div class="meta">Promised on Shopify • Customer followed up twice (4/2, 4/3)</div>
+    <div class="steps">→ Shopify Admin → Orders → Find Nasholm order → Refund 20% → Confirm</div>
+    <span class="impact impact-high">CUSTOMER ESCALATION</span>
+  </li>
+  <li class="action-item p0">
+    <div class="title">Submit Insurance Audit PDF <span class="time-badge">~15 min</span></div>
+    <div class="meta">63 days overdue • GW7487 • Ashlin Hadden / Veracity</div>
+    <div class="steps">→ Sales data ready ($637K) → Fill PDF → Email audits@veracityins.com</div>
+    <span class="impact impact-high">NON-RENEWAL RISK</span>
+  </li>
+  <li class="action-item p0">
+    <div class="title">Ship Donaldson Order <span class="time-badge">~20 min</span></div>
+    <div class="meta">$2,340 paid • 1801 W Vine St, Harrisonville MO 64701 • 7+ days waiting</div>
+    <div class="steps">→ Create shipment → Generate label → Schedule pickup</div>
+    <span class="impact impact-high">$2,340 REVENUE STUCK</span>
+  </li>
+</ol>
+
+<h2>🟡 P1 — Do After Lunch (60 min)</h2>
+<ol class="action-list" style="counter-reset:actions 4">
+  <li class="action-item p1">
+    <div class="title">Clear ShipBob URO Holds <span class="time-badge">~15 min</span></div>
+    <div class="meta">56 days • $1,008 accrued • $18/day still burning</div>
+    <div class="steps">→ ShipBob Dashboard → Receiving → Clear 2 on-hold shipments → Confirm with Harsh if needed</div>
+    <span class="impact impact-med">$18/DAY BURN</span>
+  </li>
+  <li class="action-item p1">
+    <div class="title">Amazon CA — Submit WHMIS SDS Appeal <span class="time-badge">~55 min</span></div>
+    <div class="meta">18 days suppressed • $270+ lost • $15/day</div>
+    <div class="steps">→ Prepare WHMIS SDS docs → Submit appeal via Seller Central → Takes 3-5 days to review</div>
+    <span class="impact impact-med">$15/DAY LOST SALES</span>
+  </li>
+  <li class="action-item p1">
+    <div class="title">Regenerate Shopify API Tokens <span class="time-badge">~15 min</span></div>
+    <div class="meta">42 days dead • Inventory/orders/restock all blind</div>
+    <div class="steps">→ Shopify Partners → gravix app → Regenerate tokens → Update <code>moneysamurai/api/.env</code></div>
+    <span class="impact impact-med">INFRASTRUCTURE BLIND</span>
+  </li>
+</ol>
+
+<h2>🔵 P2 — This Week</h2>
+<ol class="action-list" style="counter-reset:actions 7">
+  <li class="action-item p2">
+    <div class="title">Follow Up: Gemifly LLC Invoice ($1,513.23)</div>
+    <div class="meta">PayPal INV 1001-0241 • Auto-reminder sent 4/3</div>
+  </li>
+  <li class="action-item p2">
+    <div class="title">Teikametrics $149 Dispute — Monitor</div>
+    <div class="meta">Dispute email sent 4/3 • Deadline Apr 14 • Chargeback if no response</div>
+  </li>
+  <li class="action-item p2">
+    <div class="title">Create Ethan Miller Replacement at ShipBob</div>
+    <div class="meta">Order #5786 • 4× Thick 16oz</div>
+  </li>
+  <li class="action-item p2">
+    <div class="title">B2B Leads — Triage or Close</div>
+    <div class="meta">Dynasty Global (Eli), KMS LLC (Brittni, 15d), Christopher Webber (11d), Josh Mintz (12d)</div>
+  </li>
+  <li class="action-item p2">
+    <div class="title">Decision: Jason F Return</div>
+    <div class="meta">Pending your call</div>
+  </li>
+  <li class="action-item p2">
+    <div class="title">Walmart Unshipped Order</div>
+    <div class="meta">Auto-cancel risk if not addressed</div>
+  </li>
+  <li class="action-item p2">
+    <div class="title">Verify Vercel Billing ($53.31)</div>
+    <div class="meta">Card retry 3/20 — site still up but unconfirmed</div>
+  </li>
+</ol>
+
+<div class="note">
+  <strong>What I built while you were away:</strong><br>
+  • <strong>Ops Debt Financial Projector</strong> — interactive dashboard showing debt burndown projections, fix priority by ROI, and what-if scenarios. Open <code>tools/ops-dashboard/ops-debt-projector.html</code><br>
+  • Updated <code>ops-debt.json</code> with current day counts and 3 new items (Gemifly, Donaldson, Nasholm)<br>
+  • Attempted fresh ads data pull for 4/3 (was running at build time)<br>
+  • KANBAN, memory files, and ops debt tracker all current as of Apr 4
+</div>
+
+</body>
+</html>
