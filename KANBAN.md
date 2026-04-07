@@ -1,4 +1,4 @@
-# KANBAN — Last updated: 2026-04-03 EOD
+# KANBAN — Last updated: 2026-04-06 EOD
 
 ## 🔴 URGENT
 - [ ] **Heather (Amazon)** — 18+ days no reply. A-to-Z claim risk. Draft ready in `drafts/`.
@@ -25,7 +25,7 @@
 - [ ] **Amazon PPC** — 11 campaigns, ~$773/day spend, 2.42× ROAS, 41% ACoS.
 - [ ] **A3 Partners PO 28** — UPS ETA Apr 3. Invoice $3,312.37 due 4/25.
 - [ ] **Designcoffers** — pump accelerator label revisions (Fiverr).
-- [ ] **Ads daily pull** — STALE (last data 3/31). Amazon API timeout errors. Check logs.
+- [ ] **Ads daily pull** — OK as of 2026-04-06 2:00 PM PT (latest folder present: 2026-04-05). Previous “stale 3/31” note is outdated.
 
 ## 📋 BACKLOG
 - [ ] Wire flywheel data into MoneySamurai PPC frontend

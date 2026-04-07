@@ -6,9 +6,11 @@ Outputs:
 - reports/morning-priority-pack-YYYY-MM-DD.md
 - reports/morning-execution-board-YYYY-MM-DD.html
 - reports/morning-execution-board-YYYY-MM-DD.json
+- reports/morning-ops-hub-YYYY-MM-DD.html
 - reports/morning-priority-pack-latest.md
 - reports/morning-execution-board-latest.html
 - reports/morning-execution-board-latest.json
+- reports/morning-ops-hub-latest.html
 
 Usage:
   python3 scripts/kanban_morning_builder.py
@@ -388,6 +390,281 @@ ul{{margin:8px 0 0 18px}} li{{margin:6px 0;color:var(--muted)}}
 """
 
 
+def render_ops_hub_html(report: BuildOutput) -> str:
+    """Single-file interactive hub with embedded data.
+
+    This avoids `fetch()` so it works when opened directly from disk (file://).
+    """
+
+    data_json = json.dumps(
+        {
+            "date": report.date,
+            "generated_at": report.generated_at,
+            "total_open": report.total_open,
+            "section_counts": report.section_counts,
+            "top_actions": [asdict(t) for t in report.top_actions],
+            "all_tasks_ranked": [asdict(t) for t in report.all_tasks_ranked],
+            "memory_context": report.memory_context,
+            "quick_math": report.quick_math,
+        },
+        ensure_ascii=False,
+    )
+
+    links = [
+        ("KANBAN", "../KANBAN.md"),
+        ("Priority Pack (latest)", "./morning-priority-pack-latest.md"),
+        ("Execution Board (latest)", "./morning-execution-board-latest.html"),
+        ("Execution Board JSON (latest)", "./morning-execution-board-latest.json"),
+        ("Reports folder", "./"),
+    ]
+    links_html = "".join(
+        f"<a class='link' href='{escape(href)}' target='_blank' rel='noreferrer'>{escape(label)}</a>"
+        for label, href in links
+    )
+
+    html = """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Morning Ops Hub — __DATE__</title>
+  <style>
+    :root {--bg:#0A1628;--surface:#111B2E;--surface2:#0F1A2C;--accent:#3B82F6;--text:#fff;--muted:#94A3B8;--border:#1E293B;--good:#22c55e;--bad:#ef4444;}
+    *{box-sizing:border-box} body{margin:0;padding:24px;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,sans-serif}
+    h1{margin:0 0 6px} .sub{color:var(--muted);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .wrap{max-width:1200px;margin:0 auto}
+    .links{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 18px}
+    a.link{color:#93C5FD;text-decoration:none;background:#102446;border:1px solid var(--border);padding:6px 10px;border-radius:10px;font-size:13px}
+    a.link:hover{border-color:#2b3a52}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0 18px}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px}
+    .k{color:var(--muted);font-size:12px} .v{font-size:26px;font-weight:750;margin-top:4px}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:12px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{display:inline-flex;gap:8px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:13px;color:var(--muted)}
+    .pill input{accent-color:var(--accent)}
+    input[type="text"]{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px;min-width:260px}
+    button{background:var(--accent);border:none;color:white;border-radius:10px;padding:8px 10px;font-weight:650;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid var(--border);color:var(--text)}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+    th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+    .muted{color:var(--muted)}
+    .badge{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:2px 8px;font-size:12px;color:var(--muted)}
+    .task{white-space:pre-wrap}
+    .ok{color:var(--good)} .warn{color:var(--bad)}
+    ul{margin:8px 0 0 18px} li{margin:6px 0;color:var(--muted)}
+    code{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:12px;color:#93C5FD}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Morning Ops Hub</h1>
+    <div class="sub">
+      <span class="badge">__DATE__</span>
+      <span class="muted">Generated: __GENERATED_AT__</span>
+      <span class="muted">·</span>
+      <span class="muted">Local file friendly (no fetch)</span>
+    </div>
+
+    <div class="links">__LINKS__</div>
+
+    <div id="cards" class="grid"></div>
+
+    <div class="panel">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <div style="font-weight:750;margin-bottom:4px">Top 8 (copy/paste checklist)</div>
+          <div class="muted">This is what you do first. If you only do 4: do the first 4.</div>
+        </div>
+        <div class="row">
+          <button id="copyTop">Copy top 8</button>
+          <button id="copyBlock" class="secondary">Copy 90-min block</button>
+        </div>
+      </div>
+      <ul id="topList"></ul>
+    </div>
+
+    <div class="panel">
+      <div class="row" style="justify-content:space-between;gap:14px">
+        <div class="row">
+          <span class="pill"><input id="fUrgent" type="checkbox" checked /> 🔴 Urgent</span>
+          <span class="pill"><input id="fNeeds" type="checkbox" checked /> 🟡 Needs Ev</span>
+          <span class="pill"><input id="fInProg" type="checkbox" checked /> 🔵 In Progress</span>
+          <span class="pill"><input id="fBacklog" type="checkbox" /> 📋 Backlog</span>
+          <span class="pill"><input id="fBurn" type="checkbox" /> Burn/day only</span>
+        </div>
+        <div class="row">
+          <input id="search" type="text" placeholder="Search tasks (e.g. heather, refund, shipbob, sds)" />
+        </div>
+      </div>
+      <div style="height:10px"></div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Section</th>
+            <th>Task</th>
+            <th>Days</th>
+            <th>Amount</th>
+            <th>Burn/day</th>
+            <th>ETA</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div style="font-weight:750;margin-bottom:6px">Recent memory context</div>
+      <ul id="ctx"></ul>
+    </div>
+
+    <div class="panel">
+      <div class="muted">Pro tip: to refresh all these artifacts, run:</div>
+      <div><code>python3 scripts/kanban_morning_builder.py</code></div>
+    </div>
+  </div>
+
+  <script>
+    const DATA = __DATA_JSON__;
+    const clean = (s) => (s || '').replaceAll('**', '');
+    const fmtMoney = (v) => {
+      if (v === null || v === undefined) return '—';
+      const rounded = Math.abs(v - Math.round(v)) < 0.0001;
+      return rounded ? `$${Math.round(v).toLocaleString()}` : `$${v.toFixed(2)}`;
+    };
+
+    function renderCards() {
+      const counts = DATA.section_counts || {};
+      const cards = [
+        { k: '🔴 Urgent', v: counts.urgent ?? 0 },
+        { k: '🟡 Needs Ev', v: counts.needs_ev ?? 0 },
+        { k: '🔵 In Progress', v: counts.in_progress ?? 0 },
+        { k: '📋 Backlog', v: counts.backlog ?? 0 },
+        { k: 'Total Open', v: DATA.total_open ?? 0 },
+        { k: 'One-time $ at stake', v: fmtMoney(DATA.quick_math?.one_time_total ?? null) },
+        { k: 'Daily burn', v: `$${Math.round(DATA.quick_math?.daily_burn_total ?? 0)}/d` },
+      ];
+      document.getElementById('cards').innerHTML = cards
+        .map(c => `<div class="card"><div class="k">${c.k}</div><div class="v">${c.v}</div></div>`)
+        .join('');
+    }
+
+    function renderTop() {
+      const top = (DATA.top_actions || []).slice(0, 8);
+      document.getElementById('topList').innerHTML = top
+        .map(t => `<li><b>${t.est_minutes}m</b> — ${clean(t.text)}</li>`)
+        .join('') || '<li class="muted">No tasks found.</li>';
+    }
+
+    function sectionEnabled(t) {
+      const s = t.section;
+      const urgent = document.getElementById('fUrgent').checked;
+      const needs = document.getElementById('fNeeds').checked;
+      const inprog = document.getElementById('fInProg').checked;
+      const backlog = document.getElementById('fBacklog').checked;
+      if (s === 'urgent') return urgent;
+      if (s === 'needs_ev') return needs;
+      if (s === 'in_progress') return inprog;
+      if (s === 'backlog') return backlog;
+      return true;
+    }
+
+    function renderRows() {
+      const burnOnly = document.getElementById('fBurn').checked;
+      const q = (document.getElementById('search').value || '').trim().toLowerCase();
+      const tasks = (DATA.all_tasks_ranked || []).filter(t => {
+        if (!sectionEnabled(t)) return false;
+        if (burnOnly && !(t.daily_burn && t.daily_burn > 0)) return false;
+        if (q && !clean(t.text).toLowerCase().includes(q)) return false;
+        return true;
+      });
+      document.getElementById('rows').innerHTML = tasks
+        .slice(0, 60)
+        .map((t, idx) => {
+          const burn = (t.daily_burn && t.daily_burn > 0) ? `<span class="warn">${fmtMoney(t.daily_burn)}</span>` : '—';
+          return `
+            <tr>
+              <td>${idx + 1}</td>
+              <td>${clean(t.section_label)}</td>
+              <td class="task">${clean(t.text)}</td>
+              <td>${t.days ?? '—'}</td>
+              <td>${fmtMoney(t.amount)}</td>
+              <td>${burn}</td>
+              <td>${t.est_minutes}m</td>
+              <td>${t.score}</td>
+            </tr>
+          `;
+        }).join('') || `<tr><td colspan="8" class="muted">No tasks matched the filter.</td></tr>`;
+    }
+
+    function renderContext() {
+      const ctx = DATA.memory_context || [];
+      document.getElementById('ctx').innerHTML = ctx.map(c => `<li>${c}</li>`).join('') || '<li class="muted">No memory context found.</li>';
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).catch(() => {
+        // fallback: prompt
+        window.prompt('Copy this text:', text);
+      });
+    }
+
+    function wireCopyButtons() {
+      document.getElementById('copyTop').addEventListener('click', () => {
+        const top = (DATA.top_actions || []).slice(0, 8);
+        const lines = [
+          `Morning Ops — ${DATA.date} (${DATA.generated_at})`,
+          '',
+          ...top.map((t, i) => `- [ ] ${i+1}. ${clean(t.text)} (${t.est_minutes}m)`),
+          ''
+        ];
+        copyText(lines.join('\n'));
+      });
+      document.getElementById('copyBlock').addEventListener('click', () => {
+        const block = (DATA.top_actions || []).slice(0, 4);
+        const lines = [
+          `90-min block — ${DATA.date}`,
+          '',
+          ...block.map(t => `- [ ] ${clean(t.text)} (${t.est_minutes}m)`),
+          ''
+        ];
+        copyText(lines.join('\n'));
+      });
+    }
+
+    function wireFilters() {
+      for (const id of ['fUrgent','fNeeds','fInProg','fBacklog','fBurn']) {
+        document.getElementById(id).addEventListener('change', renderRows);
+      }
+      document.getElementById('search').addEventListener('input', () => {
+        // small debounce
+        clearTimeout(window.__t);
+        window.__t = setTimeout(renderRows, 80);
+      });
+    }
+
+    renderCards();
+    renderTop();
+    renderContext();
+    renderRows();
+    wireCopyButtons();
+    wireFilters();
+  </script>
+</body>
+</html>
+"""
+
+    return (
+        html.replace("__DATE__", escape(report.date))
+        .replace("__GENERATED_AT__", escape(report.generated_at))
+        .replace("__LINKS__", links_html)
+        .replace("__DATA_JSON__", data_json)
+    )
+
+
 def clone_latest(versioned: Path, latest: Path) -> None:
     shutil.copyfile(versioned, latest)
 
@@ -429,9 +706,11 @@ def main(argv: Iterable[str] | None = None) -> int:
     md_path = REPORTS / f"morning-priority-pack-{date_str}.md"
     html_path = REPORTS / f"morning-execution-board-{date_str}.html"
     json_path = REPORTS / f"morning-execution-board-{date_str}.json"
+    hub_path = REPORTS / f"morning-ops-hub-{date_str}.html"
 
     md_path.write_text(render_markdown(report), encoding="utf-8")
     html_path.write_text(render_html(report), encoding="utf-8")
+    hub_path.write_text(render_ops_hub_html(report), encoding="utf-8")
     json_path.write_text(json.dumps(
         {
             "date": report.date,
@@ -450,10 +729,12 @@ def main(argv: Iterable[str] | None = None) -> int:
     clone_latest(md_path, REPORTS / "morning-priority-pack-latest.md")
     clone_latest(html_path, REPORTS / "morning-execution-board-latest.html")
     clone_latest(json_path, REPORTS / "morning-execution-board-latest.json")
+    clone_latest(hub_path, REPORTS / "morning-ops-hub-latest.html")
 
     # concise terminal summary
     print(f"Built {md_path.relative_to(ROOT)}")
     print(f"Built {html_path.relative_to(ROOT)}")
+    print(f"Built {hub_path.relative_to(ROOT)}")
     print(f"Built {json_path.relative_to(ROOT)}")
     print(f"Top action: {report.top_actions[0].text if report.top_actions else 'none'}")
     return 0

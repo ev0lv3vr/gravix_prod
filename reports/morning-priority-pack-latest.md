@@ -1,6 +1,6 @@
 # Morning Priority Pack — 2026-04-06
 
-Generated: 2026-04-05 23:03 PDT
+Generated: 2026-04-06 23:08 PDT
 Source: `KANBAN.md` + recent `memory/*.md`
 
 ## Queue Depth
@@ -28,14 +28,13 @@ Source: `KANBAN.md` + recent `memory/*.md`
 - Planned time: **71m**
 
 ## Context from recent conversation memory
+- 2026-04-06.md: 🔴 Insurance audit (overdue; data ready; Ev must submit)
+- 2026-04-06.md: 🔴 Heather (Amazon) reply (A-to-Z risk; draft in `drafts/`)
+- 2026-04-06.md: 🟡 Donaldson $2,340 — paid, needs to ship
+- 2026-04-06.md: 🟡 Teikametrics $149 — dispute sent 4/3; deadline Apr 14
+- 2026-04-06.md: 🟡 Gemifly LLC — $1,513.23 outstanding invoice
+- 2026-04-06.md: 🟡 Walmart unshipped order — auto-cancel risk
 - 2026-04-04.md: No new customer complaints or urgent items overnight.
-- 2026-04-03.md: **Michael Nasholm** — following up on 20% discount refund promised yesterday. Says he hasn't seen it yet. Ev needs to process the partial refund on Shopify.
-- 2026-04-03.md: Teikametrics dispute email sent on 4/3 (confirmed in KANBAN — 7-day deadline Apr 14).
-- 2026-04-03.md: PayPal auto-reminder sent to Gemifly LLC for $1,513.23 outstanding invoice.
-- 2026-04-03.md: **Michael Nasholm** — following up again on promised 20% discount refund. Needs Shopify partial refund processing.
-- 2026-04-03.md: **Gemifly LLC** — $1,513.23 PayPal invoice outstanding (auto-reminder sent).
-- 2026-04-03.md: [ ] Teikametrics $149 dispute (sent 4/3, 7-day deadline Apr 14)
-- 2026-04-03.md: [ ] Gemifly LLC — $1,513.23 PayPal invoice outstanding
 
 ## Financial quick math
 - One-time dollars visible in tasks: **$9,405.91**
