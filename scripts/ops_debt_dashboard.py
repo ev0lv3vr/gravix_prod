@@ -84,6 +84,11 @@ def calculate_row(item: dict[str, Any], as_of: datetime) -> DebtRow:
     end = _parse_date(item["end_date"]) if item.get("end_date") else None
 
     status = str(item.get("status") or "active").strip().lower()
+    # Normalize legacy/variant statuses into the dashboard's canonical buckets.
+    if status in {"in_progress", "progress", "working"}:
+        status = "active"
+    if status in {"done", "complete", "completed"}:
+        status = "fixed"
 
     # If fixed, prefer end_date, otherwise use as_of.
     as_of_d = as_of.date()
