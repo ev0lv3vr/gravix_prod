@@ -415,6 +415,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         ("Priority Pack (latest)", "./morning-priority-pack-latest.md"),
         ("Execution Board (latest)", "./morning-execution-board-latest.html"),
         ("Execution Board JSON (latest)", "./morning-execution-board-latest.json"),
+        ("Ops Debt Dashboard (latest)", "./ops-debt-dashboard-latest.html"),
         ("Reports folder", "./"),
     ]
     links_html = "".join(
