@@ -1,11 +1,11 @@
-# KANBAN — Last updated: 2026-04-06 EOD
+# KANBAN — Last updated: 2026-04-07 6:00 PM PT
 
 ## 🔴 URGENT
-- [ ] **Heather (Amazon)** — 18+ days no reply. A-to-Z claim risk. Draft ready in `drafts/`.
-- [ ] **Insurance audit** — 61+ days overdue. Ashlin Hadden / Veracity. Data ready ($637K). Ev must submit PDF.
-- [ ] **ShipBob UROs** — 54+ days, ~$1K accrued ($18/day). Harsh Khanna escalated 3/26.
-- [ ] **Shopify API dead** — 40+ days. No inventory visibility. Needs token regen.
-- [ ] **Amazon CA suppressed** — 16+ days, ~$240+ lost ($15/day). Needs WHMIS SDS submission.
+- [ ] **Heather (Amazon)** — 18+ days no reply. A-to-Z claim risk. Draft is **generic** (needs her original message details): `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.
+- [ ] **Insurance audit** — 62+ days overdue. Ashlin Hadden / Veracity. Data ready ($637K). Ev must submit PDF.
+- [ ] **ShipBob UROs** — 55+ days, ~$1K accrued ($18/day). Harsh Khanna escalated 3/26.
+- [ ] **Shopify API dead** — 41+ days. No inventory visibility. Needs token regen.
+- [ ] **Amazon CA suppressed** — 17+ days, ~$240+ lost ($15/day). Needs WHMIS SDS submission.
 
 ## 🟡 NEEDS EV
 - [ ] **Michael Nasholm** — 20% partial refund on Shopify PROMISED, NOT DONE. Customer followed up 4/3.

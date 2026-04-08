@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-03
+Last updated: 2026-04-07
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -24,6 +24,7 @@ Last updated: 2026-04-03
 - **Fulfillment:** ShipBob (Twin Lakes WI, Ontario CA, Buford GA)
 - **Email:** sales@gluemasters.com via himalaya (`save-copy = false`)
 - **Revenue run rate:** ~$638K (Amazon $531K + Shopify $107K)
+- **Current operational status (2026-04-07):** everything is done except the Shopify token work.
 
 ### MoneySamurai
 - Product data/analytics platform. Workspace: `/workspace/moneysamurai/`
@@ -65,3 +66,4 @@ Last updated: 2026-04-03
 - MoneySamurai sync: use amazon_accounts table (sync_status doesn't exist)
 - Shopify browser auth works when API token is dead (openclaw browser, profile: openclaw)
 - Amazon NARF auto-lists FBA on .ca/.mx — chemicals get flagged for SDS/CCCR
+- Ev wants Telegram updates formatted cleanly with bolding, stronger visual hierarchy, and selective emoji use.
