@@ -122,7 +122,7 @@ def render_brief(b: Brief) -> str:
 
     lines.append("")
     lines.append("Build again:")
-    lines.append("- python3 scripts/ops_build.py")
+    lines.append("- ./scripts/ops_build.py")
     lines.append("")
     return "\n".join(lines) + "\n"
 
@@ -188,4 +188,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
