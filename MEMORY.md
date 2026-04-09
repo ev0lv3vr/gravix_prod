@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-07
+Last updated: 2026-04-08
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -24,7 +24,7 @@ Last updated: 2026-04-07
 - **Fulfillment:** ShipBob (Twin Lakes WI, Ontario CA, Buford GA)
 - **Email:** sales@gluemasters.com via himalaya (`save-copy = false`)
 - **Revenue run rate:** ~$638K (Amazon $531K + Shopify $107K)
-- **Current operational status (2026-04-07):** everything is done except the Shopify token work.
+- **Current operational status (2026-04-08):** ops backlog is still open; highest-risk items are Heather (Amazon), Insurance audit, ShipBob UROs, Shopify token regen, Amazon CA WHMIS SDS.
 
 ### MoneySamurai
 - Product data/analytics platform. Workspace: `/workspace/moneysamurai/`
