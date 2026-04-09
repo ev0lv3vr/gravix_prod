@@ -31,5 +31,4 @@ Top 8 morning actions (ranked):
 8. **Josh Mintz** — 8oz Medium sample to New Orleans, overdue since 3/24 (12 days). (15m)
 
 Build again:
-- python3 scripts/ops_build.py
-
+- ./scripts/ops_build.py
