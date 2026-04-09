@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+"""ops_build.py
+
+One command to regenerate the morning ops artifacts + a plain-text brief.
+
+Builds:
+- reports/morning-priority-pack-YYYY-MM-DD.md (+ latest)
+- reports/morning-execution-board-YYYY-MM-DD.html (+ latest)
+- reports/morning-ops-hub-YYYY-MM-DD.html (+ latest)
+- reports/ops-debt-dashboard-YYYY-MM-DD.html (+ latest)
+- reports/ops-build-brief-YYYY-MM-DD.txt (+ latest)
+
+Usage:
+  python3 scripts/ops_build.py
+  python3 scripts/ops_build.py --tomorrow
+  python3 scripts/ops_build.py --date 2026-04-09
+  python3 scripts/ops_build.py --open
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import shutil
+import subprocess
+import sys
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any
+
+
+ROOT = Path(__file__).resolve().parents[1]
+REPORTS = ROOT / "reports"
+
+
+def _run(cmd: list[str]) -> None:
+    subprocess.run(cmd, cwd=str(ROOT), check=True)
+
+
+def _clone_latest(versioned: Path, latest: Path) -> None:
+    shutil.copyfile(versioned, latest)
+
+
+def _load_json(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _fmt_money(v: float | int | None) -> str:
+    if v is None:
+        return "—"
+    try:
+        x = float(v)
+    except Exception:
+        return str(v)
+    if abs(x) < 1e-9:
+        return "$0"
+    rounded = abs(x - round(x)) < 1e-9
+    return f"${int(round(x)):,}" if rounded else f"${x:,.2f}"
+
+
+@dataclass
+class Brief:
+    date: str
+    generated_at: str
+    kanban: dict[str, Any]
+    ops_debt: dict[str, Any]
+
+
+def render_brief(b: Brief) -> str:
+    k = b.kanban
+    o = b.ops_debt
+
+    k_top = (k.get("top_actions") or [])[:8]
+    o_sum = (o.get("summary") or {})
+
+    lines: list[str] = []
+    lines.append(f"OPS BUILD BRIEF — {b.date}")
+    lines.append(f"Generated: {b.generated_at}")
+    lines.append("")
+
+    lines.append("Artifacts:")
+    lines.append("- reports/morning-ops-hub-latest.html")
+    lines.append("- reports/morning-priority-pack-latest.md")
+    lines.append("- reports/ops-debt-dashboard-latest.html")
+    lines.append("")
+
+    # Ops debt summary (from ops-debt-dashboard payload)
+    lines.append("Ops debt (from ops-debt.json):")
+    lines.append(
+        f"- Open items: {o_sum.get('items_open','—')} (active/critical: {o_sum.get('items_active','—')})"
+    )
+    lines.append(f"- Daily burn (true): {_fmt_money(o_sum.get('daily_burn'))}/day")
+    lines.append(f"- Accrued (open): {_fmt_money(o_sum.get('total_accrued'))}")
+    if o_sum.get("burn_30d") is not None:
+        lines.append(f"- 30-day burn exposure: {_fmt_money(o_sum.get('burn_30d'))}")
+    if o_sum.get("one_time_open") is not None:
+        lines.append(f"- One-time dollars open: {_fmt_money(o_sum.get('one_time_open'))}")
+    lines.append("")
+
+    # Morning ranking summary (from kanban builder)
+    sc = k.get("section_counts") or {}
+    lines.append("KANBAN queue depth:")
+    lines.append(f"- 🔴 Urgent: {sc.get('urgent','—')}")
+    lines.append(f"- 🟡 Needs Ev: {sc.get('needs_ev','—')}")
+    lines.append(f"- 🔵 In progress: {sc.get('in_progress','—')}")
+    lines.append(f"- 📋 Backlog: {sc.get('backlog','—')}")
+    lines.append(f"- Total open tasks ranked: {k.get('total_open','—')}")
+    lines.append("")
+
+    lines.append("Top 8 morning actions (ranked):")
+    if not k_top:
+        lines.append("- (none)")
+    else:
+        for i, t in enumerate(k_top, 1):
+            # keep this terse for copy/paste
+            text = str(t.get("text") or "").replace("\n", " ").strip()
+            eta = t.get("est_minutes")
+            extra = f" ({eta}m)" if eta else ""
+            lines.append(f"{i}. {text}{extra}")
+
+    lines.append("")
+    lines.append("Build again:")
+    lines.append("- python3 scripts/ops_build.py")
+    lines.append("")
+    return "\n".join(lines) + "\n"
+
+
+def main(argv: list[str] | None = None) -> int:
+    p = argparse.ArgumentParser(description="Build morning ops artifacts + brief")
+    p.add_argument("--date", help="Output date (YYYY-MM-DD). Defaults to local today.")
+    p.add_argument("--tomorrow", action="store_true", help="Use local tomorrow as the output date.")
+    p.add_argument("--open", action="store_true", help="Open the hub in the default browser (macOS: open).")
+    args = p.parse_args(argv)
+
+    now = datetime.now().astimezone()
+    date_str = args.date
+    if args.tomorrow and not date_str:
+        date_str = (now + timedelta(days=1)).strftime("%Y-%m-%d")
+    if not date_str:
+        date_str = now.strftime("%Y-%m-%d")
+
+    generated_at = now.strftime("%Y-%m-%d %H:%M %Z")
+
+    # Build artifacts (keep these as separate scripts so each remains runnable alone).
+    _run([sys.executable, "scripts/ops_debt_dashboard.py", "--date", date_str])
+    _run([sys.executable, "scripts/kanban_morning_builder.py", "--date", date_str])
+
+    # Compose brief from the latest JSON payloads
+    ops_json = REPORTS / "ops-debt-dashboard-latest.json"
+    kanban_json = REPORTS / "morning-execution-board-latest.json"
+    if not ops_json.exists():
+        raise SystemExit(f"Missing expected artifact: {ops_json}")
+    if not kanban_json.exists():
+        raise SystemExit(f"Missing expected artifact: {kanban_json}")
+
+    brief = Brief(
+        date=date_str,
+        generated_at=generated_at,
+        kanban=_load_json(kanban_json),
+        ops_debt=_load_json(ops_json),
+    )
+
+    REPORTS.mkdir(parents=True, exist_ok=True)
+    brief_path = REPORTS / f"ops-build-brief-{date_str}.txt"
+    latest_path = REPORTS / "ops-build-brief-latest.txt"
+    brief_path.write_text(render_brief(brief), encoding="utf-8")
+    _clone_latest(brief_path, latest_path)
+
+    print(f"Built {brief_path.relative_to(ROOT)}")
+    print(f"Built {latest_path.relative_to(ROOT)}")
+    print("Built reports/morning-ops-hub-latest.html")
+    print("Built reports/ops-debt-dashboard-latest.html")
+
+    if args.open:
+        hub = REPORTS / "morning-ops-hub-latest.html"
+        if hub.exists():
+            # Best effort; don't fail the build if 'open' isn't available.
+            opener = "open" if sys.platform == "darwin" else None
+            if opener and shutil.which(opener):
+                subprocess.run([opener, str(hub)], cwd=str(ROOT), check=False)
+            else:
+                print(f"Open manually: {hub}")
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
