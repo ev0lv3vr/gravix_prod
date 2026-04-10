@@ -66,11 +66,13 @@ class Brief:
     generated_at: str
     kanban: dict[str, Any]
     ops_debt: dict[str, Any]
+    ads_pull: dict[str, Any] | None = None
 
 
 def render_brief(b: Brief) -> str:
     k = b.kanban
     o = b.ops_debt
+    a = b.ads_pull or {}
 
     k_top = (k.get("top_actions") or [])[:8]
     o_sum = (o.get("summary") or {})
@@ -84,7 +86,22 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/morning-ops-hub-latest.html")
     lines.append("- reports/morning-priority-pack-latest.md")
     lines.append("- reports/ops-debt-dashboard-latest.html")
+    lines.append("- reports/ads-pull-dashboard-latest.html")
     lines.append("")
+
+    # Ads pull summary (optional)
+    a_sum = (a.get("summary") or {}) if isinstance(a, dict) else {}
+    if a_sum:
+        lines.append("Amazon Ads daily pull (local status):")
+        lines.append(f"- Latest day: {a_sum.get('latest_day','—')}")
+        if a_sum.get("latest_is_valid") is not None:
+            ok = "OK" if a_sum.get("latest_is_valid") else "DEGRADED"
+            lines.append(f"- Latest status: {ok} (failed: {', '.join(a_sum.get('latest_failed_reports') or []) or '—'})")
+        if a_sum.get("current_invalid_streak") is not None:
+            lines.append(f"- Current invalid streak: {a_sum.get('current_invalid_streak')}")
+        if a.get("latest_pull_log"):
+            lines.append(f"- Latest pull log: {a.get('latest_pull_log')}")
+        lines.append("")
 
     # Ops debt summary (from ops-debt-dashboard payload)
     lines.append("Ops debt (from ops-debt.json):")
@@ -146,10 +163,12 @@ def main(argv: list[str] | None = None) -> int:
     # Build artifacts (keep these as separate scripts so each remains runnable alone).
     _run([sys.executable, "scripts/ops_debt_dashboard.py", "--date", date_str])
     _run([sys.executable, "scripts/kanban_morning_builder.py", "--date", date_str])
+    _run([sys.executable, "scripts/ads_pull_dashboard.py", "--date", date_str])
 
     # Compose brief from the latest JSON payloads
     ops_json = REPORTS / "ops-debt-dashboard-latest.json"
     kanban_json = REPORTS / "morning-execution-board-latest.json"
+    ads_json = REPORTS / "ads-pull-dashboard-latest.json"
     if not ops_json.exists():
         raise SystemExit(f"Missing expected artifact: {ops_json}")
     if not kanban_json.exists():
@@ -160,6 +179,7 @@ def main(argv: list[str] | None = None) -> int:
         generated_at=generated_at,
         kanban=_load_json(kanban_json),
         ops_debt=_load_json(ops_json),
+        ads_pull=_load_json(ads_json) if ads_json.exists() else None,
     )
 
     REPORTS.mkdir(parents=True, exist_ok=True)
@@ -172,6 +192,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Built {latest_path.relative_to(ROOT)}")
     print("Built reports/morning-ops-hub-latest.html")
     print("Built reports/ops-debt-dashboard-latest.html")
+    print("Built reports/ads-pull-dashboard-latest.html")
 
     if args.open:
         hub = REPORTS / "morning-ops-hub-latest.html"
