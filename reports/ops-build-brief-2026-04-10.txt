@@ -1,0 +1,42 @@
+OPS BUILD BRIEF — 2026-04-10
+Generated: 2026-04-09 23:07 PDT
+
+Artifacts:
+- reports/morning-ops-hub-latest.html
+- reports/morning-priority-pack-latest.md
+- reports/ops-debt-dashboard-latest.html
+- reports/ads-pull-dashboard-latest.html
+
+Amazon Ads daily pull (local status):
+- Latest day: 2026-04-07
+- Latest status: DEGRADED (failed: campaigns, keywords, search-terms)
+- Current invalid streak: 1
+- Latest pull log: logs/ads-daily/2026-04-09/1-pull.log
+
+Ops debt (from ops-debt.json):
+- Open items: 11 (active/critical: 9)
+- Daily burn (true): $33/day
+- Accrued (open): $2,933.54
+- 30-day burn exposure: $990
+- One-time dollars open: $1,715.54
+
+KANBAN queue depth:
+- 🔴 Urgent: 5
+- 🟡 Needs Ev: 14
+- 🔵 In progress: 4
+- 📋 Backlog: 10
+- Total open tasks ranked: 33
+
+Top 8 morning actions (ranked):
+1. **ShipBob UROs** — 56+ days, ~$1K accrued ($18/day). Harsh Khanna escalated 3/26. (25m)
+2. **Insurance audit** — 63+ days overdue. Ashlin Hadden / Veracity. Data ready ($637K). Ev must submit PDF. (20m)
+3. **Amazon CA suppressed** — 18+ days, ~$270+ lost ($15/day). Needs WHMIS SDS submission. (18m)
+4. **Heather (Amazon)** — 19+ days no reply. A-to-Z claim risk. Draft is **generic** (needs her original message details): `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (8m)
+5. **Shopify API dead** — 42+ days. No inventory visibility. Needs token regen. (20m)
+6. **Donaldson $2,340** — paid, needs to ship. 1801 W Vine St, Harrisonville MO 64701. Weekend lost. (25m)
+7. **Walmart unshipped order** — auto-cancel risk. (25m)
+8. **Josh Mintz** — 8oz Medium sample to New Orleans, overdue since 3/24 (12 days). (15m)
+
+Build again:
+- ./scripts/ops_build.py
+
