@@ -1,11 +1,11 @@
-# KANBAN — Last updated: 2026-04-11 6:00 PM PT
+# KANBAN — Last updated: 2026-04-12 6:00 PM PT
 
 ## 🔴 URGENT
 - [ ] **Heather (Amazon)** — 19+ days no reply. A-to-Z claim risk. **Details recovered** (Himalaya msg id **191366**, 2026-03-24, Order **114-0636756-1872255**): buyer says **they have not received an update from Amazon nor a replacement**. Draft path: `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md` (update with this context before sending).
 - [ ] **Insurance audit** — 63+ days overdue. Ashlin Hadden / Veracity. Data ready ($637K). Ev must submit PDF.
 - [ ] **ShipBob UROs** — 56+ days, ~$1K accrued ($18/day). Harsh Khanna escalated 3/26.
 - [ ] **Shopify API dead** — 42+ days. No inventory visibility. Needs token regen.
-- [ ] **Amazon CA suppressed** — 18+ days, ~$270+ lost ($15/day). Needs WHMIS SDS submission. **Blocked:** Seller Central access (OpenClaw browser currently logged out).
+- [ ] **Amazon CA suppressed** — 18+ days, ~$270+ lost ($15/day). Needs WHMIS SDS submission. **Blocked:** Seller Central access (OpenClaw browser currently logged out; user Chrome attach requires Chrome running; attach timed out today).
 
 ## 🟡 NEEDS EV
 - [ ] **Reply: Eric Patrick (Shopify contact form)** — asked how to open 8oz bottle (inner plastic cap/plug). Email: epatrick@americansteelfabllc.com, phone 248-941-8433. Draft ready (`moneysamurai/drafts/customer-replies-2026-04-09.md`), msg id **5941**.
@@ -28,7 +28,7 @@
 - [ ] **Amazon PPC** — 11 campaigns, ~$773/day spend, 2.42× ROAS, 41% ACoS.
 - [ ] **A3 Partners PO 28** — UPS ETA Apr 3. Invoice $3,312.37 due 4/25.
 - [ ] **Designcoffers** — pump accelerator label revisions (Fiverr).
-- [ ] **Ads daily pull** — **FIX STAGED 2026-04-11 (needs test)**: added **chunked fallback** for search-terms (1-day chunks) + digest now surfaces `pull-status.json` failures even when only search-terms is missing. Commit: `moneysamurai@93bbb4e`. If search-terms single pull perma-PENDING, script auto-falls back to chunked pulls. Latest broken run log: `runs/ads-daily-pull/20260411T130027Z/01_pull_reports.log`. Old failure log: `logs/ads-daily/2026-04-09/1-pull.log`.
+- [ ] **Ads daily pull** — ✅ **confirmed working 2026-04-12** (snapshot **2026-04-11**): campaigns (10) + keywords (97) + search-terms (308; 57 new) pulled successfully; digest + dashboard generated. Latest run logs: `logs/ads-daily/2026-04-12/01_pull_reports.log` + `04_generate_digest.log` + `05_dashboard_gen.log`. Code fix: `moneysamurai@93bbb4e` (fallbacks/chunking + better failure surfacing).
 
 ## 📋 BACKLOG
 - [ ] Wire flywheel data into MoneySamurai PPC frontend

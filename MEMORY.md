@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-08
+Last updated: 2026-04-12
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -30,6 +30,8 @@ Last updated: 2026-04-08
 - Product data/analytics platform. Workspace: `/workspace/moneysamurai/`
 - ESM project — use `import` not `require()`, scripts need .mjs or type=module
 - Automated data syncs via cron (products, orders, inventory, financial, restock)
+- Amazon Ads daily pull (campaigns + keywords + search-terms) confirmed working end-to-end as of **2026-04-12** (fix commit `moneysamurai@93bbb4e`; run logs under `logs/ads-daily/`).
+- Ads pull health HTML dashboard generator: `moneysamurai/scripts/ads-pull-health-dashboard-gen.py` → output `moneysamurai/dashboards/ads-pull-health.html` (commit `moneysamurai@73d861f`).
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle
