@@ -20,7 +20,7 @@ Usage:
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import date, datetime
 from html import escape
 from pathlib import Path
 import argparse
@@ -73,6 +73,34 @@ MINUTE_HINTS = [
 ]
 
 
+MONTHS = {
+    "jan": 1,
+    "january": 1,
+    "feb": 2,
+    "february": 2,
+    "mar": 3,
+    "march": 3,
+    "apr": 4,
+    "april": 4,
+    "may": 5,
+    "jun": 6,
+    "june": 6,
+    "jul": 7,
+    "july": 7,
+    "aug": 8,
+    "august": 8,
+    "sep": 9,
+    "sept": 9,
+    "september": 9,
+    "oct": 10,
+    "october": 10,
+    "nov": 11,
+    "november": 11,
+    "dec": 12,
+    "december": 12,
+}
+
+
 @dataclass
 class Task:
     section: str
@@ -81,6 +109,8 @@ class Task:
     days: int | None
     amount: float | None
     daily_burn: float | None
+    deadline: str | None
+    days_to_deadline: int | None
     score: float
     est_minutes: int
 
@@ -178,6 +208,81 @@ def parse_daily_burn(text: str) -> float | None:
     return float(m.group(1))
 
 
+def parse_deadline(text: str, now: datetime) -> date | None:
+    """Extract a deadline date from a task line.
+
+    Supports:
+      - ISO: 2026-04-20
+      - Month/day: Apr 14, April 14
+    """
+
+    # Allow explicit ISO date at the *start* of a line (common for reminders like
+    # "2026-04-20 — Nudge ...").
+    m = re.match(r"^\s*(?:\*\*)?(20\d{2}-\d{2}-\d{2})(?:\*\*)?\b", text)
+    if m:
+        try:
+            return datetime.strptime(m.group(1), "%Y-%m-%d").date()
+        except ValueError:
+            return None
+
+    lt = text.lower()
+
+    # Only treat dates as deadlines when they are explicitly cued.
+    cue_iso = re.search(r"\b(?:deadline|due|by)\b[^0-9]*(?:\*\*)?(20\d{2}-\d{2}-\d{2})(?:\*\*)?", lt)
+    if cue_iso:
+        try:
+            return datetime.strptime(cue_iso.group(1), "%Y-%m-%d").date()
+        except ValueError:
+            return None
+
+    cue_slash = re.search(r"\b(?:deadline|due|by)\b[^0-9]*(?:\*\*)?(\d{1,2})/(\d{1,2})(?:\*\*)?", lt)
+    if cue_slash:
+        try:
+            return date(now.year, int(cue_slash.group(1)), int(cue_slash.group(2)))
+        except ValueError:
+            return None
+
+    cue_month = re.search(
+        r"\b(?:deadline|due|by)\b[^a-zA-Z]*(?:\*\*)?(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2})(?:\*\*)?",
+        lt,
+    )
+    if not cue_month:
+        return None
+
+    month = MONTHS.get(cue_month.group(1))
+    if not month:
+        return None
+    day = int(cue_month.group(2))
+
+    try:
+        d = date(now.year, month, day)
+    except ValueError:
+        return None
+
+    # If this looks "in the past" by >30d, assume next year.
+    if (d - now.date()).days < -30:
+        try:
+            return date(now.year + 1, month, day)
+        except ValueError:
+            return d
+    return d
+
+
+def deadline_bonus(deadline: date | None, now: datetime) -> tuple[float, int | None]:
+    if deadline is None:
+        return 0.0, None
+    days_left = (deadline - now.date()).days
+    if days_left <= 0:
+        return 20.0, days_left
+    if days_left == 1:
+        return 16.0, days_left
+    if days_left == 2:
+        return 12.0, days_left
+    if days_left <= 7:
+        return 8.0, days_left
+    return 4.0, days_left
+
+
 def estimate_minutes(text: str, section: str) -> int:
     t = text.lower()
     for token, minutes in MINUTE_HINTS:
@@ -196,7 +301,15 @@ def actionable_amount(text: str, amount: float | None) -> float | None:
     return amount
 
 
-def score_task(section: str, text: str, days: int | None, amount: float | None, daily_burn: float | None) -> float:
+def score_task(
+    section: str,
+    text: str,
+    days: int | None,
+    amount: float | None,
+    daily_burn: float | None,
+    deadline: date | None,
+    now: datetime,
+) -> float:
     s = float(SECTION_BASE_SCORE[section])
     if days is not None:
         s += min(days, 90) * 0.7
@@ -209,6 +322,9 @@ def score_task(section: str, text: str, days: int | None, amount: float | None, 
     for token, bonus in RISK_BONUS.items():
         if token in lt:
             s += bonus
+
+    bump, _ = deadline_bonus(deadline, now)
+    s += bump
     return round(s, 2)
 
 
@@ -240,11 +356,14 @@ def get_recent_memory_context(limit_files: int = 3) -> list[str]:
 def build_tasks(buckets: dict[str, list[str]]) -> list[Task]:
     label_map = dict(SECTION_ORDER)
     tasks: list[Task] = []
+    now = datetime.now().astimezone()
     for section, items in buckets.items():
         for text in items:
             days = parse_days(text)
             amount = actionable_amount(text, parse_amount(text))
             burn = parse_daily_burn(text)
+            dl = parse_deadline(text, now)
+            _, days_left = deadline_bonus(dl, now)
             tasks.append(
                 Task(
                     section=section,
@@ -253,7 +372,9 @@ def build_tasks(buckets: dict[str, list[str]]) -> list[Task]:
                     days=days,
                     amount=amount,
                     daily_burn=burn,
-                    score=score_task(section, text, days, amount, burn),
+                    deadline=dl.isoformat() if dl else None,
+                    days_to_deadline=days_left,
+                    score=score_task(section, text, days, amount, burn, dl, now),
                     est_minutes=estimate_minutes(text, section),
                 )
             )
@@ -287,6 +408,13 @@ def render_markdown(report: BuildOutput) -> str:
             extras.append(fmt_money(t.amount))
         if t.daily_burn is not None:
             extras.append(f"${t.daily_burn:.0f}/day")
+        if t.deadline is not None:
+            if t.days_to_deadline is not None and t.days_to_deadline <= 0:
+                extras.append(f"deadline {t.deadline} (OVERDUE)")
+            elif t.days_to_deadline is not None:
+                extras.append(f"deadline {t.deadline} (D-{t.days_to_deadline})")
+            else:
+                extras.append(f"deadline {t.deadline}")
         suffix = f" ({', '.join(extras)})" if extras else ""
         lines.append(f"{i}. [{t.section_label}] {t.text}{suffix} — score {t.score}, ~{t.est_minutes}m")
     lines.append("")
@@ -328,6 +456,7 @@ def render_html(report: BuildOutput) -> str:
             f"<td>{t.days if t.days is not None else '—'}</td>"
             f"<td>{fmt_money(t.amount)}</td>"
             f"<td>{fmt_money(t.daily_burn)}</td>"
+            f"<td>{escape(t.deadline) if t.deadline else '—'}</td>"
             f"<td>{t.est_minutes}m</td>"
             f"<td>{t.score}</td>"
             "</tr>"
@@ -376,7 +505,7 @@ ul{{margin:8px 0 0 18px}} li{{margin:6px 0;color:var(--muted)}}
   <div class=\"panel\">
     <h3 style=\"margin:0 0 8px\">Ranked tasks (top 16)</h3>
     <table>
-      <thead><tr><th>#</th><th>Section</th><th>Task</th><th>Days</th><th>Amount</th><th>Burn/day</th><th>ETA</th><th>Score</th></tr></thead>
+      <thead><tr><th>#</th><th>Section</th><th>Task</th><th>Days</th><th>Amount</th><th>Burn/day</th><th>Deadline</th><th>ETA</th><th>Score</th></tr></thead>
       <tbody>{''.join(rows)}</tbody>
     </table>
   </div>
@@ -509,6 +638,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
             <th>Days</th>
             <th>Amount</th>
             <th>Burn/day</th>
+            <th>Deadline</th>
             <th>ETA</th>
             <th>Score</th>
           </tr>
@@ -586,6 +716,11 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         .slice(0, 60)
         .map((t, idx) => {
           const burn = (t.daily_burn && t.daily_burn > 0) ? `<span class="warn">${fmtMoney(t.daily_burn)}</span>` : '—';
+          const dl = t.deadline
+            ? (t.days_to_deadline !== null && t.days_to_deadline !== undefined
+              ? (t.days_to_deadline <= 0 ? `${t.deadline} (OVERDUE)` : `${t.deadline} (D-${t.days_to_deadline})`)
+              : t.deadline)
+            : '—';
           return `
             <tr>
               <td>${idx + 1}</td>
@@ -594,11 +729,12 @@ def render_ops_hub_html(report: BuildOutput) -> str:
               <td>${t.days ?? '—'}</td>
               <td>${fmtMoney(t.amount)}</td>
               <td>${burn}</td>
+              <td>${dl}</td>
               <td>${t.est_minutes}m</td>
               <td>${t.score}</td>
             </tr>
           `;
-        }).join('') || `<tr><td colspan="8" class="muted">No tasks matched the filter.</td></tr>`;
+        }).join('') || `<tr><td colspan="9" class="muted">No tasks matched the filter.</td></tr>`;
     }
 
     function renderContext() {

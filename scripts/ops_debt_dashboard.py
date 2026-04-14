@@ -40,6 +40,8 @@ class DebtRow:
     category: str | None
     start_date: str
     end_date: str | None
+    deadline: str | None
+    days_to_deadline: int | None
     days_active: int
     daily_rate: float
     estimated_daily_impact: float
@@ -96,6 +98,10 @@ def calculate_row(item: dict[str, Any], as_of: datetime) -> DebtRow:
     if status == "fixed" and end is None:
         effective_end_d = as_of_d
 
+    deadline_s = item.get("deadline")
+    deadline_d = _parse_date(deadline_s) if deadline_s else None
+    days_to_deadline = (deadline_d - as_of_d).days if deadline_d else None
+
     days_active = _days_between(start, min(effective_end_d, as_of_d))
 
     daily_rate = float(item.get("daily_rate") or 0.0)
@@ -112,6 +118,8 @@ def calculate_row(item: dict[str, Any], as_of: datetime) -> DebtRow:
         category=item.get("category"),
         start_date=item["start_date"],
         end_date=item.get("end_date"),
+        deadline=deadline_s,
+        days_to_deadline=days_to_deadline,
         days_active=days_active,
         daily_rate=daily_rate,
         estimated_daily_impact=estimated_daily_impact,
@@ -137,6 +145,7 @@ def fmt_money(v: float | None, *, decimals: int = 0) -> str:
 
 def build_json_payload(date_str: str, generated_at: str, as_of: str, rows: list[DebtRow]) -> dict[str, Any]:
     active = [r for r in rows if r.status in ("critical", "active")]
+    due_soon = [r for r in rows if r.status != "fixed" and r.days_to_deadline is not None and r.days_to_deadline <= 2]
     total_accrued = round(sum(r.accrued for r in rows if r.status != "fixed"), 2)
     total_daily_burn = round(sum(r.daily_rate for r in active), 2)
     total_estimated_impact = round(sum(r.estimated_daily_impact for r in active), 2)
@@ -150,6 +159,7 @@ def build_json_payload(date_str: str, generated_at: str, as_of: str, rows: list[
             "items_total": len(rows),
             "items_open": len([r for r in rows if r.status != "fixed"]),
             "items_active": len(active),
+            "items_due_soon": len(due_soon),
             "total_accrued": total_accrued,
             "one_time_open": one_time_open,
             "daily_burn": total_daily_burn,
@@ -269,6 +279,7 @@ def render_html(payload: dict[str, Any]) -> str:
             <th>Accrued</th>
             <th>Burn/day</th>
             <th>Est. impact/day</th>
+            <th>Deadline</th>
             <th>Fix ETA</th>
             <th>Fix</th>
           </tr>
@@ -302,6 +313,7 @@ def render_html(payload: dict[str, Any]) -> str:
       const cards = [
         { k: 'Open items', v: s.items_open },
         { k: 'Active/critical', v: s.items_active },
+        { k: 'Due soon (≤2d)', v: s.items_due_soon ?? 0 },
         { k: 'Total accrued (open)', v: fmtMoney(s.total_accrued) },
         { k: 'One-time $ open', v: fmtMoney(s.one_time_open) },
         { k: 'Daily burn (true)', v: `$${Math.round(s.daily_burn)}/d` },
@@ -341,6 +353,11 @@ def render_html(payload: dict[str, Any]) -> str:
           const fixEta = r.fix_time_minutes ? `${r.fix_time_minutes}m` : '—';
           const burn = (r.daily_rate && r.daily_rate > 0) ? `<span class="s-critical">${fmtMoney(r.daily_rate)}</span>` : '—';
           const impact = (r.estimated_daily_impact && r.estimated_daily_impact > 0) ? `<span class="s-uncertain">${fmtMoney(r.estimated_daily_impact)}</span>` : '—';
+          const dl = r.deadline
+            ? (r.days_to_deadline !== null && r.days_to_deadline !== undefined
+              ? (r.days_to_deadline <= 0 ? `${r.deadline} (OVERDUE)` : `${r.deadline} (D-${r.days_to_deadline})`)
+              : r.deadline)
+            : '—';
           return `
             <tr>
               <td>${idx + 1}</td>
@@ -350,11 +367,12 @@ def render_html(payload: dict[str, Any]) -> str:
               <td>${fmtMoney(r.accrued)}</td>
               <td>${burn}/d</td>
               <td>${impact}/d</td>
+              <td>${dl}</td>
               <td>${fixEta}</td>
               <td class="task">${r.fix_action || '—'}</td>
             </tr>
           `;
-        }).join('') || `<tr><td colspan="9" class="muted">No items matched the filter.</td></tr>`;
+        }).join('') || `<tr><td colspan="10" class="muted">No items matched the filter.</td></tr>`;
     }
 
     function copyText(text) {
@@ -386,7 +404,12 @@ def render_html(payload: dict[str, Any]) -> str:
             const burn = r.daily_rate ? `${Math.round(r.daily_rate)}/d` : '0/d';
             const imp = r.estimated_daily_impact ? ` impact~${Math.round(r.estimated_daily_impact)}/d` : '';
             const eta = r.fix_time_minutes ? ` ~${r.fix_time_minutes}m` : '';
-            return `- [ ] ${i+1}. ${r.name} (${burn}${imp}${eta}) — ${r.fix_action}`;
+            const due = r.deadline
+              ? (r.days_to_deadline !== null && r.days_to_deadline !== undefined
+                ? (r.days_to_deadline <= 0 ? ` DUE:${r.deadline}(OVERDUE)` : ` DUE:${r.deadline}(D-${r.days_to_deadline})`)
+                : ` DUE:${r.deadline}`)
+              : '';
+            return `- [ ] ${i+1}. ${r.name} (${burn}${imp}${eta})${due} — ${r.fix_action}`;
           }),
           ''
         ];
