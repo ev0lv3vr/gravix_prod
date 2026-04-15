@@ -1,4 +1,4 @@
-# KANBAN — Last updated: 2026-04-13 6:00 PM PT
+# KANBAN — Last updated: 2026-04-14 6:00 PM PT
 
 ## 🔴 URGENT
 - [ ] **Heather (Amazon)** — 20+ days no reply. A-to-Z claim risk. **Details recovered** (Himalaya msg id **191366**, 2026-03-24, Order **114-0636756-1872255**): buyer says **they have not received an update from Amazon nor a replacement**. Draft path: `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md` (**updated 2026-04-13**, ready to send once logged in).
@@ -6,7 +6,7 @@
 - [ ] **ShipBob UROs** — 56+ days, ~$1K accrued ($18/day). Harsh Khanna escalated 3/26.
 - [ ] **Shopify API dead** — 42+ days. No inventory visibility. Needs token regen.
 - [ ] **Amazon CA suppressed** — 18+ days, ~$270+ lost ($15/day). Needs WHMIS SDS submission. **Blocked:** Seller Central access (OpenClaw browser currently logged out; user Chrome attach requires Chrome running).
-  - Re-checked **2026-04-13 2:00 PM PT**: openclaw Seller Central still shows marketing page with **“Log in”** link (not authenticated).
+  - Re-checked **2026-04-14 2:00 PM PT**: openclaw Seller Central still shows marketing page with **“Log in”** link (not authenticated).
 
 ## 🟡 NEEDS EV
 - [ ] **Reply: Eric Patrick (Shopify contact form)** — asked how to open 8oz bottle (inner plastic cap/plug). Email: epatrick@americansteelfabllc.com, phone 248-941-8433. Draft ready (`moneysamurai/drafts/customer-replies-2026-04-09.md`), msg id **5941**.
@@ -15,7 +15,7 @@
 - [ ] **Donaldson $2,340** — paid, needs to ship. 1801 W Vine St, Harrisonville MO 64701. Weekend lost.
 - [ ] **Gemifly LLC** — $1,513.23 PayPal invoice outstanding (auto-reminder sent 4/3).
 - [ ] **Dynasty Global (Eli)** — dealer inquiry, Ev decision needed.
-- [ ] **Teikametrics $149** — they replied 4/8: **no refund** (claims cancellation was 2 days into cycle); promised no further billing + stop pacing emails, but pacing email still arrived (e.g. **4/9 msg id 191754**). Ev decide: chargeback by **Apr 14**.
+- [ ] **Teikametrics $149** — they replied 4/8: **no refund** (claims cancellation was 2 days into cycle); promised no further billing + stop pacing emails, but pacing email still arrived (e.g. **4/9 msg id 191754**). Ev decide: chargeback by **Apr 14 (today / EOD)**.
 - [ ] **Ethan Miller** — order #5786, 4× Thick 16oz replacement not created at ShipBob.
 - [ ] **Josh Mintz** — 8oz Medium sample to New Orleans, overdue since 3/24 (12 days).
 - [ ] **Walmart unshipped order** — auto-cancel risk.
@@ -30,6 +30,7 @@
 - [ ] **A3 Partners PO 28** — UPS ETA Apr 3. Invoice $3,312.37 due 4/25.
 - [ ] **Designcoffers** — pump accelerator label revisions (Fiverr).
 - [ ] **Ads daily pull** — ✅ **confirmed working 2026-04-12** (snapshot **2026-04-11**): campaigns (10) + keywords (97) + search-terms (308; 57 new) pulled successfully; digest + dashboard generated. Latest run logs: `logs/ads-daily/2026-04-12/01_pull_reports.log` + `04_generate_digest.log` + `05_dashboard_gen.log`. Code fix: `moneysamurai@93bbb4e` (fallbacks/chunking + better failure surfacing).
+  - **2026-04-14**: flywheel ran for **2026-04-13** but **campaigns report timed out/empty**; `pull-status` marked invalid and digest warning looked inconsistent → needs fix.
 
 ## 📋 BACKLOG
 - [ ] Wire flywheel data into MoneySamurai PPC frontend
