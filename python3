@@ -1,0 +1,1162 @@
+\n===== 1) Pull reports =====
+============================================================
+🚀 Amazon Ads Daily Report Pull
+============================================================
+
+📅 Date range: 2026-04-07 → 2026-04-13
+📂 Snapshot key: 2026-04-13
+🔑 Getting access token...
+   ✅ Token obtained (expires in 3600s)
+
+📊 Requesting report: campaigns-2026-04-07-2026-04-13
+   ♻️  Duplicate report detected, reusing existing: e71380da-d43e-436e-ac34-d63518e6974f
+   📋 Report ID: e71380da-d43e-436e-ac34-d63518e6974f (reused duplicate)
+   ⚠️  Could not inspect duplicate status (HTTP Error 429: ); proceeding to poll
+   ⏳ Polling campaigns (timeout 180s)...
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [81s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+   ❌ campaigns timed out after 180s
+   ❌ campaigns failed (attempt 1)
+
+🔄 Retry 1/2 for campaigns (waiting 60s)...
+🔑 Getting access token...
+   ✅ Token obtained (expires in 3600s)
+   📅 Shifted start date to 2026-04-06 to avoid stuck duplicate
+
+📊 Requesting report: campaigns-2026-04-06-2026-04-13
+   📋 Report ID: 678dda65-30a1-4262-a313-52d5d8d1133e
+   ⏳ Polling campaigns (timeout 1200s)...
+      [0s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [142s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [243s] Status: PENDING
+      [264s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [406s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [467s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [569s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [670s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [731s] Status: PENDING
+      [752s] Status: PENDING
+      [772s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [834s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [935s] Status: PENDING
+      [956s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [1098s] Status: COMPLETED
+   ✅ campaigns completed!
+   📥 Downloading report...
+   ✅ Downloaded 10 rows
+   ⏳ Waiting 5s before next report...
+
+📊 Requesting report: keywords-2026-04-07-2026-04-13
+   📋 Report ID: 27adb7c0-9f52-4733-8841-24c55dcca477
+   ⏳ Polling keywords (timeout 1200s)...
+      [0s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [223s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [325s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [426s] Status: PENDING
+      [447s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [670s] Status: PENDING
+      [691s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [792s] Status: PENDING
+      [813s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [996s] Status: PENDING
+      [1016s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [1077s] Status: PENDING
+      [1098s] Status: PENDING
+      [1118s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+   ❌ keywords timed out after 1200s
+   ❌ keywords failed (attempt 1)
+
+🔄 Retry 1/2 for keywords (waiting 60s)...
+🔑 Getting access token...
+   ✅ Token obtained (expires in 3600s)
+   📅 Shifted start date to 2026-04-06 to avoid stuck duplicate
+
+📊 Requesting report: keywords-2026-04-06-2026-04-13
+   📋 Report ID: 1a3287b9-0682-4c15-9b58-c505b641e5a6
+   ⏳ Polling keywords (timeout 1200s)...
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [81s] Status: PENDING
+      [102s] Status: PENDING
+      [122s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [183s] Status: PENDING
+      [204s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  Poll error (<urlopen error timed out>) — backing off 40s
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [406s] Status: PENDING
+      [427s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [488s] Status: PENDING
+      [508s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [610s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [874s] Status: PENDING
+      [894s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [996s] Status: PENDING
+      [1016s] Status: PENDING
+      [1037s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [1098s] Status: PENDING
+      [1118s] Status: PENDING
+      [1139s] Status: PENDING
+      [1159s] Status: PENDING
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+   ❌ keywords timed out after 1200s
+   ❌ keywords failed (attempt 2)
+
+🔄 Retry 2/2 for keywords (waiting 120s)...
+🔑 Getting access token...
+   ✅ Token obtained (expires in 3600s)
+   📅 Shifted start date to 2026-04-05 to avoid stuck duplicate
+
+📊 Requesting report: keywords-2026-04-05-2026-04-13
+   📋 Report ID: cd43320f-db91-4bb5-8c07-5e1f99a38821
+   ⏳ Polling keywords (timeout 1200s)...
+      ⚠️  HTTP 429 while polling — backing off 40s ({"code":"429","detail":"Throttled"})
+      [40s] Status: PENDING
+      [61s] Status: PENDING
+      [82s] Status: PENDING
+      [102s] Status: PENDING
+      [123s] Status: PENDING
+      [143s] Status: PENDING
+      [164s] Status: PENDING
+      [184s] Status: PENDING
+      [205s] Status: PENDING
+      [225s] Status: PENDING
+      [246s] Status: PENDING
+      [266s] Status: PENDING
+      [287s] Status: PENDING
+      [307s] Status: PENDING
+      [328s] Status: PENDING
+      [348s] Status: PENDING
+      [369s] Status: PENDING
+      [389s] Status: PENDING
+      [410s] Status: PENDING
+      [430s] Status: PENDING
+      [451s] Status: PENDING
+      [471s] Status: PENDING
+      [492s] Status: PENDING
+      [513s] Status: PENDING
+      [533s] Status: PENDING
+      [554s] Status: PENDING
+      [574s] Status: PENDING
+      [595s] Status: PENDING
+      [615s] Status: PENDING
+      [636s] Status: PENDING
+      [656s] Status: PENDING
+      [677s] Status: PENDING
+      [698s] Status: PENDING
+      [718s] Status: PENDING
+      [739s] Status: PENDING
+      [759s] Status: PENDING
+      [780s] Status: PENDING
+      [800s] Status: PENDING
+      [821s] Status: PENDING
+      [842s] Status: PENDING
+      [862s] Status: PENDING
+      [883s] Status: PENDING
+      [903s] Status: PENDING
+      [924s] Status: PENDING
+      [944s] Status: PENDING
+      [965s] Status: PENDING
+      [985s] Status: PENDING
+      [1006s] Status: PENDING
+      [1026s] Status: PENDING
+      [1047s] Status: PENDING
+      [1067s] Status: PENDING
+      [1088s] Status: PENDING
+      [1109s] Status: PENDING
+      [1129s] Status: PENDING
+      [1150s] Status: PENDING
+      [1170s] Status: PENDING
+      [1191s] Status: PENDING
+   ❌ keywords timed out after 1200s
+   ❌ keywords failed (attempt 3)
+
+🚨 keywords FAILED after 3 attempts
+   ⏳ Waiting 5s before next report...
+
+📊 Requesting report: search-terms-2026-04-07-2026-04-13
+   📋 Report ID: 7aad4fca-03ad-4490-91b3-7c6902c8f3f1
+   ⏳ Polling search-terms (timeout 1200s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [62s] Status: PENDING
+      [82s] Status: PENDING
+      [102s] Status: PENDING
+      [123s] Status: PENDING
+      [143s] Status: PENDING
+      [164s] Status: PENDING
+      [185s] Status: PENDING
+      [205s] Status: PENDING
+      [226s] Status: PENDING
+      [246s] Status: PENDING
+      [267s] Status: PENDING
+      [287s] Status: PENDING
+      [308s] Status: PENDING
+      [328s] Status: PENDING
+      [349s] Status: PENDING
+      [369s] Status: PENDING
+      [390s] Status: PENDING
+      [411s] Status: PENDING
+      [431s] Status: PENDING
+      [452s] Status: PENDING
+      [472s] Status: PENDING
+      [492s] Status: PENDING
+      [513s] Status: PENDING
+      [534s] Status: PENDING
+      [554s] Status: PENDING
+      [575s] Status: PENDING
+      [595s] Status: PENDING
+      [616s] Status: PENDING
+      [636s] Status: PENDING
+      [657s] Status: PENDING
+      [677s] Status: PENDING
+      [698s] Status: PENDING
+      [718s] Status: PENDING
+      [739s] Status: PENDING
+      [759s] Status: PENDING
+      [780s] Status: PENDING
+      [800s] Status: PENDING
+      [821s] Status: PENDING
+      [841s] Status: PENDING
+      [862s] Status: PENDING
+      [882s] Status: PENDING
+      [903s] Status: PENDING
+      [923s] Status: PENDING
+      [944s] Status: PENDING
+      [964s] Status: PENDING
+      [985s] Status: PENDING
+      [1005s] Status: PENDING
+      [1026s] Status: PENDING
+      [1046s] Status: PENDING
+      [1067s] Status: PENDING
+      [1087s] Status: PENDING
+      [1108s] Status: PENDING
+      [1128s] Status: PENDING
+      [1149s] Status: PENDING
+      [1169s] Status: PENDING
+      [1190s] Status: PENDING
+   ❌ search-terms timed out after 1200s
+   ❌ search-terms failed (attempt 1)
+
+🔄 Retry 1/2 for search-terms (waiting 60s)...
+🔑 Getting access token...
+   ✅ Token obtained (expires in 3600s)
+   📅 Shifted start date to 2026-04-06 to avoid stuck duplicate
+
+📊 Requesting report: search-terms-2026-04-06-2026-04-13
+   📋 Report ID: 4f16a794-0f7b-41c1-a225-96707e02036b
+   ⏳ Polling search-terms (timeout 1200s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [61s] Status: PENDING
+      [82s] Status: PENDING
+      [102s] Status: PENDING
+      [123s] Status: PENDING
+      [143s] Status: PENDING
+      [164s] Status: PENDING
+      [184s] Status: PENDING
+      [205s] Status: PENDING
+      [225s] Status: PENDING
+      [246s] Status: PENDING
+      [266s] Status: PENDING
+      [287s] Status: PENDING
+      [307s] Status: PENDING
+      [328s] Status: PENDING
+      [349s] Status: PENDING
+      [369s] Status: PENDING
+      [390s] Status: PENDING
+      [410s] Status: PENDING
+      [431s] Status: PENDING
+      [451s] Status: PENDING
+      [472s] Status: PENDING
+      [492s] Status: PENDING
+      [513s] Status: PENDING
+      [534s] Status: PENDING
+      [554s] Status: PENDING
+      [575s] Status: PENDING
+      [595s] Status: PENDING
+      [616s] Status: PENDING
+      [636s] Status: PENDING
+      [657s] Status: PENDING
+      [677s] Status: PENDING
+      [698s] Status: PENDING
+      [718s] Status: PENDING
+      [739s] Status: PENDING
+      [760s] Status: PENDING
+      [780s] Status: PENDING
+      [801s] Status: PENDING
+      [821s] Status: PENDING
+      [842s] Status: PENDING
+      [863s] Status: PENDING
+      [883s] Status: PENDING
+      [904s] Status: PENDING
+      [924s] Status: PENDING
+      [945s] Status: PENDING
+      [965s] Status: PENDING
+      [986s] Status: PENDING
+      [1006s] Status: PENDING
+      [1027s] Status: PENDING
+      [1047s] Status: PENDING
+      [1068s] Status: PENDING
+      [1088s] Status: PENDING
+      [1109s] Status: PENDING
+      [1130s] Status: PENDING
+      [1150s] Status: PENDING
+      [1171s] Status: PENDING
+      [1191s] Status: PENDING
+   ❌ search-terms timed out after 1200s
+   ❌ search-terms failed (attempt 2)
+
+🔄 Retry 2/2 for search-terms (waiting 120s)...
+🔑 Getting access token...
+   ✅ Token obtained (expires in 3600s)
+   📅 Shifted start date to 2026-04-05 to avoid stuck duplicate
+
+📊 Requesting report: search-terms-2026-04-05-2026-04-13
+   📋 Report ID: 868863f7-26cb-4122-89d0-185a99418849
+   ⏳ Polling search-terms (timeout 1200s)...
+      [0s] Status: PENDING
+      [21s] Status: PENDING
+      [41s] Status: PENDING
+      [62s] Status: PENDING
+      [82s] Status: PENDING
+      [103s] Status: PENDING
+      [123s] Status: PENDING
+      [144s] Status: PENDING
+      [164s] Status: PENDING
+      [185s] Status: PENDING
+      [205s] Status: PENDING
+      [226s] Status: PENDING
+      [246s] Status: PENDING
+      [267s] Status: PENDING
+      [287s] Status: PENDING
+      [308s] Status: PENDING
+      [328s] Status: PENDING
+      [349s] Status: PENDING
+      [369s] Status: PENDING
+      [390s] Status: PENDING
+      [410s] Status: PENDING
+      [431s] Status: PENDING
+      [451s] Status: PENDING
+      [472s] Status: PENDING
+      [493s] Status: PENDING
+      [513s] Status: PENDING
+      [534s] Status: PENDING
+      [554s] Status: PENDING
+      [575s] Status: PENDING
+      [595s] Status: PENDING
+      [616s] Status: PENDING
+      [636s] Status: PENDING
+      [657s] Status: PENDING
+      [677s] Status: PENDING
+      [698s] Status: PENDING
+      [718s] Status: PENDING
+      [739s] Status: PENDING
+      [760s] Status: PENDING
+      [780s] Status: PENDING
+      [801s] Status: PENDING
+      [821s] Status: PENDING
+      [842s] Status: PENDING
+      [862s] Status: PENDING
+      [883s] Status: PENDING
+      [903s] Status: PENDING
+      [924s] Status: PENDING
+      [944s] Status: PENDING
+      [965s] Status: PENDING
+      [985s] Status: PENDING
+      [1006s] Status: PENDING
+      [1026s] Status: PENDING
+      [1047s] Status: PENDING
+      [1067s] Status: PENDING
+      [1088s] Status: PENDING
+      [1108s] Status: PENDING
+      [1129s] Status: PENDING
+      [1149s] Status: PENDING
+      [1170s] Status: PENDING
+      [1190s] Status: PENDING
+   ❌ search-terms timed out after 1200s
+   ❌ search-terms failed (attempt 3)
+
+🚨 search-terms FAILED after 3 attempts
+   🛟 Falling back to CHUNKED search-term pulls (1-day chunks) to avoid perma-PENDING large reports...
+
+📊 Requesting report: search-terms-2026-04-07-2026-04-07
+   📋 Report ID: 9b32d11d-e17d-4b30-b649-44c748aaef82
+   ⏳ Polling search-terms[2026-04-07] (timeout 900s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [61s] Status: PENDING
+      [82s] Status: PENDING
+      [102s] Status: PENDING
+      [123s] Status: PENDING
+      [144s] Status: PENDING
+      [164s] Status: PENDING
+      [185s] Status: PENDING
+      [205s] Status: PENDING
+      [226s] Status: PENDING
+      [246s] Status: PENDING
+      [267s] Status: PENDING
+      [287s] Status: PENDING
+      [308s] Status: PENDING
+      [328s] Status: PENDING
+      [349s] Status: PENDING
+      [369s] Status: PENDING
+      [390s] Status: PENDING
+      [411s] Status: PENDING
+      [431s] Status: PENDING
+      [452s] Status: PENDING
+      [472s] Status: PENDING
+      [493s] Status: PENDING
+      [513s] Status: PENDING
+      [534s] Status: PENDING
+      [554s] Status: PENDING
+      [575s] Status: PENDING
+      [595s] Status: PENDING
+      [616s] Status: PENDING
+      [636s] Status: PENDING
+      [657s] Status: PENDING
+      [677s] Status: PENDING
+      [698s] Status: PENDING
+      [718s] Status: PENDING
+      [739s] Status: PENDING
+      [759s] Status: PENDING
+      [780s] Status: PENDING
+      [800s] Status: PENDING
+      [821s] Status: PENDING
+      [842s] Status: PENDING
+      [862s] Status: PENDING
+      [883s] Status: PENDING
+   ❌ search-terms[2026-04-07] timed out after 900s
+   ❌ search-terms[2026-04-07] failed (attempt 1)
+
+🔄 Retry 1/2 for search-terms[2026-04-07] (waiting 60s)...
+🔑 Getting access token...
+   ✅ Token obtained (expires in 3600s)
+
+📊 Requesting report: search-terms-2026-04-07-2026-04-07
+   📋 Report ID: 3a2ac34e-4f8f-4bce-83c0-447bc14dd9fa
+   ⏳ Polling search-terms[2026-04-07] (timeout 900s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [62s] Status: PENDING
+      [82s] Status: PENDING
+      [103s] Status: PENDING
+      [123s] Status: PENDING
+      [144s] Status: PENDING
+      [164s] Status: PENDING
+      [185s] Status: PENDING
+      [205s] Status: PENDING
+      [226s] Status: PENDING
+      [246s] Status: PENDING
+      [267s] Status: PENDING
+      [287s] Status: PENDING
+      [308s] Status: PENDING
+      [328s] Status: PENDING
+      [349s] Status: PENDING
+      [369s] Status: PENDING
+      [390s] Status: PENDING
+      [410s] Status: PENDING
+      [431s] Status: PENDING
+      [451s] Status: PENDING
+      [472s] Status: PENDING
+      [492s] Status: PENDING
+      [513s] Status: PENDING
+      [533s] Status: PENDING
+      [554s] Status: PENDING
+      [575s] Status: PENDING
+      [595s] Status: PENDING
+      [616s] Status: PENDING
+      [636s] Status: PENDING
+      [657s] Status: PENDING
+      [677s] Status: PENDING
+      [698s] Status: PENDING
+      [718s] Status: PENDING
+      [739s] Status: PENDING
+      [759s] Status: PENDING
+      [780s] Status: PENDING
+      [801s] Status: PENDING
+      [821s] Status: PENDING
+      [842s] Status: PENDING
+      [862s] Status: PENDING
+      [882s] Status: PENDING
+   ❌ search-terms[2026-04-07] timed out after 900s
+   ❌ search-terms[2026-04-07] failed (attempt 2)
+
+🔄 Retry 2/2 for search-terms[2026-04-07] (waiting 120s)...
+🔑 Getting access token...
+   ✅ Token obtained (expires in 3600s)
+
+📊 Requesting report: search-terms-2026-04-07-2026-04-07
+   ♻️  Duplicate report detected, reusing existing: 3a2ac34e-4f8f-4bce-83c0-447bc14dd9fa
+   📋 Report ID: 3a2ac34e-4f8f-4bce-83c0-447bc14dd9fa (reused duplicate)
+   ⚠️  Duplicate is still PROCESSING — requesting a fresh report as: search-terms-2026-04-07-2026-04-07-run1776182616
+   ♻️  Duplicate report detected, reusing existing: 3a2ac34e-4f8f-4bce-83c0-447bc14dd9fa
+   📋 Report ID: 3a2ac34e-4f8f-4bce-83c0-447bc14dd9fa (reused duplicate)
+   ⚠️  Duplicate is still PROCESSING — requesting a fresh report as: search-terms-2026-04-07-2026-04-07-run1776182617
+   ♻️  Duplicate report detected, reusing existing: 3a2ac34e-4f8f-4bce-83c0-447bc14dd9fa
+   📋 Report ID: 3a2ac34e-4f8f-4bce-83c0-447bc14dd9fa (reused duplicate)
+   ⚠️  Duplicate still PROCESSING after re-request attempts — proceeding with duplicate
+   ⏳ Polling search-terms[2026-04-07] (timeout 900s)...
+      [0s] Status: PROCESSING
+      [20s] Status: PROCESSING
+      [41s] Status: COMPLETED
+   ✅ search-terms[2026-04-07] completed!
+   📥 Downloading report...
+   ✅ Downloaded 47 rows
+
+📊 Requesting report: search-terms-2026-04-08-2026-04-08
+   📋 Report ID: 76e60339-d736-48c5-8904-2d75857226cc
+   ⏳ Polling search-terms[2026-04-08] (timeout 900s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [62s] Status: PENDING
+      [82s] Status: PENDING
+      [103s] Status: PENDING
+      [123s] Status: PENDING
+      [144s] Status: PENDING
+      [164s] Status: PENDING
+      [185s] Status: PENDING
+      [205s] Status: PENDING
+      [226s] Status: PENDING
+      [246s] Status: PENDING
+      [267s] Status: PENDING
+      [287s] Status: PENDING
+      [312s] Status: PENDING
+      [332s] Status: PENDING
+      [353s] Status: PENDING
+      [373s] Status: PENDING
+      [394s] Status: PENDING
+      [414s] Status: PENDING
+      [435s] Status: PENDING
+      [455s] Status: PENDING
+      [476s] Status: PENDING
+      [496s] Status: PENDING
+      [517s] Status: PENDING
+      [537s] Status: PENDING
+      [558s] Status: PENDING
+      [578s] Status: PENDING
+      [599s] Status: PENDING
+      [619s] Status: PENDING
+      [640s] Status: PENDING
+      [660s] Status: PENDING
+      [681s] Status: PENDING
+      [701s] Status: PENDING
+      [722s] Status: PENDING
+      [742s] Status: PENDING
+      [763s] Status: PENDING
+      [783s] Status: PENDING
+      [804s] Status: PENDING
+      [825s] Status: PENDING
+      [845s] Status: PENDING
+      [866s] Status: PENDING
+      [886s] Status: PENDING
+   ❌ search-terms[2026-04-08] timed out after 900s
+   ❌ search-terms[2026-04-08] failed (attempt 1)
+
+🔄 Retry 1/2 for search-terms[2026-04-08] (waiting 60s)...
+🔑 Getting access token...
+   ✅ Token obtained (expires in 3600s)
+
+📊 Requesting report: search-terms-2026-04-08-2026-04-08
+   ♻️  Duplicate report detected, reusing existing: 76e60339-d736-48c5-8904-2d75857226cc
+   📋 Report ID: 76e60339-d736-48c5-8904-2d75857226cc (reused duplicate)
+   ⚠️  Duplicate is still PENDING — requesting a fresh report as: search-terms-2026-04-08-2026-04-08-run1776183633
+   ♻️  Duplicate report detected, reusing existing: 76e60339-d736-48c5-8904-2d75857226cc
+   📋 Report ID: 76e60339-d736-48c5-8904-2d75857226cc (reused duplicate)
+   ⚠️  Duplicate is still PENDING — requesting a fresh report as: search-terms-2026-04-08-2026-04-08-run1776183634
+   ♻️  Duplicate report detected, reusing existing: 76e60339-d736-48c5-8904-2d75857226cc
+   📋 Report ID: 76e60339-d736-48c5-8904-2d75857226cc (reused duplicate)
+   ⚠️  Duplicate still PENDING after re-request attempts — proceeding with duplicate
+   ⏳ Polling search-terms[2026-04-08] (timeout 900s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [62s] Status: PENDING
+      [82s] Status: PENDING
+      [103s] Status: PENDING
+      [123s] Status: PENDING
+      [144s] Status: PENDING
+      [164s] Status: COMPLETED
+   ✅ search-terms[2026-04-08] completed!
+   📥 Downloading report...
+   ✅ Downloaded 69 rows
+
+📊 Requesting report: search-terms-2026-04-09-2026-04-09
+   📋 Report ID: 78a3a45e-b4fa-4841-8c89-d5c1b7e3c266
+   ⏳ Polling search-terms[2026-04-09] (timeout 900s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [61s] Status: PENDING
+      [82s] Status: PENDING
+      [102s] Status: PENDING
+      [123s] Status: PENDING
+      [144s] Status: PENDING
+      [164s] Status: PENDING
+      [185s] Status: PENDING
+      [205s] Status: PENDING
+      [226s] Status: PENDING
+      [246s] Status: PENDING
+      [267s] Status: PENDING
+      [287s] Status: PENDING
+      [308s] Status: PENDING
+      [328s] Status: PENDING
+      [349s] Status: PENDING
+      [369s] Status: PENDING
+      [390s] Status: PENDING
+      [410s] Status: PENDING
+      [431s] Status: PENDING
+      [451s] Status: PENDING
+      [472s] Status: PENDING
+      [492s] Status: PENDING
+      [513s] Status: PENDING
+      [533s] Status: PENDING
+      [554s] Status: PENDING
+      [574s] Status: PENDING
+      [595s] Status: PENDING
+      [615s] Status: PENDING
+      [636s] Status: PENDING
+      [656s] Status: PENDING
+      [677s] Status: PENDING
+      [697s] Status: PENDING
+      [718s] Status: PENDING
+      [738s] Status: PENDING
+      [759s] Status: PENDING
+      [780s] Status: PENDING
+      [800s] Status: PENDING
+      [821s] Status: PENDING
+      [841s] Status: PENDING
+      [862s] Status: PENDING
+      [882s] Status: PENDING
+   ❌ search-terms[2026-04-09] timed out after 900s
+   ❌ search-terms[2026-04-09] failed (attempt 1)
+
+🔄 Retry 1/2 for search-terms[2026-04-09] (waiting 60s)...
+🔑 Getting access token...
+   ✅ Token obtained (expires in 3600s)
+
+📊 Requesting report: search-terms-2026-04-09-2026-04-09
+   ♻️  Duplicate report detected, reusing existing: 78a3a45e-b4fa-4841-8c89-d5c1b7e3c266
+   📋 Report ID: 78a3a45e-b4fa-4841-8c89-d5c1b7e3c266 (reused duplicate)
+   ⚠️  Duplicate is still PENDING — requesting a fresh report as: search-terms-2026-04-09-2026-04-09-run1776184770
+   ♻️  Duplicate report detected, reusing existing: 78a3a45e-b4fa-4841-8c89-d5c1b7e3c266
+   📋 Report ID: 78a3a45e-b4fa-4841-8c89-d5c1b7e3c266 (reused duplicate)
+   ⚠️  Duplicate is still PENDING — requesting a fresh report as: search-terms-2026-04-09-2026-04-09-run1776184771
+   ♻️  Duplicate report detected, reusing existing: 78a3a45e-b4fa-4841-8c89-d5c1b7e3c266
+   📋 Report ID: 78a3a45e-b4fa-4841-8c89-d5c1b7e3c266 (reused duplicate)
+   ⚠️  Duplicate still PENDING after re-request attempts — proceeding with duplicate
+   ⏳ Polling search-terms[2026-04-09] (timeout 900s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [62s] Status: PENDING
+      [82s] Status: PENDING
+      [103s] Status: PENDING
+      [123s] Status: COMPLETED
+   ✅ search-terms[2026-04-09] completed!
+   📥 Downloading report...
+   ✅ Downloaded 48 rows
+
+📊 Requesting report: search-terms-2026-04-10-2026-04-10
+   📋 Report ID: 3b52a4a6-f9a7-4fb8-8765-633a7c828f88
+   ⏳ Polling search-terms[2026-04-10] (timeout 900s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [62s] Status: PENDING
+      [82s] Status: PENDING
+      [103s] Status: PENDING
+      [123s] Status: PENDING
+      [144s] Status: PENDING
+      [164s] Status: PENDING
+      [185s] Status: PENDING
+      [205s] Status: PENDING
+      [226s] Status: PENDING
+      [246s] Status: PENDING
+      [267s] Status: PENDING
+      [287s] Status: PENDING
+      [308s] Status: PENDING
+      [328s] Status: PENDING
+      [349s] Status: PENDING
+      [369s] Status: PENDING
+      [390s] Status: PENDING
+      [410s] Status: PENDING
+      [431s] Status: PENDING
+      [452s] Status: PENDING
+      [472s] Status: PENDING
+      [493s] Status: PENDING
+      [513s] Status: PENDING
+      [534s] Status: PENDING
+      [554s] Status: PENDING
+      [575s] Status: PENDING
+      [595s] Status: PENDING
+      [616s] Status: PENDING
+      [636s] Status: PENDING
+      [657s] Status: PENDING
+      [677s] Status: PENDING
+      [698s] Status: PENDING
+      [718s] Status: PENDING
+      [739s] Status: PENDING
+      [759s] Status: PENDING
+      [780s] Status: PENDING
+      [800s] Status: PENDING
+      [821s] Status: PENDING
+      [841s] Status: PENDING
+      [862s] Status: PENDING
+      [883s] Status: PENDING
+   ❌ search-terms[2026-04-10] timed out after 900s
+   ❌ search-terms[2026-04-10] failed (attempt 1)
+
+🔄 Retry 1/2 for search-terms[2026-04-10] (waiting 60s)...
+🔑 Getting access token...
+   ✅ Token obtained (expires in 3600s)
+
+📊 Requesting report: search-terms-2026-04-10-2026-04-10
+   ♻️  Duplicate report detected, reusing existing: 3b52a4a6-f9a7-4fb8-8765-633a7c828f88
+   📋 Report ID: 3b52a4a6-f9a7-4fb8-8765-633a7c828f88 (reused duplicate)
+   ⚠️  Duplicate is still PENDING — requesting a fresh report as: search-terms-2026-04-10-2026-04-10-run1776185866
+   ♻️  Duplicate report detected, reusing existing: 3b52a4a6-f9a7-4fb8-8765-633a7c828f88
+   📋 Report ID: 3b52a4a6-f9a7-4fb8-8765-633a7c828f88 (reused duplicate)
+   ⚠️  Duplicate is still PENDING — requesting a fresh report as: search-terms-2026-04-10-2026-04-10-run1776185866
+   ♻️  Duplicate report detected, reusing existing: 3b52a4a6-f9a7-4fb8-8765-633a7c828f88
+   📋 Report ID: 3b52a4a6-f9a7-4fb8-8765-633a7c828f88 (reused duplicate)
+   ⚠️  Duplicate still PENDING after re-request attempts — proceeding with duplicate
+   ⏳ Polling search-terms[2026-04-10] (timeout 900s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [61s] Status: PENDING
+      [82s] Status: PROCESSING
+      [102s] Status: COMPLETED
+   ✅ search-terms[2026-04-10] completed!
+   📥 Downloading report...
+   ✅ Downloaded 52 rows
+
+📊 Requesting report: search-terms-2026-04-11-2026-04-11
+   📋 Report ID: d260dc6b-9353-4e37-aed5-c3326ae724c9
+   ⏳ Polling search-terms[2026-04-11] (timeout 900s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [61s] Status: PENDING
+      [82s] Status: PENDING
+      [102s] Status: PENDING
+      [123s] Status: PENDING
+      [143s] Status: PENDING
+      [164s] Status: PENDING
+      [185s] Status: PENDING
+      [205s] Status: PENDING
+      [226s] Status: PENDING
+      [246s] Status: PENDING
+      [267s] Status: PENDING
+      [287s] Status: PENDING
+      [308s] Status: PENDING
+      [328s] Status: PENDING
+      [349s] Status: PENDING
+      [369s] Status: PENDING
+      [390s] Status: PENDING
+      [410s] Status: PENDING
+      [431s] Status: PENDING
+      [451s] Status: PENDING
+      [472s] Status: PENDING
+      [492s] Status: PENDING
+      [513s] Status: PENDING
+      [533s] Status: PENDING
+      [554s] Status: PENDING
+      [574s] Status: PENDING
+      [595s] Status: PENDING
+      [615s] Status: PENDING
+      [636s] Status: PENDING
+      [656s] Status: PENDING
+      [677s] Status: PENDING
+      [697s] Status: PENDING
+      [718s] Status: PENDING
+      [738s] Status: COMPLETED
+   ✅ search-terms[2026-04-11] completed!
+   📥 Downloading report...
+   ✅ Downloaded 52 rows
+
+📊 Requesting report: search-terms-2026-04-12-2026-04-12
+   📋 Report ID: 1af54479-9ada-49f3-8e4f-d92d4892f5e8
+   ⏳ Polling search-terms[2026-04-12] (timeout 900s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [61s] Status: PENDING
+      [82s] Status: PENDING
+      [102s] Status: PENDING
+      [123s] Status: PENDING
+      [143s] Status: PENDING
+      [164s] Status: PENDING
+      [184s] Status: PENDING
+      [205s] Status: PENDING
+      [225s] Status: PENDING
+      [246s] Status: PENDING
+      [266s] Status: PENDING
+      [287s] Status: PENDING
+      [307s] Status: PENDING
+      [328s] Status: PENDING
+      [348s] Status: PENDING
+      [369s] Status: PENDING
+      [389s] Status: PENDING
+      [410s] Status: PENDING
+      [430s] Status: PENDING
+      [451s] Status: PENDING
+      [471s] Status: PENDING
+      [492s] Status: PENDING
+      [512s] Status: PENDING
+      [533s] Status: PENDING
+      [553s] Status: PENDING
+      [574s] Status: PENDING
+      [594s] Status: PENDING
+      [615s] Status: PENDING
+      [635s] Status: PENDING
+      [656s] Status: PENDING
+      [676s] Status: PENDING
+      [697s] Status: PENDING
+      [718s] Status: PENDING
+      [738s] Status: PENDING
+      [759s] Status: COMPLETED
+   ✅ search-terms[2026-04-12] completed!
+   📥 Downloading report...
+   ✅ Downloaded 53 rows
+
+📊 Requesting report: search-terms-2026-04-13-2026-04-13
+   📋 Report ID: 2e06bd3b-56f5-4d0c-8454-7a91b305cda2
+   ⏳ Polling search-terms[2026-04-13] (timeout 900s)...
+      [0s] Status: PENDING
+      [20s] Status: PENDING
+      [41s] Status: PENDING
+      [62s] Status: PENDING
+      [82s] Status: PENDING
+      [103s] Status: PENDING
+      [123s] Status: PENDING
+      [144s] Status: PENDING
+      [164s] Status: PENDING
+      [185s] Status: PENDING
+      [205s] Status: PENDING
+      [226s] Status: PENDING
+      [246s] Status: PENDING
+      [267s] Status: PENDING
+      [287s] Status: PENDING
+      [308s] Status: PENDING
+      [328s] Status: PENDING
+      [349s] Status: PENDING
+      [370s] Status: PENDING
+      [390s] Status: PENDING
+      [410s] Status: PENDING
+      [431s] Status: PENDING
+      [452s] Status: PENDING
+      [472s] Status: PENDING
+      [493s] Status: PENDING
+      [513s] Status: PENDING
+      [534s] Status: PROCESSING
+      [554s] Status: COMPLETED
+   ✅ search-terms[2026-04-13] completed!
+   📥 Downloading report...
+   ✅ Downloaded 50 rows
+
+💾 Saving daily data for 2026-04-13...
+   💾 Saved campaigns.json (10 rows)
+   💾 Saved keywords.json (0 rows)
+   💾 Saved search-terms.json (371 rows)
+   📝 Saved pull-status.json (valid=False)
+
+📈 Updating history.json...
+   ✅ History updated — 47 days tracked
+   💰 Period: $685.37 spend | $2106.82 sales | 32.5% ACoS | 3.07x ROAS
+
+🔍 Updating search-terms-master.json...
+   ✅ Master DB: 0 new terms, 371 updated, 1706 total
+
+============================================================
+⚠️  Daily pull completed WITH FAILURES: keywords
+   📊 Campaigns: 10
+   🎯 Keywords: 0 ❌ FAILED
+   🔍 Search terms: 371 (0 new)
+   📂 Data: /Users/evolve/.openclaw/workspace/moneysamurai/data/ads/daily/2026-04-13
+   🚨 FAILED REPORTS: keywords — digest metrics may be inaccurate!
+============================================================
+\n===== 2) Optimizer (LIVE --execute) =====
+============================================================
+🤖 Amazon Ads Auto-Optimizer
+   Mode: EXECUTE
+   Date: 2026-04-13
+============================================================
+
+📂 Loading data for 2026-04-13...
+   📊 Campaigns: 10
+   🎯 Keywords: 0
+   🔍 Search terms: 371
+🔑 Authenticating with Amazon Ads API...
+   ✅ Authenticated (expires in 3600s)
+
+🤖 Running Rules Engine...
+
+  📈 Rule: BID_UP_WINNER
+    → 0 keywords with bids increased
+
+  📉 Rule: BID_DOWN_BLEEDER
+    → 0 keywords with bids decreased (bleeders)
+
+  📉 Rule: BID_DOWN_NO_CONVERT
+    → 0 keywords with bids decreased (no conversions)
+
+  ⏸️  Rule: PAUSE_DEAD
+    → 0 keywords paused (dead)
+
+  🚫 Rule: NEGATE_JUNK
+    → 0 search terms negated
+
+  🏆 Rule: HARVEST_WINNER
+    🏆 HARVEST CANDIDATE: "super glue large bottle" — 3 orders, 4.1% ACoS, $80.97 sales (Campaign: Sales - CA Glue Core Exact*SP-M-KW)
+    → 1 harvest candidates identified
+
+  ⚠️  Rule: PAUSE_CAMPAIGN
+    ⚠️ PAUSE REVIEW: "Sales - Competitor Conquest*SP-M-KW" — ACoS 104.7%, $65.93 spend, 2 orders
+    → 1 campaigns flagged for pause review
+
+  🚀 Rule: SCALE_CAMPAIGN
+    → 0 campaigns flagged for scaling
+
+  💡 Rule: BUDGET_REBALANCE
+    💡 "Sales - 2oz thick and 8oz medium - keywords*SP-M-GEN" — using 15.9% of budget ($3.96/$25.00)
+    💡 "Sales - 8oz Medium Glue - keywords*SP-M-GEN" — using 35.3% of budget ($17.66/$50.00)
+    💡 "Sales - CA Glue Core Exact*SP-M-KW" — using 14.4% of budget ($7.22/$50.00)
+    💡 "Sales - Competitor Conquest*SP-M-KW" — using 20.9% of budget ($9.42/$45.00)
+    💡 "Sales - Thin CA Glue*SP-M-KW" — using 0.9% of budget ($0.31/$35.00)
+    💡 "Sales - Medium 16oz Bulk*SP-M-KW" — using 0.6% of budget ($0.19/$30.00)
+    💡 "Discovery - 8oz Medium Auto*SP-A-DSC" — using 8.1% of budget ($4.06/$50.00)
+    💡 "Discovery - 8oz Thick Auto*SP-A-DSC" — using 24.4% of budget ($14.63/$60.00)
+    → 8 campaigns suggested for budget reallocation
+
+  📊 Rule: CPC_SPIKE
+    ℹ️ No CPC spikes detected
+    → 0 CPC alerts
+
+  🚨 Rule: SPEND_SPIKE
+    ✅ No spend spikes detected
+    → 0 spend spike alerts
+
+  📉 Rule: CTR_COLLAPSE
+    ✅ No CTR collapses detected
+    → 0 CTR collapse alerts
+
+  📉 Rule: CVR_COLLAPSE
+    ✅ No CVR collapses detected
+    → 0 CVR collapse alerts
+
+  💹 Rule: CPC_SURGE
+    ✅ CPC stable: $1.31 → $1.30 (within 25% threshold)
+    → 0 CPC surge alerts
+
+  👁️  Rule: ZERO_IMPRESSIONS
+    ✅ All enabled campaigns have impressions
+    → 0 zero impression alerts
+
+💾 Changes saved to /Users/evolve/.openclaw/workspace/moneysamurai/data/ads/changes.json
+
+============================================================
+🤖 OPTIMIZER SUMMARY — 2026-04-13 (EXECUTE)
+============================================================
+
+📊 Total actions: 10
+   Tier 1 (autopilot):    0
+   Tier 2 (auto+notify):  2
+   Tier 3 (recommend):    8
+
+📈 Bids increased:        0
+📉 Bids decreased:        0
+⏸️  Keywords paused:       0
+🚫 Negatives added:       0
+🏆 Harvest candidates:    1
+⚠️  Campaign flags:        1
+🚨 Anomaly alerts:        0
+
+📢 Notifications (2):
+   🏆 HARVEST CANDIDATE: "super glue large bottle" — 3 orders, 4.1% ACoS, $80.97 sales (Campaign: Sales - CA Glue Core Exact*SP-M-KW)
+   ⚠️ PAUSE REVIEW: "Sales - Competitor Conquest*SP-M-KW" — ACoS 104.7%, $65.93 spend, 2 orders
+
+============================================================
+\n===== 3) Harvester (LIVE --execute) =====
+============================================================
+🌾 Amazon Ads Search Term Harvester
+   Mode: EXECUTE
+   Min Orders: 3
+   Max ACoS: 30.0%
+============================================================
+
+📂 Loading search-terms-master.json...
+   ✅ 1706 search terms in master DB
+📂 Loading keywords from 2026-04-13...
+   ✅ 0 keywords loaded
+   📌 0 existing exact match keywords
+
+🔍 Scanning for harvest candidates...
+   ✅ Found 3 candidates
+
+📋 Building harvest plan...
+
+────────────────────────────────────────────────────────────
+  HARVEST PLAN (3 terms)
+────────────────────────────────────────────────────────────
+
+  "cyanoacrylate glue"
+    Orders: 194 | ACoS: 29.4% | Sales: $7759.36 | CPC: $1.66
+    → Defense - CA Core Positions / Top Positions
+    → Bid: $1.82
+    ← Source: Defense - Brand - Keywords*SP-M-DEF
+
+  "super glue thick 15 oz"
+    Orders: 4 | ACoS: 2.0% | Sales: $195.96 | CPC: $1.00
+    → Sales - CA Glue Core Exact / Head Terms
+    → Bid: $1.10
+    ← Source: Discovery - 8oz Thick Auto*SP-A-DSC
+
+  "pegamento asiano clilato"
+    Orders: 4 | ACoS: 4.4% | Sales: $135.96 | CPC: $1.50
+    → Sales - CA Glue Core Exact / Head Terms
+    → Bid: $1.65
+    ← Source: Discovery - 8oz Thick Auto*SP-A-DSC
+🔑 Authenticating with Amazon Ads API...
+   ✅ Authenticated (expires in 3600s)
+
+────────────────────────────────────────────────────────────
+  EXECUTING HARVEST (EXECUTE)
+────────────────────────────────────────────────────────────
+
+  [1/3] "cyanoacrylate glue"
+      Orders: 194 | ACoS: 29.4% | Sales: $7759.36
+      → Campaign: Defense - CA Core Positions
+      → Ad Group: Top Positions
+      → Bid: $1.82
+      📝 Creating EXACT keyword...
+      ✅ Keyword created (HTTP 207)
+
+  [2/3] "super glue thick 15 oz"
+      Orders: 4 | ACoS: 2.0% | Sales: $195.96
+      → Campaign: Sales - CA Glue Core Exact
+      → Ad Group: Head Terms
+      → Bid: $1.10
+      📝 Creating EXACT keyword...
+      ✅ Keyword created (HTTP 207)
+      🚫 Adding NEGATIVE_EXACT in source: Discovery - 8oz Thick Auto*SP-A-DSC...
+      ✅ Negative added (HTTP 207)
+
+  [3/3] "pegamento asiano clilato"
+      Orders: 4 | ACoS: 4.4% | Sales: $135.96
+      → Campaign: Sales - CA Glue Core Exact
+      → Ad Group: Head Terms
+      → Bid: $1.65
+      📝 Creating EXACT keyword...
+      ✅ Keyword created (HTTP 207)
+      🚫 Adding NEGATIVE_EXACT in source: Discovery - 8oz Thick Auto*SP-A-DSC...
+      ✅ Negative added (HTTP 207)
+
+💾 Updated search-terms-master.json
+💾 Logged 3 harvest actions to changes.json
+
+============================================================
+🌾 HARVEST SUMMARY (EXECUTE)
+============================================================
+  Total candidates:     3
+  Keywords created:     3
+  Negatives created:    2
+  Average bid:          $1.52
+
+  Terms harvested:
+    ✅ "cyanoacrylate glue" → Defense - CA Core Positions / Top Positions @ $1.82
+    ✅ "super glue thick 15 oz" → Sales - CA Glue Core Exact / Head Terms @ $1.10
+    ✅ "pegamento asiano clilato" → Sales - CA Glue Core Exact / Head Terms @ $1.65
+
+============================================================
+\n===== 4) Generate digest =====
+📊 Generating digest for 2026-04-13 (vs 2026-04-12)
+✅ Digest saved to /Users/evolve/.openclaw/workspace/moneysamurai/data/ads/daily/2026-04-13/digest.md
+   💰 Spend: $685.37 | Sales: $2,106.82 | Orders: 70 | ACoS: 32.5% | ROAS: 3.07x
+\n===== 5) Regenerate dashboard =====
+📊 Generating dashboard from 2026-04-13 data...
+✅ Dashboard generated: /Users/evolve/.openclaw/workspace/moneysamurai/data/ads/dashboard.html
+   File size: 22,027 bytes
+   Open in browser: file:///Users/evolve/.openclaw/workspace/moneysamurai/data/ads/dashboard.html
+Dashboard saved to /Users/evolve/.openclaw/workspace/moneysamurai/data/ads/dashboard.html
+\n===== 6) Sync to Render =====
+🔄 Amazon Ads Flywheel → Render Sync
+   Date: 2026-04-13
+   Target: https://moneysamurai.onrender.com
+
+📦 Collecting data for 2026-04-13...
+  ✅ campaigns.json (10 records)
+  ✅ search-terms.json (371 records)
+  ✅ digest.md (3635 bytes)
+  ✅ history.json
+  ✅ search-terms-master.json (4 terms)
+  ✅ changes.json
+
+📤 Syncing to https://moneysamurai.onrender.com/ads/data/sync (1.1 MB)...
+✅ Sync complete: ['campaigns.json', 'search-terms.json', 'digest.md', 'history.json', 'search-terms-master.json', 'changes.json']
