@@ -1,4 +1,4 @@
-# KANBAN — Last updated: 2026-04-16 6:00 PM PT
+# KANBAN — Last updated: 2026-04-16 11:30 PM PT
 
 ## 🔴 URGENT
 - [ ] **Heather (Amazon)** — 20+ days no reply. A-to-Z claim risk. **Details recovered** (Himalaya msg id **191366**, 2026-03-24, Order **114-0636756-1872255**): buyer says **they have not received an update from Amazon nor a replacement**. Draft path: `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md` (**updated 2026-04-13**, ready to send once logged in).
@@ -32,8 +32,10 @@
 - [ ] **A3 Partners PO 28** — UPS ETA Apr 3. Invoice $3,312.37 due 4/25.
 - [ ] **Designcoffers** — pump accelerator label revisions (Fiverr).
 - [ ] **Ads daily pull** — ✅ **confirmed working 2026-04-12** (snapshot **2026-04-11**): campaigns (10) + keywords (97) + search-terms (308; 57 new) pulled successfully; digest + dashboard generated. Latest run logs: `logs/ads-daily/2026-04-12/01_pull_reports.log` + `04_generate_digest.log` + `05_dashboard_gen.log`. Code fix: `moneysamurai@93bbb4e` (fallbacks/chunking + better failure surfacing).
-  - **2026-04-13 pull (ran 2026-04-14): keywords report failed** (0 rows / 2 bytes) → `pull-status.isValid=false`. **Fixed digest inconsistency (2026-04-15):** `ads-daily-digest.py` now shows **DEGRADED** status whenever any report is missing.
-  - **Still open:** keywords report is also failing on **2026-04-14 pull** → needs pull-side mitigation (retry/chunking/fallback).
+  - **Recovered:** re-pulled the two bad snapshots successfully:
+    - **2026-04-13** → keywords **102** rows, search-terms **305**
+    - **2026-04-14** → keywords **104** rows, search-terms **313**
+  - **Resilience added (2026-04-16):** `ads-daily-pull.py` now tries **DAILY** timeUnit fallback before chunking if SUMMARY returns suspicious empty `[]` (and aggregates back to SUMMARY). Added offline triage tool: `moneysamurai/scripts/ads-pull-triage.py` (commit `moneysamurai@479b054`).
   - Digest status fix is **committed** in `moneysamurai@f0d81f0` (plus consistency tweak in `e5eebb2`).
 
 ## 📋 BACKLOG
