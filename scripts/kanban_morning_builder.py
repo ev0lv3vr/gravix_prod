@@ -328,29 +328,74 @@ def score_task(
     return round(s, 2)
 
 
-def get_recent_memory_context(limit_files: int = 3) -> list[str]:
+def get_recent_memory_context(limit_files: int = 3, prioritize_dates: list[str] | None = None) -> list[str]:
     if not MEMORY_DIR.exists():
         return []
 
-    files = sorted(
-        [p for p in MEMORY_DIR.glob("2026-*.md") if p.name != "error-log.md"],
+    all_files = sorted(
+        [p for p in MEMORY_DIR.glob("20*.md") if p.name != "error-log.md"],
         key=lambda p: p.name,
         reverse=True,
-    )[:limit_files]
+    )
+
+    picked: list[Path] = []
+    seen: set[str] = set()
+
+    for d in prioritize_dates or []:
+        path = MEMORY_DIR / f"{d}.md"
+        if path.exists() and path.name not in seen:
+            picked.append(path)
+            seen.add(path.name)
+
+    for path in all_files:
+        if path.name in seen:
+            continue
+        picked.append(path)
+        seen.add(path.name)
+        if len(picked) >= limit_files:
+            break
 
     context: list[str] = []
-    for path in files:
+    high_signal_tokens = [
+        "risk", "overdue", "follow up", "needs", "deadline", "outstanding", "urgent",
+        "blocked", "waiting", "pending", "failed", "billing", "access",
+    ]
+
+    for path in picked[:limit_files]:
         lines = path.read_text(encoding="utf-8").splitlines()
-        # pick concise high-signal bullets
         for line in lines:
             l = line.strip()
             if not l.startswith("-"):
                 continue
-            if any(k in l.lower() for k in ["risk", "overdue", "follow up", "needs", "deadline", "outstanding", "urgent"]):
+            if any(k in l.lower() for k in high_signal_tokens):
                 context.append(f"{path.name}: {l[1:].strip()}")
-                if len(context) >= 8:
+                if len(context) >= 10:
                     return context
-    return context[:8]
+    return context[:10]
+
+
+def derive_focus_sets(tasks: list[Task]) -> dict[str, list[Task]]:
+    def match(task: Task, *tokens: str) -> bool:
+        lt = task.text.lower()
+        return any(token in lt for token in tokens)
+
+    blockers = [
+        t for t in tasks
+        if match(t, "blocked", "logged out", "login", "access", "confirm", "needs ev", "waiting")
+    ]
+    customer_risk = [
+        t for t in tasks
+        if match(t, "customer", "reply", "a-to-z", "refund", "order", "unshipped", "return")
+    ]
+    deadlines = [t for t in tasks if t.deadline is not None or (t.days_to_deadline is not None and t.days_to_deadline <= 0)]
+    burn = [t for t in tasks if (t.daily_burn or 0) > 0]
+
+    return {
+        "blockers": blockers[:8],
+        "customer_risk": customer_risk[:8],
+        "deadlines": sorted(deadlines, key=lambda t: (t.days_to_deadline is None, t.days_to_deadline or 999))[:8],
+        "burn": burn[:8],
+    }
 
 
 def build_tasks(buckets: dict[str, list[str]]) -> list[Task]:
@@ -525,6 +570,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
     This avoids `fetch()` so it works when opened directly from disk (file://).
     """
 
+    focus = derive_focus_sets(report.all_tasks_ranked)
     data_json = json.dumps(
         {
             "date": report.date,
@@ -535,6 +581,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
             "all_tasks_ranked": [asdict(t) for t in report.all_tasks_ranked],
             "memory_context": report.memory_context,
             "quick_math": report.quick_math,
+            "focus": {k: [asdict(t) for t in v] for k, v in focus.items()},
         },
         ensure_ascii=False,
     )
@@ -570,6 +617,8 @@ def render_ops_hub_html(report: BuildOutput) -> str:
     .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px}
     .k{color:var(--muted);font-size:12px} .v{font-size:26px;font-weight:750;margin-top:4px}
     .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:12px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width: 900px){.two{grid-template-columns:1fr}}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .pill{display:inline-flex;gap:8px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:13px;color:var(--muted)}
     .pill input{accent-color:var(--accent)}
@@ -613,6 +662,44 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         </div>
       </div>
       <ul id="topList"></ul>
+    </div>
+
+    <div class="two">
+      <div class="panel">
+        <div class="row" style="justify-content:space-between">
+          <div>
+            <div style="font-weight:750;margin-bottom:4px">Unblockers first</div>
+            <div class="muted">Tasks blocked on access, login, confirmation, or Ev decisions.</div>
+          </div>
+          <button id="copyBlockers" class="secondary">Copy unblockers</button>
+        </div>
+        <ul id="blockerList"></ul>
+      </div>
+
+      <div class="panel">
+        <div class="row" style="justify-content:space-between">
+          <div>
+            <div style="font-weight:750;margin-bottom:4px">Customer risk queue</div>
+            <div class="muted">Anything likely to turn into churn, claims, or angry follow-up.</div>
+          </div>
+          <button id="copyCustomer" class="secondary">Copy customer risk</button>
+        </div>
+        <ul id="customerList"></ul>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="panel">
+        <div style="font-weight:750;margin-bottom:4px">Deadline / overdue view</div>
+        <div class="muted">Use this to avoid missing date-driven landmines.</div>
+        <ul id="deadlineList"></ul>
+      </div>
+
+      <div class="panel">
+        <div style="font-weight:750;margin-bottom:4px">True burn queue</div>
+        <div class="muted">Only tasks with explicit daily bleed/loss signals.</div>
+        <ul id="burnList"></ul>
+      </div>
     </div>
 
     <div class="panel">
@@ -742,6 +829,24 @@ def render_ops_hub_html(report: BuildOutput) -> str:
       document.getElementById('ctx').innerHTML = ctx.map(c => `<li>${c}</li>`).join('') || '<li class="muted">No memory context found.</li>';
     }
 
+    function renderFocusLists() {
+      const focus = DATA.focus || {};
+      const paint = (id, items, formatter) => {
+        document.getElementById(id).innerHTML = (items || []).map(formatter).join('') || '<li class="muted">Nothing surfaced.</li>';
+      };
+      paint('blockerList', focus.blockers, (t) => `<li>${clean(t.text)}</li>`);
+      paint('customerList', focus.customer_risk, (t) => `<li>${clean(t.text)}</li>`);
+      paint('deadlineList', focus.deadlines, (t) => {
+        const dl = t.deadline
+          ? (t.days_to_deadline !== null && t.days_to_deadline !== undefined
+            ? (t.days_to_deadline <= 0 ? `${t.deadline} (OVERDUE)` : `${t.deadline} (D-${t.days_to_deadline})`)
+            : t.deadline)
+          : 'No explicit date';
+        return `<li><b>${dl}</b> — ${clean(t.text)}</li>`;
+      });
+      paint('burnList', focus.burn, (t) => `<li><b>${fmtMoney(t.daily_burn)}/day</b> — ${clean(t.text)}</li>`);
+    }
+
     function copyText(text) {
       navigator.clipboard.writeText(text).catch(() => {
         // fallback: prompt
@@ -770,6 +875,14 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         ];
         copyText(lines.join('\n'));
       });
+      document.getElementById('copyBlockers').addEventListener('click', () => {
+        const items = (DATA.focus?.blockers || []).slice(0, 8);
+        copyText([`Unblockers — ${DATA.date}`, '', ...items.map(t => `- [ ] ${clean(t.text)}`), ''].join('\n'));
+      });
+      document.getElementById('copyCustomer').addEventListener('click', () => {
+        const items = (DATA.focus?.customer_risk || []).slice(0, 8);
+        copyText([`Customer risk — ${DATA.date}`, '', ...items.map(t => `- [ ] ${clean(t.text)}`), ''].join('\n'));
+      });
     }
 
     function wireFilters() {
@@ -786,6 +899,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
     renderCards();
     renderTop();
     renderContext();
+    renderFocusLists();
     renderRows();
     wireCopyButtons();
     wireFilters();
@@ -825,6 +939,13 @@ def main(argv: Iterable[str] | None = None) -> int:
     one_time_total = sum(t.amount or 0.0 for t in tasks)
     daily_burn_total = sum(t.daily_burn or 0.0 for t in tasks)
 
+    priority_dates = [date_str]
+    try:
+        current_d = datetime.strptime(date_str, "%Y-%m-%d").date()
+        priority_dates.append(current_d.fromordinal(current_d.toordinal() - 1).isoformat())
+    except ValueError:
+        pass
+
     report = BuildOutput(
         date=date_str,
         generated_at=generated_at,
@@ -832,7 +953,7 @@ def main(argv: Iterable[str] | None = None) -> int:
         section_counts=section_counts,
         top_actions=tasks[:8],
         all_tasks_ranked=tasks,
-        memory_context=get_recent_memory_context(limit_files=3),
+        memory_context=get_recent_memory_context(limit_files=4, prioritize_dates=priority_dates),
         quick_math={
             "one_time_total": round(one_time_total, 2),
             "daily_burn_total": round(daily_burn_total, 2),
