@@ -33,6 +33,7 @@ Last updated: 2026-04-19
 - Amazon Ads daily pull (campaigns + keywords + search-terms) confirmed working end-to-end as of **2026-04-12** (fix commit `moneysamurai@93bbb4e`; run logs under `logs/ads-daily/`).
 - Ads pull health HTML dashboard generator: `moneysamurai/scripts/ads-pull-health-dashboard-gen.py` → output `moneysamurai/dashboards/ads-pull-health.html` (commit `moneysamurai@73d861f`).
 - Cron timeout triage dashboard assets created on 2026-04-19: `reports/cron-timeout-dashboard-2026-04-19.{html,md,json}` with reusable renderer `scripts/build_cron_timeout_dashboard.py`.
+- Cron timeout headroom watchlist added late 2026-04-19 from live cron config snapshot: `reports/cron-list-snapshot-2026-04-19.json`, `reports/cron-watchlist-2026-04-19.{html,md,json}`, renderer `scripts/build_cron_watchlist.py`. Latest live config flags `moneysamurai-sync-trigger` as the only current critical timeout risk with a ready 60→120s patch payload.
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle
