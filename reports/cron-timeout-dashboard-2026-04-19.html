@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Nightly cron timeout triage</title>
+  <style>
+    body { font-family: Inter, -apple-system, sans-serif; background:#0f172a; color:#e2e8f0; margin:0; padding:32px; }
+    .wrap { max-width: 1200px; margin: 0 auto; }
+    .card { background:#111827; border:1px solid #1f2937; border-radius:16px; padding:20px; margin:18px 0; }
+    .row { display:flex; gap:16px; }
+    .between { justify-content:space-between; }
+    .start { align-items:flex-start; }
+    .muted { color:#94a3b8; margin-top:4px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; }
+    .badge { display:inline-block; color:white; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700; letter-spacing:.04em; }
+    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin:18px 0; }
+    .stats div, .summary div { background:#0b1220; border:1px solid #1e293b; border-radius:12px; padding:14px; }
+    .stats span, .summary span { display:block; color:#94a3b8; font-size:12px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
+    .stats strong, .summary strong { font-size:18px; }
+    .summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin:18px 0 24px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    ul { margin:8px 0 0 18px; }
+    li { margin:6px 0; }
+    table { width:100%; border-collapse:collapse; margin-top:10px; font-size:14px; }
+    th, td { border-top:1px solid #1f2937; padding:10px 8px; text-align:left; vertical-align:top; }
+    h1,h2,h3 { margin:0; }
+    h1 { font-size:32px; }
+    h2 { font-size:22px; margin-bottom:2px; }
+    h3 { font-size:16px; margin-top:8px; margin-bottom:8px; }
+    @media (max-width: 900px) { .grid { grid-template-columns:1fr; } body { padding:16px; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Nightly cron timeout triage</h1>
+    <p class="muted">Generated at 2026-04-19 17:45 America/Los_Angeles</p>
+    <div class="summary"><div><span>jobs in scope</span><strong>3</strong></div><div><span>jobs currently degraded</span><strong>3</strong></div><div><span>latest pattern</span><strong>hard timeout at ~60000 ms</strong></div><div><span>likely root cause</span><strong>cron wrapper budget too small for intermittent network/auth work</strong></div><div><span>confidence</span><strong>medium-high</strong></div></div>
+    
+            <section class="card">
+              <div class="row between start">
+                <div>
+                  <h2>gravix-aggregate-knowledge</h2>
+                  <div class="muted mono">job_id: 4b6e8fa4-c145-4a72-9496-74ebfb9a0683</div>
+                  <div class="muted">schedule: daily 04:00 PT</div>
+                </div>
+                <div><span class="badge" style="background:#d97706">DEGRADED</span></div>
+              </div>
+              <div class="stats">
+                <div><span>timeouts</span><strong>4</strong></div>
+                <div><span>latest timeout</span><strong>2026-04-17 04:01 PT</strong></div>
+                <div><span>last known ok</span><strong>23157 ms</strong></div>
+              </div>
+              <div class="grid">
+                <div>
+                  <h3>Findings</h3>
+                  <ul><li>Healthy runs usually finish in 15-25s.</li><li>Timeout failures clamp almost exactly at 60s, which points to wrapper/runtime budget, not random app exceptions.</li><li>One successful run landed at 53.8s, proving the job can get dangerously close to the ceiling under normal conditions.</li><li>The underlying Gravix cron endpoints already log to cron_run_log in the API, so backend-side timing can be inspected separately tomorrow.</li></ul>
+                </div>
+                <div>
+                  <h3>Next actions</h3>
+                  <ul><li>Bump cron timeout budget above 60s for this job before changing business logic.</li><li>Split summary work from endpoint execution if the cron framework is spending part of the 60s budget on narration/delivery.</li><li>Query Gravix cron_run_log for the matching timestamps to confirm whether the backend finished after the wrapper timed out or never reached completion.</li></ul>
+                </div>
+              </div>
+              <h3>Recent runs</h3>
+              <table>
+                <thead><tr><th>At</th><th>Status</th><th>Duration ms</th><th>Note</th></tr></thead>
+                <tbody><tr><td>2026-04-17 04:01 PT</td><td>error</td><td>60080</td><td>hard timeout</td></tr><tr><td>2026-04-16 04:00 PT</td><td>ok</td><td>23157</td><td>aggregate-knowledge + aggregate-metrics both returned 200</td></tr><tr><td>2026-04-15 04:00 PT</td><td>ok</td><td>22376</td><td>healthy baseline</td></tr><tr><td>2026-04-03 04:01 PT</td><td>error</td><td>60016</td><td>hard timeout</td></tr><tr><td>2026-04-02 04:01 PT</td><td>error</td><td>60016</td><td>hard timeout</td></tr><tr><td>2026-04-01 04:00 PT</td><td>ok</td><td>53861</td><td>near the timeout ceiling even when successful</td></tr></tbody>
+              </table>
+            </section>
+            
+            <section class="card">
+              <div class="row between start">
+                <div>
+                  <h2>gravix-send-followups</h2>
+                  <div class="muted mono">job_id: 47169cc0-9df9-4539-bdec-60405109e017</div>
+                  <div class="muted">schedule: daily 10:00 PT</div>
+                </div>
+                <div><span class="badge" style="background:#d97706">DEGRADED</span></div>
+              </div>
+              <div class="stats">
+                <div><span>timeouts</span><strong>5</strong></div>
+                <div><span>latest timeout</span><strong>2026-04-17 10:01 PT</strong></div>
+                <div><span>last known ok</span><strong>32123 ms</strong></div>
+              </div>
+              <div class="grid">
+                <div>
+                  <h3>Findings</h3>
+                  <ul><li>Success cases sit around 10-34s, including days when real followup emails were sent.</li><li>Failures are again pinned at ~60s, same signature as the other broken jobs.</li><li>Because this job can send actual emails, extending budget is lower risk than changing the followup query/sending logic blind.</li></ul>
+                </div>
+                <div>
+                  <h3>Next actions</h3>
+                  <ul><li>Increase timeout budget first.</li><li>If failures persist, instrument send_pending_followups() with per-phase timing: candidate fetch, email render, send loop, final DB update.</li><li>Check whether any provider call is blocking when there are zero sends due, since healthy runs with sent:0 still sometimes take 20-30s.</li></ul>
+                </div>
+              </div>
+              <h3>Recent runs</h3>
+              <table>
+                <thead><tr><th>At</th><th>Status</th><th>Duration ms</th><th>Note</th></tr></thead>
+                <tbody><tr><td>2026-04-17 10:01 PT</td><td>error</td><td>60073</td><td>hard timeout</td></tr><tr><td>2026-04-16 10:00 PT</td><td>ok</td><td>32123</td><td>HTTP 200 with {sent:0,pending:0}</td></tr><tr><td>2026-04-15 10:00 PT</td><td>ok</td><td>23589</td><td>healthy baseline</td></tr><tr><td>2026-04-04 10:01 PT</td><td>error</td><td>60014</td><td>hard timeout</td></tr><tr><td>2026-04-03 10:01 PT</td><td>error</td><td>60012</td><td>hard timeout</td></tr><tr><td>2026-03-27 10:00 PT</td><td>ok</td><td>33698</td><td>sent 5 followups successfully</td></tr></tbody>
+              </table>
+            </section>
+            
+            <section class="card">
+              <div class="row between start">
+                <div>
+                  <h2>moneysamurai-sync-trigger</h2>
+                  <div class="muted mono">job_id: c6565127-2875-4a1d-be8f-1c0021dd0ade</div>
+                  <div class="muted">schedule: every 2h-ish trigger loop</div>
+                </div>
+                <div><span class="badge" style="background:#d97706">DEGRADED</span></div>
+              </div>
+              <div class="stats">
+                <div><span>timeouts</span><strong>19</strong></div>
+                <div><span>latest timeout</span><strong>2026-04-18 15:02 PT</strong></div>
+                <div><span>last known ok</span><strong>45543 ms</strong></div>
+              </div>
+              <div class="grid">
+                <div>
+                  <h3>Findings</h3>
+                  <ul><li>This job is the noisiest: many successes between 25-56s and many failures pinned at ~60s.</li><li>The business action usually succeeds once the script gets through auth and trigger POST; failures correlate with a long preflight chain rather than trigger rejection.</li><li>Historical summaries show schema mismatches in cleanup logic: code tried public.sync_status and sync_jobs.error_message, but working paths were amazon_accounts.sync_status and sync_jobs.error.</li><li>That mismatch likely adds avoidable retries/noise and burns precious time inside the 60s wrapper.</li></ul>
+                </div>
+                <div>
+                  <h3>Next actions</h3>
+                  <ul><li>Trim the preflight/reset path so it only touches known-good tables/columns.</li><li>Keep auth-token generation and trigger POST, but move optional cleanup to a best-effort fast path or separate maintenance job.</li><li>Raise timeout budget above 60s anyway, because even successful runs routinely exceed 45s.</li></ul>
+                </div>
+              </div>
+              <h3>Recent runs</h3>
+              <table>
+                <thead><tr><th>At</th><th>Status</th><th>Duration ms</th><th>Note</th></tr></thead>
+                <tbody><tr><td>2026-04-18 15:02 PT</td><td>ok</td><td>45543</td><td>latest successful trigger</td></tr><tr><td>2026-04-17 13:02 PT</td><td>error</td><td>60086</td><td>hard timeout</td></tr><tr><td>2026-04-17 11:01 PT</td><td>ok</td><td>26250</td><td>healthy trigger</td></tr><tr><td>2026-04-17 09:02 PT</td><td>error</td><td>60079</td><td>hard timeout</td></tr><tr><td>2026-04-17 07:01 PT</td><td>ok</td><td>39058</td><td>healthy trigger</td></tr><tr><td>2026-04-16 22:59 PT</td><td>ok</td><td>54634</td><td>dangerously close to timeout ceiling</td></tr></tbody>
+              </table>
+            </section>
+            
+  </div>
+</body>
+</html>

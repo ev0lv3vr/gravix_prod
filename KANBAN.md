@@ -1,20 +1,16 @@
-# KANBAN — Last updated: 2026-04-17 6:00 PM PT
+# KANBAN — Last updated: 2026-04-19 5:43 PM PT
 
 ## 🔴 URGENT
 - [ ] **Heather (Amazon)** — 20+ days no reply. A-to-Z claim risk. **Details recovered** (Himalaya msg id **191366**, 2026-03-24, Order **114-0636756-1872255**): buyer says **they have not received an update from Amazon nor a replacement**. Draft path: `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md` (**updated 2026-04-13**, ready to send once logged in).
 - [ ] **Insurance audit** — 63+ days overdue. Ashlin Hadden / Veracity. Data ready ($637K). Ev must submit PDF.
 - [ ] **ShipBob UROs** — 56+ days, ~$1K accrued ($18/day). Harsh Khanna escalated 3/26.
 - [ ] **Shopify API dead** — 42+ days. No inventory visibility. Needs token regen.
-- [ ] **Amazon CA suppressed** — 18+ days, ~$270+ lost ($15/day). Needs WHMIS SDS submission. **Blocked:** Seller Central access (OpenClaw browser currently logged out; user Chrome attach requires Chrome running).
-  - Re-checked **2026-04-15 2:00 PM PT**: openclaw Seller Central **US + CA** still show the public “Create/Become a seller” marketing pages with **“Log in”** (not authenticated).
-  - **2026-04-16 EOD:** no progress; still blocked on Seller Central access.
 
 ## 🟡 NEEDS EV
-- [ ] **Ramp sign-in alert** — msg id **191928** (2026-04-16). Login method Google; device **Chrome on Mac OS X 10.15.7**; IP **136.226.54.172** (ZSCALER). **Action:** confirm if this was you; if not, use “sign out everywhere” + reset Google pw. **EOD:** still unconfirmed.
+- [ ] **Ramp sign-in alert** — msg id **191928** (2026-04-16). Login method Google; device **Chrome on Mac OS X 10.15.7**; IP **136.226.54.172** (ZSCALER). **Action:** confirm if this was you; if not, use “sign out everywhere” + reset Google pw. **EOD 2026-04-19:** still unconfirmed in visible context.
 - [ ] **Reply: Eric Patrick (Shopify contact form)** — asked how to open 8oz bottle (inner plastic cap/plug). Email: epatrick@americansteelfabllc.com, phone 248-941-8433. Draft ready (`moneysamurai/drafts/customer-replies-2026-04-09.md`), msg id **5941**.
 - [ ] **Reply: Antonio Gutierrez (Shopify)** — order **#6000**: asking if shipped + ship date. Email: gluemasters@vividcreativeaquatics.com, phone 602-284-2106. Draft ready (`moneysamurai/drafts/customer-replies-2026-04-09.md`), msg id **5930** (needs ship status fields filled).
 - [ ] **Michael Nasholm** — 20% partial refund on Shopify PROMISED, NOT DONE. Customer followed up 4/3.
-- [ ] **Donaldson $2,340** — paid, needs to ship. 1801 W Vine St, Harrisonville MO 64701. Weekend lost. Note: procurement says they’re **closed May 25 (Memorial Day)** → **don’t schedule deliveries** that date. NET30 request is generally possible (submit justification). **EOD:** still pending shipping execution.
 - [ ] **Gemifly LLC** — $1,513.23 PayPal invoice outstanding (auto-reminder sent 4/3).
 - [ ] **Dynasty Global (Eli)** — dealer inquiry, Ev decision needed.
 - [ ] **Teikametrics $149** — they replied 4/8: **no refund** (claims cancellation was 2 days into cycle); promised no further billing + stop pacing emails, but pacing email still arrived (e.g. **4/9 msg id 191754**). **Chargeback deadline (Apr 14 EOD) has passed** → Ev: check if bank still allows; otherwise treat as sunk + ensure no more billing.
@@ -24,7 +20,8 @@
 - [ ] **KMS LLC (Brittni)** — wholesale distributor, 15+ days silence.
 - [ ] **Christopher Webber** — B2B inquiry, 11+ days.
 - [ ] **Jason F return** — decision pending.
-- [ ] **Claude/Anthropic billing** — Opus cron failed w/ billing/usage error on **2026-04-17**. **Mitigation applied:** switched summary crons to **openai-codex/gpt-5.4** (Midday/Morning/EOD/Nightly). Still needs credit claim / billing fix if we want Anthropic models.
+- [ ] **Claude/Anthropic billing** — Opus cron failed w/ billing/usage error on **2026-04-17**. **Mitigation verified active on 2026-04-18:** summary crons are running on **openai-codex/gpt-5.4** (Midday/Morning/EOD/Nightly). Still needs credit claim / billing fix if we want Anthropic models.
+- [ ] **Cron timeouts** — newly observed on **2026-04-18**: `moneysamurai-sync-trigger`, `gravix-aggregate-knowledge`, and `gravix-send-followups` all hit their timeout on latest run. **Nightly 2026-04-19:** triage dashboard + report built (`reports/cron-timeout-dashboard-2026-04-19.{html,md,json}`) plus reusable renderer (`scripts/build_cron_timeout_dashboard.py`). Findings: all three share a hard ~60s timeout signature; likely wrapper/runtime budget issue first, with MoneySamurai also carrying cleanup-schema mismatch noise. Still needs morning fix pass.
 - [ ] **Vercel billing** — $53.31 card retry.
 
 ## 🔵 IN PROGRESS
@@ -53,7 +50,6 @@
 | Item | Days | Accrued |
 |------|------|---------|
 | ShipBob UROs | 56+ | ~$1,008 |
-| Amazon CA | 18+ | ~$270 |
 | Teikametrics | 5 | $149 |
 | Gemifly LLC | — | $1,513.23 |
 | Shopify API | 42+ | blind |
