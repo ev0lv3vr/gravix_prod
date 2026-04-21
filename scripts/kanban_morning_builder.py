@@ -29,6 +29,13 @@ import re
 import shutil
 from typing import Iterable
 
+
+def latest_report_href(pattern: str) -> str | None:
+    matches = sorted((ROOT / "reports").glob(pattern))
+    if not matches:
+        return None
+    return f"./{matches[-1].name}"
+
 ROOT = Path(__file__).resolve().parents[1]
 KANBAN = ROOT / "KANBAN.md"
 MEMORY_DIR = ROOT / "memory"
@@ -168,12 +175,17 @@ def parse_days(text: str) -> int | None:
     patterns = [
         r"(\d{1,3})\s*\+?\s*days?",
         r"day\s*(\d{1,3})",
-        r"(\d{1,3})\s*d\b",
+        r"(?<!\d-)(\d{1,3})\s*d\b",
     ]
+    lt = text.lower()
     for p in patterns:
-        m = re.search(p, text.lower())
+        m = re.search(p, lt)
         if m:
-            return int(m.group(1))
+            value = int(m.group(1))
+            # Guard against false positives from ISO dates like 2026-04-18.
+            if value >= 100 and re.search(r"20\d{2}-\d{2}-\d{2}", text):
+                continue
+            return value
     return None
 
 
@@ -592,8 +604,14 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         ("Execution Board (latest)", "./morning-execution-board-latest.html"),
         ("Execution Board JSON (latest)", "./morning-execution-board-latest.json"),
         ("Ops Debt Dashboard (latest)", "./ops-debt-dashboard-latest.html"),
-        ("Reports folder", "./"),
     ]
+    cron_watchlist_href = latest_report_href("cron-watchlist-*.html")
+    if cron_watchlist_href:
+        links.append(("Cron Watchlist (latest dated)", cron_watchlist_href))
+    cron_timeout_href = latest_report_href("cron-timeout-dashboard-*.html")
+    if cron_timeout_href:
+        links.append(("Cron Timeout Dashboard (latest dated)", cron_timeout_href))
+    links.append(("Reports folder", "./"))
     links_html = "".join(
         f"<a class='link' href='{escape(href)}' target='_blank' rel='noreferrer'>{escape(label)}</a>"
         for label, href in links

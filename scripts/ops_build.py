@@ -20,6 +20,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import os
 import shutil
@@ -67,6 +68,14 @@ class Brief:
     kanban: dict[str, Any]
     ops_debt: dict[str, Any]
     ads_pull: dict[str, Any] | None = None
+    cron_watchlist: dict[str, Any] | None = None
+
+
+def _latest_report(pattern: str) -> Path | None:
+    matches = sorted(glob.glob(str(REPORTS / pattern)))
+    if not matches:
+        return None
+    return Path(matches[-1])
 
 
 def render_brief(b: Brief) -> str:
@@ -87,6 +96,8 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/morning-priority-pack-latest.md")
     lines.append("- reports/ops-debt-dashboard-latest.html")
     lines.append("- reports/ads-pull-dashboard-latest.html")
+    if b.cron_watchlist:
+        lines.append("- latest cron-watchlist-*.html (dated report)")
     lines.append("")
 
     # Ads pull summary (optional)
@@ -101,6 +112,22 @@ def render_brief(b: Brief) -> str:
             lines.append(f"- Current invalid streak: {a_sum.get('current_invalid_streak')}")
         if a.get("latest_pull_log"):
             lines.append(f"- Latest pull log: {a.get('latest_pull_log')}")
+        lines.append("")
+
+    cw = (b.cron_watchlist.get("summary") or {}) if isinstance(b.cron_watchlist, dict) else {}
+    if cw:
+        lines.append("Cron timeout watchlist:")
+        lines.append(f"- Jobs scanned: {cw.get('jobs_scanned','—')}")
+        lines.append(f"- Critical: {cw.get('critical','—')}")
+        lines.append(f"- High: {cw.get('high','—')}")
+        lines.append(f"- Medium: {cw.get('medium','—')}")
+        lines.append(f"- Ready timeout patches: {cw.get('patches_ready','—')}")
+        jobs = b.cron_watchlist.get("jobs") or []
+        hottest = jobs[0] if jobs else None
+        if hottest:
+            lines.append(
+                f"- Hottest job: {hottest.get('name','—')} ({hottest.get('risk','—')}, last {hottest.get('last_duration_ms','—')} ms on {hottest.get('timeout_seconds','—')} s timeout)"
+            )
         lines.append("")
 
     # Ops debt summary (from ops-debt-dashboard payload)
@@ -169,6 +196,7 @@ def main(argv: list[str] | None = None) -> int:
     ops_json = REPORTS / "ops-debt-dashboard-latest.json"
     kanban_json = REPORTS / "morning-execution-board-latest.json"
     ads_json = REPORTS / "ads-pull-dashboard-latest.json"
+    cron_watchlist_json = _latest_report("cron-watchlist-*.json")
     if not ops_json.exists():
         raise SystemExit(f"Missing expected artifact: {ops_json}")
     if not kanban_json.exists():
@@ -180,6 +208,7 @@ def main(argv: list[str] | None = None) -> int:
         kanban=_load_json(kanban_json),
         ops_debt=_load_json(ops_json),
         ads_pull=_load_json(ads_json) if ads_json.exists() else None,
+        cron_watchlist=_load_json(cron_watchlist_json) if cron_watchlist_json and cron_watchlist_json.exists() else None,
     )
 
     REPORTS.mkdir(parents=True, exist_ok=True)

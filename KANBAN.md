@@ -1,4 +1,4 @@
-# KANBAN — Last updated: 2026-04-19 6:03 PM PT
+# KANBAN — Last updated: 2026-04-20 6:00 PM PT
 
 ## 🔴 URGENT
 - [ ] **Heather (Amazon)** — 20+ days no reply. A-to-Z claim risk. **Details recovered** (Himalaya msg id **191366**, 2026-03-24, Order **114-0636756-1872255**): buyer says **they have not received an update from Amazon nor a replacement**. Draft path: `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md` (**updated 2026-04-13**, ready to send once logged in).
@@ -21,7 +21,7 @@
 - [ ] **Christopher Webber** — B2B inquiry, 11+ days.
 - [ ] **Jason F return** — decision pending.
 - [ ] **Claude/Anthropic billing** — Opus cron failed w/ billing/usage error on **2026-04-17**. **Mitigation verified active on 2026-04-18:** summary crons are running on **openai-codex/gpt-5.4** (Midday/Morning/EOD/Nightly). Still needs credit claim / billing fix if we want Anthropic models.
-- [ ] **Cron timeouts** — newly observed on **2026-04-18**: `moneysamurai-sync-trigger`, `gravix-aggregate-knowledge`, and `gravix-send-followups` all hit their timeout on latest run. **Nightly 2026-04-19:** triage dashboard + report built (`reports/cron-timeout-dashboard-2026-04-19.{html,md,json}`) plus reusable renderer (`scripts/build_cron_timeout_dashboard.py`). Findings: all three share a hard ~60s timeout signature; likely wrapper/runtime budget issue first, with MoneySamurai also carrying cleanup-schema mismatch noise. **Late-night 2026-04-19:** added live config snapshot + timeout-headroom watchlist (`reports/cron-list-snapshot-2026-04-19.json`, `reports/cron-watchlist-2026-04-19.{html,md,json}`, `scripts/build_cron_watchlist.py`). Current live picture: only `moneysamurai-sync-trigger` is actively red on latest run, with a ready patch payload to raise `timeoutSeconds` from 60 → 120; Gravix jobs are currently green but still documented in the earlier historical timeout dashboard.
+- [ ] **Cron timeouts** — newly observed on **2026-04-18**: `moneysamurai-sync-trigger`, `gravix-aggregate-knowledge`, and `gravix-send-followups` all hit their timeout on latest run. **Nightly 2026-04-19:** triage dashboard + report built (`reports/cron-timeout-dashboard-2026-04-19.{html,md,json}`) plus reusable renderer (`scripts/build_cron_timeout_dashboard.py`). Findings: all three share a hard ~60s timeout signature; likely wrapper/runtime budget issue first, with MoneySamurai also carrying cleanup-schema mismatch noise. **Late-night 2026-04-19:** added live config snapshot + timeout-headroom watchlist (`reports/cron-list-snapshot-2026-04-19.json`, `reports/cron-watchlist-2026-04-19.{html,md,json}`, `scripts/build_cron_watchlist.py`). **Midday 2026-04-20:** applied the ready live patch for `moneysamurai-sync-trigger`, raising `timeoutSeconds` from **60 → 120** on job `c6565127-2875-4a1d-be8f-1c0021dd0ade`. **Nightly 2026-04-20:** refreshed the live cron snapshot/watchlist (`reports/cron-list-snapshot-2026-04-21.json`, `reports/cron-watchlist-2026-04-21.{html,md,json}`) and folded cron watchlist links + summary into the morning ops build (`scripts/ops_build.py`, `scripts/kanban_morning_builder.py`). Latest live picture: `moneysamurai-sync-trigger` is green after the timeout bump; `gravix-aggregate-knowledge` is still the only current timeout-critical job on a 60s budget. Remaining blocker: patch the Gravix timeout and still patch the MoneySamurai cleanup path/schema drift if sync timeouts recur.
 - [ ] **Vercel billing** — $53.31 card retry.
 
 ## 🔵 IN PROGRESS
@@ -58,3 +58,9 @@
 
 ## 📅 REMINDERS
 - [ ] **2026-04-20** — Nudge Petite Keep (Kaylee Hobbs) re: reorder
+
+## EOD 2026-04-20
+- Reviewed today’s journal, yesterday’s journal, MEMORY, KANBAN, and all visible same-day session context available to this cron run before closeout.
+- No additional late-day work or resolved items surfaced beyond the midday cron patch on `moneysamurai-sync-trigger`.
+- Nightly build added a fresh live cron snapshot/watchlist for **2026-04-21** plus regenerated morning ops artifacts for tomorrow (`morning-priority-pack`, execution board, ops hub, ops build brief).
+- Priority stack remains unchanged for tomorrow: ShipBob UROs, insurance audit, Heather/Amazon, Shopify API token regeneration, then the remaining cron timeout follow-up on `gravix-aggregate-knowledge` and Petite Keep.
