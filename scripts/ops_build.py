@@ -8,6 +8,7 @@ Builds:
 - reports/morning-execution-board-YYYY-MM-DD.html (+ latest)
 - reports/morning-ops-hub-YYYY-MM-DD.html (+ latest)
 - reports/ops-debt-dashboard-YYYY-MM-DD.html (+ latest)
+- reports/cron-trend-report-YYYY-MM-DD.html (+ latest, when dated watchlists exist)
 - reports/ops-build-brief-YYYY-MM-DD.txt (+ latest)
 
 Usage:
@@ -69,6 +70,7 @@ class Brief:
     ops_debt: dict[str, Any]
     ads_pull: dict[str, Any] | None = None
     cron_watchlist: dict[str, Any] | None = None
+    cron_trend: dict[str, Any] | None = None
 
 
 def _latest_report(pattern: str) -> Path | None:
@@ -98,6 +100,8 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/ads-pull-dashboard-latest.html")
     if b.cron_watchlist:
         lines.append("- latest cron-watchlist-*.html (dated report)")
+    if b.cron_trend:
+        lines.append("- reports/cron-trend-report-latest.html")
     lines.append("")
 
     # Ads pull summary (optional)
@@ -128,6 +132,30 @@ def render_brief(b: Brief) -> str:
             lines.append(
                 f"- Hottest job: {hottest.get('name','—')} ({hottest.get('risk','—')}, last {hottest.get('last_duration_ms','—')} ms on {hottest.get('timeout_seconds','—')} s timeout)"
             )
+        lines.append("")
+
+    ct = (b.cron_trend.get("summary") or {}) if isinstance(b.cron_trend, dict) else {}
+    if ct:
+        lines.append("Cron trend (multi-day):")
+        lines.append(f"- Days compared: {ct.get('days_compared','—')}")
+        lines.append(f"- Regressing jobs: {ct.get('regressing_jobs','—')}")
+        lines.append(f"- Improving jobs: {ct.get('improving_jobs','—')}")
+        lines.append(f"- New risks: {ct.get('new_risks','—')}")
+        delta = ct.get('delta_vs_previous') or {}
+        if delta:
+            lines.append(
+                f"- Delta vs previous: critical {delta.get('critical','—')}, high {delta.get('high','—')}, medium {delta.get('medium','—')}, patches {delta.get('patches_ready','—')}"
+            )
+        regressions = b.cron_trend.get("regressing_jobs") or []
+        if regressions:
+            top = regressions[0]
+            lines.append(
+                f"- Worst regression: {top.get('name','—')} ({top.get('first',{}).get('risk','—')} → {top.get('last',{}).get('risk','—')})"
+            )
+        new_risks = b.cron_trend.get("new_risks") or []
+        if new_risks:
+            top = new_risks[0]
+            lines.append(f"- Newest surfaced risk: {top.get('name','—')} ({top.get('last',{}).get('risk','—')})")
         lines.append("")
 
     # Ops debt summary (from ops-debt-dashboard payload)
@@ -191,12 +219,15 @@ def main(argv: list[str] | None = None) -> int:
     _run([sys.executable, "scripts/ops_debt_dashboard.py", "--date", date_str])
     _run([sys.executable, "scripts/kanban_morning_builder.py", "--date", date_str])
     _run([sys.executable, "scripts/ads_pull_dashboard.py", "--date", date_str])
+    if _latest_report("cron-watchlist-*.json"):
+        _run([sys.executable, "scripts/build_cron_trend_report.py", "--output-prefix", f"reports/cron-trend-report-{date_str}"])
 
     # Compose brief from the latest JSON payloads
     ops_json = REPORTS / "ops-debt-dashboard-latest.json"
     kanban_json = REPORTS / "morning-execution-board-latest.json"
     ads_json = REPORTS / "ads-pull-dashboard-latest.json"
     cron_watchlist_json = _latest_report("cron-watchlist-*.json")
+    cron_trend_json = REPORTS / "cron-trend-report-latest.json"
     if not ops_json.exists():
         raise SystemExit(f"Missing expected artifact: {ops_json}")
     if not kanban_json.exists():
@@ -209,6 +240,7 @@ def main(argv: list[str] | None = None) -> int:
         ops_debt=_load_json(ops_json),
         ads_pull=_load_json(ads_json) if ads_json.exists() else None,
         cron_watchlist=_load_json(cron_watchlist_json) if cron_watchlist_json and cron_watchlist_json.exists() else None,
+        cron_trend=_load_json(cron_trend_json) if cron_trend_json.exists() else None,
     )
 
     REPORTS.mkdir(parents=True, exist_ok=True)
@@ -222,6 +254,8 @@ def main(argv: list[str] | None = None) -> int:
     print("Built reports/morning-ops-hub-latest.html")
     print("Built reports/ops-debt-dashboard-latest.html")
     print("Built reports/ads-pull-dashboard-latest.html")
+    if cron_trend_json.exists():
+        print("Built reports/cron-trend-report-latest.html")
 
     if args.open:
         hub = REPORTS / "morning-ops-hub-latest.html"

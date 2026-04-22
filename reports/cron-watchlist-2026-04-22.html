@@ -1,0 +1,297 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>Cron timeout headroom watchlist</title>
+<style>
+body { font-family: Inter, -apple-system, sans-serif; background:#0f172a; color:#e2e8f0; margin:0; padding:32px; }
+.wrap { max-width:1200px; margin:0 auto; }
+.summary, .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
+.summary div, .stats div { background:#0b1220; border:1px solid #1e293b; border-radius:12px; padding:14px; }
+.card { background:#111827; border:1px solid #1f2937; border-radius:16px; padding:20px; margin-top:18px; }
+.top { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; }
+.badge { color:#fff; padding:6px 10px; border-radius:999px; font-weight:700; font-size:12px; }
+span { display:block; color:#94a3b8; font-size:12px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
+strong { font-size:18px; }
+.muted { color:#94a3b8; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; }
+pre { white-space:pre-wrap; background:#020617; border:1px solid #1e293b; border-radius:12px; padding:12px; overflow:auto; }
+ul { margin:10px 0 0 20px; }
+h1,h2 { margin:0; }
+</style>
+</head>
+<body><div class='wrap'>
+<h1>Cron timeout headroom watchlist</h1>
+<p class='muted'>Generated at 2026-04-21 23:04:55 PDT</p>
+<div class='summary'><div><span>jobs scanned</span><strong>13</strong></div><div><span>critical</span><strong>1</strong></div><div><span>high</span><strong>0</strong></div><div><span>medium</span><strong>1</strong></div><div><span>patches ready</span><strong>3</strong></div></div>
+
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>ads-daily-pull</h2>
+              <div class='muted mono'>05a6e66b-d1df-46af-b164-4e55cbb6bb9f</div>
+            </div>
+            <span class='badge' style='background:#dc2626'>CRITICAL</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>error</strong></div>
+            <div><span>last duration</span><strong>1800057 ms</strong></div>
+            <div><span>timeout</span><strong>1800 s</strong></div>
+            <div><span>budget used</span><strong>100%</strong></div>
+            <div><span>proposed timeout</span><strong>3600 s</strong></div>
+          </div>
+          <ul><li>Latest run failed due to timeout.</li></ul>
+          <pre>{
+  &quot;jobId&quot;: &quot;05a6e66b-d1df-46af-b164-4e55cbb6bb9f&quot;,
+  &quot;patch&quot;: {
+    &quot;payload&quot;: {
+      &quot;timeoutSeconds&quot;: 3600
+    }
+  }
+}</pre>
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>moneysamurai-sync-trigger</h2>
+              <div class='muted mono'>c6565127-2875-4a1d-be8f-1c0021dd0ade</div>
+            </div>
+            <span class='badge' style='background:#ca8a04'>MEDIUM</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>ok</strong></div>
+            <div><span>last duration</span><strong>78754 ms</strong></div>
+            <div><span>timeout</span><strong>120 s</strong></div>
+            <div><span>budget used</span><strong>66%</strong></div>
+            <div><span>proposed timeout</span><strong>150 s</strong></div>
+          </div>
+          <ul><li>Latest run used 66% of the timeout budget.</li></ul>
+          <pre>{
+  &quot;jobId&quot;: &quot;c6565127-2875-4a1d-be8f-1c0021dd0ade&quot;,
+  &quot;patch&quot;: {
+    &quot;payload&quot;: {
+      &quot;timeoutSeconds&quot;: 150
+    }
+  }
+}</pre>
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>gravix-aggregate-knowledge</h2>
+              <div class='muted mono'>4b6e8fa4-c145-4a72-9496-74ebfb9a0683</div>
+            </div>
+            <span class='badge' style='background:#16a34a'>OK</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>ok</strong></div>
+            <div><span>last duration</span><strong>21472 ms</strong></div>
+            <div><span>timeout</span><strong>60 s</strong></div>
+            <div><span>budget used</span><strong>36%</strong></div>
+            <div><span>proposed timeout</span><strong>60 s</strong></div>
+          </div>
+          <ul><li>Latest run has comfortable timeout headroom.</li></ul>
+          
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>moneysamurai-keep-alive</h2>
+              <div class='muted mono'>c5e436d0-65c5-4f57-a9b0-6c2b40b921af</div>
+            </div>
+            <span class='badge' style='background:#16a34a'>OK</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>ok</strong></div>
+            <div><span>last duration</span><strong>10070 ms</strong></div>
+            <div><span>timeout</span><strong>30 s</strong></div>
+            <div><span>budget used</span><strong>34%</strong></div>
+            <div><span>proposed timeout</span><strong>30 s</strong></div>
+          </div>
+          <ul><li>Latest run has comfortable timeout headroom.</li></ul>
+          
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>gravix-send-followups</h2>
+              <div class='muted mono'>47169cc0-9df9-4539-bdec-60405109e017</div>
+            </div>
+            <span class='badge' style='background:#16a34a'>OK</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>ok</strong></div>
+            <div><span>last duration</span><strong>18615 ms</strong></div>
+            <div><span>timeout</span><strong>60 s</strong></div>
+            <div><span>budget used</span><strong>31%</strong></div>
+            <div><span>proposed timeout</span><strong>60 s</strong></div>
+          </div>
+          <ul><li>Latest run has comfortable timeout headroom.</li></ul>
+          
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>ads-weekly-report</h2>
+              <div class='muted mono'>d94e9f6f-458c-44d5-993c-02e6b0930c50</div>
+            </div>
+            <span class='badge' style='background:#16a34a'>OK</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>error</strong></div>
+            <div><span>last duration</span><strong>86886 ms</strong></div>
+            <div><span>timeout</span><strong>300 s</strong></div>
+            <div><span>budget used</span><strong>29%</strong></div>
+            <div><span>proposed timeout</span><strong>330 s</strong></div>
+          </div>
+          <ul><li>Latest run has comfortable timeout headroom.</li></ul>
+          <pre>{
+  &quot;jobId&quot;: &quot;d94e9f6f-458c-44d5-993c-02e6b0930c50&quot;,
+  &quot;patch&quot;: {
+    &quot;payload&quot;: {
+      &quot;timeoutSeconds&quot;: 330
+    }
+  }
+}</pre>
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>evgueni-email-monitor</h2>
+              <div class='muted mono'>08054f94-6178-4f45-83b2-348ab56cda17</div>
+            </div>
+            <span class='badge' style='background:#16a34a'>OK</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>ok</strong></div>
+            <div><span>last duration</span><strong>28447 ms</strong></div>
+            <div><span>timeout</span><strong>120 s</strong></div>
+            <div><span>budget used</span><strong>24%</strong></div>
+            <div><span>proposed timeout</span><strong>120 s</strong></div>
+          </div>
+          <ul><li>Latest run has comfortable timeout headroom.</li></ul>
+          
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>service-health-monitor</h2>
+              <div class='muted mono'>7fcc3d6b-1236-4a3a-9a9a-26af5bc179e6</div>
+            </div>
+            <span class='badge' style='background:#16a34a'>OK</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>ok</strong></div>
+            <div><span>last duration</span><strong>13305 ms</strong></div>
+            <div><span>timeout</span><strong>60 s</strong></div>
+            <div><span>budget used</span><strong>22%</strong></div>
+            <div><span>proposed timeout</span><strong>60 s</strong></div>
+          </div>
+          <ul><li>Latest run has comfortable timeout headroom.</li></ul>
+          
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>sales-email-monitor</h2>
+              <div class='muted mono'>280c5ddc-93ca-4011-980e-4740a51a4eb5</div>
+            </div>
+            <span class='badge' style='background:#16a34a'>OK</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>ok</strong></div>
+            <div><span>last duration</span><strong>39344 ms</strong></div>
+            <div><span>timeout</span><strong>180 s</strong></div>
+            <div><span>budget used</span><strong>22%</strong></div>
+            <div><span>proposed timeout</span><strong>180 s</strong></div>
+          </div>
+          <ul><li>Latest run has comfortable timeout headroom.</li></ul>
+          
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>Nightly build (autonomous)</h2>
+              <div class='muted mono'>0c669322-d126-42b6-9647-81a4929ad148</div>
+            </div>
+            <span class='badge' style='background:#64748b'>UNKNOWN</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>ok</strong></div>
+            <div><span>last duration</span><strong>287691 ms</strong></div>
+            <div><span>timeout</span><strong> s</strong></div>
+            <div><span>budget used</span><strong>n/a</strong></div>
+            <div><span>proposed timeout</span><strong> s</strong></div>
+          </div>
+          <ul><li>No explicit timeoutSeconds set.</li></ul>
+          
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>Morning briefing</h2>
+              <div class='muted mono'>00045a1b-65ab-446d-b8a7-f888398b9d9a</div>
+            </div>
+            <span class='badge' style='background:#64748b'>UNKNOWN</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>ok</strong></div>
+            <div><span>last duration</span><strong>37702 ms</strong></div>
+            <div><span>timeout</span><strong> s</strong></div>
+            <div><span>budget used</span><strong>n/a</strong></div>
+            <div><span>proposed timeout</span><strong> s</strong></div>
+          </div>
+          <ul><li>No explicit timeoutSeconds set.</li></ul>
+          
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>Midday check</h2>
+              <div class='muted mono'>ccee3f89-b7f3-444e-a878-445ab6644d98</div>
+            </div>
+            <span class='badge' style='background:#64748b'>UNKNOWN</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>ok</strong></div>
+            <div><span>last duration</span><strong>99903 ms</strong></div>
+            <div><span>timeout</span><strong> s</strong></div>
+            <div><span>budget used</span><strong>n/a</strong></div>
+            <div><span>proposed timeout</span><strong> s</strong></div>
+          </div>
+          <ul><li>No explicit timeoutSeconds set.</li></ul>
+          
+        </section>
+        
+        <section class='card'>
+          <div class='top'>
+            <div>
+              <h2>EOD summary</h2>
+              <div class='muted mono'>c45a8e68-2f60-4d79-bfb8-35be1b4e1ac5</div>
+            </div>
+            <span class='badge' style='background:#64748b'>UNKNOWN</span>
+          </div>
+          <div class='stats'>
+            <div><span>last status</span><strong>ok</strong></div>
+            <div><span>last duration</span><strong>47516 ms</strong></div>
+            <div><span>timeout</span><strong> s</strong></div>
+            <div><span>budget used</span><strong>n/a</strong></div>
+            <div><span>proposed timeout</span><strong> s</strong></div>
+          </div>
+          <ul><li>No explicit timeoutSeconds set.</li></ul>
+          
+        </section>
+        
+</div></body>
+</html>

@@ -35,7 +35,9 @@ Last updated: 2026-04-20
 - Cron timeout triage dashboard assets created on 2026-04-19: `reports/cron-timeout-dashboard-2026-04-19.{html,md,json}` with reusable renderer `scripts/build_cron_timeout_dashboard.py`.
 - Cron timeout headroom watchlist added late 2026-04-19 from live cron config snapshot: `reports/cron-list-snapshot-2026-04-19.json`, `reports/cron-watchlist-2026-04-19.{html,md,json}`, renderer `scripts/build_cron_watchlist.py`.
 - Midday 2026-04-20: applied the ready cron patch for `moneysamurai-sync-trigger` (job `c6565127-2875-4a1d-be8f-1c0021dd0ade`), raising `payload.timeoutSeconds` from **60** to **120** after the watchlist flagged it as the only live critical timeout risk.
-- Nightly 2026-04-20: refreshed the live cron snapshot/watchlist for `2026-04-21` and integrated cron watchlist visibility into the morning ops build (`scripts/ops_build.py`, `scripts/kanban_morning_builder.py`), so the morning brief now surfaces the hottest timeout risk directly. Latest live timeout picture: `moneysamurai-sync-trigger` is green after the patch; `gravix-aggregate-knowledge` remains the only current timeout-critical cron on a 60s budget.
+- Nightly 2026-04-20: refreshed the live cron snapshot/watchlist for `2026-04-21` and integrated cron watchlist visibility into the morning ops build (`scripts/ops_build.py`, `scripts/kanban_morning_builder.py`), so the morning brief now surfaces the hottest timeout risk directly.
+- Midday 2026-04-21: live cron state showed `moneysamurai-sync-trigger` still green, `gravix-aggregate-knowledge` no longer red, and a new repeated timeout on `sales-email-monitor`; patched job `280c5ddc-93ca-4011-980e-4740a51a4eb5` from **120s → 180s**.
+- Nightly 2026-04-21: added a multi-day cron risk/regression reporter (`scripts/build_cron_trend_report.py`) with outputs `reports/cron-trend-report-2026-04-22.{html,md,json}` + latest aliases, and wired it into the morning ops build/hub so the morning package now shows whether cron risk is improving or getting worse across saved watchlists.
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle

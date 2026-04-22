@@ -1,4 +1,4 @@
-# KANBAN — Last updated: 2026-04-20 6:00 PM PT
+# KANBAN — Last updated: 2026-04-21 11:05 PM PT
 
 ## 🔴 URGENT
 - [ ] **Heather (Amazon)** — 20+ days no reply. A-to-Z claim risk. **Details recovered** (Himalaya msg id **191366**, 2026-03-24, Order **114-0636756-1872255**): buyer says **they have not received an update from Amazon nor a replacement**. Draft path: `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md` (**updated 2026-04-13**, ready to send once logged in).
@@ -21,7 +21,7 @@
 - [ ] **Christopher Webber** — B2B inquiry, 11+ days.
 - [ ] **Jason F return** — decision pending.
 - [ ] **Claude/Anthropic billing** — Opus cron failed w/ billing/usage error on **2026-04-17**. **Mitigation verified active on 2026-04-18:** summary crons are running on **openai-codex/gpt-5.4** (Midday/Morning/EOD/Nightly). Still needs credit claim / billing fix if we want Anthropic models.
-- [ ] **Cron timeouts** — newly observed on **2026-04-18**: `moneysamurai-sync-trigger`, `gravix-aggregate-knowledge`, and `gravix-send-followups` all hit their timeout on latest run. **Nightly 2026-04-19:** triage dashboard + report built (`reports/cron-timeout-dashboard-2026-04-19.{html,md,json}`) plus reusable renderer (`scripts/build_cron_timeout_dashboard.py`). Findings: all three share a hard ~60s timeout signature; likely wrapper/runtime budget issue first, with MoneySamurai also carrying cleanup-schema mismatch noise. **Late-night 2026-04-19:** added live config snapshot + timeout-headroom watchlist (`reports/cron-list-snapshot-2026-04-19.json`, `reports/cron-watchlist-2026-04-19.{html,md,json}`, `scripts/build_cron_watchlist.py`). **Midday 2026-04-20:** applied the ready live patch for `moneysamurai-sync-trigger`, raising `timeoutSeconds` from **60 → 120** on job `c6565127-2875-4a1d-be8f-1c0021dd0ade`. **Nightly 2026-04-20:** refreshed the live cron snapshot/watchlist (`reports/cron-list-snapshot-2026-04-21.json`, `reports/cron-watchlist-2026-04-21.{html,md,json}`) and folded cron watchlist links + summary into the morning ops build (`scripts/ops_build.py`, `scripts/kanban_morning_builder.py`). Latest live picture: `moneysamurai-sync-trigger` is green after the timeout bump; `gravix-aggregate-knowledge` is still the only current timeout-critical job on a 60s budget. Remaining blocker: patch the Gravix timeout and still patch the MoneySamurai cleanup path/schema drift if sync timeouts recur.
+- [ ] **Cron timeouts** — newly observed on **2026-04-18**: `moneysamurai-sync-trigger`, `gravix-aggregate-knowledge`, and `gravix-send-followups` all hit their timeout on latest run. **Nightly 2026-04-19:** triage dashboard + report built (`reports/cron-timeout-dashboard-2026-04-19.{html,md,json}`) plus reusable renderer (`scripts/build_cron_timeout_dashboard.py`). Findings: all three share a hard ~60s timeout signature; likely wrapper/runtime budget issue first, with MoneySamurai also carrying cleanup-schema mismatch noise. **Late-night 2026-04-19:** added live config snapshot + timeout-headroom watchlist (`reports/cron-list-snapshot-2026-04-19.json`, `reports/cron-watchlist-2026-04-19.{html,md,json}`, `scripts/build_cron_watchlist.py`). **Midday 2026-04-20:** applied the ready live patch for `moneysamurai-sync-trigger`, raising `timeoutSeconds` from **60 → 120** on job `c6565127-2875-4a1d-be8f-1c0021dd0ade`. **Nightly 2026-04-20:** refreshed the live cron snapshot/watchlist (`reports/cron-list-snapshot-2026-04-21.json`, `reports/cron-watchlist-2026-04-21.{html,md,json}`) and folded cron watchlist links + summary into the morning ops build (`scripts/ops_build.py`, `scripts/kanban_morning_builder.py`). **Midday 2026-04-21:** live cron state shows `moneysamurai-sync-trigger` still green, `gravix-aggregate-knowledge` no longer red, and a new repeated timeout on `sales-email-monitor`; patched `sales-email-monitor` (`280c5ddc-93ca-4011-980e-4740a51a4eb5`) from **120 → 180**. Remaining blocker: verify the next sales monitor run and recheck `ads-daily-pull`, which still has recent timeout failures.
 - [ ] **Vercel billing** — $53.31 card retry.
 
 ## 🔵 IN PROGRESS
@@ -58,6 +58,25 @@
 
 ## 📅 REMINDERS
 - [ ] **2026-04-20** — Nudge Petite Keep (Kaylee Hobbs) re: reorder
+
+## Midday 2026-04-21
+- Re-read yesterday’s journal, created today’s journal, checked visible recent cron-session context, and reviewed live cron state before making changes.
+- `moneysamurai-sync-trigger` remains green after yesterday’s timeout bump.
+- New blocker surfaced: `sales-email-monitor` had 3 consecutive 120s timeouts.
+- Quick win completed: patched `sales-email-monitor` timeout from **120 → 180**.
+- `ads-daily-pull` still has recent timeout failures and needs the next recheck.
+
+## EOD 2026-04-21
+- Re-read `memory/2026-04-20.md`, `memory/2026-04-21.md`, `KANBAN.md`, and `MEMORY.md` before closeout.
+- Checked all visible recent session context available to this cron run; no late-day conversations or additional resolved items surfaced beyond the midday cron patch.
+- Day’s completed work was operational: verified the prior `moneysamurai-sync-trigger` timeout bump is holding and patched `sales-email-monitor` from **120 → 180** after repeated timeouts.
+- Priority stack for tomorrow stays mostly the same: verify the next `sales-email-monitor` run, recheck `ads-daily-pull`, then continue on Heather/Amazon, insurance audit, ShipBob UROs, Shopify API token regeneration, and Petite Keep.
+
+## Nightly 2026-04-21
+- Built a fresh live cron snapshot + watchlist for tomorrow: `reports/cron-list-snapshot-2026-04-22.json` and `reports/cron-watchlist-2026-04-22.{html,md,json}`.
+- Added a new multi-day cron trend report (`scripts/build_cron_trend_report.py`) and generated `reports/cron-trend-report-2026-04-22.{html,md,json}` plus latest aliases.
+- Wired the trend report into the morning ops build and ops hub, then regenerated tomorrow’s artifacts (`morning-priority-pack`, execution board, ops hub, ops build brief) for **2026-04-22**.
+- New top ops signal for tomorrow morning: `ads-daily-pull` has clearly regressed across saved watchlists and the latest run fully timed out at **1800s**; `moneysamurai-sync-trigger` improved after the timeout bump but is back in the medium-risk band and should be watched.
 
 ## EOD 2026-04-20
 - Reviewed today’s journal, yesterday’s journal, MEMORY, KANBAN, and all visible same-day session context available to this cron run before closeout.

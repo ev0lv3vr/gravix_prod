@@ -608,6 +608,9 @@ def render_ops_hub_html(report: BuildOutput) -> str:
     cron_watchlist_href = latest_report_href("cron-watchlist-*.html")
     if cron_watchlist_href:
         links.append(("Cron Watchlist (latest dated)", cron_watchlist_href))
+    cron_trend_href = latest_report_href("cron-trend-report-*.html")
+    if cron_trend_href:
+        links.append(("Cron Trend Report (latest dated)", cron_trend_href))
     cron_timeout_href = latest_report_href("cron-timeout-dashboard-*.html")
     if cron_timeout_href:
         links.append(("Cron Timeout Dashboard (latest dated)", cron_timeout_href))
