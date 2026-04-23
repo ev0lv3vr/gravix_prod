@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-20
+Last updated: 2026-04-22
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -38,6 +38,8 @@ Last updated: 2026-04-20
 - Nightly 2026-04-20: refreshed the live cron snapshot/watchlist for `2026-04-21` and integrated cron watchlist visibility into the morning ops build (`scripts/ops_build.py`, `scripts/kanban_morning_builder.py`), so the morning brief now surfaces the hottest timeout risk directly.
 - Midday 2026-04-21: live cron state showed `moneysamurai-sync-trigger` still green, `gravix-aggregate-knowledge` no longer red, and a new repeated timeout on `sales-email-monitor`; patched job `280c5ddc-93ca-4011-980e-4740a51a4eb5` from **120s → 180s**.
 - Nightly 2026-04-21: added a multi-day cron risk/regression reporter (`scripts/build_cron_trend_report.py`) with outputs `reports/cron-trend-report-2026-04-22.{html,md,json}` + latest aliases, and wired it into the morning ops build/hub so the morning package now shows whether cron risk is improving or getting worse across saved watchlists.
+- Midday 2026-04-22: confirmed `sales-email-monitor` is healthy after yesterday’s timeout bump, and patched `ads-daily-pull` (job `05a6e66b-d1df-46af-b164-4e55cbb6bb9f`) from **1800s → 3600s** after three straight timeout failures at the previous cap.
+- Nightly 2026-04-22: added a compact morning handoff builder (`scripts/build_morning_handoff.py`) that distills the existing board/debt/cron artifacts into one operator-first brief (`reports/morning-handoff-2026-04-23.{md,html,json}` + latest aliases), and wired it into `scripts/ops_build.py` plus the morning ops hub.
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle

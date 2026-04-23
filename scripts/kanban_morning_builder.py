@@ -603,6 +603,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         ("Priority Pack (latest)", "./morning-priority-pack-latest.md"),
         ("Execution Board (latest)", "./morning-execution-board-latest.html"),
         ("Execution Board JSON (latest)", "./morning-execution-board-latest.json"),
+        ("Morning Handoff (latest)", "./morning-handoff-latest.html"),
         ("Ops Debt Dashboard (latest)", "./ops-debt-dashboard-latest.html"),
     ]
     cron_watchlist_href = latest_report_href("cron-watchlist-*.html")
@@ -761,8 +762,8 @@ def render_ops_hub_html(report: BuildOutput) -> str:
     </div>
 
     <div class="panel">
-      <div class="muted">Pro tip: to refresh all these artifacts, run:</div>
-      <div><code>python3 scripts/kanban_morning_builder.py</code></div>
+      <div class="muted">Pro tip: to refresh the full morning stack, run:</div>
+      <div><code>python3 scripts/ops_build.py --date YYYY-MM-DD</code></div>
     </div>
   </div>
 
