@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build a focused morning execution board from KANBAN.md (+ latest memory context).
+Build a focused morning execution board from the active business state (+ latest memory context).
 
 Outputs:
 - reports/morning-priority-pack-YYYY-MM-DD.md
@@ -37,6 +37,7 @@ def latest_report_href(pattern: str) -> str | None:
     return f"./{matches[-1].name}"
 
 ROOT = Path(__file__).resolve().parents[1]
+BUSINESS_STATE = ROOT / "BUSINESS_STATE.md"
 KANBAN = ROOT / "KANBAN.md"
 MEMORY_DIR = ROOT / "memory"
 REPORTS = ROOT / "reports"
@@ -126,6 +127,7 @@ class Task:
 class BuildOutput:
     date: str
     generated_at: str
+    source_name: str
     total_open: int
     section_counts: dict[str, int]
     top_actions: list[Task]
@@ -168,6 +170,78 @@ def parse_kanban_tasks(text: str) -> dict[str, list[str]]:
             continue
         buckets[current].append(m.group(2).strip())
 
+    return buckets
+
+
+def parse_business_state_tasks(text: str) -> dict[str, list[str]]:
+    buckets: dict[str, list[str]] = {k: [] for k, _ in SECTION_ORDER}
+    current: str | None = None
+    current_h3: str | None = None
+    h3_lines: list[str] = []
+
+    section_map = {
+        "## 🔴 needs ev / time-sensitive": "urgent",
+        "## 🟡 customer / b2b follow-up queue": "needs_ev",
+        "## 🔵 active product / growth": "in_progress",
+        "## 🟣 moneysamurai / systems": "in_progress",
+        "## 🟢 resolved / do not resurface without fresh evidence": None,
+        "## ⚙️ agent / comms preferences": None,
+    }
+
+    def flush_h3() -> None:
+        nonlocal current_h3, h3_lines
+        if not current_h3 or not current:
+            current_h3 = None
+            h3_lines = []
+            return
+        detail = " ".join(line.strip() for line in h3_lines if line.strip())
+        task_text = current_h3.strip()
+        if detail:
+            task_text = f"{task_text} — {detail}"
+        target = current
+        combined = f"{current_h3} {detail}".lower()
+        if current == "in_progress" and "backlog" in combined:
+            target = "backlog"
+        buckets[target].append(task_text)
+        current_h3 = None
+        h3_lines = []
+
+    for raw in text.splitlines():
+        line = raw.rstrip()
+        stripped = line.strip()
+        normalized = _normalize_header(line)
+
+        if normalized.startswith("## "):
+            flush_h3()
+            current = section_map.get(normalized)
+            continue
+
+        if stripped.startswith("### "):
+            flush_h3()
+            current_h3 = stripped[4:].strip()
+            continue
+
+        if current is None:
+            continue
+
+        if stripped.startswith("- "):
+            bullet = stripped[2:].strip()
+            if current_h3:
+                h3_lines.append(bullet)
+            else:
+                target = current
+                if current == "in_progress" and any(
+                    token in bullet.lower()
+                    for token in ["backlog", "bundle", "submission", "verification", "watch", "oversold"]
+                ):
+                    target = "backlog"
+                buckets[target].append(bullet)
+            continue
+
+        if stripped and current_h3:
+            h3_lines.append(stripped)
+
+    flush_h3()
     return buckets
 
 
@@ -308,7 +382,19 @@ def actionable_amount(text: str, amount: float | None) -> float | None:
         return None
     lt = text.lower()
     # Ignore reference/context amounts that are not immediate financial exposure.
-    if any(token in lt for token in ["data ready", "sales data", "run rate", "revenue"]):
+    if any(token in lt for token in [
+        "data ready",
+        "reportedly ready",
+        "sales data",
+        "run rate",
+        "revenue",
+        "spend",
+        "budget",
+        "roas",
+        "acos",
+        "target price",
+        "price:",
+    ]):
         return None
     return amount
 
@@ -449,7 +535,7 @@ def render_markdown(report: BuildOutput) -> str:
     lines.append(f"# Morning Priority Pack — {report.date}")
     lines.append("")
     lines.append(f"Generated: {report.generated_at}")
-    lines.append("Source: `KANBAN.md` + recent `memory/*.md`")
+    lines.append(f"Source: `{report.source_name}` + recent `memory/*.md`")
     lines.append("")
     lines.append("## Queue Depth")
     for key, label in SECTION_ORDER:
@@ -543,7 +629,7 @@ ul{{margin:8px 0 0 18px}} li{{margin:6px 0;color:var(--muted)}}
 </head>
 <body>
   <h1>⚡ Morning Execution Board</h1>
-  <div class=\"sub\">{escape(report.generated_at)} · Ranked from KANBAN + recent memory context</div>
+  <div class=\"sub\">{escape(report.generated_at)} · Ranked from active business state + recent memory context</div>
 
   <div class=\"grid\">
     {''.join(cards)}
@@ -599,7 +685,8 @@ def render_ops_hub_html(report: BuildOutput) -> str:
     )
 
     links = [
-        ("KANBAN", "../KANBAN.md"),
+        ("Business State", "../BUSINESS_STATE.md"),
+        ("Retired KANBAN", "../KANBAN.md"),
         ("Priority Pack (latest)", "./morning-priority-pack-latest.md"),
         ("Execution Board (latest)", "./morning-execution-board-latest.html"),
         ("Execution Board JSON (latest)", "./morning-execution-board-latest.json"),
@@ -943,18 +1030,22 @@ def clone_latest(versioned: Path, latest: Path) -> None:
 
 
 def main(argv: Iterable[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Generate morning execution board from KANBAN.md")
+    parser = argparse.ArgumentParser(description="Generate morning execution board from the active business state")
     parser.add_argument("--date", help="Output date (YYYY-MM-DD). Defaults to local today.")
     args = parser.parse_args(list(argv) if argv is not None else None)
 
-    if not KANBAN.exists():
-        raise SystemExit(f"KANBAN missing: {KANBAN}")
+    source_name = "BUSINESS_STATE.md"
+    if BUSINESS_STATE.exists():
+        buckets = parse_business_state_tasks(BUSINESS_STATE.read_text(encoding="utf-8"))
+    elif KANBAN.exists():
+        source_name = "KANBAN.md"
+        buckets = parse_kanban_tasks(KANBAN.read_text(encoding="utf-8"))
+    else:
+        raise SystemExit(f"Missing active source files: {BUSINESS_STATE} and {KANBAN}")
 
     now = datetime.now().astimezone()
     date_str = args.date or now.strftime("%Y-%m-%d")
     generated_at = now.strftime("%Y-%m-%d %H:%M %Z")
-
-    buckets = parse_kanban_tasks(KANBAN.read_text(encoding="utf-8"))
     tasks = build_tasks(buckets)
 
     section_counts = {k: len(v) for k, v in buckets.items()}
@@ -971,6 +1062,7 @@ def main(argv: Iterable[str] | None = None) -> int:
     report = BuildOutput(
         date=date_str,
         generated_at=generated_at,
+        source_name=source_name,
         total_open=len(tasks),
         section_counts=section_counts,
         top_actions=tasks[:8],
@@ -995,6 +1087,7 @@ def main(argv: Iterable[str] | None = None) -> int:
         {
             "date": report.date,
             "generated_at": report.generated_at,
+            "source_name": report.source_name,
             "total_open": report.total_open,
             "section_counts": report.section_counts,
             "top_actions": [asdict(t) for t in report.top_actions],

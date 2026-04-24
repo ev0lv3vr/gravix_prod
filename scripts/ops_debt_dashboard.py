@@ -179,7 +179,8 @@ def render_html(payload: dict[str, Any]) -> str:
     data_json = json.dumps(payload, ensure_ascii=False)
 
     links = [
-        ("KANBAN", "../KANBAN.md"),
+        ("Business State", "../BUSINESS_STATE.md"),
+        ("Retired KANBAN", "../KANBAN.md"),
         ("Morning Ops Hub (latest)", "./morning-ops-hub-latest.html"),
         ("Reports folder", "./"),
     ]

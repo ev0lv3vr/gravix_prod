@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-22
+Last updated: 2026-04-23
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -24,7 +24,7 @@ Last updated: 2026-04-22
 - **Fulfillment:** ShipBob (Twin Lakes WI, Ontario CA, Buford GA)
 - **Email:** sales@gluemasters.com via himalaya (`save-copy = false`)
 - **Revenue run rate:** ~$638K (Amazon $531K + Shopify $107K)
-- **Current operational status (2026-04-18):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson onboarding package has been sent, and the Donaldson order has already shipped.
+- **Current operational status (2026-04-23):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson order has shipped, but onboarding still has one final certification/form item from Rachael Fitzgerald (sales msg id **6048**). Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**).
 
 ### MoneySamurai
 - Product data/analytics platform. Workspace: `/workspace/moneysamurai/`
@@ -40,6 +40,8 @@ Last updated: 2026-04-22
 - Nightly 2026-04-21: added a multi-day cron risk/regression reporter (`scripts/build_cron_trend_report.py`) with outputs `reports/cron-trend-report-2026-04-22.{html,md,json}` + latest aliases, and wired it into the morning ops build/hub so the morning package now shows whether cron risk is improving or getting worse across saved watchlists.
 - Midday 2026-04-22: confirmed `sales-email-monitor` is healthy after yesterday’s timeout bump, and patched `ads-daily-pull` (job `05a6e66b-d1df-46af-b164-4e55cbb6bb9f`) from **1800s → 3600s** after three straight timeout failures at the previous cap.
 - Nightly 2026-04-22: added a compact morning handoff builder (`scripts/build_morning_handoff.py`) that distills the existing board/debt/cron artifacts into one operator-first brief (`reports/morning-handoff-2026-04-23.{md,html,json}` + latest aliases), and wired it into `scripts/ops_build.py` plus the morning ops hub.
+- Midday 2026-04-23: fresh live runs showed both email monitors timing out again after earlier healthy runs, so `sales-email-monitor` (job `280c5ddc-93ca-4011-980e-4740a51a4eb5`) was widened from **180s → 240s** and `evgueni-email-monitor` (job `08054f94-6178-4f45-83b2-348ab56cda17`) from **120s → 180s**. `ads-daily-pull` is still unresolved after the 3600s bump and should move to deeper pipeline/log triage if the next run also dies at cap.
+- Nightly 2026-04-23: migrated the morning execution builder off retired `KANBAN.md` and onto `BUSINESS_STATE.md` as the active source of truth (`scripts/kanban_morning_builder.py`, `scripts/ops_build.py`, `scripts/ops_debt_dashboard.py`). Rebuilt the **2026-04-24** morning pack so the ranked queue reflects live state instead of stale/resolved board items.
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle
@@ -77,4 +79,8 @@ Last updated: 2026-04-22
 - MoneySamurai sync_jobs cleanup should not assume `error_message`; recent cron history indicates the working column is `error`.
 - Shopify browser auth works when API token is dead (openclaw browser, profile: openclaw)
 - Amazon NARF can auto-list FBA on .ca/.mx and trigger SDS/CCCR / compliance noise even when Canada is not an active Gluemasters sales priority
-- Ev wants Telegram updates formatted cleanly with bolding, stronger visual hierarchy, and selective emoji use.
+- Ev wants Telegram updates formatted cleanly, prettily, and colorfully: bold section headers, strong visual hierarchy, short bullets, whitespace, and tasteful emoji/color cues (🔴 🟡 🟢 🔵 ⚠️ ✅).
+- Ev does **not** want in-between implementation chatter or raw run/tool output. Only surface final results, blockers, decisions needed, time-sensitive risks, and concise action-oriented status updates.
+- Persona preference: Vasya should be collegial, friendly, and direct — Ev’s right hand/confidant, not a detached chatbot.
+- ShipBob UROs were already completed/resolved before 2026-04-23. Do **not** list them as active ops debt or a priority unless fresh evidence shows a new URO issue.
+- `KANBAN.md` is retired as of 2026-04-23. Ev does not use it. Do **not** use it as active truth. Use `BUSINESS_STATE.md` for active business state, `MEMORY.md` for durable facts, and `memory/YYYY-MM-DD.md` for journal history.

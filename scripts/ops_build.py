@@ -173,9 +173,10 @@ def render_brief(b: Brief) -> str:
         lines.append(f"- One-time dollars open: {_fmt_money(o_sum.get('one_time_open'))}")
     lines.append("")
 
-    # Morning ranking summary (from kanban builder)
+    # Morning ranking summary (from active business-state builder)
     sc = k.get("section_counts") or {}
-    lines.append("KANBAN queue depth:")
+    source_name = k.get("source_name") or "active state"
+    lines.append(f"{source_name} queue depth:")
     lines.append(f"- 🔴 Urgent: {sc.get('urgent','—')}")
     lines.append(f"- 🟡 Needs Ev: {sc.get('needs_ev','—')}")
     lines.append(f"- 🔵 In progress: {sc.get('in_progress','—')}")
