@@ -52,17 +52,9 @@ def _safe_int(v: Any) -> int | None:
 def _find_latest_pull_log() -> str | None:
     if not ADS_PULL_LOGS.exists():
         return None
-    # logs/ads-daily/YYYY-MM-DD/*.log
-    candidates: list[Path] = []
-    for d in ADS_PULL_LOGS.iterdir():
-        if not d.is_dir():
-            continue
-        for f in d.iterdir():
-            if f.is_file() and f.suffix == ".log":
-                candidates.append(f)
+    candidates = sorted(ADS_PULL_LOGS.rglob("*.log"), key=lambda p: p.stat().st_mtime, reverse=True)
     if not candidates:
         return None
-    candidates.sort(key=lambda p: p.stat().st_mtime, reverse=True)
     return str(candidates[0].relative_to(ROOT))
 
 

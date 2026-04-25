@@ -70,7 +70,7 @@ def _task_flags(task: dict[str, Any]) -> dict[str, bool]:
     }
 
 
-def _derive_sections(board: dict[str, Any], ops_debt: dict[str, Any] | None, watchlist: dict[str, Any] | None, trend: dict[str, Any] | None) -> dict[str, Any]:
+def _derive_sections(board: dict[str, Any], ops_debt: dict[str, Any] | None, watchlist: dict[str, Any] | None, trend: dict[str, Any] | None, ads_incident: dict[str, Any] | None) -> dict[str, Any]:
     tasks = board.get("all_tasks_ranked") or []
     top = board.get("top_actions") or []
 
@@ -108,6 +108,15 @@ def _derive_sections(board: dict[str, Any], ops_debt: dict[str, Any] | None, wat
             cron_checks.append(
                 f"Trend: {t.get('regressing_jobs', '—')} regressing, {t.get('improving_jobs', '—')} improving, {t.get('new_risks', '—')} newly surfaced risks across {t.get('days_compared', '—')} saved days."
             )
+    if ads_incident:
+        summary = ads_incident.get("summary") or {}
+        cause = (ads_incident.get("suspected_cause") or [None])[0]
+        failed = ", ".join(summary.get("core_reports_failed") or summary.get("failed_reports") or []) or "none"
+        cron_checks.append(
+            f"Ads incident snapshot: {failed} failed, {summary.get('core_duplicate_pending_retries', '—')} core duplicate retry loops, {summary.get('core_timeouts', '—')} core poll timeouts."
+        )
+        if cause:
+            cron_checks.append(f"Ads likely cause: {cause}")
 
     debt_checks: list[str] = []
     if ops_debt:
@@ -229,11 +238,12 @@ def main() -> int:
     ops_debt = _load_json(REPORTS / "ops-debt-dashboard-latest.json")
     watchlist = _load_json(_latest("cron-watchlist-*.json"))
     trend = _load_json(REPORTS / "cron-trend-report-latest.json")
+    ads_incident = _load_json(REPORTS / "ads-pull-incident-latest.json")
 
     payload = {
         "date": date_str,
         "generated_at": generated_at,
-        "sections": _derive_sections(board, ops_debt, watchlist, trend),
+        "sections": _derive_sections(board, ops_debt, watchlist, trend, ads_incident),
     }
 
     REPORTS.mkdir(parents=True, exist_ok=True)

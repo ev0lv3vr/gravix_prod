@@ -691,6 +691,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         ("Execution Board (latest)", "./morning-execution-board-latest.html"),
         ("Execution Board JSON (latest)", "./morning-execution-board-latest.json"),
         ("Morning Handoff (latest)", "./morning-handoff-latest.html"),
+        ("Ads Pull Incident (latest)", "./ads-pull-incident-latest.html"),
         ("Ops Debt Dashboard (latest)", "./ops-debt-dashboard-latest.html"),
     ]
     cron_watchlist_href = latest_report_href("cron-watchlist-*.html")

@@ -9,6 +9,7 @@ Builds:
 - reports/morning-ops-hub-YYYY-MM-DD.html (+ latest)
 - reports/morning-handoff-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/ops-debt-dashboard-YYYY-MM-DD.html (+ latest)
+- reports/ads-pull-incident-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/cron-trend-report-YYYY-MM-DD.html (+ latest, when dated watchlists exist)
 - reports/ops-build-brief-YYYY-MM-DD.txt (+ latest)
 
@@ -70,6 +71,7 @@ class Brief:
     kanban: dict[str, Any]
     ops_debt: dict[str, Any]
     ads_pull: dict[str, Any] | None = None
+    ads_incident: dict[str, Any] | None = None
     cron_watchlist: dict[str, Any] | None = None
     cron_trend: dict[str, Any] | None = None
 
@@ -85,6 +87,7 @@ def render_brief(b: Brief) -> str:
     k = b.kanban
     o = b.ops_debt
     a = b.ads_pull or {}
+    ai = b.ads_incident or {}
 
     k_top = (k.get("top_actions") or [])[:8]
     o_sum = (o.get("summary") or {})
@@ -99,6 +102,7 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/morning-priority-pack-latest.md")
     lines.append("- reports/ops-debt-dashboard-latest.html")
     lines.append("- reports/ads-pull-dashboard-latest.html")
+    lines.append("- reports/ads-pull-incident-latest.html")
     lines.append("- reports/morning-handoff-latest.html")
     if b.cron_watchlist:
         lines.append("- latest cron-watchlist-*.html (dated report)")
@@ -118,6 +122,11 @@ def render_brief(b: Brief) -> str:
             lines.append(f"- Current invalid streak: {a_sum.get('current_invalid_streak')}")
         if a.get("latest_pull_log"):
             lines.append(f"- Latest pull log: {a.get('latest_pull_log')}")
+        ai_sum = (ai.get("summary") or {}) if isinstance(ai, dict) else {}
+        if ai_sum:
+            lines.append(
+                f"- Incident diagnosis: {', '.join(ai_sum.get('core_reports_failed') or ai_sum.get('failed_reports') or ['none'])} failed; {ai_sum.get('core_duplicate_pending_retries', '—')} core duplicate retry loops; {ai_sum.get('core_timeouts', '—')} core timed-out polls"
+            )
         lines.append("")
 
     cw = (b.cron_watchlist.get("summary") or {}) if isinstance(b.cron_watchlist, dict) else {}
@@ -222,6 +231,7 @@ def main(argv: list[str] | None = None) -> int:
     _run([sys.executable, "scripts/ops_debt_dashboard.py", "--date", date_str])
     _run([sys.executable, "scripts/kanban_morning_builder.py", "--date", date_str])
     _run([sys.executable, "scripts/ads_pull_dashboard.py", "--date", date_str])
+    _run([sys.executable, "scripts/ads_pull_incident_report.py", "--date", date_str])
     if _latest_report("cron-watchlist-*.json"):
         _run([sys.executable, "scripts/build_cron_trend_report.py", "--output-prefix", f"reports/cron-trend-report-{date_str}"])
     _run([sys.executable, "scripts/build_morning_handoff.py", "--date", date_str])
@@ -230,6 +240,7 @@ def main(argv: list[str] | None = None) -> int:
     ops_json = REPORTS / "ops-debt-dashboard-latest.json"
     kanban_json = REPORTS / "morning-execution-board-latest.json"
     ads_json = REPORTS / "ads-pull-dashboard-latest.json"
+    ads_incident_json = REPORTS / "ads-pull-incident-latest.json"
     cron_watchlist_json = _latest_report("cron-watchlist-*.json")
     cron_trend_json = REPORTS / "cron-trend-report-latest.json"
     if not ops_json.exists():
@@ -243,6 +254,7 @@ def main(argv: list[str] | None = None) -> int:
         kanban=_load_json(kanban_json),
         ops_debt=_load_json(ops_json),
         ads_pull=_load_json(ads_json) if ads_json.exists() else None,
+        ads_incident=_load_json(ads_incident_json) if ads_incident_json.exists() else None,
         cron_watchlist=_load_json(cron_watchlist_json) if cron_watchlist_json and cron_watchlist_json.exists() else None,
         cron_trend=_load_json(cron_trend_json) if cron_trend_json.exists() else None,
     )
@@ -258,6 +270,7 @@ def main(argv: list[str] | None = None) -> int:
     print("Built reports/morning-ops-hub-latest.html")
     print("Built reports/ops-debt-dashboard-latest.html")
     print("Built reports/ads-pull-dashboard-latest.html")
+    print("Built reports/ads-pull-incident-latest.html")
     print("Built reports/morning-handoff-latest.html")
     if cron_trend_json.exists():
         print("Built reports/cron-trend-report-latest.html")

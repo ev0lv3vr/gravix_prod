@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-23
+Last updated: 2026-04-24
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -24,7 +24,7 @@ Last updated: 2026-04-23
 - **Fulfillment:** ShipBob (Twin Lakes WI, Ontario CA, Buford GA)
 - **Email:** sales@gluemasters.com via himalaya (`save-copy = false`)
 - **Revenue run rate:** ~$638K (Amazon $531K + Shopify $107K)
-- **Current operational status (2026-04-23):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson order has shipped, but onboarding still has one final certification/form item from Rachael Fitzgerald (sales msg id **6048**). Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**).
+- **Current operational status (2026-04-24):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson order has shipped, but onboarding still has one final certification/form item from Rachael Fitzgerald (sales msg id **6048**), and Donaldson AP later asked whether Gluemasters will accept **NET60** instead of **NET30** for expected purchases ~3–4x/year (sales msg id **6060**). Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**).
 
 ### MoneySamurai
 - Product data/analytics platform. Workspace: `/workspace/moneysamurai/`
@@ -40,8 +40,11 @@ Last updated: 2026-04-23
 - Nightly 2026-04-21: added a multi-day cron risk/regression reporter (`scripts/build_cron_trend_report.py`) with outputs `reports/cron-trend-report-2026-04-22.{html,md,json}` + latest aliases, and wired it into the morning ops build/hub so the morning package now shows whether cron risk is improving or getting worse across saved watchlists.
 - Midday 2026-04-22: confirmed `sales-email-monitor` is healthy after yesterday’s timeout bump, and patched `ads-daily-pull` (job `05a6e66b-d1df-46af-b164-4e55cbb6bb9f`) from **1800s → 3600s** after three straight timeout failures at the previous cap.
 - Nightly 2026-04-22: added a compact morning handoff builder (`scripts/build_morning_handoff.py`) that distills the existing board/debt/cron artifacts into one operator-first brief (`reports/morning-handoff-2026-04-23.{md,html,json}` + latest aliases), and wired it into `scripts/ops_build.py` plus the morning ops hub.
-- Midday 2026-04-23: fresh live runs showed both email monitors timing out again after earlier healthy runs, so `sales-email-monitor` (job `280c5ddc-93ca-4011-980e-4740a51a4eb5`) was widened from **180s → 240s** and `evgueni-email-monitor` (job `08054f94-6178-4f45-83b2-348ab56cda17`) from **120s → 180s**. `ads-daily-pull` is still unresolved after the 3600s bump and should move to deeper pipeline/log triage if the next run also dies at cap.
+- Midday 2026-04-23: fresh live runs showed both email monitors timing out again after earlier healthy runs, so `sales-email-monitor` (job `280c5ddc-93ca-4011-980e-4740a51a4eb5`) was widened from **180s → 240s** and `evgueni-email-monitor` (job `08054f94-6178-4f45-83b2-348ab56cda17`) from **120s → 180s**. `ads-daily-pull` stayed unresolved after the 3600s bump; 2026-04-24 morning manual recovery produced a partial/invalid 2026-04-23 folder with keywords failed/empty and should move to deeper pipeline/log triage, not another timeout bump.
 - Nightly 2026-04-23: migrated the morning execution builder off retired `KANBAN.md` and onto `BUSINESS_STATE.md` as the active source of truth (`scripts/kanban_morning_builder.py`, `scripts/ops_build.py`, `scripts/ops_debt_dashboard.py`). Rebuilt the **2026-04-24** morning pack so the ranked queue reflects live state instead of stale/resolved board items.
+- Midday 2026-04-24: cleaned the ops debt source/dashboard to remove stale retired items (including resolved ShipBob UROs / Amazon CA noise and obsolete Donaldson shipping debt), rebuilt the morning ops artifacts, and brought live debt reporting down to **9 open / 7 active-critical** with **$1,715.54** one-time open debt and **$0/day** recurring burn.
+- Evening 2026-04-24: verified both email monitors completed cleanly on their next runs after the timeout bumps, with no actionable new alerts; `ads-daily-pull` remains the only live cron reliability issue that still needs deeper log/pipeline triage.
+- Nightly 2026-04-24: added an ads pull incident reporter (`scripts/ads_pull_incident_report.py`) that parses the latest `logs/ads-daily/*.log` plus snapshot status into `reports/ads-pull-incident-latest.{html,md,json}`, and wired it into `scripts/ops_build.py`, the morning handoff, and the morning ops hub so the stuck campaigns/keywords failure is explained in one place instead of raw logs.
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle
