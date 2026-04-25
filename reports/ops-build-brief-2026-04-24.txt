@@ -1,5 +1,5 @@
 OPS BUILD BRIEF — 2026-04-24
-Generated: 2026-04-23 23:03 PDT
+Generated: 2026-04-24 14:01 PDT
 
 Artifacts:
 - reports/morning-ops-hub-latest.html
@@ -11,10 +11,10 @@ Artifacts:
 - reports/cron-trend-report-latest.html
 
 Amazon Ads daily pull (local status):
-- Latest day: 2026-04-22
+- Latest day: 2026-04-23
 - Latest status: DEGRADED (failed: campaigns, keywords)
-- Current invalid streak: 4
-- Latest pull log: logs/ads-daily/2026-04-12/00_status_summary.log
+- Current invalid streak: 5
+- Latest pull log: logs/ads-daily/2026-04-24_062717_2026-04-23/01-pull.log
 
 Cron timeout watchlist:
 - Jobs scanned: 13
@@ -33,10 +33,10 @@ Cron trend (multi-day):
 - Worst regression: ads-daily-pull (ok → critical)
 
 Ops debt (from ops-debt.json):
-- Open items: 11 (active/critical: 9)
-- Daily burn (true): $33/day
-- Accrued (open): $3,395.54
-- 30-day burn exposure: $990
+- Open items: 9 (active/critical: 7)
+- Daily burn (true): $0/day
+- Accrued (open): $1,715.54
+- 30-day burn exposure: $0
 - One-time dollars open: $1,715.54
 
 BUSINESS_STATE.md queue depth:
@@ -49,8 +49,8 @@ BUSINESS_STATE.md queue depth:
 Top 8 morning actions (ranked):
 1. Jeremy Embry / Aquarium Artisans — Wants urgent CA + accelerator support for Monday aquascape job. Needs 16oz Medium + 16oz Thick with accelerator ASAP. Also wants 2oz Medium + 2oz Thick for store. Source: `sales` msg **6046**. (18m)
 2. Insurance audit — Overdue; data reportedly ready around **$637K**. Ev must submit/handle final PDF. (20m)
-3. **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (15m)
-4. American Express past-due notice — Notice says account ending **271002** is past due and may lose spending privileges. Ev should verify/pay directly through Amex, not email links. Source: `gluemasters` msg **192094**. (18m)
+3. American Express account/payment follow-up — Past-due notice for account ending **271002** came in earlier. New Amex emails show a **$1,000 payment received** (msg **192107**) but also a **transaction declined due to past-due status** shortly before/around processing (msg **192106**). Ev should verify the Amex balance/status directly in Amex, not through email links. Sources: `gluemasters` msgs **192094**, **192106**, **192107**. (18m)
+4. **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (15m)
 5. **Walmart unshipped order** — auto-cancel risk. (25m)
 6. Donaldson onboarding — Rachael Fitzgerald says onboarding is almost finished. Needs either Quality/ISO certification copies or one final super-glue certification form. Source: `sales` msg **6048**. (18m)
 7. Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. (20m)

@@ -41,12 +41,12 @@
 <body>
   <div class='wrap'>
     <div class='title'>Amazon Ads Pull Dashboard</div>
-    <div class='sub'>2026-04-23 23:03 PDT · Built for 2026-04-24</div>
+    <div class='sub'>2026-04-24 14:01 PDT · Built for 2026-04-24</div>
 
     <div class='grid'>
       <div class='card'>
         <div class='k'>Latest day</div>
-        <div class='v mono'>2026-04-22</div>
+        <div class='v mono'>2026-04-23</div>
       </div>
       <div class='card'>
         <div class='k'>Latest pull status</div>
@@ -54,7 +54,7 @@
       </div>
       <div class='card'>
         <div class='k'>Invalid streak</div>
-        <div class='v mono'>4</div>
+        <div class='v mono'>5</div>
       </div>
       <div class='card'>
         <div class='k'>Last valid day</div>
@@ -66,7 +66,7 @@
       <div class='k'>Latest failed reports</div>
       <div class='v mono' style='font-size: 13px; font-weight: 600;'>campaigns, keywords</div>
       <div class='k' style='margin-top: 10px;'>Latest pull log</div>
-      <div class='mono'>logs/ads-daily/2026-04-12/00_status_summary.log</div>
+      <div class='mono'>logs/ads-daily/2026-04-24_062717_2026-04-23/01-pull.log</div>
     </div>
 
     <div class='section-title'>Quick commands</div>
@@ -75,7 +75,7 @@
 python3 moneysamurai/scripts/ads-api-health-check.py
 
 # Inspect reportIds from a pull log (status-only)
-python3 moneysamurai/tools/ads-report-inspect.py --from-log logs/ads-daily/2026-04-12/00_status_summary.log --watch --interval 30 --timeout 1200
+python3 moneysamurai/tools/ads-report-inspect.py --from-log logs/ads-daily/2026-04-24_062717_2026-04-23/01-pull.log --watch --interval 30 --timeout 1200
 
 # Run the daily pull
 python3 moneysamurai/scripts/ads-daily-pull.py
@@ -94,6 +94,13 @@ python3 moneysamurai/scripts/ads-daily-pull.py
         </thead>
         <tbody>
           
+        <tr>
+          <td class='mono'>2026-04-23</td>
+          <td><span class='pill bad'>DEGRADED</span></td>
+          <td>campaigns, keywords</td>
+          <td class='mono'>2026-04-24T10:24:10</td>
+        </tr>
+        
         <tr>
           <td class='mono'>2026-04-22</td>
           <td><span class='pill bad'>DEGRADED</span></td>
