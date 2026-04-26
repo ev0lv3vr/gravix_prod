@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-24
+Last updated: 2026-04-25
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -45,6 +45,11 @@ Last updated: 2026-04-24
 - Midday 2026-04-24: cleaned the ops debt source/dashboard to remove stale retired items (including resolved ShipBob UROs / Amazon CA noise and obsolete Donaldson shipping debt), rebuilt the morning ops artifacts, and brought live debt reporting down to **9 open / 7 active-critical** with **$1,715.54** one-time open debt and **$0/day** recurring burn.
 - Evening 2026-04-24: verified both email monitors completed cleanly on their next runs after the timeout bumps, with no actionable new alerts; `ads-daily-pull` remains the only live cron reliability issue that still needs deeper log/pipeline triage.
 - Nightly 2026-04-24: added an ads pull incident reporter (`scripts/ads_pull_incident_report.py`) that parses the latest `logs/ads-daily/*.log` plus snapshot status into `reports/ads-pull-incident-latest.{html,md,json}`, and wired it into `scripts/ops_build.py`, the morning handoff, and the morning ops hub so the stuck campaigns/keywords failure is explained in one place instead of raw logs.
+- Morning 2026-04-25: resolved the Amazon Ads daily-pull incident with code fix `moneysamurai@9539660` (`fix: harden amazon ads report polling`): report/duplicate polling widened to 45 minutes, HTTP/download timeouts added, keyword hard-fail fallback covered by tests. Recovery run `.runs/ads-20260425T080523Z-recovery` completed successfully for snapshot **2026-04-24** with campaigns **10**, keywords **118**, search terms **393**, no failed reports; digest and ads pull health dashboard regenerated.
+- Midday 2026-04-25: traced noisy Telegram messages (“MoneySamurai sync trigger sent ✅” / “Sync triggered ✅”) to OpenClaw cron job `c6565127-2875-4a1d-be8f-1c0021dd0ade` (`moneysamurai-sync-trigger`, `0 */2 * * *`, 5m stagger). It had `delivery.mode=announce` to Ev’s Telegram; changed it to `delivery.mode=none` while leaving the backend sync itself enabled. Backup: `/Users/evolve/.openclaw/cron/jobs.json.bak-before-silence-moneysamurai-sync-trigger-20260425T1219.json`.
+- Midday 2026-04-25 (2 PM check): captured two newly surfaced non-resolved items into live state so they do not get lost or re-surfaced as surprises later: Amazon password recovery/security alert (`gluemasters` msg **192139**) and Sam Tillery package-not-arrived complaint (`sales` msg **6061**). Confirmed again that Amazon Ads daily pull is resolved and that `KANBAN.md` remains retired.
+- Evening 2026-04-25 (6 PM window): additional actionable context surfaced — Amex statement-ready email for account ending **94007** due **2026-05-19** (`gluemasters` msg **192149**) and a low-priority TikTok/Amazon influencer outreach pitch (`sales` msg **6066**). No fresh Amazon Ads regression was seen; latest valid ads snapshot remained **2026-04-24**.
+- Nightly 2026-04-25: added a dedicated morning decision desk builder (`scripts/build_decision_brief.py`) with outputs `reports/morning-decision-desk-2026-04-26.{md,html,json}` + latest aliases, and wired it into `scripts/ops_build.py` plus the morning ops hub. Also tightened the morning pack so old ads incident details are suppressed when the latest ads snapshot is healthy, and filtered out resolved/status-only MoneySamurai bullets from the ranked morning board to reduce noise.
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle
@@ -83,7 +88,7 @@ Last updated: 2026-04-24
 - Shopify browser auth works when API token is dead (openclaw browser, profile: openclaw)
 - Amazon NARF can auto-list FBA on .ca/.mx and trigger SDS/CCCR / compliance noise even when Canada is not an active Gluemasters sales priority
 - Ev wants Telegram updates formatted cleanly, prettily, and colorfully: bold section headers, strong visual hierarchy, short bullets, whitespace, and tasteful emoji/color cues (🔴 🟡 🟢 🔵 ⚠️ ✅).
-- Ev does **not** want in-between implementation chatter or raw run/tool output. Only surface final results, blockers, decisions needed, time-sensitive risks, and concise action-oriented status updates.
+- Ev does **not** want in-between implementation chatter, raw run/tool output, or routine cron success pings. Only surface final results, blockers, decisions needed, time-sensitive risks, and concise action-oriented status updates.
 - Persona preference: Vasya should be collegial, friendly, and direct — Ev’s right hand/confidant, not a detached chatbot.
 - ShipBob UROs were already completed/resolved before 2026-04-23. Do **not** list them as active ops debt or a priority unless fresh evidence shows a new URO issue.
 - `KANBAN.md` is retired as of 2026-04-23. Ev does not use it. Do **not** use it as active truth. Use `BUSINESS_STATE.md` for active business state, `MEMORY.md` for durable facts, and `memory/YYYY-MM-DD.md` for journal history.

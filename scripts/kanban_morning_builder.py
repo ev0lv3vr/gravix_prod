@@ -173,6 +173,31 @@ def parse_kanban_tasks(text: str) -> dict[str, list[str]]:
     return buckets
 
 
+def _skip_business_state_line(text: str, current: str | None) -> bool:
+    lt = text.lower()
+    if any(token in lt for token in [
+        "resolved / do not resurface",
+        "do not resurface unless",
+        "should keep running",
+        "do not re-enable",
+    ]):
+        return True
+    if current == "in_progress" and any(token in lt for token in [
+        "is the internal analytics/ops platform",
+        "is resolved as of",
+        "latest checked ads folder",
+        "regenerated for",
+        "completed cleanly",
+        "new local triage artifact is live",
+        "recent timeout patches",
+        "delivery silenced",
+        "latest valid ads snapshot remained",
+        "no fresh amazon ads regression",
+    ]):
+        return True
+    return False
+
+
 def parse_business_state_tasks(text: str) -> dict[str, list[str]]:
     buckets: dict[str, list[str]] = {k: [] for k, _ in SECTION_ORDER}
     current: str | None = None
@@ -198,6 +223,10 @@ def parse_business_state_tasks(text: str) -> dict[str, list[str]]:
         task_text = current_h3.strip()
         if detail:
             task_text = f"{task_text} — {detail}"
+        if _skip_business_state_line(task_text, current):
+            current_h3 = None
+            h3_lines = []
+            return
         target = current
         combined = f"{current_h3} {detail}".lower()
         if current == "in_progress" and "backlog" in combined:
@@ -229,6 +258,8 @@ def parse_business_state_tasks(text: str) -> dict[str, list[str]]:
             if current_h3:
                 h3_lines.append(bullet)
             else:
+                if _skip_business_state_line(bullet, current):
+                    continue
                 target = current
                 if current == "in_progress" and any(
                     token in bullet.lower()
@@ -691,6 +722,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         ("Execution Board (latest)", "./morning-execution-board-latest.html"),
         ("Execution Board JSON (latest)", "./morning-execution-board-latest.json"),
         ("Morning Handoff (latest)", "./morning-handoff-latest.html"),
+        ("Morning Decision Desk (latest)", "./morning-decision-desk-latest.html"),
         ("Ads Pull Incident (latest)", "./ads-pull-incident-latest.html"),
         ("Ops Debt Dashboard (latest)", "./ops-debt-dashboard-latest.html"),
     ]

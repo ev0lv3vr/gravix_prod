@@ -8,6 +8,7 @@ Builds:
 - reports/morning-execution-board-YYYY-MM-DD.html (+ latest)
 - reports/morning-ops-hub-YYYY-MM-DD.html (+ latest)
 - reports/morning-handoff-YYYY-MM-DD.{md,html,json} (+ latest)
+- reports/morning-decision-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/ops-debt-dashboard-YYYY-MM-DD.html (+ latest)
 - reports/ads-pull-incident-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/cron-trend-report-YYYY-MM-DD.html (+ latest, when dated watchlists exist)
@@ -104,6 +105,7 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/ads-pull-dashboard-latest.html")
     lines.append("- reports/ads-pull-incident-latest.html")
     lines.append("- reports/morning-handoff-latest.html")
+    lines.append("- reports/morning-decision-desk-latest.html")
     if b.cron_watchlist:
         lines.append("- latest cron-watchlist-*.html (dated report)")
     if b.cron_trend:
@@ -115,15 +117,16 @@ def render_brief(b: Brief) -> str:
     if a_sum:
         lines.append("Amazon Ads daily pull (local status):")
         lines.append(f"- Latest day: {a_sum.get('latest_day','—')}")
-        if a_sum.get("latest_is_valid") is not None:
-            ok = "OK" if a_sum.get("latest_is_valid") else "DEGRADED"
+        latest_is_valid = a_sum.get("latest_is_valid")
+        if latest_is_valid is not None:
+            ok = "OK" if latest_is_valid else "DEGRADED"
             lines.append(f"- Latest status: {ok} (failed: {', '.join(a_sum.get('latest_failed_reports') or []) or '—'})")
         if a_sum.get("current_invalid_streak") is not None:
             lines.append(f"- Current invalid streak: {a_sum.get('current_invalid_streak')}")
         if a.get("latest_pull_log"):
             lines.append(f"- Latest pull log: {a.get('latest_pull_log')}")
         ai_sum = (ai.get("summary") or {}) if isinstance(ai, dict) else {}
-        if ai_sum:
+        if ai_sum and latest_is_valid is False:
             lines.append(
                 f"- Incident diagnosis: {', '.join(ai_sum.get('core_reports_failed') or ai_sum.get('failed_reports') or ['none'])} failed; {ai_sum.get('core_duplicate_pending_retries', '—')} core duplicate retry loops; {ai_sum.get('core_timeouts', '—')} core timed-out polls"
             )
@@ -235,6 +238,7 @@ def main(argv: list[str] | None = None) -> int:
     if _latest_report("cron-watchlist-*.json"):
         _run([sys.executable, "scripts/build_cron_trend_report.py", "--output-prefix", f"reports/cron-trend-report-{date_str}"])
     _run([sys.executable, "scripts/build_morning_handoff.py", "--date", date_str])
+    _run([sys.executable, "scripts/build_decision_brief.py", "--date", date_str])
 
     # Compose brief from the latest JSON payloads
     ops_json = REPORTS / "ops-debt-dashboard-latest.json"
@@ -272,6 +276,7 @@ def main(argv: list[str] | None = None) -> int:
     print("Built reports/ads-pull-dashboard-latest.html")
     print("Built reports/ads-pull-incident-latest.html")
     print("Built reports/morning-handoff-latest.html")
+    print("Built reports/morning-decision-desk-latest.html")
     if cron_trend_json.exists():
         print("Built reports/cron-trend-report-latest.html")
 
