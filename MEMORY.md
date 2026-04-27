@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-25
+Last updated: 2026-04-26
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -24,7 +24,7 @@ Last updated: 2026-04-25
 - **Fulfillment:** ShipBob (Twin Lakes WI, Ontario CA, Buford GA)
 - **Email:** sales@gluemasters.com via himalaya (`save-copy = false`)
 - **Revenue run rate:** ~$638K (Amazon $531K + Shopify $107K)
-- **Current operational status (2026-04-24):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson order has shipped, but onboarding still has one final certification/form item from Rachael Fitzgerald (sales msg id **6048**), and Donaldson AP later asked whether Gluemasters will accept **NET60** instead of **NET30** for expected purchases ~3–4x/year (sales msg id **6060**). Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**).
+- **Current operational status (2026-04-26):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson NET60/onboarding reply is done as of 2026-04-26; do not resurface as active unless Donaldson replies with a new blocker. Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**).
 
 ### MoneySamurai
 - Product data/analytics platform. Workspace: `/workspace/moneysamurai/`
@@ -50,6 +50,10 @@ Last updated: 2026-04-25
 - Midday 2026-04-25 (2 PM check): captured two newly surfaced non-resolved items into live state so they do not get lost or re-surfaced as surprises later: Amazon password recovery/security alert (`gluemasters` msg **192139**) and Sam Tillery package-not-arrived complaint (`sales` msg **6061**). Confirmed again that Amazon Ads daily pull is resolved and that `KANBAN.md` remains retired.
 - Evening 2026-04-25 (6 PM window): additional actionable context surfaced — Amex statement-ready email for account ending **94007** due **2026-05-19** (`gluemasters` msg **192149**) and a low-priority TikTok/Amazon influencer outreach pitch (`sales` msg **6066**). No fresh Amazon Ads regression was seen; latest valid ads snapshot remained **2026-04-24**.
 - Nightly 2026-04-25: added a dedicated morning decision desk builder (`scripts/build_decision_brief.py`) with outputs `reports/morning-decision-desk-2026-04-26.{md,html,json}` + latest aliases, and wired it into `scripts/ops_build.py` plus the morning ops hub. Also tightened the morning pack so old ads incident details are suppressed when the latest ads snapshot is healthy, and filtered out resolved/status-only MoneySamurai bullets from the ranked morning board to reduce noise.
+- Morning 2026-04-26 (9 AM window): surfaced fresh Amex risk into live state — account ending **271002** is now reported **$620 past due / $1,256 total due** (`gluemasters` msg **192157**), and an **Electrify America $40** charge declined due to past-due status on account ending **794007** (`gluemasters` msg **192151**). Amazon Ads daily pull recovered and completed for snapshot **2026-04-25** despite a transient polling 401/token issue: campaigns **10**, keywords **120**, search terms **358**, spend **$671.36**, sales **$2,037.64**, orders **67**, ACoS **32.9%**, ROAS **3.04×**.
+- Midday 2026-04-26 (1 PM window): no new sales/customer emails after the morning scan. New operational Amazon notice surfaced: automated unfulfillable FBA removal order **gZRKfHwQJb** created, with the next automated removal scheduled for **2026-04-27** if unfulfillable inventory remains (`gluemasters` msg **192161**); captured in live state for Seller Central verification if needed. Ev confirmed Donaldson is done and the NET60 reply was sent; moved Donaldson out of active state.
+- Evening 2026-04-26 (6 PM window): fresh Amex notice says the card enrolled for an Amex virtual card number has been suspended for account ending **94007** (`gluemasters` msg **192165**); active Amex follow-up now includes both this virtual-card suspension and the earlier account ending **271002** past-due notice (`gluemasters` msg **192157**). Amazon Ads daily pull remained healthy for snapshot **2026-04-25**: campaigns **10**, keywords **120**, search terms **358**, no failed reports.
+- Nightly 2026-04-26: added a dedicated morning customer-response desk builder (`scripts/build_customer_response_desk.py`) with outputs `reports/morning-customer-desk-2026-04-27.{md,html,json}` + latest aliases, and wired it into `scripts/ops_build.py` plus the morning ops hub so the morning pack now has one page for hot customer/B2B risks, draft-backed replies, and missing-info blockers.
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle

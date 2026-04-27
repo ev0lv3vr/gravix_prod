@@ -723,6 +723,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         ("Execution Board JSON (latest)", "./morning-execution-board-latest.json"),
         ("Morning Handoff (latest)", "./morning-handoff-latest.html"),
         ("Morning Decision Desk (latest)", "./morning-decision-desk-latest.html"),
+        ("Morning Customer Desk (latest)", "./morning-customer-desk-latest.html"),
         ("Ads Pull Incident (latest)", "./ads-pull-incident-latest.html"),
         ("Ops Debt Dashboard (latest)", "./ops-debt-dashboard-latest.html"),
     ]

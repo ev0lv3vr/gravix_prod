@@ -9,6 +9,7 @@ Builds:
 - reports/morning-ops-hub-YYYY-MM-DD.html (+ latest)
 - reports/morning-handoff-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/morning-decision-desk-YYYY-MM-DD.{md,html,json} (+ latest)
+- reports/morning-customer-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/ops-debt-dashboard-YYYY-MM-DD.html (+ latest)
 - reports/ads-pull-incident-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/cron-trend-report-YYYY-MM-DD.html (+ latest, when dated watchlists exist)
@@ -106,6 +107,7 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/ads-pull-incident-latest.html")
     lines.append("- reports/morning-handoff-latest.html")
     lines.append("- reports/morning-decision-desk-latest.html")
+    lines.append("- reports/morning-customer-desk-latest.html")
     if b.cron_watchlist:
         lines.append("- latest cron-watchlist-*.html (dated report)")
     if b.cron_trend:
@@ -239,6 +241,7 @@ def main(argv: list[str] | None = None) -> int:
         _run([sys.executable, "scripts/build_cron_trend_report.py", "--output-prefix", f"reports/cron-trend-report-{date_str}"])
     _run([sys.executable, "scripts/build_morning_handoff.py", "--date", date_str])
     _run([sys.executable, "scripts/build_decision_brief.py", "--date", date_str])
+    _run([sys.executable, "scripts/build_customer_response_desk.py", "--date", date_str])
 
     # Compose brief from the latest JSON payloads
     ops_json = REPORTS / "ops-debt-dashboard-latest.json"
@@ -277,6 +280,7 @@ def main(argv: list[str] | None = None) -> int:
     print("Built reports/ads-pull-incident-latest.html")
     print("Built reports/morning-handoff-latest.html")
     print("Built reports/morning-decision-desk-latest.html")
+    print("Built reports/morning-customer-desk-latest.html")
     if cron_trend_json.exists():
         print("Built reports/cron-trend-report-latest.html")
 
