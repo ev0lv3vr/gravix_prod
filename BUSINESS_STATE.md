@@ -1,16 +1,10 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-04-26 11:05 PM PT
+Last updated: 2026-04-27 6:51 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
 ## 🔴 Needs Ev / time-sensitive
-
-### Jeremy Embry / Aquarium Artisans
-- Wants urgent CA + accelerator support for Monday aquascape job.
-- Needs 16oz Medium + 16oz Thick with accelerator ASAP.
-- Also wants 2oz Medium + 2oz Thick for store.
-- Source: `sales` msg **6046**.
 
 ### American Express account/payment follow-up
 - Past-due notice for account ending **271002** came in earlier.
@@ -41,6 +35,20 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Needs Seller Central verification if Ev wants to change removal settings/address/frequency.
 - Source: `gluemasters` msg **192161**.
 
+### Walmart Marketplace performance/pricing
+- Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%.
+- Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes.
+- Sources: `gluemasters` msgs **192175**, **192177**.
+
+### A3 Partners Gemiflex shipment / invoice
+- A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**.
+- A3 invoice **26-04271** is due **2026-05-27** for **$501.25**.
+- Sources: `gluemasters` msgs **192183**, **192184**.
+
+### Amazon refund / product-not-as-described
+- Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**.
+- Source: `gluemasters` msg **192188**.
+
 ## 🟡 Customer / B2B follow-up queue
 
 - **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.
@@ -48,6 +56,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Antonio Gutierrez** — order **#6000**, asks if shipped + ship date. Draft exists, needs shipping fields; source msg **5930**.
 - **Michael Nasholm** — 20% partial refund was promised but not done; customer followed up.
 - **Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**.
+- **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
 - **Gemifly LLC** — **$1,513.23** PayPal invoice outstanding.
 - **TikTok/Amazon influencer outreach** — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**.
 - **Dynasty Global / Eli** — dealer inquiry; needs Ev decision.
@@ -85,8 +94,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 - MoneySamurai is the internal analytics/ops platform.
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
-- Latest checked ads folder: **2026-04-25**, complete/valid: campaigns **10**, keywords **120**, search terms **358**, no failed reports. The 2026-04-26 6 AM cron had a transient polling 401/token issue but recovered and completed at 7:57 AM PT.
-- Ads daily digest regenerated for **2026-04-25**: **$671.36** spend, **$2,037.64** sales, **67** orders, **32.9% ACoS**, **3.04× ROAS**.
+- Latest checked ads folder: **2026-04-26**, complete/valid after the same-day correction pull: campaigns **10**, keywords **93**, search terms **125**, no failed reports. Same-day Apr 26 ad-attributed metrics: **$109.57 spend / $246.91 sales / 44.4% ACoS / 2.25× ROAS**.
+- **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
   - `evgueni-email-monitor`: **120s → 180s**.

@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-26
+Last updated: 2026-04-27
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -54,6 +54,8 @@ Last updated: 2026-04-26
 - Midday 2026-04-26 (1 PM window): no new sales/customer emails after the morning scan. New operational Amazon notice surfaced: automated unfulfillable FBA removal order **gZRKfHwQJb** created, with the next automated removal scheduled for **2026-04-27** if unfulfillable inventory remains (`gluemasters` msg **192161**); captured in live state for Seller Central verification if needed. Ev confirmed Donaldson is done and the NET60 reply was sent; moved Donaldson out of active state.
 - Evening 2026-04-26 (6 PM window): fresh Amex notice says the card enrolled for an Amex virtual card number has been suspended for account ending **94007** (`gluemasters` msg **192165**); active Amex follow-up now includes both this virtual-card suspension and the earlier account ending **271002** past-due notice (`gluemasters` msg **192157**). Amazon Ads daily pull remained healthy for snapshot **2026-04-25**: campaigns **10**, keywords **120**, search terms **358**, no failed reports.
 - Nightly 2026-04-26: added a dedicated morning customer-response desk builder (`scripts/build_customer_response_desk.py`) with outputs `reports/morning-customer-desk-2026-04-27.{md,html,json}` + latest aliases, and wired it into `scripts/ops_build.py` plus the morning ops hub so the morning pack now has one page for hot customer/B2B risks, draft-backed replies, and missing-info blockers.
+- Morning 2026-04-27: Ev caught the Amazon Ads daily digest mismatch (digest showed **$2,152.91** ad-attributed sales while Seller Central total sales including organic were **$1,129.16**). Root cause was default rolling-7-day report logic being labeled as daily. Fix committed as `moneysamurai@1a2f79a` (`fix: separate ads daily and rolling attribution metrics`): default pull is now same-day, rolling reports require `--rolling-7d`, and digest labels are explicit. Same-day correction pull completed at ~11:31 AM PT for snapshot **2026-04-26**: campaigns **10**, keywords **93**, search terms **125**, **$109.57** spend, **$246.91** ad-attributed sales, **44.4% ACoS**, **2.25× ROAS**.
+- Nightly 2026-04-27: added a `Morning Delta Brief` builder (`scripts/build_morning_delta_brief.py`) with outputs `reports/morning-delta-brief-2026-04-28.{md,html,json}` + latest aliases, and wired it into `scripts/ops_build.py` plus the morning ops hub so the pack now shows what changed versus the prior dated board: new queue items, drops/resolutions, rank movers, top-8 entrants/exits, and section deltas.
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle
