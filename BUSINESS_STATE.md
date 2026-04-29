@@ -1,20 +1,10 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-04-27 6:51 PM PT
+Last updated: 2026-04-28 6:23 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
 ## 🔴 Needs Ev / time-sensitive
-
-### American Express account/payment follow-up
-- Past-due notice for account ending **271002** came in earlier.
-- New Amex emails show a **$1,000 payment received** (msg **192107**) but also a **transaction declined due to past-due status** shortly before/around processing (msg **192106**).
-- Fresh 2026-04-26 Amex notice says account ending **271002** is past due: **$620 past due / $1,256 total due** (msg **192157**).
-- Fresh 2026-04-25 Amex notice says an **Electrify America $40** transaction declined because one or more accounts is past due; account shown as ending **794007** (msg **192151**).
-- A separate Amex statement-ready email also arrived for account ending **94007**, payment due **Tue May 19, 2026** (msg **192149**).
-- New 2026-04-26 Amex notice says the card enrolled for an Amex virtual card number has been suspended for account ending **94007**; Chrome/Android virtual-card purchases may fail until Ev contacts Amex (msg **192165**).
-- Ev should verify the Amex balance/status directly in Amex, not through email links.
-- Sources: `gluemasters` msgs **192094**, **192106**, **192107**, **192149**, **192151**, **192157**, **192165**.
 
 ### Amazon account security check
 - Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**.
@@ -93,8 +83,10 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 ## 🟣 MoneySamurai / systems
 
 - MoneySamurai is the internal analytics/ops platform.
+- Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.
+- Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
-- Latest checked ads folder: **2026-04-26**, complete/valid after the same-day correction pull: campaigns **10**, keywords **93**, search terms **125**, no failed reports. Same-day Apr 26 ad-attributed metrics: **$109.57 spend / $246.91 sales / 44.4% ACoS / 2.25× ROAS**.
+- Latest checked ads folder: **2026-04-27**, complete/valid: campaigns **10**, keywords **102**, search terms **137**, no failed reports. Same-day Apr 27 Amazon Ads attributed metrics: **$116.50 spend / $370.96 sales / 31.4% ACoS / 3.18× ROAS**. Digest flags spend as severely below the prior rolling average, but it is directionally close to the corrected Apr 26 same-day pull.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
@@ -108,6 +100,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ## 🟢 Resolved / do not resurface without fresh evidence
 
+- **Florida Annual Report / company renewal reminder** — Ev said to disregard/delete from todo on 2026-04-28; do not resurface unless a fresh verified filing issue appears. Source: `gluemasters` msg **192197**.
+- **American Express past-due / virtual-card suspension** — evening 2026-04-28 Amex emails show the **$1,256.00 payment was received and processed on Apr 28** for account ending **71002** (`gluemasters` msg **192209**) and the Amex virtual card number was reactivated for account ending **94007** (`gluemasters` msg **192210**). Do not resurface the earlier past-due/suspended-card item unless a fresh Amex alert says the account is still restricted.
 - **Donaldson NET60/onboarding reply** — Ev confirmed this is done and the NET60 reply was sent on 2026-04-26. Do not resurface as active unless Donaldson replies with a new blocker.
 - **Amazon Ads daily pull outage** — resolved 2026-04-25; latest valid snapshot is **2026-04-25**. Do not resurface unless a fresh cron/pull fails.
 - **ShipBob UROs** — resolved before 2026-04-23. Do not list as active debt/priority unless a new URO issue appears.

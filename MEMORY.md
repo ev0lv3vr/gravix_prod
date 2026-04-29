@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-27
+Last updated: 2026-04-28
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -56,6 +56,8 @@ Last updated: 2026-04-27
 - Nightly 2026-04-26: added a dedicated morning customer-response desk builder (`scripts/build_customer_response_desk.py`) with outputs `reports/morning-customer-desk-2026-04-27.{md,html,json}` + latest aliases, and wired it into `scripts/ops_build.py` plus the morning ops hub so the morning pack now has one page for hot customer/B2B risks, draft-backed replies, and missing-info blockers.
 - Morning 2026-04-27: Ev caught the Amazon Ads daily digest mismatch (digest showed **$2,152.91** ad-attributed sales while Seller Central total sales including organic were **$1,129.16**). Root cause was default rolling-7-day report logic being labeled as daily. Fix committed as `moneysamurai@1a2f79a` (`fix: separate ads daily and rolling attribution metrics`): default pull is now same-day, rolling reports require `--rolling-7d`, and digest labels are explicit. Same-day correction pull completed at ~11:31 AM PT for snapshot **2026-04-26**: campaigns **10**, keywords **93**, search terms **125**, **$109.57** spend, **$246.91** ad-attributed sales, **44.4% ACoS**, **2.25× ROAS**.
 - Nightly 2026-04-27: added a `Morning Delta Brief` builder (`scripts/build_morning_delta_brief.py`) with outputs `reports/morning-delta-brief-2026-04-28.{md,html,json}` + latest aliases, and wired it into `scripts/ops_build.py` plus the morning ops hub so the pack now shows what changed versus the prior dated board: new queue items, drops/resolutions, rank movers, top-8 entrants/exits, and section deltas.
+- Midday 2026-04-28 (1 PM window): email scan surfaced a time-sensitive Florida Annual Report / company renewal reminder from MIAccounting, due **2026-05-01** with late penalty starting at **$400** (`gluemasters` msg **192197**), plus a Walmart Marketplace API notice that `GET /v3/inventories` will enforce sequential cursor pagination on **2026-06-01** (`sales` msg **6080**). Ads daily pull for snapshot **2026-04-27** was valid/complete: campaigns **10**, keywords **102**, search terms **137**, **$116.50** spend, **$370.96** ad-attributed sales, **31.4% ACoS**, **3.18× ROAS**.
+- Evening 2026-04-28 (6 PM window): Amex follow-up improved/resolved based on new Amex emails: **$1,256.00** payment received/processed on Apr 28 for account ending **71002** (`gluemasters` msg **192209**) and virtual card number reactivated for account ending **94007** (`gluemasters` msg **192210**). Also surfaced a non-customer cleaning-services cold pitch (`sales` msg **6081**) and PayPal receipt for **$142.55** to Pocket / Personal AI Assistant (`sales` msg **6075**). Ads daily pull remained current with latest folder **2026-04-27**. Ev said to disregard/delete the Florida Annual Report reminder from todo; moved it out of active state and marked do-not-resurface unless a fresh verified filing issue appears.
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle
