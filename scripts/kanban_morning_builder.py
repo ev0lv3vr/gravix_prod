@@ -25,6 +25,7 @@ from html import escape
 from pathlib import Path
 import argparse
 import json
+import os
 import re
 import shutil
 from typing import Iterable
@@ -134,6 +135,7 @@ class BuildOutput:
     all_tasks_ranked: list[Task]
     memory_context: list[str]
     quick_math: dict[str, float]
+    freshness: dict[str, object]
 
 
 def _normalize_header(line: str) -> str:
@@ -527,6 +529,61 @@ def derive_focus_sets(tasks: list[Task]) -> dict[str, list[Task]]:
     }
 
 
+def build_freshness(now: datetime, source_name: str, priority_dates: list[str]) -> dict[str, object]:
+    source_path = BUSINESS_STATE if source_name == "BUSINESS_STATE.md" else KANBAN
+
+    tracked_files: list[tuple[str, Path]] = []
+    if source_path.exists():
+        tracked_files.append((source_name, source_path))
+
+    memory_index = ROOT / "MEMORY.md"
+    if memory_index.exists():
+        tracked_files.append(("MEMORY.md", memory_index))
+
+    memory_files: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for d in priority_dates:
+        path = MEMORY_DIR / f"{d}.md"
+        if not path.exists() or path.name in seen:
+            continue
+        seen.add(path.name)
+        tracked_files.append((f"memory/{path.name}", path))
+        updated_dt = datetime.fromtimestamp(path.stat().st_mtime, tz=now.tzinfo)
+        memory_files.append({
+            "path": f"memory/{path.name}",
+            "updated_at": updated_dt.strftime("%Y-%m-%d %H:%M %Z"),
+        })
+
+    sources: list[dict[str, object]] = []
+    newest_source_dt: datetime | None = None
+    for label, path in tracked_files:
+        updated_dt = datetime.fromtimestamp(path.stat().st_mtime, tz=now.tzinfo)
+        age_minutes = max(int((now - updated_dt).total_seconds() // 60), 0)
+        sources.append({
+            "label": label,
+            "path": os.path.relpath(path, ROOT),
+            "updated_at": updated_dt.strftime("%Y-%m-%d %H:%M %Z"),
+            "age_minutes": age_minutes,
+        })
+        if newest_source_dt is None or updated_dt > newest_source_dt:
+            newest_source_dt = updated_dt
+
+    lag_minutes = max(int((now - newest_source_dt).total_seconds() // 60), 0) if newest_source_dt else 0
+    status = "fresh"
+    if lag_minutes >= 180:
+        status = "aging"
+    if lag_minutes >= 720:
+        status = "stale"
+
+    return {
+        "status": status,
+        "lag_minutes": lag_minutes,
+        "newest_source_at": newest_source_dt.strftime("%Y-%m-%d %H:%M %Z") if newest_source_dt else None,
+        "sources": sources,
+        "memory_files_loaded": memory_files,
+    }
+
+
 def build_tasks(buckets: dict[str, list[str]]) -> list[Task]:
     label_map = dict(SECTION_ORDER)
     tasks: list[Task] = []
@@ -609,6 +666,13 @@ def render_markdown(report: BuildOutput) -> str:
     lines.append(f"- One-time dollars visible in tasks: **{fmt_money(report.quick_math['one_time_total'])}**")
     lines.append(f"- Daily burn visible in tasks: **${report.quick_math['daily_burn_total']:.0f}/day**")
     lines.append(f"- 30-day burn exposure: **{fmt_money(report.quick_math['daily_burn_total'] * 30)}**")
+    lines.append("")
+    lines.append("## Freshness")
+    lines.append(f"- Pack status: **{str(report.freshness.get('status', 'unknown')).upper()}**")
+    lines.append(f"- Newest source edit: **{report.freshness.get('newest_source_at') or '—'}**")
+    lines.append(f"- Build lag vs newest source: **{report.freshness.get('lag_minutes', 0)} min**")
+    for source in report.freshness.get("sources", [])[:6]:
+        lines.append(f"- {source['label']}: {source['updated_at']} ({source['age_minutes']} min old)")
 
     return "\n".join(lines) + "\n"
 
@@ -688,6 +752,16 @@ ul{{margin:8px 0 0 18px}} li{{margin:6px 0;color:var(--muted)}}
     <h3 style=\"margin:0 0 8px\">Recent memory context</h3>
     <ul>{context}</ul>
   </div>
+
+  <div class=\"panel\">
+    <h3 style=\"margin:0 0 8px\">Freshness</h3>
+    <ul>
+      <li><b>Status:</b> {escape(str(report.freshness.get('status', 'unknown')).upper())}</li>
+      <li><b>Newest source edit:</b> {escape(str(report.freshness.get('newest_source_at') or '—'))}</li>
+      <li><b>Build lag vs newest source:</b> {report.freshness.get('lag_minutes', 0)} min</li>
+      {''.join(f"<li>{escape(str(s.get('label')))} — {escape(str(s.get('updated_at')))} ({s.get('age_minutes', 0)} min old)</li>" for s in report.freshness.get('sources', [])[:6])}
+    </ul>
+  </div>
 </body>
 </html>
 """
@@ -710,10 +784,15 @@ def render_ops_hub_html(report: BuildOutput) -> str:
             "all_tasks_ranked": [asdict(t) for t in report.all_tasks_ranked],
             "memory_context": report.memory_context,
             "quick_math": report.quick_math,
+            "freshness": report.freshness,
             "focus": {k: [asdict(t) for t in v] for k, v in focus.items()},
         },
         ensure_ascii=False,
     )
+
+    freshness = report.freshness
+    freshness_status = str(freshness.get("status", "unknown")).upper()
+    freshness_hint = f"{freshness.get('lag_minutes', 0)} min behind newest source"
 
     links = [
         ("Business State", "../BUSINESS_STATE.md"),
@@ -786,6 +865,10 @@ def render_ops_hub_html(report: BuildOutput) -> str:
     <div class="sub">
       <span class="badge">__DATE__</span>
       <span class="muted">Generated: __GENERATED_AT__</span>
+      <span class="muted">·</span>
+      <span class="muted">Freshness: __FRESHNESS_STATUS__</span>
+      <span class="muted">·</span>
+      <span class="muted">__FRESHNESS_HINT__</span>
       <span class="muted">·</span>
       <span class="muted">Local file friendly (no fetch)</span>
     </div>
@@ -876,6 +959,11 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         </thead>
         <tbody id="rows"></tbody>
       </table>
+    </div>
+
+    <div class="panel">
+      <div style="font-weight:750;margin-bottom:6px">Freshness / trust check</div>
+      <ul id="freshnessList"></ul>
     </div>
 
     <div class="panel">
@@ -973,6 +1061,18 @@ def render_ops_hub_html(report: BuildOutput) -> str:
       document.getElementById('ctx').innerHTML = ctx.map(c => `<li>${c}</li>`).join('') || '<li class="muted">No memory context found.</li>';
     }
 
+    function renderFreshness() {
+      const freshness = DATA.freshness || {};
+      const sources = freshness.sources || [];
+      const items = [
+        `<li><b>Status:</b> ${String(freshness.status || 'unknown').toUpperCase()}</li>`,
+        `<li><b>Newest source edit:</b> ${freshness.newest_source_at || '—'}</li>`,
+        `<li><b>Build lag vs newest source:</b> ${freshness.lag_minutes ?? 0} min</li>`,
+        ...sources.slice(0, 6).map(s => `<li>${s.label} — ${s.updated_at} (${s.age_minutes} min old)</li>`)
+      ];
+      document.getElementById('freshnessList').innerHTML = items.join('');
+    }
+
     function renderFocusLists() {
       const focus = DATA.focus || {};
       const paint = (id, items, formatter) => {
@@ -1042,6 +1142,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
 
     renderCards();
     renderTop();
+    renderFreshness();
     renderContext();
     renderFocusLists();
     renderRows();
@@ -1055,6 +1156,8 @@ def render_ops_hub_html(report: BuildOutput) -> str:
     return (
         html.replace("__DATE__", escape(report.date))
         .replace("__GENERATED_AT__", escape(report.generated_at))
+        .replace("__FRESHNESS_STATUS__", escape(freshness_status))
+        .replace("__FRESHNESS_HINT__", escape(freshness_hint))
         .replace("__LINKS__", links_html)
         .replace("__DATA_JSON__", data_json)
     )
@@ -1107,6 +1210,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             "one_time_total": round(one_time_total, 2),
             "daily_burn_total": round(daily_burn_total, 2),
         },
+        freshness=build_freshness(now, source_name, priority_dates),
     )
 
     REPORTS.mkdir(parents=True, exist_ok=True)
@@ -1129,6 +1233,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             "all_tasks_ranked": [asdict(t) for t in report.all_tasks_ranked],
             "memory_context": report.memory_context,
             "quick_math": report.quick_math,
+            "freshness": report.freshness,
         },
         ensure_ascii=False,
         indent=2,

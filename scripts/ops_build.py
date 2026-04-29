@@ -116,6 +116,16 @@ def render_brief(b: Brief) -> str:
         lines.append("- reports/cron-trend-report-latest.html")
     lines.append("")
 
+    freshness = k.get("freshness") or {}
+    if freshness:
+        lines.append("Morning pack freshness:")
+        lines.append(f"- Status: {str(freshness.get('status', 'unknown')).upper()}")
+        lines.append(f"- Newest source edit: {freshness.get('newest_source_at', '—')}")
+        lines.append(f"- Build lag vs newest source: {freshness.get('lag_minutes', 0)} min")
+        for source in (freshness.get('sources') or [])[:4]:
+            lines.append(f"- {source.get('label','—')}: {source.get('updated_at','—')} ({source.get('age_minutes','—')} min old)")
+        lines.append("")
+
     # Ads pull summary (optional)
     a_sum = (a.get("summary") or {}) if isinstance(a, dict) else {}
     if a_sum:
