@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-28
+Last updated: 2026-04-29
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -24,7 +24,7 @@ Last updated: 2026-04-28
 - **Fulfillment:** ShipBob (Twin Lakes WI, Ontario CA, Buford GA)
 - **Email:** sales@gluemasters.com via himalaya (`save-copy = false`)
 - **Revenue run rate:** ~$638K (Amazon $531K + Shopify $107K)
-- **Current operational status (2026-04-26):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson NET60/onboarding reply is done as of 2026-04-26; do not resurface as active unless Donaldson replies with a new blocker. Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**).
+- **Current operational status (2026-04-29):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson NET60/onboarding reply is done as of 2026-04-26; do not resurface as active unless Donaldson replies with a new blocker. Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**). GLUE MASTERS trademark maintenance invoice **3704** for **$1,170** was paid in full on 2026-04-29 (gluemasters msg **192239**); do not resurface as unpaid.
 
 ### MoneySamurai
 - Product data/analytics platform. Workspace: `/workspace/moneysamurai/`
@@ -58,6 +58,7 @@ Last updated: 2026-04-28
 - Nightly 2026-04-27: added a `Morning Delta Brief` builder (`scripts/build_morning_delta_brief.py`) with outputs `reports/morning-delta-brief-2026-04-28.{md,html,json}` + latest aliases, and wired it into `scripts/ops_build.py` plus the morning ops hub so the pack now shows what changed versus the prior dated board: new queue items, drops/resolutions, rank movers, top-8 entrants/exits, and section deltas.
 - Midday 2026-04-28 (1 PM window): email scan surfaced a time-sensitive Florida Annual Report / company renewal reminder from MIAccounting, due **2026-05-01** with late penalty starting at **$400** (`gluemasters` msg **192197**), plus a Walmart Marketplace API notice that `GET /v3/inventories` will enforce sequential cursor pagination on **2026-06-01** (`sales` msg **6080**). Ads daily pull for snapshot **2026-04-27** was valid/complete: campaigns **10**, keywords **102**, search terms **137**, **$116.50** spend, **$370.96** ad-attributed sales, **31.4% ACoS**, **3.18× ROAS**.
 - Evening 2026-04-28 (6 PM window): Amex follow-up improved/resolved based on new Amex emails: **$1,256.00** payment received/processed on Apr 28 for account ending **71002** (`gluemasters` msg **192209**) and virtual card number reactivated for account ending **94007** (`gluemasters` msg **192210**). Also surfaced a non-customer cleaning-services cold pitch (`sales` msg **6081**) and PayPal receipt for **$142.55** to Pocket / Personal AI Assistant (`sales` msg **6075**). Ads daily pull remained current with latest folder **2026-04-27**. Ev said to disregard/delete the Florida Annual Report reminder from todo; moved it out of active state and marked do-not-resurface unless a fresh verified filing issue appears.
+- Nightly 2026-04-29: added morning-pack freshness/trust signals to the ops build (`scripts/kanban_morning_builder.py`, `scripts/ops_build.py`) so the morning hub/pack now surfaces freshness state (`FRESH / AGING / STALE`), newest source edit time, build lag, and source timestamps for `BUSINESS_STATE.md`, `MEMORY.md`, and loaded daily journals. Built and verified in commit `d7f2e46` (`feat: add morning pack freshness signals`).
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle
