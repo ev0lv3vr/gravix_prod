@@ -11,6 +11,7 @@ Builds:
 - reports/morning-decision-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/morning-customer-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/morning-delta-brief-YYYY-MM-DD.{md,html,json} (+ latest)
+- reports/artifact-freshness-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/ops-debt-dashboard-YYYY-MM-DD.html (+ latest)
 - reports/ads-pull-incident-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/cron-trend-report-YYYY-MM-DD.html (+ latest, when dated watchlists exist)
@@ -75,6 +76,7 @@ class Brief:
     ops_debt: dict[str, Any]
     ads_pull: dict[str, Any] | None = None
     ads_incident: dict[str, Any] | None = None
+    artifact_freshness: dict[str, Any] | None = None
     cron_watchlist: dict[str, Any] | None = None
     cron_trend: dict[str, Any] | None = None
 
@@ -110,6 +112,7 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/morning-decision-desk-latest.html")
     lines.append("- reports/morning-customer-desk-latest.html")
     lines.append("- reports/morning-delta-brief-latest.html")
+    lines.append("- reports/artifact-freshness-latest.html")
     if b.cron_watchlist:
         lines.append("- latest cron-watchlist-*.html (dated report)")
     if b.cron_trend:
@@ -124,6 +127,15 @@ def render_brief(b: Brief) -> str:
         lines.append(f"- Build lag vs newest source: {freshness.get('lag_minutes', 0)} min")
         for source in (freshness.get('sources') or [])[:4]:
             lines.append(f"- {source.get('label','—')}: {source.get('updated_at','—')} ({source.get('age_minutes','—')} min old)")
+        lines.append("")
+
+    artifact_freshness = (b.artifact_freshness or {}).get("summary") or {}
+    if artifact_freshness:
+        lines.append("Artifact trust check:")
+        lines.append(f"- OK: {artifact_freshness.get('ok','—')} / {artifact_freshness.get('total_artifacts','—')}")
+        lines.append(f"- Stale: {artifact_freshness.get('stale','—')}")
+        lines.append(f"- Missing: {artifact_freshness.get('missing','—')}")
+        lines.append(f"- Mismatched latest vs dated: {artifact_freshness.get('mismatched','—')}")
         lines.append("")
 
     # Ads pull summary (optional)
@@ -255,12 +267,14 @@ def main(argv: list[str] | None = None) -> int:
     _run([sys.executable, "scripts/build_decision_brief.py", "--date", date_str])
     _run([sys.executable, "scripts/build_customer_response_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_morning_delta_brief.py", "--date", date_str])
+    _run([sys.executable, "scripts/build_artifact_freshness_report.py", "--date", date_str])
 
     # Compose brief from the latest JSON payloads
     ops_json = REPORTS / "ops-debt-dashboard-latest.json"
     kanban_json = REPORTS / "morning-execution-board-latest.json"
     ads_json = REPORTS / "ads-pull-dashboard-latest.json"
     ads_incident_json = REPORTS / "ads-pull-incident-latest.json"
+    artifact_freshness_json = REPORTS / "artifact-freshness-latest.json"
     cron_watchlist_json = _latest_report("cron-watchlist-*.json")
     cron_trend_json = REPORTS / "cron-trend-report-latest.json"
     if not ops_json.exists():
@@ -275,6 +289,7 @@ def main(argv: list[str] | None = None) -> int:
         ops_debt=_load_json(ops_json),
         ads_pull=_load_json(ads_json) if ads_json.exists() else None,
         ads_incident=_load_json(ads_incident_json) if ads_incident_json.exists() else None,
+        artifact_freshness=_load_json(artifact_freshness_json) if artifact_freshness_json.exists() else None,
         cron_watchlist=_load_json(cron_watchlist_json) if cron_watchlist_json and cron_watchlist_json.exists() else None,
         cron_trend=_load_json(cron_trend_json) if cron_trend_json.exists() else None,
     )
@@ -295,6 +310,7 @@ def main(argv: list[str] | None = None) -> int:
     print("Built reports/morning-decision-desk-latest.html")
     print("Built reports/morning-customer-desk-latest.html")
     print("Built reports/morning-delta-brief-latest.html")
+    print("Built reports/artifact-freshness-latest.html")
     if cron_trend_json.exists():
         print("Built reports/cron-trend-report-latest.html")
 
