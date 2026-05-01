@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-04-29 6:00 PM PT
+Last updated: 2026-04-30 6:00 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -26,12 +26,17 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 ### R&R Fabrications shipment — first thing Apr 30
 - Ev asked to be reminded first thing in the morning to create shipment for R&R Fabrications.
 - PO: **30 bottles of 16oz Medium viscosity CA**, ship to **R&R Fabrications, 601 E Washington St, St Henry, OH 45883**, provide UPS tracking once shipped. Source: `sales` msg **6086**.
+- PayPal invoice **1001-0242** for **$1,289.70** was sent to `jeff@rrfabrications.com` morning 2026-04-30. Source: `sales` msg **6099**.
 
 ### Fastenal supplier onboarding
 - Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days.
 - Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.”
 - Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds.
 - Sources: `gluemasters` msgs **192233**, **192240**, **192242**.
+
+### Trademark maintenance filing — e-sign required
+- PCH/USPTO TEAS link sent for electronic signature on Combined Declaration (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**.
+- E-sign request expires **Mon Jun 29, 2026** (ET). Source: `gluemasters` msg **192263**.
 
 ### Amazon FBA unfulfillable removal
 - Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**.
@@ -60,9 +65,9 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Antonio Gutierrez** — order **#6000**, asks if shipped + ship date. Draft exists, needs shipping fields; source msg **5930**.
 - **Michael Nasholm** — 20% partial refund was promised but not done; customer followed up.
 - **Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**.
-- **The Escape Game** — Shopify contact form asks for a receipt for a **$229.95** transaction authorized/cleared **2026-04-27**. Ev said there is only one order; reply sent 2026-04-29 asking them to confirm the exact glue/product, specifically whether it was **8oz Thin viscosity CA glue**. Await customer confirmation, then resend receipt. Source: `sales` msg **6091**.
-- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that he was checking and would update shortly. Needs tracking/shipping status follow-up. Source: `sales` msgs **6088**, **6089**.
-- **Cute Things & Creative Concepts / Shohreh** — bulk quote request for **200× 2oz CA**, **100× 2oz Thin**, **100× 8oz Thick**, **100× 2oz Medium**. Ev requested immediate pricing with free freight; draft quote prepared with 8oz at **$20.29/unit** and total **$5,105**. Source: `sales` msg **6087**.
+- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that he was checking and would update shortly. Louise followed up 2026-04-30 asking “Did you find out where my order is?” Needs tracking/shipping status follow-up. Source: `sales` msgs **6088**, **6089**, **6098**.
+- **Cute Things & Creative Concepts / Shohreh** — bulk quote thread advanced 2026-04-30. Shohreh asked for added 16oz Thick/Medium, 8oz Medium, and better 300–400 unit 2oz pricing; Ev requested final email, corrected 16oz B2B case-tier logic, and the thread now shows answered. Await Shohreh’s response / final quantities. Sources: `sales` msgs **6087**, **6100**, **6101**.
+- **Steven Cohen** — order **#6032**, says direct-purchased Thin Glue is thicker than prior Amazon Thin Glue despite same blue label; asks whether it may be mislabeled and requests refund under 100% guarantee. Sources: `sales` msgs **6093**, **6094**.
 - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
 - **Gemifly LLC** — **$1,513.23** PayPal invoice outstanding.
 - **TikTok/Amazon influencer outreach** — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**.
@@ -103,7 +108,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.
 - Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
-- Latest checked ads folder: **2026-04-28**, complete/valid: campaigns **10**, keywords **94**, search terms **132**, no failed reports. Same-day Apr 28 Amazon Ads attributed metrics: **$89.28 spend / $109.81 sales / 81.3% ACoS / 1.23× ROAS**.
+- Latest checked ads folder: **2026-04-29**, complete/valid: campaigns **10**, keywords **103**, search terms **106**, no failed reports. Same-day Apr 29 Amazon Ads attributed metrics: **$80.15 spend / $205.93 sales / 38.9% ACoS / 2.57× ROAS**. Morning Apr 30 flywheel also completed optimizer/harvester live actions and synced to Render.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
@@ -118,7 +123,9 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ## 🟢 Resolved / do not resurface without fresh evidence
 
-- **GLUE MASTERS trademark maintenance invoice** — Peretz Chesal & Herrmann invoice **3704** for **$1,170.00** was paid in full on 2026-04-29. Do not resurface as unpaid. Source: `gluemasters` msg **192239**.
+- **GLUE MASTERS trademark maintenance invoice** — Peretz Chesal & Herrmann invoice **3704** for **$1,170.00** was paid in full on 2026-04-29 and PCH confirmed payment on 2026-04-30. Do not resurface as unpaid. Sources: `gluemasters` msgs **192239**, **192256**.
+- **The Escape Game receipt request** — Brendon/TEG found the receipt on the Shopify website after Ev’s follow-up. No further action unless they reply again. Sources: `sales` msgs **6091**, **6096**, **6102**.
+- **Amex high-balance warning for account ending 94007/794007** — Amex warned future transactions may be declined unless a suggested **$20,494** payment was made, then confirmed a **$20,493.51** payment was received/processed on 2026-04-30. Do not resurface as active unless a fresh Amex restriction appears. Sources: `gluemasters` msgs **192250**, **192258**.
 - **Florida Annual Report / company renewal reminder** — Ev said to disregard/delete from todo on 2026-04-28; do not resurface unless a fresh verified filing issue appears. Source: `gluemasters` msg **192197**.
 - **American Express past-due / virtual-card suspension** — evening 2026-04-28 Amex emails show the **$1,256.00 payment was received and processed on Apr 28** for account ending **71002** (`gluemasters` msg **192209**) and the Amex virtual card number was reactivated for account ending **94007** (`gluemasters` msg **192210**). Do not resurface the earlier past-due/suspended-card item unless a fresh Amex alert says the account is still restricted.
 - **Donaldson NET60/onboarding reply** — Ev confirmed this is done and the NET60 reply was sent on 2026-04-26. Do not resurface as active unless Donaldson replies with a new blocker.

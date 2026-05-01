@@ -12,6 +12,7 @@ Use instead:
 Important correction:
 - ShipBob UROs are resolved and must not be resurfaced as active ops debt unless fresh evidence shows a new issue.
 
-Last checked: 2026-04-29 6:00 PM PT
+Last checked: 2026-04-30 6:00 PM PT
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
-- EOD review re-confirmed no change to retirement status.
+- Midday review re-confirmed no change to retirement status.
+- EOD review re-confirmed no change to retirement status; evening updates were captured in live state/journal instead of reviving this board.
