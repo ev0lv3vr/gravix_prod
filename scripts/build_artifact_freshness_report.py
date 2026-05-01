@@ -35,6 +35,7 @@ EXPECTED = [
     ("Morning Customer Desk", "morning-customer-desk", ["html", "json", "md"]),
     ("Morning Delta Brief", "morning-delta-brief", ["html", "json", "md"]),
     ("Artifact Freshness", "artifact-freshness", ["html", "json", "md"]),
+    ("Business State Audit", "state-audit", ["html", "json", "md"]),
     ("Ops Debt Dashboard", "ops-debt-dashboard", ["html", "json"]),
     ("Ads Pull Dashboard", "ads-pull-dashboard", ["html", "json"]),
     ("Ads Pull Incident", "ads-pull-incident", ["html", "json", "md"]),
@@ -281,6 +282,16 @@ def main() -> int:
     html_path = REPORTS / f"artifact-freshness-{date_str}.html"
     json_path = REPORTS / f"artifact-freshness-{date_str}.json"
 
+    md_path.write_text(render_markdown(payload), encoding="utf-8")
+    html_path.write_text(render_html(payload), encoding="utf-8")
+    json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    _clone_latest(md_path, REPORTS / "artifact-freshness-latest.md")
+    _clone_latest(html_path, REPORTS / "artifact-freshness-latest.html")
+    _clone_latest(json_path, REPORTS / "artifact-freshness-latest.json")
+
+    # Rebuild once after writing so the freshness report can accurately inspect itself.
+    payload = build_payload(date_str, generated_at)
     md_path.write_text(render_markdown(payload), encoding="utf-8")
     html_path.write_text(render_html(payload), encoding="utf-8")
     json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

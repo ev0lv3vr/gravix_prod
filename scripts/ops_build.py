@@ -12,6 +12,7 @@ Builds:
 - reports/morning-customer-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/morning-delta-brief-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/artifact-freshness-YYYY-MM-DD.{md,html,json} (+ latest)
+- reports/state-audit-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/ops-debt-dashboard-YYYY-MM-DD.html (+ latest)
 - reports/ads-pull-incident-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/cron-trend-report-YYYY-MM-DD.html (+ latest, when dated watchlists exist)
@@ -77,6 +78,7 @@ class Brief:
     ads_pull: dict[str, Any] | None = None
     ads_incident: dict[str, Any] | None = None
     artifact_freshness: dict[str, Any] | None = None
+    state_audit: dict[str, Any] | None = None
     cron_watchlist: dict[str, Any] | None = None
     cron_trend: dict[str, Any] | None = None
 
@@ -113,6 +115,7 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/morning-customer-desk-latest.html")
     lines.append("- reports/morning-delta-brief-latest.html")
     lines.append("- reports/artifact-freshness-latest.html")
+    lines.append("- reports/state-audit-latest.html")
     if b.cron_watchlist:
         lines.append("- latest cron-watchlist-*.html (dated report)")
     if b.cron_trend:
@@ -136,6 +139,16 @@ def render_brief(b: Brief) -> str:
         lines.append(f"- Stale: {artifact_freshness.get('stale','—')}")
         lines.append(f"- Missing: {artifact_freshness.get('missing','—')}")
         lines.append(f"- Mismatched latest vs dated: {artifact_freshness.get('mismatched','—')}")
+        lines.append("")
+
+    state_audit = (b.state_audit or {}).get("summary") or {}
+    if state_audit:
+        lines.append("Business state audit:")
+        lines.append(f"- Active items scanned: {state_audit.get('total_active_items','—')}")
+        lines.append(f"- Past-date refs: {state_audit.get('stale_date_refs','—')}")
+        lines.append(f"- Relative-time refs: {state_audit.get('stale_relative_refs','—')}")
+        lines.append(f"- Urgent items missing source: {state_audit.get('urgent_without_source','—')}")
+        lines.append(f"- Duplicate source IDs: {state_audit.get('duplicate_source_ids','—')}")
         lines.append("")
 
     # Ads pull summary (optional)
@@ -267,7 +280,7 @@ def main(argv: list[str] | None = None) -> int:
     _run([sys.executable, "scripts/build_decision_brief.py", "--date", date_str])
     _run([sys.executable, "scripts/build_customer_response_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_morning_delta_brief.py", "--date", date_str])
-    _run([sys.executable, "scripts/build_artifact_freshness_report.py", "--date", date_str])
+    _run([sys.executable, "scripts/build_state_audit_report.py", "--date", date_str])
 
     # Compose brief from the latest JSON payloads
     ops_json = REPORTS / "ops-debt-dashboard-latest.json"
@@ -275,6 +288,7 @@ def main(argv: list[str] | None = None) -> int:
     ads_json = REPORTS / "ads-pull-dashboard-latest.json"
     ads_incident_json = REPORTS / "ads-pull-incident-latest.json"
     artifact_freshness_json = REPORTS / "artifact-freshness-latest.json"
+    state_audit_json = REPORTS / "state-audit-latest.json"
     cron_watchlist_json = _latest_report("cron-watchlist-*.json")
     cron_trend_json = REPORTS / "cron-trend-report-latest.json"
     if not ops_json.exists():
@@ -282,22 +296,31 @@ def main(argv: list[str] | None = None) -> int:
     if not kanban_json.exists():
         raise SystemExit(f"Missing expected artifact: {kanban_json}")
 
-    brief = Brief(
-        date=date_str,
-        generated_at=generated_at,
-        kanban=_load_json(kanban_json),
-        ops_debt=_load_json(ops_json),
-        ads_pull=_load_json(ads_json) if ads_json.exists() else None,
-        ads_incident=_load_json(ads_incident_json) if ads_incident_json.exists() else None,
-        artifact_freshness=_load_json(artifact_freshness_json) if artifact_freshness_json.exists() else None,
-        cron_watchlist=_load_json(cron_watchlist_json) if cron_watchlist_json and cron_watchlist_json.exists() else None,
-        cron_trend=_load_json(cron_trend_json) if cron_trend_json.exists() else None,
-    )
-
     REPORTS.mkdir(parents=True, exist_ok=True)
     brief_path = REPORTS / f"ops-build-brief-{date_str}.txt"
     latest_path = REPORTS / "ops-build-brief-latest.txt"
-    brief_path.write_text(render_brief(brief), encoding="utf-8")
+
+    def make_brief() -> Brief:
+        return Brief(
+            date=date_str,
+            generated_at=generated_at,
+            kanban=_load_json(kanban_json),
+            ops_debt=_load_json(ops_json),
+            ads_pull=_load_json(ads_json) if ads_json.exists() else None,
+            ads_incident=_load_json(ads_incident_json) if ads_incident_json.exists() else None,
+            artifact_freshness=_load_json(artifact_freshness_json) if artifact_freshness_json.exists() else None,
+            state_audit=_load_json(state_audit_json) if state_audit_json.exists() else None,
+            cron_watchlist=_load_json(cron_watchlist_json) if cron_watchlist_json and cron_watchlist_json.exists() else None,
+            cron_trend=_load_json(cron_trend_json) if cron_trend_json.exists() else None,
+        )
+
+    # First write the brief so artifact freshness can inspect it, then rebuild the brief with final trust numbers.
+    brief_path.write_text(render_brief(make_brief()), encoding="utf-8")
+    _clone_latest(brief_path, latest_path)
+
+    _run([sys.executable, "scripts/build_artifact_freshness_report.py", "--date", date_str])
+
+    brief_path.write_text(render_brief(make_brief()), encoding="utf-8")
     _clone_latest(brief_path, latest_path)
 
     print(f"Built {brief_path.relative_to(ROOT)}")
@@ -311,6 +334,7 @@ def main(argv: list[str] | None = None) -> int:
     print("Built reports/morning-customer-desk-latest.html")
     print("Built reports/morning-delta-brief-latest.html")
     print("Built reports/artifact-freshness-latest.html")
+    print("Built reports/state-audit-latest.html")
     if cron_trend_json.exists():
         print("Built reports/cron-trend-report-latest.html")
 
