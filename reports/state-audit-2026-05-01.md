@@ -1,9 +1,9 @@
 # Business State Audit — 2026-05-01
 
-Generated: 2026-04-30 23:07 PDT
+Generated: 2026-05-01 14:01 PDT
 
 ## Snapshot
-- Active items scanned: **41**
+- Active items scanned: **44**
 - Past-date references in active items: **5**
 - Relative time phrases to clean up: **5**
 - Urgent items missing source evidence: **2**

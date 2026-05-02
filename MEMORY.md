@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-04-30
+Last updated: 2026-05-01
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -24,7 +24,7 @@ Last updated: 2026-04-30
 - **Fulfillment:** ShipBob (Twin Lakes WI, Ontario CA, Buford GA)
 - **Email:** sales@gluemasters.com via himalaya (`save-copy = false`)
 - **Revenue run rate:** ~$638K (Amazon $531K + Shopify $107K)
-- **Current operational status (2026-04-30):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson NET60/onboarding reply is done as of 2026-04-26; do not resurface as active unless Donaldson replies with a new blocker. Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**). GLUE MASTERS trademark maintenance invoice **3704** for **$1,170** was paid in full on 2026-04-29 and confirmed by PCH on 2026-04-30 (gluemasters msgs **192239**, **192256**); do not resurface as unpaid. Amex high-balance warning for account ending **94007/794007** was resolved by **$20,493.51** payment received/processed on 2026-04-30 (gluemasters msgs **192250**, **192258**); do not resurface unless a fresh Amex restriction appears.
+- **Current operational status (2026-04-30):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson NET60/onboarding reply is done as of 2026-04-26; do not resurface as active unless Donaldson replies with a new blocker. Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**). GLUE MASTERS trademark maintenance invoice **3704** for **$1,170** was paid in full on 2026-04-29 and confirmed by PCH on 2026-04-30 (gluemasters msgs **192239**, **192256**); do not resurface as unpaid. PCH filed the GLUE MASTERS Section 8 & 15 declaration and USPTO receipt arrived 2026-05-01 (gluemasters msg **192271**); no e-sign action remains unless PCH flags an irregularity. Amex high-balance warning for account ending **94007/794007** was resolved by **$20,493.51** payment received/processed on 2026-04-30 (gluemasters msgs **192250**, **192258**); do not resurface unless a fresh Amex restriction appears.
 
 ### MoneySamurai
 - Product data/analytics platform. Workspace: `/workspace/moneysamurai/`

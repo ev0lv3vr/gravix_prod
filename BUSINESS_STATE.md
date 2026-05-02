@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-04-30 6:00 PM PT
+Last updated: 2026-05-01 6:00 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -34,9 +34,10 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds.
 - Sources: `gluemasters` msgs **192233**, **192240**, **192242**.
 
-### Trademark maintenance filing — e-sign required
-- PCH/USPTO TEAS link sent for electronic signature on Combined Declaration (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**.
-- E-sign request expires **Mon Jun 29, 2026** (ET). Source: `gluemasters` msg **192263**.
+### Trademark maintenance filing — pending USPTO acceptance
+- PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**; USPTO filing receipt received 2026-05-01.
+- Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity.
+- Sources: `gluemasters` msgs **192263**, **192271**.
 
 ### Amazon FBA unfulfillable removal
 - Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**.
@@ -58,6 +59,11 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**.
 - Source: `gluemasters` msg **192188**.
 
+### Amazon product safety recall notice
+- Amazon flagged a **Thermos Stainless King food jar** order (**111-9829889-5064236**) with a stop-use / recall notice tied to a CPSC announcement.
+- Needs Ev review only if this personal-order safety notice matters operationally; otherwise keep it low priority and do not let it crowd business-critical work.
+- Source: `gluemasters` msg **192266**.
+
 ## 🟡 Customer / B2B follow-up queue
 
 - **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.
@@ -66,8 +72,10 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Michael Nasholm** — 20% partial refund was promised but not done; customer followed up.
 - **Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**.
 - **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that he was checking and would update shortly. Louise followed up 2026-04-30 asking “Did you find out where my order is?” Needs tracking/shipping status follow-up. Source: `sales` msgs **6088**, **6089**, **6098**.
-- **Cute Things & Creative Concepts / Shohreh** — bulk quote thread advanced 2026-04-30. Shohreh asked for added 16oz Thick/Medium, 8oz Medium, and better 300–400 unit 2oz pricing; Ev requested final email, corrected 16oz B2B case-tier logic, and the thread now shows answered. Await Shohreh’s response / final quantities. Sources: `sales` msgs **6087**, **6100**, **6101**.
-- **Steven Cohen** — order **#6032**, says direct-purchased Thin Glue is thicker than prior Amazon Thin Glue despite same blue label; asks whether it may be mislabeled and requests refund under 100% guarantee. Sources: `sales` msgs **6093**, **6094**.
+- **Cute Things & Creative Concepts / Shohreh** — bulk quote needs follow-up: after the initial quote, Shohreh asked for **100 units Industrial Grade CA Adhesive - Medium Viscosity, 8 oz** as well. Sources: `sales` msgs **6087**, **6100**, **6101**.
+- **Deane Belk** — Shopify contact form asks to speak with someone about **Thick viscosity gel / no-drip CA glue** for a volunteer major project; wants help. Source: `sales` msg **6105**.
+- **Arka / Sean** — replied to CO 80110 quote thread confirming they need **a small-format super glue product for a packaged kit/application**, not a specific viscosity target. Next step: quote closest standard fit or custom/private-label route. Source: `sales` msg **6112**.
+- **Amazon buyer message / Karaoke Machine Store** — Amazon buyer message is waiting in Seller Central for order **113-4386244-8272243**, ASIN **B0DFPG9PJN** Singing Machine Platinum Plus. Source: `gluemasters` msg **192280**.
 - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
 - **Gemifly LLC** — **$1,513.23** PayPal invoice outstanding.
 - **TikTok/Amazon influencer outreach** — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**.
@@ -108,7 +116,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.
 - Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
-- Latest checked ads folder: **2026-04-29**, complete/valid: campaigns **10**, keywords **103**, search terms **106**, no failed reports. Same-day Apr 29 Amazon Ads attributed metrics: **$80.15 spend / $205.93 sales / 38.9% ACoS / 2.57× ROAS**. Morning Apr 30 flywheel also completed optimizer/harvester live actions and synced to Render.
+- Latest checked ads folder: **2026-04-30**, complete/valid: campaigns **10**, keywords **92**, search terms **67**, no failed reports. Same-day Apr 30 Amazon Ads attributed metrics: **$96.38 spend / $166.47 sales / 57.9% ACoS / 1.73× ROAS**. Digest flagged spend as severely below 7-day average and recommends checking Seller Central budgets/Buy Box plus adding negative `super glue for wood`.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
@@ -123,6 +131,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ## 🟢 Resolved / do not resurface without fresh evidence
 
+- **Steven Cohen order #6032 refund request** — Ev explained the 8oz Thin vs 16oz Thin/100cps difference and issued the refund; Steven replied “Thank you” on 2026-05-01. Sources: `sales` msgs **6093**, **6094**, **6114**, **6115**.
+- **DMS Packaging invoice 2026-00118** — Ev marked the invoice-status check done on 2026-05-01. Source: `gluemasters` msg **192277**.
 - **GLUE MASTERS trademark maintenance invoice** — Peretz Chesal & Herrmann invoice **3704** for **$1,170.00** was paid in full on 2026-04-29 and PCH confirmed payment on 2026-04-30. Do not resurface as unpaid. Sources: `gluemasters` msgs **192239**, **192256**.
 - **The Escape Game receipt request** — Brendon/TEG found the receipt on the Shopify website after Ev’s follow-up. No further action unless they reply again. Sources: `sales` msgs **6091**, **6096**, **6102**.
 - **Amex high-balance warning for account ending 94007/794007** — Amex warned future transactions may be declined unless a suggested **$20,494** payment was made, then confirmed a **$20,493.51** payment was received/processed on 2026-04-30. Do not resurface as active unless a fresh Amex restriction appears. Sources: `gluemasters` msgs **192250**, **192258**.

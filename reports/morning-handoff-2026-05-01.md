@@ -1,6 +1,6 @@
 # Morning Handoff — 2026-05-01
 
-Generated: 2026-04-30 23:07 PDT
+Generated: 2026-05-01 14:01 PDT
 Source: morning execution board + ops debt + cron watchlist/trend
 
 ## Do first
@@ -8,7 +8,7 @@ Source: morning execution board + ops debt + cron watchlist/trend
 2. Insurance audit — Overdue; data reportedly ready around $637K. Ev must submit/handle final PDF. (~20m)
 3. A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Sources: `gluemasters` msgs 192183, 192184. (~25m)
 4. Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (~15m)
-5. Walmart unshipped order — auto-cancel risk. (~25m)
+5. Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg 6216158 GLUE MASTERS; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs 192263, 192271. (~18m)
 
 ## Needs Ev
 - Insurance audit — Overdue; data reportedly ready around $637K. Ev must submit/handle final PDF.
@@ -30,6 +30,7 @@ Source: morning execution board + ops debt + cron watchlist/trend
 - Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.
 - ICU Shopify upsell app token — In Cart Upsell says the store token expires Thu 2026-04-30 and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: `sales` msg 6090.
 - Fastenal supplier onboarding — Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs 192233, 192240, 192242.
+- Arka / Sean — replied to CO 80110 quote thread confirming they need a small-format super glue product for a packaged kit/application, not a specific viscosity target. Next step: quote closest standard fit or custom/private-label route. Source: `sales` msg 6112.
 - Important correction: the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a 7-day rolling window ending on the snapshot date, so the earlier $708.60 spend / $2,152.91 ad-attributed sales / 69 orders for `2026-04-26` were not same-day April 26 sales and must not be compared to Seller Central same-day total sales. Seller Central showed $1,129.16 total sales including organic for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Timeout watchlist: 1 critical, 1 medium, 3 ready timeout patches.
 - Verify ads-daily-pull after the 3600s bump; latest observed run hit 1800057 ms on a 1800s timeout.
@@ -42,5 +43,5 @@ Morning stack for 2026-05-01:
 - [ ] Insurance audit — Overdue; data reportedly ready around $637K. Ev must submit/handle final PDF.
 - [ ] A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Sources: `gluemasters` msgs 192183, 192184.
 - [ ] Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.
-- [ ] Walmart unshipped order — auto-cancel risk.
+- [ ] Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg 6216158 GLUE MASTERS; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs 192263, 192271.
 

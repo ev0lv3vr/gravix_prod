@@ -1,10 +1,10 @@
 # Morning Decision Desk — 2026-05-01
 
-Generated: 2026-04-30 23:07 PDT
+Generated: 2026-05-01 14:01 PDT
 
 ## Snapshot
 - Needs Ev: **14**
-- Customer queue: **21**
+- Customer queue: **23**
 - Unblockers: **5**
 - Verify now: **2**
 - Visible money at stake: **$3,350**
@@ -16,7 +16,7 @@ Generated: 2026-04-30 23:07 PDT
 - **ICU Shopify upsell app token** — In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: `sales` msg **6090**. (msgs 6090)
 - **R&R Fabrications shipment — first thing Apr 30** — Ev asked to be reminded first thing in the morning to create shipment for R&R Fabrications. PO: **30 bottles of 16oz Medium viscosity CA**, ship to **R&R Fabrications, 601 E Washington St, St Henry, OH 45883**, provide UPS tracking once shipped. Source: `sales` msg **6086**. PayPal invoice **1001-0242** for **$1,289.70** was sent to `jeff@rrfabrications.com` morning 2026-04-30. Source: `sales` msg **6099**. ($1,289.70; msgs 6086, 6099)
 - **Fastenal supplier onboarding** — Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs **192233**, **192240**, **192242**. (msgs 192233, 192240, 192242)
-- **Trademark maintenance filing — e-sign required** — PCH/USPTO TEAS link sent for electronic signature on Combined Declaration (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**. E-sign request expires **Mon Jun 29, 2026** (ET). Source: `gluemasters` msg **192263**. (msgs 192263)
+- **Trademark maintenance filing — pending USPTO acceptance** — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs **192263**, **192271**. (msgs 192263, 192271)
 - **Amazon FBA unfulfillable removal** — Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**. Next automated removal may be created **2026-04-27** if unfulfillable inventory remains. Needs Seller Central verification if Ev wants to change removal settings/address/frequency. Source: `gluemasters` msg **192161**. (msgs 192161)
 
 ## Verify / account checks

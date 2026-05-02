@@ -1,9 +1,9 @@
 # Morning Customer Desk — 2026-05-01
 
-Generated: 2026-04-30 23:07 PDT
+Generated: 2026-05-01 14:01 PDT
 
 ## Snapshot
-- Customer queue: **18**
+- Customer queue: **21**
 - Hot risks: **2**
 - Draft-backed replies: **2**
 - Needs missing info / decision: **4**
@@ -40,6 +40,9 @@ Generated: 2026-04-30 23:07 PDT
 - **Dynasty Global / Eli** — dealer inquiry; needs Ev decision.
 - **Eric Patrick** — asked how to open 8oz bottle. Draft exists at `moneysamurai/drafts/customer-replies-2026-04-09.md`; source msg **5941**. (msgs 5941; refs: moneysamurai/drafts/customer-replies-2026-04-09.md)
 - **Jason F return** — decision pending.
-- **Cute Things & Creative Concepts / Shohreh** — bulk quote thread advanced 2026-04-30. Shohreh asked for added 16oz Thick/Medium, 8oz Medium, and better 300–400 unit 2oz pricing; Ev requested final email, corrected 16oz B2B case-tier logic, and the thread now shows answered. Await Shohreh’s response / final quantities. Sources: `sales` msgs **6087**, **6100**, **6101**. (msgs 6087, 6100, 6101)
+- **Amazon buyer message / Karaoke Machine Store** — Amazon buyer message is waiting in Seller Central for order **113-4386244-8272243**, ASIN **B0DFPG9PJN** Singing Machine Platinum Plus. Source: `gluemasters` msg **192280**. (msgs 192280)
+- **Arka / Sean** — replied to CO 80110 quote thread confirming they need **a small-format super glue product for a packaged kit/application**, not a specific viscosity target. Next step: quote closest standard fit or custom/private-label route. Source: `sales` msg **6112**. (msgs 6112)
+- **Cute Things & Creative Concepts / Shohreh** — bulk quote needs follow-up: after the initial quote, Shohreh asked for **100 units Industrial Grade CA Adhesive - Medium Viscosity, 8 oz** as well. Sources: `sales` msgs **6087**, **6100**, **6101**. (msgs 6087, 6100, 6101)
+- **Deane Belk** — Shopify contact form asks to speak with someone about **Thick viscosity gel / no-drip CA glue** for a volunteer major project; wants help. Source: `sales` msg **6105**. (msgs 6105)
 - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**. (msgs 6046)
 
