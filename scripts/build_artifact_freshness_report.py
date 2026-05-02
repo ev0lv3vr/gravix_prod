@@ -33,6 +33,7 @@ EXPECTED = [
     ("Morning Handoff", "morning-handoff", ["html", "json", "md"]),
     ("Morning Decision Desk", "morning-decision-desk", ["html", "json", "md"]),
     ("Morning Customer Desk", "morning-customer-desk", ["html", "json", "md"]),
+    ("Morning Unblock Desk", "morning-unblock-desk", ["html", "json", "md"]),
     ("Morning Delta Brief", "morning-delta-brief", ["html", "json", "md"]),
     ("Artifact Freshness", "artifact-freshness", ["html", "json", "md"]),
     ("Business State Audit", "state-audit", ["html", "json", "md"]),
