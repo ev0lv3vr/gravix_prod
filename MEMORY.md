@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-05-01
+Last updated: 2026-05-02
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -61,6 +61,7 @@ Last updated: 2026-05-01
 - Nightly 2026-04-29: added morning-pack freshness/trust signals to the ops build (`scripts/kanban_morning_builder.py`, `scripts/ops_build.py`) so the morning hub/pack now surfaces freshness state (`FRESH / AGING / STALE`), newest source edit time, build lag, and source timestamps for `BUSINESS_STATE.md`, `MEMORY.md`, and loaded daily journals. Built and verified in commit `d7f2e46` (`feat: add morning pack freshness signals`).
 - Morning 2026-04-30 (9 AM window): surfaced new/updated customer and ops items into live state: Louise Frogley order **#6055** followed up again (`sales` msg **6098**); The Escape Game clarified their receipt link points to **Glue Masters Thin CA Glue — 16oz** (`sales` msg **6096**); Steven Cohen reported order **#6032** Thin Glue may be mislabeled/thicker than expected and requested refund (`sales` msgs **6093**, **6094**); R&R Fabrications PayPal invoice **1001-0242** for **$1,289.70** was sent to Jeff (`sales` msg **6099**). Amazon Ads daily flywheel completed for snapshot **2026-04-29**: campaigns **10**, keywords **103**, search terms **106**, **$80.15** spend, **$205.93** ad-attributed sales, **38.9% ACoS**, **2.57× ROAS**, plus optimizer/harvester live actions and Render sync.
 - Midday 2026-04-30 (1 PM window): The Escape Game receipt request resolved itself after Brendon found the receipt on Shopify (`sales` msg **6102**); moved it out of active customer follow-up. Shohreh/Cute Things bulk quote thread advanced with requests for 16oz Thick/Medium, 8oz Medium, and 300–400 unit 2oz pricing (`sales` msgs **6100**, **6101**); Ev requested/corrected final email and thread shows answered, so await her response/final quantities.
+- Nightly 2026-05-02: added a `Morning Unblock Desk` to the ops pack (`reports/morning-unblock-desk-latest.html` plus dated output), wired into `scripts/ops_build.py`, hub links, and freshness/build brief output; validated with `python3 scripts/ops_build.py --date 2026-05-02`, all **14/14** artifacts OK, commit `fbbff28` (`feat: add morning unblock desk`).
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle

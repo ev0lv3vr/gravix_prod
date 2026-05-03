@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-01 6:00 PM PT
+Last updated: 2026-05-02 6:00 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -23,10 +23,10 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin.
 - Source: `sales` msg **6090**.
 
-### R&R Fabrications shipment — first thing Apr 30
-- Ev asked to be reminded first thing in the morning to create shipment for R&R Fabrications.
+### R&R Fabrications shipment / invoice
+- Ev asked to create shipment for R&R Fabrications.
 - PO: **30 bottles of 16oz Medium viscosity CA**, ship to **R&R Fabrications, 601 E Washington St, St Henry, OH 45883**, provide UPS tracking once shipped. Source: `sales` msg **6086**.
-- PayPal invoice **1001-0242** for **$1,289.70** was sent to `jeff@rrfabrications.com` morning 2026-04-30. Source: `sales` msg **6099**.
+- PayPal invoice **1001-0242** for **$1,289.70** was sent to `jeff@rrfabrications.com` morning 2026-04-30; PayPal sent a payment reminder on 2026-05-02, so payment is still outstanding unless paid outside PayPal. Sources: `sales` msgs **6099**, **6117**.
 
 ### Fastenal supplier onboarding
 - Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days.
@@ -71,9 +71,10 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Antonio Gutierrez** — order **#6000**, asks if shipped + ship date. Draft exists, needs shipping fields; source msg **5930**.
 - **Michael Nasholm** — 20% partial refund was promised but not done; customer followed up.
 - **Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**.
-- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that he was checking and would update shortly. Louise followed up 2026-04-30 asking “Did you find out where my order is?” Needs tracking/shipping status follow-up. Source: `sales` msgs **6088**, **6089**, **6098**.
+- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up 2026-05-01: “The product has still not arrived. Do you think we should assume it’s lost?” Needs tracking/shipping status follow-up or replacement/refund decision. Source: `sales` msgs **6088**, **6089**, **6098**, **6116**.
 - **Cute Things & Creative Concepts / Shohreh** — bulk quote needs follow-up: after the initial quote, Shohreh asked for **100 units Industrial Grade CA Adhesive - Medium Viscosity, 8 oz** as well. Sources: `sales` msgs **6087**, **6100**, **6101**.
 - **Deane Belk** — Shopify contact form asks to speak with someone about **Thick viscosity gel / no-drip CA glue** for a volunteer major project; wants help. Source: `sales` msg **6105**.
+- **Thomas Oconnell** — Shopify contact form says he cannot get the plastic cap off brand-new Thin super glue; likely needs customer support reply with opening instructions/replacement path. Source: `sales` msg **6120**.
 - **Arka / Sean** — replied to CO 80110 quote thread confirming they need **a small-format super glue product for a packaged kit/application**, not a specific viscosity target. Next step: quote closest standard fit or custom/private-label route. Source: `sales` msg **6112**.
 - **Amazon buyer message / Karaoke Machine Store** — Amazon buyer message is waiting in Seller Central for order **113-4386244-8272243**, ASIN **B0DFPG9PJN** Singing Machine Platinum Plus. Source: `gluemasters` msg **192280**.
 - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
@@ -116,7 +117,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.
 - Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
-- Latest checked ads folder: **2026-04-30**, complete/valid: campaigns **10**, keywords **92**, search terms **67**, no failed reports. Same-day Apr 30 Amazon Ads attributed metrics: **$96.38 spend / $166.47 sales / 57.9% ACoS / 1.73× ROAS**. Digest flagged spend as severely below 7-day average and recommends checking Seller Central budgets/Buy Box plus adding negative `super glue for wood`.
+- Latest checked ads folder: **2026-05-01** (created 2026-05-02 06:49 PT); folder exists on schedule. Previous checked snapshot 2026-04-30 was complete/valid: campaigns **10**, keywords **92**, search terms **67**, no failed reports. Same-day Apr 30 Amazon Ads attributed metrics: **$96.38 spend / $166.47 sales / 57.9% ACoS / 1.73× ROAS**. Digest flagged spend as severely below 7-day average and recommends checking Seller Central budgets/Buy Box plus adding negative `super glue for wood`.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
@@ -128,6 +129,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - New morning customer-response artifact is live for testing: `reports/morning-customer-desk-latest.html` (plus `.md` / `.json`), generated by `scripts/build_customer_response_desk.py`; it distills the customer/B2B queue into hot risks, draft-backed replies, missing-info blockers, and a one-page full queue, and is linked from the morning ops hub/build.
 - Nightly 2026-04-29 improvement: the morning ops pack/hub now includes freshness/trust signals (`FRESH / AGING / STALE`, newest source edit time, build lag, and source timestamps for loaded journals/state files) via `scripts/kanban_morning_builder.py` + `scripts/ops_build.py`, so morning review can quickly tell whether the pack is current before acting.
 - The recurring `moneysamurai-sync-trigger` cron job (`c6565127-2875-4a1d-be8f-1c0021dd0ade`, every 2h) should keep running but has Telegram delivery silenced (`delivery.mode=none`) as of 2026-04-25; do not re-enable routine success announcements.
+- Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action.
 
 ## 🟢 Resolved / do not resurface without fresh evidence
 
