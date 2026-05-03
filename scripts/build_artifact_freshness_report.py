@@ -36,6 +36,7 @@ EXPECTED = [
     ("Morning Unblock Desk", "morning-unblock-desk", ["html", "json", "md"]),
     ("Morning Delta Brief", "morning-delta-brief", ["html", "json", "md"]),
     ("Artifact Freshness", "artifact-freshness", ["html", "json", "md"]),
+    ("Git Hygiene", "git-hygiene", ["html", "json", "md"]),
     ("Business State Audit", "state-audit", ["html", "json", "md"]),
     ("Ops Debt Dashboard", "ops-debt-dashboard", ["html", "json"]),
     ("Ads Pull Dashboard", "ads-pull-dashboard", ["html", "json"]),

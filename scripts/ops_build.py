@@ -13,6 +13,7 @@ Builds:
 - reports/morning-unblock-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/morning-delta-brief-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/artifact-freshness-YYYY-MM-DD.{md,html,json} (+ latest)
+- reports/git-hygiene-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/state-audit-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/ops-debt-dashboard-YYYY-MM-DD.html (+ latest)
 - reports/ads-pull-incident-YYYY-MM-DD.{md,html,json} (+ latest)
@@ -79,6 +80,7 @@ class Brief:
     ads_pull: dict[str, Any] | None = None
     ads_incident: dict[str, Any] | None = None
     artifact_freshness: dict[str, Any] | None = None
+    git_hygiene: dict[str, Any] | None = None
     state_audit: dict[str, Any] | None = None
     cron_watchlist: dict[str, Any] | None = None
     cron_trend: dict[str, Any] | None = None
@@ -117,6 +119,7 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/morning-unblock-desk-latest.html")
     lines.append("- reports/morning-delta-brief-latest.html")
     lines.append("- reports/artifact-freshness-latest.html")
+    lines.append("- reports/git-hygiene-latest.html")
     lines.append("- reports/state-audit-latest.html")
     if b.cron_watchlist:
         lines.append("- latest cron-watchlist-*.html (dated report)")
@@ -141,6 +144,20 @@ def render_brief(b: Brief) -> str:
         lines.append(f"- Stale: {artifact_freshness.get('stale','—')}")
         lines.append(f"- Missing: {artifact_freshness.get('missing','—')}")
         lines.append(f"- Mismatched latest vs dated: {artifact_freshness.get('mismatched','—')}")
+        lines.append("")
+
+    git_hygiene = (b.git_hygiene or {}).get("summary") or {}
+    if git_hygiene:
+        lines.append("Git hygiene:")
+        lines.append(f"- Repos scanned: {git_hygiene.get('repos_scanned','—')}")
+        lines.append(f"- High risk: {git_hygiene.get('high','—')}")
+        lines.append(f"- Medium risk: {git_hygiene.get('medium','—')}")
+        lines.append(f"- Low/noise only: {git_hygiene.get('low','—')}")
+        lines.append(f"- Changed files visible: {git_hygiene.get('total_changed_files','—')}")
+        repos = (b.git_hygiene or {}).get("repos") or []
+        if repos:
+            hottest = repos[0]
+            lines.append(f"- Hottest repo: {hottest.get('name','—')} — {hottest.get('summary','—')}")
         lines.append("")
 
     state_audit = (b.state_audit or {}).get("summary") or {}
@@ -283,6 +300,7 @@ def main(argv: list[str] | None = None) -> int:
     _run([sys.executable, "scripts/build_customer_response_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_unblock_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_morning_delta_brief.py", "--date", date_str])
+    _run([sys.executable, "scripts/build_git_hygiene_report.py", "--date", date_str])
     _run([sys.executable, "scripts/build_state_audit_report.py", "--date", date_str])
 
     # Compose brief from the latest JSON payloads
@@ -291,6 +309,7 @@ def main(argv: list[str] | None = None) -> int:
     ads_json = REPORTS / "ads-pull-dashboard-latest.json"
     ads_incident_json = REPORTS / "ads-pull-incident-latest.json"
     artifact_freshness_json = REPORTS / "artifact-freshness-latest.json"
+    git_hygiene_json = REPORTS / "git-hygiene-latest.json"
     state_audit_json = REPORTS / "state-audit-latest.json"
     cron_watchlist_json = _latest_report("cron-watchlist-*.json")
     cron_trend_json = REPORTS / "cron-trend-report-latest.json"
@@ -312,6 +331,7 @@ def main(argv: list[str] | None = None) -> int:
             ads_pull=_load_json(ads_json) if ads_json.exists() else None,
             ads_incident=_load_json(ads_incident_json) if ads_incident_json.exists() else None,
             artifact_freshness=_load_json(artifact_freshness_json) if artifact_freshness_json.exists() else None,
+            git_hygiene=_load_json(git_hygiene_json) if git_hygiene_json.exists() else None,
             state_audit=_load_json(state_audit_json) if state_audit_json.exists() else None,
             cron_watchlist=_load_json(cron_watchlist_json) if cron_watchlist_json and cron_watchlist_json.exists() else None,
             cron_trend=_load_json(cron_trend_json) if cron_trend_json.exists() else None,
@@ -338,6 +358,7 @@ def main(argv: list[str] | None = None) -> int:
     print("Built reports/morning-unblock-desk-latest.html")
     print("Built reports/morning-delta-brief-latest.html")
     print("Built reports/artifact-freshness-latest.html")
+    print("Built reports/git-hygiene-latest.html")
     print("Built reports/state-audit-latest.html")
     if cron_trend_json.exists():
         print("Built reports/cron-trend-report-latest.html")
