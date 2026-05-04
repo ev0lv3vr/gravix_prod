@@ -1,12 +1,12 @@
 # Morning Unblock Desk — 2026-05-03
 
-Generated: 2026-05-02 23:04 PDT
+Generated: 2026-05-03 14:01 PDT
 
 ## Snapshot
-- Total unblock / verify items: **9**
+- Total unblock / verify items: **8**
 - Do now: **3**
 - Operator-owned: **4**
-- Ev-owned: **3**
+- Ev-owned: **2**
 - Surfaces: **Amazon Seller Central, ShipBob / UPS, Shopify Admin, Walmart Marketplace**
 
 ## Do now
@@ -27,7 +27,7 @@ Generated: 2026-05-02 23:04 PDT
 - **A3 Partners Gemiflex shipment / invoice** — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Sources: `gluemasters` msgs 192183, 192184. (ShipBob / UPS; Operator; ops; msgs 192183, 192184)
   - First step: Verify delivery status for tracking 1Z43A99A0348588986 and confirm whether invoice 26-04271 needs a reminder or calendar hold.
   - Success: Done when delivery is confirmed and the payable follow-up is clearly parked.
-- **Louise Frogley** — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up 2026-05-01: “The product has still not arrived. Do you think we should assume it’s lost?” Needs tracking/shipping status follow-up or replacement/refund decision. Source: `sales` msgs 6088, 6089, 6098, 6116. (ShipBob / UPS; Operator; ops; msgs 6088, 6089, 6098, 6116)
+- **Louise Frogley** — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Needs refund vs replacement/reship decision. Source: `sales` msgs 6088, 6089, 6098, 6116, 6122. (ShipBob / UPS; Operator; ops; msgs 6088, 6089, 6098, 6116, 6122)
   - First step: Open the source system in-browser and clear the blocker from the live operating surface, not from email.
   - Success: Done when the live surface confirms the blocker is cleared and the state file can be updated confidently.
 - **Shopify API token** — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. (Shopify Admin; Operator; access)
@@ -38,17 +38,11 @@ Generated: 2026-05-02 23:04 PDT
 - **Amazon account security check** — Amazon sent a password recovery notice tied to a reset attempt from Chrome on macOS near Washington. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg 192139. (Amazon Seller Central; Ev; security; msgs 192139)
   - First step: Open Amazon account security activity directly in-browser and confirm whether the Washington/macOS reset attempt was yours.
   - Success: Marked done once recent sign-in / recovery activity is confirmed legitimate or the password + MFA are changed.
-- **R&R Fabrications shipment / invoice** — Ev asked to create shipment for R&R Fabrications. PO: 30 bottles of 16oz Medium viscosity CA, ship to R&R Fabrications, 601 E Washington St, St Henry, OH 45883, provide UPS tracking once shipped. Source: `sales` msg 6086. PayPal invoice 1001-0242 for $1,289.70 was sent to `jeff@rrfabrications.com` morning 2026-04-30; PayPal sent a payment reminder on 2026-05-02, so payment is still outstanding unless paid outside PayPal. Sources: `sales` msgs 6099, 6117. (ShipBob / UPS; Ev; ops; msgs 6086, 6099, 6117)
-  - First step: Create the shipment for the 30-bottle R&R order, then capture the UPS tracking number for follow-up.
-  - Success: Done when tracking exists and the item can move from reminder state to shipped/awaiting delivery.
 - **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 38.75% and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs 192175, 192177. (Walmart Marketplace; Ev; ops; msgs 192175, 192177)
   - First step: Open the Walmart performance/pricing dashboards and decide whether to act on on-time delivery risk and the suggested price cuts.
   - Success: Done when Ev accepts or rejects the pricing/performance actions and the decision is recorded.
 
 ## Watch / lower urgency
-- **R&R Fabrications shipment / invoice** — Ev asked to create shipment for R&R Fabrications. PO: 30 bottles of 16oz Medium viscosity CA, ship to R&R Fabrications, 601 E Washington St, St Henry, OH 45883, provide UPS tracking once shipped. Source: `sales` msg 6086. PayPal invoice 1001-0242 for $1,289.70 was sent to `jeff@rrfabrications.com` morning 2026-04-30; PayPal sent a payment reminder on 2026-05-02, so payment is still outstanding unless paid outside PayPal. Sources: `sales` msgs 6099, 6117. (ShipBob / UPS; Ev; ops; msgs 6086, 6099, 6117)
-  - First step: Create the shipment for the 30-bottle R&R order, then capture the UPS tracking number for follow-up.
-  - Success: Done when tracking exists and the item can move from reminder state to shipped/awaiting delivery.
 - **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 38.75% and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs 192175, 192177. (Walmart Marketplace; Ev; ops; msgs 192175, 192177)
   - First step: Open the Walmart performance/pricing dashboards and decide whether to act on on-time delivery risk and the suggested price cuts.
   - Success: Done when Ev accepts or rejects the pricing/performance actions and the decision is recorded.
@@ -58,7 +52,7 @@ Generated: 2026-05-02 23:04 PDT
 - **Amazon FBA unfulfillable removal** — Amazon created automated unfulfillable FBA removal order gZRKfHwQJb. Next automated removal may be created 2026-04-27 if unfulfillable inventory remains. Needs Seller Central verification if Ev wants to change removal settings/address/frequency. Source: `gluemasters` msg 192161. (Amazon Seller Central; Shared; ops; msgs 192161)
   - First step: Open FBA removal settings/order gZRKfHwQJb and verify destination, cadence, and whether any additional unfulfillable inventory is queued.
   - Success: Done when the settings are confirmed or adjusted and any follow-up action is recorded.
-- **Louise Frogley** — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up 2026-05-01: “The product has still not arrived. Do you think we should assume it’s lost?” Needs tracking/shipping status follow-up or replacement/refund decision. Source: `sales` msgs 6088, 6089, 6098, 6116. (ShipBob / UPS; Operator; ops; msgs 6088, 6089, 6098, 6116)
+- **Louise Frogley** — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Needs refund vs replacement/reship decision. Source: `sales` msgs 6088, 6089, 6098, 6116, 6122. (ShipBob / UPS; Operator; ops; msgs 6088, 6089, 6098, 6116, 6122)
   - First step: Open the source system in-browser and clear the blocker from the live operating surface, not from email.
   - Success: Done when the live surface confirms the blocker is cleared and the state file can be updated confidently.
 - **Shopify API token** — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. (Shopify Admin; Operator; access)

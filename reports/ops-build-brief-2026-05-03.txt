@@ -1,5 +1,5 @@
 OPS BUILD BRIEF — 2026-05-03
-Generated: 2026-05-02 23:04 PDT
+Generated: 2026-05-03 14:01 PDT
 
 Artifacts:
 - reports/morning-ops-hub-latest.html
@@ -19,12 +19,13 @@ Artifacts:
 - reports/cron-trend-report-latest.html
 
 Morning pack freshness:
-- Status: AGING
-- Newest source edit: 2026-05-02 18:02 PDT
-- Build lag vs newest source: 301 min
-- BUSINESS_STATE.md: 2026-05-02 18:01 PDT (302 min old)
-- MEMORY.md: 2026-05-02 18:01 PDT (302 min old)
-- memory/2026-05-02.md: 2026-05-02 18:02 PDT (301 min old)
+- Status: FRESH
+- Newest source edit: 2026-05-03 12:57 PDT
+- Build lag vs newest source: 64 min
+- BUSINESS_STATE.md: 2026-05-03 12:57 PDT (64 min old)
+- MEMORY.md: 2026-05-03 10:45 PDT (196 min old)
+- memory/2026-05-03.md: 2026-05-03 12:57 PDT (64 min old)
+- memory/2026-05-02.md: 2026-05-02 18:02 PDT (1199 min old)
 
 Artifact trust check:
 - OK: 15 / 15
@@ -34,21 +35,21 @@ Artifact trust check:
 
 Git hygiene:
 - Repos scanned: 4
-- High risk: 2
+- High risk: 1
 - Medium risk: 0
-- Low/noise only: 0
-- Changed files visible: 61
-- Hottest repo: moneysamurai — Code changes present (api/trigger-sync.js, api/get-auth-token.js); review before deploy/push.
+- Low/noise only: 1
+- Changed files visible: 42
+- Hottest repo: moneysamurai — Code changes present (api/cron-trigger-sync.cjs, data/ads/bid-change-history.json); review before deploy/push.
 
 Business state audit:
-- Active items scanned: 46
-- Past-date refs: 6
-- Relative-time refs: 5
-- Urgent items missing source: 2
+- Active items scanned: 44
+- Past-date refs: 5
+- Relative-time refs: 4
+- Urgent items missing source: 1
 - Duplicate source IDs: 0
 
 Amazon Ads daily pull (local status):
-- Latest day: 2026-05-01
+- Latest day: 2026-05-02
 - Latest status: OK (failed: —)
 - Current invalid streak: 0
 - Latest pull log: logs/ads-daily/2026-04-24_060021.log
@@ -77,21 +78,21 @@ Ops debt (from ops-debt.json):
 - One-time dollars open: $1,715.54
 
 BUSINESS_STATE.md queue depth:
-- 🔴 Urgent: 12
+- 🔴 Urgent: 10
 - 🟡 Needs Ev: 21
 - 🔵 In progress: 10
 - 📋 Backlog: 3
-- Total open tasks ranked: 46
+- Total open tasks ranked: 44
 
 Top 8 morning actions (ranked):
-1. R&R Fabrications shipment / invoice — Ev asked to create shipment for R&R Fabrications. PO: **30 bottles of 16oz Medium viscosity CA**, ship to **R&R Fabrications, 601 E Washington St, St Henry, OH 45883**, provide UPS tracking once shipped. Source: `sales` msg **6086**. PayPal invoice **1001-0242** for **$1,289.70** was sent to `jeff@rrfabrications.com` morning 2026-04-30; PayPal sent a payment reminder on 2026-05-02, so payment is still outstanding unless paid outside PayPal. Sources: `sales` msgs **6099**, **6117**. (25m)
-2. Insurance audit — Overdue; data reportedly ready around **$637K**. Ev must submit/handle final PDF. (20m)
-3. A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**. (25m)
-4. **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (15m)
-5. Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs **192263**, **192271**. (18m)
-6. **Walmart unshipped order** — auto-cancel risk. (25m)
-7. Amazon refund / product-not-as-described — Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**. (7m)
-8. Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**. (18m)
+1. A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**. (25m)
+2. **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (15m)
+3. Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs **192263**, **192271**. (18m)
+4. **Walmart unshipped order** — auto-cancel risk. (25m)
+5. Amazon refund / product-not-as-described — Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**. (7m)
+6. Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**. (18m)
+7. Amazon account security check — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg **192139**. (18m)
+8. Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. (20m)
 
 Build again:
 - ./scripts/ops_build.py

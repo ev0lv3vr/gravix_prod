@@ -1,22 +1,22 @@
 # Morning Handoff — 2026-05-03
 
-Generated: 2026-05-02 23:04 PDT
+Generated: 2026-05-03 14:01 PDT
 Source: morning execution board + ops debt + cron watchlist/trend
 
 ## Do first
-1. R&R Fabrications shipment / invoice — Ev asked to create shipment for R&R Fabrications. PO: 30 bottles of 16oz Medium viscosity CA, ship to R&R Fabrications, 601 E Washington St, St Henry, OH 45883, provide UPS tracking once shipped. Source: `sales` msg 6086. PayPal invoice 1001-0242 for $1,289.70 was sent to `jeff@rrfabrications.com` morning 2026-04-30; PayPal sent a payment reminder on 2026-05-02, so payment is still outstanding unless paid outside PayPal. Sources: `sales` msgs 6099, 6117. (~25m)
-2. Insurance audit — Overdue; data reportedly ready around $637K. Ev must submit/handle final PDF. (~20m)
-3. A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Sources: `gluemasters` msgs 192183, 192184. (~25m)
-4. Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (~15m)
-5. Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg 6216158 GLUE MASTERS; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs 192263, 192271. (~18m)
+1. A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Sources: `gluemasters` msgs 192183, 192184. (~25m)
+2. Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (~15m)
+3. Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg 6216158 GLUE MASTERS; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs 192263, 192271. (~18m)
+4. Walmart unshipped order — auto-cancel risk. (~25m)
+5. Amazon refund / product-not-as-described — Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. (~7m)
 
 ## Needs Ev
-- Insurance audit — Overdue; data reportedly ready around $637K. Ev must submit/handle final PDF.
 - Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.
 - Walmart unshipped order — auto-cancel risk.
 - Fastenal supplier onboarding — Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs 192233, 192240, 192242.
 - Gemifly LLC — $1,513.23 PayPal invoice outstanding.
 - TikTok/Amazon influencer outreach — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg 6066.
+- Josh Mintz — 8oz Medium sample to New Orleans overdue.
 
 ## Customer risk
 - A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Sources: `gluemasters` msgs 192183, 192184.
@@ -40,9 +40,9 @@ Source: morning execution board + ops debt + cron watchlist/trend
 
 ## Copy/paste starter
 Morning stack for 2026-05-03:
-- [ ] R&R Fabrications shipment / invoice — Ev asked to create shipment for R&R Fabrications. PO: 30 bottles of 16oz Medium viscosity CA, ship to R&R Fabrications, 601 E Washington St, St Henry, OH 45883, provide UPS tracking once shipped. Source: `sales` msg 6086. PayPal invoice 1001-0242 for $1,289.70 was sent to `jeff@rrfabrications.com` morning 2026-04-30; PayPal sent a payment reminder on 2026-05-02, so payment is still outstanding unless paid outside PayPal. Sources: `sales` msgs 6099, 6117.
-- [ ] Insurance audit — Overdue; data reportedly ready around $637K. Ev must submit/handle final PDF.
 - [ ] A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Sources: `gluemasters` msgs 192183, 192184.
 - [ ] Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.
 - [ ] Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg 6216158 GLUE MASTERS; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs 192263, 192271.
+- [ ] Walmart unshipped order — auto-cancel risk.
+- [ ] Amazon refund / product-not-as-described — Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188.
 

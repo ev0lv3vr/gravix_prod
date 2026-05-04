@@ -69,6 +69,35 @@ RISK_BONUS = {
     "deadline": 6,
 }
 
+PASSIVE_PENALTY_TOKENS = {
+    "wait for": 14,
+    "passive monitoring": 18,
+    "passive monitor": 18,
+    "watch item": 12,
+    "review only if": 14,
+    "if ev wants": 10,
+    "recommendations only": 8,
+    "not urgent": 12,
+    "keep it low priority": 16,
+    "unless": 4,
+}
+
+ACTION_BONUS_TOKENS = {
+    "needs": 3,
+    "reply": 4,
+    "decision": 5,
+    "verify": 4,
+    "check": 3,
+    "follow-up": 4,
+    "follow up": 4,
+    "regeneration": 4,
+    "token": 5,
+    "refund": 5,
+    "shipment": 4,
+    "invoice": 4,
+    "security": 5,
+}
+
 MINUTE_HINTS = [
     ("refund", 7),
     ("reply", 8),
@@ -453,6 +482,12 @@ def score_task(
     for token, bonus in RISK_BONUS.items():
         if token in lt:
             s += bonus
+    for token, bonus in ACTION_BONUS_TOKENS.items():
+        if token in lt:
+            s += bonus
+    for token, penalty in PASSIVE_PENALTY_TOKENS.items():
+        if token in lt:
+            s -= penalty
 
     bump, _ = deadline_bonus(deadline, now)
     s += bump
@@ -512,7 +547,7 @@ def derive_focus_sets(tasks: list[Task]) -> dict[str, list[Task]]:
 
     blockers = [
         t for t in tasks
-        if match(t, "blocked", "logged out", "login", "access", "confirm", "needs ev", "waiting")
+        if match(t, "blocked", "logged out", "login", "access", "confirm", "needs ev", "waiting", "token", "security")
     ]
     customer_risk = [
         t for t in tasks
@@ -520,12 +555,17 @@ def derive_focus_sets(tasks: list[Task]) -> dict[str, list[Task]]:
     ]
     deadlines = [t for t in tasks if t.deadline is not None or (t.days_to_deadline is not None and t.days_to_deadline <= 0)]
     burn = [t for t in tasks if (t.daily_burn or 0) > 0]
+    passive_watch = [
+        t for t in tasks
+        if match(t, "wait for", "passive monitoring", "watch item", "review only if", "if ev wants", "not urgent", "recommendations only")
+    ]
 
     return {
         "blockers": blockers[:8],
         "customer_risk": customer_risk[:8],
         "deadlines": sorted(deadlines, key=lambda t: (t.days_to_deadline is None, t.days_to_deadline or 999))[:8],
         "burn": burn[:8],
+        "passive_watch": passive_watch[:8],
     }
 
 
@@ -808,6 +848,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         ("Artifact Freshness (latest)", "./artifact-freshness-latest.html"),
         ("Git Hygiene (latest)", "./git-hygiene-latest.html"),
         ("Business State Audit (latest)", "./state-audit-latest.html"),
+        ("Morning Actionability Desk (latest)", "./morning-actionability-latest.html"),
         ("Ads Pull Incident (latest)", "./ads-pull-incident-latest.html"),
         ("Ops Debt Dashboard (latest)", "./ops-debt-dashboard-latest.html"),
     ]
@@ -931,6 +972,12 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         <div class="muted">Only tasks with explicit daily bleed/loss signals.</div>
         <ul id="burnList"></ul>
       </div>
+    </div>
+
+    <div class="panel">
+      <div style="font-weight:750;margin-bottom:4px">Passive / watch-only items</div>
+      <div class="muted">Useful context, but these should not crowd the first working block.</div>
+      <ul id="passiveList"></ul>
     </div>
 
     <div class="panel">
@@ -1093,6 +1140,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         return `<li><b>${dl}</b> — ${clean(t.text)}</li>`;
       });
       paint('burnList', focus.burn, (t) => `<li><b>${fmtMoney(t.daily_burn)}/day</b> — ${clean(t.text)}</li>`);
+      paint('passiveList', focus.passive_watch, (t) => `<li>${clean(t.text)}</li>`);
     }
 
     function copyText(text) {

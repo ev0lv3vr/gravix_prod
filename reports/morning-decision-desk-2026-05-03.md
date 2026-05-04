@@ -1,23 +1,23 @@
 # Morning Decision Desk — 2026-05-03
 
-Generated: 2026-05-02 23:04 PDT
+Generated: 2026-05-03 14:01 PDT
 
 ## Snapshot
-- Needs Ev: **16**
+- Needs Ev: **14**
 - Customer queue: **24**
 - Unblockers: **6**
 - Verify now: **2**
-- Visible money at stake: **$3,350**
+- Visible money at stake: **$2,060.30**
 
 ## Needs Ev first
 - **Amazon account security check** — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg **192139**. (msgs 192139)
-- **Insurance audit** — Overdue; data reportedly ready around **$637K**. Ev must submit/handle final PDF.
 - **Shopify API token** — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.
 - **ICU Shopify upsell app token** — In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: `sales` msg **6090**. (msgs 6090)
-- **R&R Fabrications shipment / invoice** — Ev asked to create shipment for R&R Fabrications. PO: **30 bottles of 16oz Medium viscosity CA**, ship to **R&R Fabrications, 601 E Washington St, St Henry, OH 45883**, provide UPS tracking once shipped. Source: `sales` msg **6086**. PayPal invoice **1001-0242** for **$1,289.70** was sent to `jeff@rrfabrications.com` morning 2026-04-30; PayPal sent a payment reminder on 2026-05-02, so payment is still outstanding unless paid outside PayPal. Sources: `sales` msgs **6099**, **6117**. ($1,289.70; msgs 6086, 6099, 6117)
 - **Fastenal supplier onboarding** — Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs **192233**, **192240**, **192242**. (msgs 192233, 192240, 192242)
 - **Trademark maintenance filing — pending USPTO acceptance** — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs **192263**, **192271**. (msgs 192263, 192271)
 - **Amazon FBA unfulfillable removal** — Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**. Next automated removal may be created **2026-04-27** if unfulfillable inventory remains. Needs Seller Central verification if Ev wants to change removal settings/address/frequency. Source: `gluemasters` msg **192161**. (msgs 192161)
+- **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**. ($8.99; msgs 192175, 192177)
+- **A3 Partners Gemiflex shipment / invoice** — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**. ($501.25; msgs 192183, 192184)
 
 ## Verify / account checks
 - **Amazon account security check** — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg **192139**. (msgs 192139)
@@ -45,7 +45,6 @@ Generated: 2026-05-02 23:04 PDT
 
 ## Money at stake
 - **Gemifly LLC** — **$1,513.23** PayPal invoice outstanding. ($1,513.23)
-- **R&R Fabrications shipment / invoice** — Ev asked to create shipment for R&R Fabrications. PO: **30 bottles of 16oz Medium viscosity CA**, ship to **R&R Fabrications, 601 E Washington St, St Henry, OH 45883**, provide UPS tracking once shipped. Source: `sales` msg **6086**. PayPal invoice **1001-0242** for **$1,289.70** was sent to `jeff@rrfabrications.com` morning 2026-04-30; PayPal sent a payment reminder on 2026-05-02, so payment is still outstanding unless paid outside PayPal. Sources: `sales` msgs **6099**, **6117**. ($1,289.70; msgs 6086, 6099, 6117)
 - **A3 Partners Gemiflex shipment / invoice** — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**. ($501.25; msgs 192183, 192184)
 - **Amazon refund / product-not-as-described** — Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**. ($36.83; msgs 192188)
 - **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**. ($8.99; msgs 192175, 192177)

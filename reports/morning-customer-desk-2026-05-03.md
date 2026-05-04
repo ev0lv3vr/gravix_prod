@@ -1,6 +1,6 @@
 # Morning Customer Desk — 2026-05-03
 
-Generated: 2026-05-02 23:04 PDT
+Generated: 2026-05-03 14:01 PDT
 
 ## Snapshot
 - Customer queue: **21**
@@ -10,7 +10,7 @@ Generated: 2026-05-02 23:04 PDT
 - Visible money in queue: **$1,513.23**
 
 ## Hot risks first
-- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up 2026-05-01: “The product has still not arrived. Do you think we should assume it’s lost?” Needs tracking/shipping status follow-up or replacement/refund decision. Source: `sales` msgs **6088**, **6089**, **6098**, **6116**. (msgs 6088, 6089, 6098, 6116)
+- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Needs refund vs replacement/reship decision. Source: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**. (msgs 6088, 6089, 6098, 6116, 6122)
 - **Michael Nasholm** — 20% partial refund was promised but not done; customer followed up.
 - **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (msgs 191366; refs: moneysamurai/drafts/b2b-email-drafts-2026-03-24.md)
 
@@ -19,14 +19,14 @@ Generated: 2026-05-02 23:04 PDT
 - **Eric Patrick** — asked how to open 8oz bottle. Draft exists at `moneysamurai/drafts/customer-replies-2026-04-09.md`; source msg **5941**. (msgs 5941; refs: moneysamurai/drafts/customer-replies-2026-04-09.md)
 
 ## Needs info before reply
-- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up 2026-05-01: “The product has still not arrived. Do you think we should assume it’s lost?” Needs tracking/shipping status follow-up or replacement/refund decision. Source: `sales` msgs **6088**, **6089**, **6098**, **6116**. (msgs 6088, 6089, 6098, 6116)
+- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Needs refund vs replacement/reship decision. Source: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**. (msgs 6088, 6089, 6098, 6116, 6122)
 - **Ethan Miller** — order **#5786**, 4× Thick 16oz replacement not created at ShipBob.
 - **Antonio Gutierrez** — order **#6000**, asks if shipped + ship date. Draft exists, needs shipping fields; source msg **5930**. (msgs 5930)
 - **Dynasty Global / Eli** — dealer inquiry; needs Ev decision.
 - **Jason F return** — decision pending.
 
 ## Full queue
-- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up 2026-05-01: “The product has still not arrived. Do you think we should assume it’s lost?” Needs tracking/shipping status follow-up or replacement/refund decision. Source: `sales` msgs **6088**, **6089**, **6098**, **6116**. (msgs 6088, 6089, 6098, 6116)
+- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Needs refund vs replacement/reship decision. Source: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**. (msgs 6088, 6089, 6098, 6116, 6122)
 - **Michael Nasholm** — 20% partial refund was promised but not done; customer followed up.
 - **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (msgs 191366; refs: moneysamurai/drafts/b2b-email-drafts-2026-03-24.md)
 - **Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**. (msgs 6061)
