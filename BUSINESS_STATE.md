@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-02 6:00 PM PT
+Last updated: 2026-05-03 10:45 AM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -11,10 +11,6 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - If this was not Ev, he should verify account security directly in Amazon, not through the email link.
 - Source: `gluemasters` msg **192139**.
 
-### Insurance audit
-- Overdue; data reportedly ready around **$637K**.
-- Ev must submit/handle final PDF.
-
 ### Shopify API token
 - Current API access is dead; inventory visibility is degraded/blind.
 - Needs token regeneration or browser/API workaround.
@@ -22,11 +18,6 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 ### ICU Shopify upsell app token
 - In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin.
 - Source: `sales` msg **6090**.
-
-### R&R Fabrications shipment / invoice
-- Ev asked to create shipment for R&R Fabrications.
-- PO: **30 bottles of 16oz Medium viscosity CA**, ship to **R&R Fabrications, 601 E Washington St, St Henry, OH 45883**, provide UPS tracking once shipped. Source: `sales` msg **6086**.
-- PayPal invoice **1001-0242** for **$1,289.70** was sent to `jeff@rrfabrications.com` morning 2026-04-30; PayPal sent a payment reminder on 2026-05-02, so payment is still outstanding unless paid outside PayPal. Sources: `sales` msgs **6099**, **6117**.
 
 ### Fastenal supplier onboarding
 - Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days.
@@ -71,7 +62,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Antonio Gutierrez** — order **#6000**, asks if shipped + ship date. Draft exists, needs shipping fields; source msg **5930**.
 - **Michael Nasholm** — 20% partial refund was promised but not done; customer followed up.
 - **Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**.
-- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up 2026-05-01: “The product has still not arrived. Do you think we should assume it’s lost?” Needs tracking/shipping status follow-up or replacement/refund decision. Source: `sales` msgs **6088**, **6089**, **6098**, **6116**.
+- **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Needs refund vs replacement/reship decision. Source: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**.
 - **Cute Things & Creative Concepts / Shohreh** — bulk quote needs follow-up: after the initial quote, Shohreh asked for **100 units Industrial Grade CA Adhesive - Medium Viscosity, 8 oz** as well. Sources: `sales` msgs **6087**, **6100**, **6101**.
 - **Deane Belk** — Shopify contact form asks to speak with someone about **Thick viscosity gel / no-drip CA glue** for a volunteer major project; wants help. Source: `sales` msg **6105**.
 - **Thomas Oconnell** — Shopify contact form says he cannot get the plastic cap off brand-new Thin super glue; likely needs customer support reply with opening instructions/replacement path. Source: `sales` msg **6120**.
@@ -117,7 +108,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.
 - Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
-- Latest checked ads folder: **2026-05-01** (created 2026-05-02 06:49 PT); folder exists on schedule. Previous checked snapshot 2026-04-30 was complete/valid: campaigns **10**, keywords **92**, search terms **67**, no failed reports. Same-day Apr 30 Amazon Ads attributed metrics: **$96.38 spend / $166.47 sales / 57.9% ACoS / 1.73× ROAS**. Digest flagged spend as severely below 7-day average and recommends checking Seller Central budgets/Buy Box plus adding negative `super glue for wood`.
+- Latest checked ads folder: **2026-05-02**; folder exists on schedule. Previous checked snapshot 2026-04-30 was complete/valid: campaigns **10**, keywords **92**, search terms **67**, no failed reports. Same-day Apr 30 Amazon Ads attributed metrics: **$96.38 spend / $166.47 sales / 57.9% ACoS / 1.73× ROAS**. Digest flagged spend as severely below 7-day average and recommends checking Seller Central budgets/Buy Box plus adding negative `super glue for wood`.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
@@ -133,6 +124,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ## 🟢 Resolved / do not resurface without fresh evidence
 
+- **R&R Fabrications shipment / invoice** — Ev marked R&R done on 2026-05-03; do not resurface the shipment/invoice as active unless a fresh R&R follow-up appears. Sources: `sales` msgs **6086**, **6099**, **6117**.
+- **Insurance audit** — Ev marked insurance done on 2026-05-03; do not resurface as active unless a fresh insurance/audit issue appears.
 - **Steven Cohen order #6032 refund request** — Ev explained the 8oz Thin vs 16oz Thin/100cps difference and issued the refund; Steven replied “Thank you” on 2026-05-01. Sources: `sales` msgs **6093**, **6094**, **6114**, **6115**.
 - **DMS Packaging invoice 2026-00118** — Ev marked the invoice-status check done on 2026-05-01. Source: `gluemasters` msg **192277**.
 - **GLUE MASTERS trademark maintenance invoice** — Peretz Chesal & Herrmann invoice **3704** for **$1,170.00** was paid in full on 2026-04-29 and PCH confirmed payment on 2026-04-30. Do not resurface as unpaid. Sources: `gluemasters` msgs **192239**, **192256**.
