@@ -220,6 +220,12 @@ def _skip_business_state_line(text: str, current: str | None) -> bool:
         "regenerated for",
         "completed cleanly",
         "new local triage artifact is live",
+        "new morning",
+        "nightly 2026-",
+        "midday 2026-",
+        "morning 2026-",
+        "evening 2026-",
+        "important correction:",
         "recent timeout patches",
         "delivery silenced",
         "latest valid ads snapshot remained",
@@ -326,16 +332,28 @@ def parse_days(text: str) -> int | None:
 
 
 def parse_amount(text: str) -> float | None:
-    m = re.search(r"\$(\d{1,3}(?:,\d{3})*(?:\.\d+)?)([kKmM])?", text)
-    if not m:
+    matches = list(re.finditer(r"\$(\d{1,3}(?:,\d{3})*(?:\.\d+)?)([kKmM])?", text))
+    if not matches:
         return None
-    value = float(m.group(1).replace(",", ""))
-    suffix = (m.group(2) or "").lower()
-    if suffix == "k":
-        value *= 1000
-    elif suffix == "m":
-        value *= 1_000_000
-    return value
+    lt = text.lower()
+    if any(token in lt for token in ["run rate", "revenue", "spend", "roas", "acos", "target price", "price competitiveness"]):
+        return None
+
+    amounts: list[float] = []
+    for m in matches:
+        value = float(m.group(1).replace(",", ""))
+        suffix = (m.group(2) or "").lower()
+        if suffix == "k":
+            value *= 1000
+        elif suffix == "m":
+            value *= 1_000_000
+        amounts.append(value)
+
+    if "refund" in lt and len(amounts) > 1:
+        return round(sum(amounts), 2)
+    if any(token in lt for token in ["superseded", "supersedes", "replacing", "replaces", "new larger invoice"]):
+        return max(amounts)
+    return amounts[0]
 
 
 def parse_daily_burn(text: str) -> float | None:
@@ -845,6 +863,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         ("Morning Customer Desk (latest)", "./morning-customer-desk-latest.html"),
         ("Morning Unblock Desk (latest)", "./morning-unblock-desk-latest.html"),
         ("Morning Delta Brief (latest)", "./morning-delta-brief-latest.html"),
+        ("Morning Exception Desk (latest)", "./morning-exception-desk-latest.html"),
         ("Artifact Freshness (latest)", "./artifact-freshness-latest.html"),
         ("Git Hygiene (latest)", "./git-hygiene-latest.html"),
         ("Business State Audit (latest)", "./state-audit-latest.html"),

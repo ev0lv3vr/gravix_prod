@@ -35,6 +35,7 @@ EXPECTED = [
     ("Morning Customer Desk", "morning-customer-desk", ["html", "json", "md"]),
     ("Morning Unblock Desk", "morning-unblock-desk", ["html", "json", "md"]),
     ("Morning Delta Brief", "morning-delta-brief", ["html", "json", "md"]),
+    ("Morning Exception Desk", "morning-exception-desk", ["html", "json", "md"]),
     ("Artifact Freshness", "artifact-freshness", ["html", "json", "md"]),
     ("Git Hygiene", "git-hygiene", ["html", "json", "md"]),
     ("Business State Audit", "state-audit", ["html", "json", "md"]),

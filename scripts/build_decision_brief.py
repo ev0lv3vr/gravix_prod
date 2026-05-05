@@ -63,19 +63,26 @@ def _fmt_money(v: float | None) -> str:
 
 
 def _parse_amount(text: str) -> float | None:
-    m = re.search(r"\$(\d{1,3}(?:,\d{3})*(?:\.\d+)?)([kKmM])?", text)
-    if not m:
+    matches = list(re.finditer(r"\$(\d{1,3}(?:,\d{3})*(?:\.\d+)?)([kKmM])?", text))
+    if not matches:
         return None
-    value = float(m.group(1).replace(",", ""))
-    suffix = (m.group(2) or "").lower()
-    if suffix == "k":
-        value *= 1000
-    elif suffix == "m":
-        value *= 1_000_000
     lower = text.lower()
     if any(tok in lower for tok in ["run rate", "target price", "spend", "roas", "acos", "revenue", "tracked state", "data reportedly ready around"]):
         return None
-    return value
+    values: list[float] = []
+    for m in matches:
+        value = float(m.group(1).replace(",", ""))
+        suffix = (m.group(2) or "").lower()
+        if suffix == "k":
+            value *= 1000
+        elif suffix == "m":
+            value *= 1_000_000
+        values.append(value)
+    if "refund" in lower and len(values) > 1:
+        return round(sum(values), 2)
+    if any(tok in lower for tok in ["superseded", "supersedes", "replacing", "replaces", "new larger invoice"]):
+        return max(values)
+    return values[0]
 
 
 
@@ -130,7 +137,7 @@ def parse_business_state(path: Path) -> list[Item]:
             h3_lines = []
             return
         detail = " ".join(x.strip() for x in h3_lines if x.strip())
-        if any(tok in detail.lower() for tok in ["resolved", "do not resurface", "should keep running", "latest checked ads folder", "recent timeout patches"]):
+        if any(tok in detail.lower() for tok in ["resolved", "do not resurface", "should keep running", "latest checked ads folder", "recent timeout patches", "new morning", "nightly 2026-", "midday 2026-", "morning 2026-", "evening 2026-", "important correction:"]):
             current_h3 = None
             h3_lines = []
             return
@@ -164,7 +171,7 @@ def parse_business_state(path: Path) -> list[Item]:
             if current_h3:
                 h3_lines.append(bullet)
             else:
-                if any(tok in bullet.lower() for tok in ["resolved / do not resurface", "do not re-enable", "do not resurface unless"]):
+                if any(tok in bullet.lower() for tok in ["resolved / do not resurface", "do not re-enable", "do not resurface unless", "new morning", "nightly 2026-", "midday 2026-", "morning 2026-", "evening 2026-"]):
                     continue
                 title, _, rest = bullet.partition(" — ")
                 detail = rest or bullet
