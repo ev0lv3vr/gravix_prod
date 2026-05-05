@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-03 10:45 AM PT
+Last updated: 2026-05-04 6:00 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -37,18 +37,22 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Source: `gluemasters` msg **192161**.
 
 ### Walmart Marketplace performance/pricing
-- Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%.
-- Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes.
-- Sources: `gluemasters` msgs **192175**, **192177**.
+- Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard** and **late shipment 50% vs 5% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%.
+- Fresh Walmart pricing digest shows **price competitiveness 46.15%** (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes.
+- Sources: `gluemasters` msgs **192323**, **192326**.
 
 ### A3 Partners Gemiflex shipment / invoice
 - A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**.
 - A3 invoice **26-04271** is due **2026-05-27** for **$501.25**.
 - Sources: `gluemasters` msgs **192183**, **192184**.
 
-### Amazon refund / product-not-as-described
-- Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**.
-- Source: `gluemasters` msg **192188**.
+### DMS Packaging invoice
+- DMS Packaging invoice **2026-00169** dated **2026-04-30** is due on Net 15 terms for **$456.28** total: April storage **$275.00**, shipping/freight **$151.28**, distribution/material handling **$30.00**.
+- Source: `gluemasters` msg **192320**.
+
+### Amazon refunds
+- Amazon initiated a **$38.15** refund for order **114-0455907-8694635** / ASIN **B01LZUN030** / SKU **8OZMED**; reason **Shipping Address Undeliverable**. Source: `gluemasters` msg **192328**.
+- Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**.
 
 ### Amazon product safety recall notice
 - Amazon flagged a **Thermos Stainless King food jar** order (**111-9829889-5064236**) with a stop-use / recall notice tied to a CPSC announcement.
@@ -66,10 +70,10 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Cute Things & Creative Concepts / Shohreh** — bulk quote needs follow-up: after the initial quote, Shohreh asked for **100 units Industrial Grade CA Adhesive - Medium Viscosity, 8 oz** as well. Sources: `sales` msgs **6087**, **6100**, **6101**.
 - **Deane Belk** — Shopify contact form asks to speak with someone about **Thick viscosity gel / no-drip CA glue** for a volunteer major project; wants help. Source: `sales` msg **6105**.
 - **Thomas Oconnell** — Shopify contact form says he cannot get the plastic cap off brand-new Thin super glue; likely needs customer support reply with opening instructions/replacement path. Source: `sales` msg **6120**.
-- **Arka / Sean** — replied to CO 80110 quote thread confirming they need **a small-format super glue product for a packaged kit/application**, not a specific viscosity target. Next step: quote closest standard fit or custom/private-label route. Source: `sales` msg **6112**.
+- **Arka / Sean** — chose **stock 700 cps in 2oz bottles, ships now** for the CO 80110 quote path. Next step: get initial quantity / annual volume and price the stock 2oz Medium option. Draft follow-up created at `moneysamurai/drafts/arka-stock-700cps-2oz-followup-2026-05-04.md`. Sources: `sales` msgs **6112**, **6131**.
 - **Amazon buyer message / Karaoke Machine Store** — Amazon buyer message is waiting in Seller Central for order **113-4386244-8272243**, ASIN **B0DFPG9PJN** Singing Machine Platinum Plus. Source: `gluemasters` msg **192280**.
 - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
-- **Gemifly LLC** — **$1,513.23** PayPal invoice outstanding.
+- **Gemifly LLC** — new PayPal invoice **1001-0243** for **$7,449.98** was sent to Gemifly LLC on 2026-05-04; track for payment. Earlier open amount listed was **$1,513.23**, now superseded by the new larger invoice unless Ev says otherwise. Source: `sales` msg **6134**.
 - **TikTok/Amazon influencer outreach** — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**.
 - **Dynasty Global / Eli** — dealer inquiry; needs Ev decision.
 - **Ethan Miller** — order **#5786**, 4× Thick 16oz replacement not created at ShipBob.
@@ -108,7 +112,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.
 - Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
-- Latest checked ads folder: **2026-05-02**; folder exists on schedule. Previous checked snapshot 2026-04-30 was complete/valid: campaigns **10**, keywords **92**, search terms **67**, no failed reports. Same-day Apr 30 Amazon Ads attributed metrics: **$96.38 spend / $166.47 sales / 57.9% ACoS / 1.73× ROAS**. Digest flagged spend as severely below 7-day average and recommends checking Seller Central budgets/Buy Box plus adding negative `super glue for wood`.
+- Latest checked ads folder: **2026-05-03**; folder exists on schedule. Same-day May 3 Amazon Ads attributed metrics: **$103.56 spend / $255.55 sales / 40.5% ACoS / 2.47× ROAS**. Digest flagged `8oz Thick Auto` and `CA Glue Core Exact` as winners, `Competitor Conquest` as zero-sales waste, and `ca glue` as a negation candidate.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
@@ -124,7 +128,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ## 🟢 Resolved / do not resurface without fresh evidence
 
-- **R&R Fabrications shipment / invoice** — Ev marked R&R done on 2026-05-03; do not resurface the shipment/invoice as active unless a fresh R&R follow-up appears. Sources: `sales` msgs **6086**, **6099**, **6117**.
+- **R&R Fabrications shipment / invoice** — Ev marked R&R done on 2026-05-03, and Jeffery Davis paid PayPal invoice **1001-0242** for **$1,289.70** on 2026-05-04. Do not resurface the shipment/invoice as active unless a fresh R&R follow-up appears. Sources: `sales` msgs **6086**, **6099**, **6117**, **6130**.
 - **Insurance audit** — Ev marked insurance done on 2026-05-03; do not resurface as active unless a fresh insurance/audit issue appears.
 - **Steven Cohen order #6032 refund request** — Ev explained the 8oz Thin vs 16oz Thin/100cps difference and issued the refund; Steven replied “Thank you” on 2026-05-01. Sources: `sales` msgs **6093**, **6094**, **6114**, **6115**.
 - **DMS Packaging invoice 2026-00118** — Ev marked the invoice-status check done on 2026-05-01. Source: `gluemasters` msg **192277**.
