@@ -1,15 +1,16 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-04 6:00 PM PT
+Last updated: 2026-05-05 6:00 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
 ## 🔴 Needs Ev / time-sensitive
 
-### Amazon account security check
+### Amazon account security check / Meta partner request
 - Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**.
 - If this was not Ev, he should verify account security directly in Amazon, not through the email link.
-- Source: `gluemasters` msg **192139**.
+- Facebook/Meta sent a Business Manager partner request from **“Join the Meta Agency Partner Program”**. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: `sales` msg **6141**.
+- Sources: `gluemasters` msg **192139**, `sales` msg **6141**.
 
 ### Shopify API token
 - Current API access is dead; inventory visibility is degraded/blind.
@@ -44,20 +45,23 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 ### A3 Partners Gemiflex shipment / invoice
 - A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**.
 - A3 invoice **26-04271** is due **2026-05-27** for **$501.25**.
-- Sources: `gluemasters` msgs **192183**, **192184**.
+- Payment-status verification needed for older A3 invoices found in email but not active state: **26-03263** for **$3,312.37**, due **2026-04-25** (`gluemasters` msg **191451**) and **26-03311** for **$3,284.70**, due **2026-04-30** (`gluemasters` msg **191683**). Do not call these unpaid as fact until bank/QuickBooks/payment confirmation is checked.
+- Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**.
 
 ### DMS Packaging invoice
 - DMS Packaging invoice **2026-00169** dated **2026-04-30** is due on Net 15 terms for **$456.28** total: April storage **$275.00**, shipping/freight **$151.28**, distribution/material handling **$30.00**.
 - Source: `gluemasters` msg **192320**.
 
 ### Amazon refunds
+- Amazon initiated a **$15.21** refund for order **111-7692391-0638603** / ASIN **B01MDNS8QB** / SKU **GM2M** / item **2oz Medium**; reason **Customer Return**. Source: `gluemasters` msg **192357**.
 - Amazon initiated a **$38.15** refund for order **114-0455907-8694635** / ASIN **B01LZUN030** / SKU **8OZMED**; reason **Shipping Address Undeliverable**. Source: `gluemasters` msg **192328**.
 - Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**.
 
-### Amazon product safety recall notice
+### Amazon product safety / affiliate notices
 - Amazon flagged a **Thermos Stainless King food jar** order (**111-9829889-5064236**) with a stop-use / recall notice tied to a CPSC announcement.
-- Needs Ev review only if this personal-order safety notice matters operationally; otherwise keep it low priority and do not let it crowd business-critical work.
-- Source: `gluemasters` msg **192266**.
+- Amazon Associates/Influencer says account **redwaspnet-20** has been closed/rejected for over 3 years and a remaining **$114.30** balance will be forfeited after **7 days**; email says no action needed, but surface if Ev cares about recovering/appealing it. Source: `gluemasters` msg **192362**.
+- Needs Ev review only if these personal/affiliate notices matter operationally; otherwise keep them low priority and do not let them crowd business-critical work.
+- Sources: `gluemasters` msgs **192266**, **192362**.
 
 ## 🟡 Customer / B2B follow-up queue
 
@@ -74,6 +78,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Amazon buyer message / Karaoke Machine Store** — Amazon buyer message is waiting in Seller Central for order **113-4386244-8272243**, ASIN **B0DFPG9PJN** Singing Machine Platinum Plus. Source: `gluemasters` msg **192280**.
 - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
 - **Gemifly LLC** — new PayPal invoice **1001-0243** for **$7,449.98** was sent to Gemifly LLC on 2026-05-04; track for payment. Earlier open amount listed was **$1,513.23**, now superseded by the new larger invoice unless Ev says otherwise. Source: `sales` msg **6134**.
+- **Donaldson / Rachael Fitzgerald** — account setup is still pending on Donaldson Finance side; Rachael reached out internally to see what is holding it up. They are good on inventory for now and will re-order when they break into the second case; usage for the new bottle size is still unknown. Ev already replied asking her to keep us updated. Sources: `sales` msg **6137**, `gluemasters` msgs **192353**, **192354**.
 - **TikTok/Amazon influencer outreach** — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**.
 - **Dynasty Global / Eli** — dealer inquiry; needs Ev decision.
 - **Ethan Miller** — order **#5786**, 4× Thick 16oz replacement not created at ShipBob.
@@ -84,6 +89,11 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Jason F return** — decision pending.
 
 ## 🔵 Active product / growth
+
+### B2B sample kits
+- Ev confirmed on **2026-05-05** that the boxes are done and kits are ready to be sent.
+- Status: ready for outbound/send execution; do **not** list box production or kit assembly as blockers.
+- Kit assets/collateral live under `gluemasters-bizdev/b2b-kit/`.
 
 ### Pump Accelerator 8oz
 - Supplier: Xtralok, Chicago.
@@ -112,7 +122,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.
 - Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
-- Latest checked ads folder: **2026-05-03**; folder exists on schedule. Same-day May 3 Amazon Ads attributed metrics: **$103.56 spend / $255.55 sales / 40.5% ACoS / 2.47× ROAS**. Digest flagged `8oz Thick Auto` and `CA Glue Core Exact` as winners, `Competitor Conquest` as zero-sales waste, and `ca glue` as a negation candidate.
+- Latest checked ads folder: **2026-05-04**; folder exists after manual recovery on 2026-05-05 morning. Same-day May 4 Amazon Ads attributed metrics: **$89.81 spend / $220.43 sales / 40.7% ACoS / 2.45× ROAS**. Digest flagged `8oz Medium Glue - keywords`, `8oz Thick Auto`, and `2oz thick and 8oz medium - keywords` as winners; `Head Term Conquest` and `CA Glue Core Exact` showed zero-sales waste; negation candidates include `ca glue`, `starbond ca glue with activator`, `super glue for wood`, and `super glue large bottle`.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.

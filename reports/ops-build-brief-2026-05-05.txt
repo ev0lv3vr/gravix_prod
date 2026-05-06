@@ -1,0 +1,100 @@
+OPS BUILD BRIEF — 2026-05-05
+Generated: 2026-05-05 14:01 PDT
+
+Artifacts:
+- reports/morning-ops-hub-latest.html
+- reports/morning-priority-pack-latest.md
+- reports/ops-debt-dashboard-latest.html
+- reports/ads-pull-dashboard-latest.html
+- reports/ads-pull-incident-latest.html
+- reports/morning-handoff-latest.html
+- reports/morning-decision-desk-latest.html
+- reports/morning-customer-desk-latest.html
+- reports/morning-unblock-desk-latest.html
+- reports/morning-delta-brief-latest.html
+- reports/morning-exception-desk-latest.html
+- reports/artifact-freshness-latest.html
+- reports/git-hygiene-latest.html
+- reports/state-audit-latest.html
+- reports/morning-actionability-latest.html
+- latest cron-watchlist-*.html (dated report)
+- reports/cron-trend-report-latest.html
+
+Morning pack freshness:
+- Status: FRESH
+- Newest source edit: 2026-05-05 12:57 PDT
+- Build lag vs newest source: 63 min
+- BUSINESS_STATE.md: 2026-05-05 12:57 PDT (63 min old)
+- MEMORY.md: 2026-05-05 12:57 PDT (63 min old)
+- memory/2026-05-04.md: 2026-05-04 18:01 PDT (1199 min old)
+
+Artifact trust check:
+- OK: 16 / 16
+- Stale: 0
+- Missing: 0
+- Mismatched latest vs dated: 0
+
+Git hygiene:
+- Repos scanned: 4
+- High risk: 2
+- Medium risk: 1
+- Low/noise only: 0
+- Changed files visible: 52
+- Hottest repo: gluemasters-bizdev — Code changes present (b2b/README.md, b2b/b2b-executive-summary.md, b2b/b2b-strategy.md); review before deploy/push.
+
+Business state audit:
+- Active items scanned: 42
+- Past-date refs: 7
+- Relative-time refs: 0
+- Urgent items missing source: 1
+- Duplicate source IDs: 0
+
+Amazon Ads daily pull (local status):
+- Latest day: 2026-05-04
+- Latest status: OK (failed: —)
+- Current invalid streak: 0
+- Latest pull log: logs/ads-daily/2026-04-24_060021.log
+
+Cron timeout watchlist:
+- Jobs scanned: 13
+- Critical: 1
+- High: 0
+- Medium: 1
+- Ready timeout patches: 3
+- Hottest job: ads-daily-pull (critical, last 1800057 ms on 1800 s timeout)
+
+Cron trend (multi-day):
+- Days compared: 3
+- Regressing jobs: 1
+- Improving jobs: 1
+- New risks: 0
+- Delta vs previous: critical 0, high 0, medium 0, patches 0
+- Worst regression: ads-daily-pull (ok → critical)
+
+Ops debt (from ops-debt.json):
+- Open items: 9 (active/critical: 7)
+- Daily burn (true): $0/day
+- Accrued (open): $1,715.54
+- 30-day burn exposure: $0
+- One-time dollars open: $1,715.54
+
+BUSINESS_STATE.md queue depth:
+- 🔴 Urgent: 11
+- 🟡 Needs Ev: 22
+- 🔵 In progress: 7
+- 📋 Backlog: 2
+- Total open tasks ranked: 42
+
+Top 8 morning actions (ranked):
+1. A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**. (25m)
+2. **Gemifly LLC** — new PayPal invoice **1001-0243** for **$7,449.98** was sent to Gemifly LLC on 2026-05-04; track for payment. Earlier open amount listed was **$1,513.23**, now superseded by the new larger invoice unless Ev says otherwise. Source: `sales` msg **6134**. (15m)
+3. Amazon account security check — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg **192139**. (18m)
+4. Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. (20m)
+5. DMS Packaging invoice — DMS Packaging invoice **2026-00169** dated **2026-04-30** is due on Net 15 terms for **$456.28** total: April storage **$275.00**, shipping/freight **$151.28**, distribution/material handling **$30.00**. Source: `gluemasters` msg **192320**. (25m)
+6. Amazon refunds — Amazon initiated a **$38.15** refund for order **114-0455907-8694635** / ASIN **B01LZUN030** / SKU **8OZMED**; reason **Shipping Address Undeliverable**. Source: `gluemasters` msg **192328**. Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**. (7m)
+7. ICU Shopify upsell app token — In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: `sales` msg **6090**. (20m)
+8. **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (15m)
+
+Build again:
+- ./scripts/ops_build.py
+

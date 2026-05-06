@@ -1,0 +1,15 @@
+🔄 Amazon Ads Flywheel → Render Sync
+   Date: 2026-05-04
+   Target: https://moneysamurai.onrender.com
+
+📦 Collecting data for 2026-05-04...
+  ✅ campaigns.json (10 records)
+  ✅ keywords.json (94 records)
+  ✅ search-terms.json (110 records)
+  ✅ digest.md (3865 bytes)
+  ✅ history.json
+  ✅ search-terms-master.json (4 terms)
+  ✅ changes.json
+
+📤 Syncing to https://moneysamurai.onrender.com/ads/data/sync (1.4 MB)...
+✅ Sync complete: ['campaigns.json', 'keywords.json', 'search-terms.json', 'digest.md', 'history.json', 'search-terms-master.json', 'changes.json']
