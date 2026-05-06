@@ -33,6 +33,8 @@ EXPECTED = [
     ("Morning Handoff", "morning-handoff", ["html", "json", "md"]),
     ("Morning Decision Desk", "morning-decision-desk", ["html", "json", "md"]),
     ("Morning Customer Desk", "morning-customer-desk", ["html", "json", "md"]),
+    ("B2B Kit Dispatch Desk", "b2b-kit-dispatch-desk", ["html", "json", "md"]),
+    ("B2B Kit Dispatch Labels", "b2b-kit-dispatch-labels", ["csv"]),
     ("Morning Unblock Desk", "morning-unblock-desk", ["html", "json", "md"]),
     ("Morning Delta Brief", "morning-delta-brief", ["html", "json", "md"]),
     ("Morning Exception Desk", "morning-exception-desk", ["html", "json", "md"]),

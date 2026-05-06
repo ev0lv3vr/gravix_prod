@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-05-04
+Last updated: 2026-05-05
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -24,7 +24,7 @@ Last updated: 2026-05-04
 - **Fulfillment:** ShipBob (Twin Lakes WI, Ontario CA, Buford GA)
 - **Email:** sales@gluemasters.com via himalaya (`save-copy = false`)
 - **Revenue run rate:** ~$638K (Amazon $531K + Shopify $107K)
-- **Current operational status (2026-04-30):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson NET60/onboarding reply is done as of 2026-04-26; do not resurface as active unless Donaldson replies with a new blocker. Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**). GLUE MASTERS trademark maintenance invoice **3704** for **$1,170** was paid in full on 2026-04-29 and confirmed by PCH on 2026-04-30 (gluemasters msgs **192239**, **192256**); do not resurface as unpaid. PCH filed the GLUE MASTERS Section 8 & 15 declaration and USPTO receipt arrived 2026-05-01 (gluemasters msg **192271**); no e-sign action remains unless PCH flags an irregularity. Amex high-balance warning for account ending **94007/794007** was resolved by **$20,493.51** payment received/processed on 2026-04-30 (gluemasters msgs **192250**, **192258**); do not resurface unless a fresh Amex restriction appears. R&R Fabrications shipment/invoice and the insurance audit were both marked done by Ev on 2026-05-03; Jeffery Davis paid R&R PayPal invoice **1001-0242** for **$1,289.70** on 2026-05-04 (`sales` msg **6130**), so do not resurface R&R as active without fresh evidence.
+- **Current operational status (2026-05-05):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson account setup is pending on Donaldson Finance side as of 2026-05-05; Rachael Fitzgerald says they are good on inventory for now and will re-order when they break into the second case, with usage for the new bottle size still unclear (`sales` msg **6137**, `gluemasters` msgs **192353**, **192354**). Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**). GLUE MASTERS trademark maintenance invoice **3704** for **$1,170** was paid in full on 2026-04-29 and confirmed by PCH on 2026-04-30 (gluemasters msgs **192239**, **192256**); do not resurface as unpaid. PCH filed the GLUE MASTERS Section 8 & 15 declaration and USPTO receipt arrived 2026-05-01 (gluemasters msg **192271**); no e-sign action remains unless PCH flags an irregularity. Amex high-balance warning for account ending **94007/794007** was resolved by **$20,493.51** payment received/processed on 2026-04-30 (gluemasters msgs **192250**, **192258**); do not resurface unless a fresh Amex restriction appears. R&R Fabrications shipment/invoice and the insurance audit were both marked done by Ev on 2026-05-03; Jeffery Davis paid R&R PayPal invoice **1001-0242** for **$1,289.70** on 2026-05-04 (`sales` msg **6130**), so do not resurface R&R as active without fresh evidence.
 
 ### MoneySamurai
 - Product data/analytics platform. Workspace: `/workspace/moneysamurai/`
@@ -65,6 +65,7 @@ Last updated: 2026-05-04
 - Midday 2026-04-30 (1 PM window): The Escape Game receipt request resolved itself after Brendon found the receipt on Shopify (`sales` msg **6102**); moved it out of active customer follow-up. Shohreh/Cute Things bulk quote thread advanced with requests for 16oz Thick/Medium, 8oz Medium, and 300–400 unit 2oz pricing (`sales` msgs **6100**, **6101**); Ev requested/corrected final email and thread shows answered, so await her response/final quantities.
 - Nightly 2026-05-02: added a `Morning Unblock Desk` to the ops pack (`reports/morning-unblock-desk-latest.html` plus dated output), wired into `scripts/ops_build.py`, hub links, and freshness/build brief output; validated with `python3 scripts/ops_build.py --date 2026-05-02`, all **14/14** artifacts OK, commit `fbbff28` (`feat: add morning unblock desk`).
 - Nightly 2026-05-03: added a `Morning Actionability Desk` to the ops pack (`reports/morning-actionability-latest.html` plus dated output), wired into `scripts/ops_build.py` and the ops hub; also tuned the ranking in `scripts/kanban_morning_builder.py` to demote passive/watch-only items and pull executable access/token blockers higher in the morning queue.
+- Nightly 2026-05-05: added a dedicated B2B sample-kit dispatch builder (`scripts/build_b2b_kit_dispatch_desk.py`) that turns the hydrated recipient queue into `reports/b2b-kit-dispatch-desk-2026-05-06.{md,html,json}` plus `reports/b2b-kit-dispatch-labels-2026-05-06.csv`, then wired it into `scripts/ops_build.py`, the morning ops hub, and artifact freshness checks so Ev has a morning-ready kit batch/label desk instead of only raw recipient notes.
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle
@@ -84,6 +85,7 @@ Last updated: 2026-05-04
 - Quote template: `gluemasters-bizdev/quotes/`
 - Strategy docs: `whale-outreach-sequence.md`, `b2b-sales-playbook.md` — READ BEFORE IMPROVISING
 - GM logo: `gluemasters-bizdev/assets/gluemasters-logo.svg`
+- B2B sample kits: as of **2026-05-05**, Ev confirmed boxes are done and kits are ready to be sent; kit assets/collateral are in `gluemasters-bizdev/b2b-kit/`.
 
 ## Suppliers
 - **A3 Partners** (Caroline Silvestro) — Gemiflex + caps supplier
