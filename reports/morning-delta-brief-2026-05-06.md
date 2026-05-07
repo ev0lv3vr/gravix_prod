@@ -1,13 +1,13 @@
 # Morning Delta Brief — 2026-05-06
 
-Generated: 2026-05-05 23:05 PDT
+Generated: 2026-05-06 14:00 PDT
 Compared with: 2026-05-05
 
 ## Snapshot
 - Open tasks: **42** (0 vs previous)
 - New items surfaced: **2**
 - Items removed from board: **2**
-- Rank movers: **0**
+- Rank movers: **1**
 - Top 8 churn: **+1 / -1**
 
 ## Section deltas
@@ -18,14 +18,14 @@ Compared with: 2026-05-05
 
 ## New since last board
 - **#4** · 🔴 URGENT · Amazon account security check / Meta partner request — Amazon sent a password recovery notice tied to a reset attempt from Chrome on macOS near Washington. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from “Join the Meta Agency Partner Program”. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: sales msg 6141. Sources: gluemasters msg 192139, sales msg 6141. (~18m)
-- **#14** · 🔴 URGENT · Amazon product safety / affiliate notices — Amazon flagged a Thermos Stainless King food jar order (111-9829889-5064236) with a stop-use / recall notice tied to a CPSC announcement. Amazon Associates/Influencer says account redwaspnet-20 has been closed/rejected for over 3 years and a remaining $114.30 balance will be forfeited after 7 days; email says no action needed, but surface if Ev cares about recovering/appealing it. Source: gluemasters msg 192362. Needs Ev review only if these personal/affiliate notices matter operationally; otherwise keep them low priority and do not let them crowd business-critical work. Sources: gluemasters msgs 192266, 192362. (~45m)
+- **#15** · 🔴 URGENT · Amazon product safety / affiliate notices — Amazon flagged a Thermos Stainless King food jar order (111-9829889-5064236) with a stop-use / recall notice tied to a CPSC announcement. Amazon Associates/Influencer says account redwaspnet-20 has been closed/rejected for over 3 years and a remaining $114.30 balance will be forfeited after 7 days; email says no action needed, but surface if Ev cares about recovering/appealing it. Source: gluemasters msg 192362. Needs Ev review only if these personal/affiliate notices matter operationally; otherwise keep them low priority and do not let them crowd business-critical work. Sources: gluemasters msgs 192266, 192362. (~45m)
 
 ## Dropped off / resolved
 - **prev #3** · 🔴 URGENT · Amazon account security check — Amazon sent a password recovery notice tied to a reset attempt from Chrome on macOS near Washington. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: gluemasters msg 192139.
 - **prev #39** · 🔴 URGENT · Amazon product safety recall notice — Amazon flagged a Thermos Stainless King food jar order (111-9829889-5064236) with a stop-use / recall notice tied to a CPSC announcement. Needs Ev review only if this personal-order safety notice matters operationally; otherwise keep it low priority and do not let it crowd business-critical work. Source: gluemasters msg 192266.
 
 ## Big rank moves
-- None
+- **#10** from #17 (+7) · Cute Things & Creative Concepts / Shohreh — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on Amazon after the $16,030.20 quote. Ev sent a reply on 2026-05-06 saying no Amazon resale authorization; wait for her response. Sources: sales msgs 6087, 6100, 6101, 6149.
 
 ## Top 8 new entrants
 - **#4** · Amazon account security check / Meta partner request — Amazon sent a password recovery notice tied to a reset attempt from Chrome on macOS near Washington. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from “Join the Meta Agency Partner Program”. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: sales msg 6141. Sources: gluemasters msg 192139, sales msg 6141. (~18m)
@@ -34,6 +34,8 @@ Compared with: 2026-05-05
 - **prev #3** · Amazon account security check — Amazon sent a password recovery notice tied to a reset attempt from Chrome on macOS near Washington. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: gluemasters msg 192139.
 
 ## Recent memory context
+- 2026-05-06.md: Confirmed Amazon Ads daily pull recovered for snapshot **2026-05-05**; folder contains campaigns, keywords, search terms, pull-status, and digest. Digest showed **$144.12 spend / $189.52 ad-attributed sales / 76.0% ACoS**, with **8oz Medium Glue - keywords** spending **$48.32** at **$0 sales**.
+- 2026-05-06.md: Ev said the Shohreh reply was sent. Updated `BUSINESS_STATE.md` to mark the no-Amazon-resale reply sent and keep the thread waiting on Shohreh.
 - 2026-05-05.md: Current top blockers remain access/login-dependent items: **Amazon account security check**, **Shopify API token**, **ICU Shopify upsell token**, plus unresolved ops items led by **A3 Gemiflex shipment/invoice**, **Gemifly LLC invoice follow-up**, and **DMS Packaging invoice**.
 - 2026-05-05.md: Standing system risk remains git hygiene before any deploy/push: workspace shows report/state churn, `gluemasters-bizdev` has uncommitted B2B changes, and `moneysamurai` is still ahead of origin.
 - 2026-05-05.md: Evening email scan surfaced a suspicious-looking **Facebook/Meta Business Manager partner request** from “Join the Meta Agency Partner Program”; added it under security/access caution in `BUSINESS_STATE.md` and flagged not to approve/share assets unless Ev recognizes it (`sales` msg **6141**).
@@ -42,8 +44,6 @@ Compared with: 2026-05-05
 - 2026-05-05.md: Active blockers going into tomorrow still center on access/login work (**Amazon account security**, **Shopify API token**, **ICU upsell token**), plus unresolved ops/customer items led by **A3 Gemiflex / invoice verification**, **DMS invoice**, **Gemifly LLC invoice follow-up**, **Louise Frogley refund decision**, and the broader customer/B2B reply queue.
 - 2026-05-05.md: Standing system risk is still git hygiene before any deploy/push: workspace report churn, local `gluemasters-bizdev` edits, and MoneySamurai local/untracked changes need review first.
 - 2026-05-04.md: Current strongest blockers remain access/login-dependent items: **Amazon account security check**, **Shopify API token**, **ICU Shopify upsell token**, **Amazon buyer message / Karaoke Machine Store**, plus unresolved ops items led by **A3 Gemiflex shipment/invoice** and **DMS Packaging invoice**.
-- 2026-05-04.md: Standing system risk remains local git state in `moneysamurai`; review before any deploy/push action.
-- 2026-05-04.md: Email scan surfaced a new **Gemifly LLC** PayPal invoice **1001-0243** for **$7,449.98** (`sales` msg **6134**); updated `BUSINESS_STATE.md` and `MEMORY.md` so it replaces/supersedes the earlier smaller Gemifly outstanding amount unless Ev says otherwise.
 
 ## Current top 8
 - **#1** · A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Payment-status verification needed for older A3 invoices found in email but not active state: 26-03263 for $3,312.37, due 2026-04-25 (gluemasters msg 191451) and 26-03311 for $3,284.70, due 2026-04-30 (gluemasters msg 191683). Do not call these unpaid as fact until bank/QuickBooks/payment confirmation is checked. Sources: gluemasters msgs 192183, 192184, 191451, 191683. (~25m)

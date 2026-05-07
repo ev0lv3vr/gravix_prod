@@ -1,13 +1,13 @@
 # Morning Decision Desk — 2026-05-06
 
-Generated: 2026-05-05 23:05 PDT
+Generated: 2026-05-06 14:00 PDT
 
 ## Snapshot
 - Needs Ev: **14**
-- Customer queue: **23**
+- Customer queue: **24**
 - Unblockers: **5**
 - Verify now: **3**
-- Visible money at stake: **$8,620.99**
+- Visible money at stake: **$24,651.19**
 
 ## Needs Ev first
 - **Amazon account security check / Meta partner request** — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from **“Join the Meta Agency Partner Program”**. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: `sales` msg **6141**. Sources: `gluemasters` msg **192139**, `sales` msg **6141**. (msgs 6141, 192139)
@@ -44,6 +44,7 @@ Generated: 2026-05-05 23:05 PDT
 - **Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**. (msgs 6061)
 
 ## Money at stake
+- **Cute Things & Creative Concepts / Shohreh** — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on **Amazon** after the $16,030.20 quote. Ev sent a reply on **2026-05-06** saying **no Amazon resale authorization**; wait for her response. Sources: `sales` msgs **6087**, **6100**, **6101**, **6149**. ($16,030.20; msgs 6087, 6100, 6101, 6149)
 - **Gemifly LLC** — new PayPal invoice **1001-0243** for **$7,449.98** was sent to Gemifly LLC on 2026-05-04; track for payment. Earlier open amount listed was **$1,513.23**, now superseded by the new larger invoice unless Ev says otherwise. Source: `sales` msg **6134**. ($7,449.98; msgs 6134)
 - **A3 Partners Gemiflex shipment / invoice** — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Payment-status verification needed for older A3 invoices found in email but not active state: **26-03263** for **$3,312.37**, due **2026-04-25** (`gluemasters` msg **191451**) and **26-03311** for **$3,284.70**, due **2026-04-30** (`gluemasters` msg **191683**). Do not call these unpaid as fact until bank/QuickBooks/payment confirmation is checked. Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**. ($501.25; msgs 191451, 191683, 192183, 192184)
 - **DMS Packaging invoice** — DMS Packaging invoice **2026-00169** dated **2026-04-30** is due on Net 15 terms for **$456.28** total: April storage **$275.00**, shipping/freight **$151.28**, distribution/material handling **$30.00**. Source: `gluemasters` msg **192320**. ($456.28; msgs 192320)

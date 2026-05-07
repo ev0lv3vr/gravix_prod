@@ -1,6 +1,6 @@
 # Morning Handoff — 2026-05-06
 
-Generated: 2026-05-05 23:05 PDT
+Generated: 2026-05-06 14:00 PDT
 Source: morning execution board + ops debt + cron watchlist/trend
 
 ## Do first
@@ -15,16 +15,16 @@ Source: morning execution board + ops debt + cron watchlist/trend
 - Gemifly LLC — new PayPal invoice 1001-0243 for $7,449.98 was sent to Gemifly LLC on 2026-05-04; track for payment. Earlier open amount listed was $1,513.23, now superseded by the new larger invoice unless Ev says otherwise. Source: `sales` msg 6134.
 - Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.
 - Walmart unshipped order — auto-cancel risk.
+- Cute Things & Creative Concepts / Shohreh — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on Amazon after the $16,030.20 quote. Ev sent a reply on 2026-05-06 saying no Amazon resale authorization; wait for her response. Sources: `sales` msgs 6087, 6100, 6101, 6149.
 - Fastenal supplier onboarding — Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs 192233, 192240, 192242.
-- Louise Frogley — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Needs refund vs replacement/reship decision. Source: `sales` msgs 6088, 6089, 6098, 6116, 6122.
 
 ## Customer risk
 - A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Payment-status verification needed for older A3 invoices found in email but not active state: 26-03263 for $3,312.37, due 2026-04-25 (`gluemasters` msg 191451) and 26-03311 for $3,284.70, due 2026-04-30 (`gluemasters` msg 191683). Do not call these unpaid as fact until bank/QuickBooks/payment confirmation is checked. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683.
 - Amazon refunds — Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188.
 - Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.
 - Walmart unshipped order — auto-cancel risk.
+- Cute Things & Creative Concepts / Shohreh — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on Amazon after the $16,030.20 quote. Ev sent a reply on 2026-05-06 saying no Amazon resale authorization; wait for her response. Sources: `sales` msgs 6087, 6100, 6101, 6149.
 - Louise Frogley — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Needs refund vs replacement/reship decision. Source: `sales` msgs 6088, 6089, 6098, 6116, 6122.
-- Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs 192323, 192326.
 
 ## Unblock / verify
 - A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Payment-status verification needed for older A3 invoices found in email but not active state: 26-03263 for $3,312.37, due 2026-04-25 (`gluemasters` msg 191451) and 26-03311 for $3,284.70, due 2026-04-30 (`gluemasters` msg 191683). Do not call these unpaid as fact until bank/QuickBooks/payment confirmation is checked. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683.
