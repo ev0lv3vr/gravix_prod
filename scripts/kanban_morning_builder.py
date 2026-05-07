@@ -861,6 +861,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         ("Morning Handoff (latest)", "./morning-handoff-latest.html"),
         ("Morning Decision Desk (latest)", "./morning-decision-desk-latest.html"),
         ("Morning Customer Desk (latest)", "./morning-customer-desk-latest.html"),
+        ("Brand Narrative Desk (latest)", "./brand-narrative-desk-latest.html"),
         ("B2B Kit Dispatch Desk (latest)", "./b2b-kit-dispatch-desk-latest.html"),
         ("B2B Kit Label CSV (latest)", "./b2b-kit-dispatch-labels-latest.csv"),
         ("Morning Unblock Desk (latest)", "./morning-unblock-desk-latest.html"),

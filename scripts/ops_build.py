@@ -10,6 +10,7 @@ Builds:
 - reports/morning-handoff-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/morning-decision-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/morning-customer-desk-YYYY-MM-DD.{md,html,json} (+ latest)
+- reports/brand-narrative-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/b2b-kit-dispatch-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/b2b-kit-dispatch-labels-YYYY-MM-DD.csv (+ latest)
 - reports/morning-unblock-desk-YYYY-MM-DD.{md,html,json} (+ latest)
@@ -86,6 +87,7 @@ class Brief:
     artifact_freshness: dict[str, Any] | None = None
     git_hygiene: dict[str, Any] | None = None
     state_audit: dict[str, Any] | None = None
+    brand_narrative: dict[str, Any] | None = None
     cron_watchlist: dict[str, Any] | None = None
     cron_trend: dict[str, Any] | None = None
 
@@ -120,6 +122,7 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/morning-handoff-latest.html")
     lines.append("- reports/morning-decision-desk-latest.html")
     lines.append("- reports/morning-customer-desk-latest.html")
+    lines.append("- reports/brand-narrative-desk-latest.html")
     lines.append("- reports/b2b-kit-dispatch-desk-latest.html")
     lines.append("- reports/b2b-kit-dispatch-labels-latest.csv")
     lines.append("- reports/morning-unblock-desk-latest.html")
@@ -176,6 +179,15 @@ def render_brief(b: Brief) -> str:
         lines.append(f"- Relative-time refs: {state_audit.get('stale_relative_refs','—')}")
         lines.append(f"- Urgent items missing source: {state_audit.get('urgent_without_source','—')}")
         lines.append(f"- Duplicate source IDs: {state_audit.get('duplicate_source_ids','—')}")
+        lines.append("")
+
+    brand_narrative = (b.brand_narrative or {}).get("summary") or {}
+    if brand_narrative:
+        lines.append("Brand narrative desk:")
+        lines.append(f"- Reviews surfaced as proof: {brand_narrative.get('review_count','—')}")
+        lines.append(f"- Proof points packaged: {brand_narrative.get('proof_points','—')}")
+        lines.append(f"- Narrative gaps flagged: {brand_narrative.get('gaps','—')}")
+        lines.append(f"- Messaging inconsistencies to verify: {brand_narrative.get('inconsistencies','—')}")
         lines.append("")
 
     # Ads pull summary (optional)
@@ -306,6 +318,7 @@ def main(argv: list[str] | None = None) -> int:
     _run([sys.executable, "scripts/build_morning_handoff.py", "--date", date_str])
     _run([sys.executable, "scripts/build_decision_brief.py", "--date", date_str])
     _run([sys.executable, "scripts/build_customer_response_desk.py", "--date", date_str])
+    _run([sys.executable, "scripts/build_brand_narrative_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_b2b_kit_dispatch_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_unblock_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_morning_delta_brief.py", "--date", date_str])
@@ -322,6 +335,7 @@ def main(argv: list[str] | None = None) -> int:
     artifact_freshness_json = REPORTS / "artifact-freshness-latest.json"
     git_hygiene_json = REPORTS / "git-hygiene-latest.json"
     state_audit_json = REPORTS / "state-audit-latest.json"
+    brand_narrative_json = REPORTS / "brand-narrative-desk-latest.json"
     cron_watchlist_json = _latest_report("cron-watchlist-*.json")
     cron_trend_json = REPORTS / "cron-trend-report-latest.json"
     if not ops_json.exists():
@@ -344,6 +358,7 @@ def main(argv: list[str] | None = None) -> int:
             artifact_freshness=_load_json(artifact_freshness_json) if artifact_freshness_json.exists() else None,
             git_hygiene=_load_json(git_hygiene_json) if git_hygiene_json.exists() else None,
             state_audit=_load_json(state_audit_json) if state_audit_json.exists() else None,
+            brand_narrative=_load_json(brand_narrative_json) if brand_narrative_json.exists() else None,
             cron_watchlist=_load_json(cron_watchlist_json) if cron_watchlist_json and cron_watchlist_json.exists() else None,
             cron_trend=_load_json(cron_trend_json) if cron_trend_json.exists() else None,
         )
@@ -366,6 +381,7 @@ def main(argv: list[str] | None = None) -> int:
     print("Built reports/morning-handoff-latest.html")
     print("Built reports/morning-decision-desk-latest.html")
     print("Built reports/morning-customer-desk-latest.html")
+    print("Built reports/brand-narrative-desk-latest.html")
     print("Built reports/b2b-kit-dispatch-desk-latest.html")
     print("Built reports/b2b-kit-dispatch-labels-latest.csv")
     print("Built reports/morning-unblock-desk-latest.html")
