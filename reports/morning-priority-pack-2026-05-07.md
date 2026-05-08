@@ -1,6 +1,6 @@
 # Morning Priority Pack — 2026-05-07
 
-Generated: 2026-05-06 23:08 PDT
+Generated: 2026-05-07 14:02 PDT
 Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 
 ## Queue Depth
@@ -11,7 +11,7 @@ Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 - Total open: **43**
 
 ## Top 8 morning actions (ranked)
-1. [🔴 URGENT] A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**. ($501.25, deadline 2026-05-27 (D-21)) — score 60.18, ~25m
+1. [🔴 URGENT] A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**. ($501.25, deadline 2026-05-27 (D-20)) — score 60.18, ~25m
 2. [🟡 NEEDS EV] **Gemifly LLC** — new PayPal invoice **1001-0243** for **$7,449.98** was sent to Gemifly LLC on 2026-05-04; track for payment. Earlier open amount listed was **$1,513.23**, now superseded by the new larger invoice unless Ev says otherwise. Source: `sales` msg **6134**. ($7,449.98) — score 53.0, ~15m
 3. [🔴 URGENT] Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. — score 52.0, ~20m
 4. [🔴 URGENT] Amazon account security check / Meta partner request — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from **“Join the Meta Agency Partner Program”**. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: `sales` msg **6141**. Sources: `gluemasters` msg **192139**, `sales` msg **6141**. — score 48.0, ~18m
@@ -45,9 +45,9 @@ Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 - 30-day burn exposure: **$0**
 
 ## Freshness
-- Pack status: **AGING**
+- Pack status: **STALE**
 - Newest source edit: **2026-05-06 18:03 PDT**
-- Build lag vs newest source: **305 min**
-- BUSINESS_STATE.md: 2026-05-06 18:02 PDT (306 min old)
-- MEMORY.md: 2026-05-05 23:07 PDT (1441 min old)
-- memory/2026-05-06.md: 2026-05-06 18:03 PDT (305 min old)
+- Build lag vs newest source: **1198 min**
+- BUSINESS_STATE.md: 2026-05-06 18:02 PDT (1199 min old)
+- MEMORY.md: 2026-05-05 23:07 PDT (2334 min old)
+- memory/2026-05-06.md: 2026-05-06 18:03 PDT (1198 min old)

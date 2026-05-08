@@ -1,5 +1,5 @@
 OPS BUILD BRIEF — 2026-05-07
-Generated: 2026-05-06 23:08 PDT
+Generated: 2026-05-07 14:02 PDT
 
 Artifacts:
 - reports/morning-ops-hub-latest.html
@@ -24,12 +24,12 @@ Artifacts:
 - reports/cron-trend-report-latest.html
 
 Morning pack freshness:
-- Status: AGING
+- Status: STALE
 - Newest source edit: 2026-05-06 18:03 PDT
-- Build lag vs newest source: 305 min
-- BUSINESS_STATE.md: 2026-05-06 18:02 PDT (306 min old)
-- MEMORY.md: 2026-05-05 23:07 PDT (1441 min old)
-- memory/2026-05-06.md: 2026-05-06 18:03 PDT (305 min old)
+- Build lag vs newest source: 1198 min
+- BUSINESS_STATE.md: 2026-05-06 18:02 PDT (1199 min old)
+- MEMORY.md: 2026-05-05 23:07 PDT (2334 min old)
+- memory/2026-05-06.md: 2026-05-06 18:03 PDT (1198 min old)
 
 Artifact trust check:
 - OK: 19 / 19
@@ -39,11 +39,11 @@ Artifact trust check:
 
 Git hygiene:
 - Repos scanned: 4
-- High risk: 2
+- High risk: 1
 - Medium risk: 0
-- Low/noise only: 0
-- Changed files visible: 110
-- Hottest repo: moneysamurai — Code changes present (api/trigger-sync-vasya.cjs); review before deploy/push.
+- Low/noise only: 1
+- Changed files visible: 53
+- Hottest repo: moneysamurai — Code changes present (data/ads/bid-change-history.json); review before deploy/push.
 
 Business state audit:
 - Active items scanned: 43
@@ -59,7 +59,7 @@ Brand narrative desk:
 - Messaging inconsistencies to verify: 2
 
 Amazon Ads daily pull (local status):
-- Latest day: 2026-05-05
+- Latest day: 2026-05-06
 - Latest status: OK (failed: —)
 - Current invalid streak: 0
 - Latest pull log: logs/ads-daily/2026-04-24_060021.log

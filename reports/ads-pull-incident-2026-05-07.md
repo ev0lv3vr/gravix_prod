@@ -1,6 +1,6 @@
 # Ads Pull Incident Report — 2026-05-07
 
-Generated: 2026-05-06 23:08 PDT
+Generated: 2026-05-07 14:02 PDT
 Log: `logs/ads-daily/2026-04-24_060021.log`
 Snapshot: `2026-04-23`
 
