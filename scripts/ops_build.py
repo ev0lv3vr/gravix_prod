@@ -22,6 +22,7 @@ Builds:
 - reports/morning-actionability-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/ops-debt-dashboard-YYYY-MM-DD.html (+ latest)
 - reports/ads-pull-incident-YYYY-MM-DD.{md,html,json} (+ latest)
+- reports/ads-growth-readiness-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/cron-trend-report-YYYY-MM-DD.html (+ latest, when dated watchlists exist)
 - reports/ops-build-brief-YYYY-MM-DD.txt (+ latest)
 
@@ -90,6 +91,7 @@ class Brief:
     brand_narrative: dict[str, Any] | None = None
     cron_watchlist: dict[str, Any] | None = None
     cron_trend: dict[str, Any] | None = None
+    ads_growth_execution: dict[str, Any] | None = None
 
 
 def _latest_report(pattern: str) -> Path | None:
@@ -119,6 +121,8 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/ops-debt-dashboard-latest.html")
     lines.append("- reports/ads-pull-dashboard-latest.html")
     lines.append("- reports/ads-pull-incident-latest.html")
+    lines.append("- reports/ads-growth-execution-latest.html")
+    lines.append("- reports/ads-growth-readiness-latest.html")
     lines.append("- reports/morning-handoff-latest.html")
     lines.append("- reports/morning-decision-desk-latest.html")
     lines.append("- reports/morning-customer-desk-latest.html")
@@ -208,6 +212,22 @@ def render_brief(b: Brief) -> str:
             lines.append(
                 f"- Incident diagnosis: {', '.join(ai_sum.get('core_reports_failed') or ai_sum.get('failed_reports') or ['none'])} failed; {ai_sum.get('core_duplicate_pending_retries', '—')} core duplicate retry loops; {ai_sum.get('core_timeouts', '—')} core timed-out polls"
             )
+        lines.append("")
+
+    ag = b.ads_growth_execution or {}
+    if ag:
+        ex = ag.get("execution") or {}
+        mon = ag.get("monitoring") or {}
+        lines.append("Amazon Ads growth plan execution:")
+        lines.append(f"- Overall completion: {float(ag.get('overall_completion_pct') or 0) * 100:.0f}%")
+        lines.append(f"- Live changes executed: {float(ex.get('execution_pct') or 0) * 100:.0f}% ({ex.get('executed_total','—')}/{ex.get('planned_total','—')} actions)")
+        lines.append(f"- Monitoring completion: {float(mon.get('monitoring_pct') or 0) * 100:.0f}% ({mon.get('valid_days_observed','—')}/{ag.get('watch_days_required','—')} valid post-change pulls)")
+        lines.append(f"- Days remaining before default next scale wave: {mon.get('days_remaining','—')}")
+        daily = mon.get('daily_rows') or []
+        if daily:
+            latest = daily[-1]
+            lines.append(f"- Latest post-change day: {latest.get('date','—')} — spend {_fmt_money(latest.get('spend'))}, sales {_fmt_money(latest.get('sales'))}, ACOS {float(latest.get('acos') or 0) * 100:.1f}%")
+        lines.append(f"- Rule: {ag.get('next_rule','—')}")
         lines.append("")
 
     cw = (b.cron_watchlist.get("summary") or {}) if isinstance(b.cron_watchlist, dict) else {}
@@ -313,6 +333,8 @@ def main(argv: list[str] | None = None) -> int:
     _run([sys.executable, "scripts/kanban_morning_builder.py", "--date", date_str])
     _run([sys.executable, "scripts/ads_pull_dashboard.py", "--date", date_str])
     _run([sys.executable, "scripts/ads_pull_incident_report.py", "--date", date_str])
+    _run([sys.executable, "scripts/build_ads_growth_execution_tracker.py", "--date", date_str])
+    _run([sys.executable, "scripts/build_ads_growth_readiness_desk.py", "--date", date_str])
     if _latest_report("cron-watchlist-*.json"):
         _run([sys.executable, "scripts/build_cron_trend_report.py", "--output-prefix", f"reports/cron-trend-report-{date_str}"])
     _run([sys.executable, "scripts/build_morning_handoff.py", "--date", date_str])
@@ -333,6 +355,7 @@ def main(argv: list[str] | None = None) -> int:
     ads_json = REPORTS / "ads-pull-dashboard-latest.json"
     ads_incident_json = REPORTS / "ads-pull-incident-latest.json"
     artifact_freshness_json = REPORTS / "artifact-freshness-latest.json"
+    ads_growth_execution_json = REPORTS / "ads-growth-execution-latest.json"
     git_hygiene_json = REPORTS / "git-hygiene-latest.json"
     state_audit_json = REPORTS / "state-audit-latest.json"
     brand_narrative_json = REPORTS / "brand-narrative-desk-latest.json"
@@ -356,6 +379,7 @@ def main(argv: list[str] | None = None) -> int:
             ads_pull=_load_json(ads_json) if ads_json.exists() else None,
             ads_incident=_load_json(ads_incident_json) if ads_incident_json.exists() else None,
             artifact_freshness=_load_json(artifact_freshness_json) if artifact_freshness_json.exists() else None,
+            ads_growth_execution=_load_json(ads_growth_execution_json) if ads_growth_execution_json.exists() else None,
             git_hygiene=_load_json(git_hygiene_json) if git_hygiene_json.exists() else None,
             state_audit=_load_json(state_audit_json) if state_audit_json.exists() else None,
             brand_narrative=_load_json(brand_narrative_json) if brand_narrative_json.exists() else None,
@@ -378,6 +402,8 @@ def main(argv: list[str] | None = None) -> int:
     print("Built reports/ops-debt-dashboard-latest.html")
     print("Built reports/ads-pull-dashboard-latest.html")
     print("Built reports/ads-pull-incident-latest.html")
+    print("Built reports/ads-growth-execution-latest.html")
+    print("Built reports/ads-growth-readiness-latest.html")
     print("Built reports/morning-handoff-latest.html")
     print("Built reports/morning-decision-desk-latest.html")
     print("Built reports/morning-customer-desk-latest.html")

@@ -70,7 +70,7 @@ def _task_flags(task: dict[str, Any]) -> dict[str, bool]:
     }
 
 
-def _derive_sections(board: dict[str, Any], ops_debt: dict[str, Any] | None, watchlist: dict[str, Any] | None, trend: dict[str, Any] | None, ads_incident: dict[str, Any] | None, ads_pull: dict[str, Any] | None) -> dict[str, Any]:
+def _derive_sections(board: dict[str, Any], ops_debt: dict[str, Any] | None, watchlist: dict[str, Any] | None, trend: dict[str, Any] | None, ads_incident: dict[str, Any] | None, ads_pull: dict[str, Any] | None, ads_growth: dict[str, Any] | None = None) -> dict[str, Any]:
     tasks = board.get("all_tasks_ranked") or []
     top = board.get("top_actions") or []
 
@@ -109,6 +109,13 @@ def _derive_sections(board: dict[str, Any], ops_debt: dict[str, Any] | None, wat
                 f"Trend: {t.get('regressing_jobs', '—')} regressing, {t.get('improving_jobs', '—')} improving, {t.get('new_risks', '—')} newly surfaced risks across {t.get('days_compared', '—')} saved days."
             )
     ads_summary = (ads_pull or {}).get("summary") or {}
+    if ads_growth:
+        ex = ads_growth.get("execution") or {}
+        mon = ads_growth.get("monitoring") or {}
+        cron_checks.append(
+            f"Ads growth plan: {float(ads_growth.get('overall_completion_pct') or 0) * 100:.0f}% overall; live execution {float(ex.get('execution_pct') or 0) * 100:.0f}% ({ex.get('executed_total','—')}/{ex.get('planned_total','—')} actions); monitoring {float(mon.get('monitoring_pct') or 0) * 100:.0f}% ({mon.get('valid_days_observed','—')}/{ads_growth.get('watch_days_required','—')} valid post-change pulls)."
+        )
+        cron_checks.append(f"Ads growth rule: {ads_growth.get('next_rule', '—')}")
     if ads_incident and ads_summary.get("latest_is_valid") is False:
         summary = ads_incident.get("summary") or {}
         cause = (ads_incident.get("suspected_cause") or [None])[0]
@@ -241,11 +248,12 @@ def main() -> int:
     trend = _load_json(REPORTS / "cron-trend-report-latest.json")
     ads_incident = _load_json(REPORTS / "ads-pull-incident-latest.json")
     ads_pull = _load_json(REPORTS / "ads-pull-dashboard-latest.json")
+    ads_growth = _load_json(REPORTS / "ads-growth-execution-latest.json")
 
     payload = {
         "date": date_str,
         "generated_at": generated_at,
-        "sections": _derive_sections(board, ops_debt, watchlist, trend, ads_incident, ads_pull),
+        "sections": _derive_sections(board, ops_debt, watchlist, trend, ads_incident, ads_pull, ads_growth),
     }
 
     REPORTS.mkdir(parents=True, exist_ok=True)

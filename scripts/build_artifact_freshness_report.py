@@ -45,6 +45,7 @@ EXPECTED = [
     ("Ops Debt Dashboard", "ops-debt-dashboard", ["html", "json"]),
     ("Ads Pull Dashboard", "ads-pull-dashboard", ["html", "json"]),
     ("Ads Pull Incident", "ads-pull-incident", ["html", "json", "md"]),
+    ("Ads Growth Readiness Desk", "ads-growth-readiness", ["html", "json", "md"]),
     ("Ops Build Brief", "ops-build-brief", ["txt"]),
 ]
 

@@ -872,6 +872,7 @@ def render_ops_hub_html(report: BuildOutput) -> str:
         ("Business State Audit (latest)", "./state-audit-latest.html"),
         ("Morning Actionability Desk (latest)", "./morning-actionability-latest.html"),
         ("Ads Pull Incident (latest)", "./ads-pull-incident-latest.html"),
+        ("Ads Growth Readiness Desk (latest)", "./ads-growth-readiness-latest.html"),
         ("Ops Debt Dashboard (latest)", "./ops-debt-dashboard-latest.html"),
     ]
     cron_watchlist_href = latest_report_href("cron-watchlist-*.html")
