@@ -1,13 +1,13 @@
 # Ads Growth Readiness Desk — 2026-05-08
 
-Generated: 2026-05-07 23:05 PDT
+Generated: 2026-05-08 14:00 PDT
 Execution log: `moneysamurai/reports/ads-master-actions-execution-latest.json`
 Plan source: `moneysamurai/reports/ads-master-plan-latest.json`
 
 ## Morning read
-- Status: **waiting_for_post_change_data**
-- Post-change daily pulls observed: **0/7**
-- Days remaining before next default scale wave: **7**
+- Status: **monitoring**
+- Post-change daily pulls observed: **1/7**
+- Days remaining before next default scale wave: **6**
 - Live changes executed: **4 budget campaigns**, **12 bid raises**, **20 negative terms**
 - Provisional ACOS guardrail for touched winners: **35.0%**
 
@@ -44,4 +44,6 @@ Plan source: `moneysamurai/reports/ads-master-plan-latest.json`
 | Discovery - 2oz Thick Auto*SP-A-DSC | 4 | $63.26 | Discovery - 2oz Thick Auto*SP-A-DSC | b0fwjmftcl |
 
 ## Post-change daily pulls
-- No valid post-change daily pulls yet.
+| Date | Spend | Sales | Orders | ACOS | CVR |
+|---|---:|---:|---:|---:|---:|
+| 2026-05-07 | $99.42 | $240.47 | 8 | 41.3% | 10.8% |

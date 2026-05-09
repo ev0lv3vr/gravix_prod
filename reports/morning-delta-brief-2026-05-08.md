@@ -1,32 +1,42 @@
 # Morning Delta Brief — 2026-05-08
 
-Generated: 2026-05-07 23:05 PDT
+Generated: 2026-05-08 14:00 PDT
 Compared with: 2026-05-07
 
 ## Snapshot
-- Open tasks: **43** (0 vs previous)
-- New items surfaced: **1**
+- Open tasks: **46** (+3 vs previous)
+- New items surfaced: **4**
 - Items removed from board: **1**
-- Rank movers: **0**
+- Rank movers: **8**
 - Top 8 churn: **+1 / -1**
 
 ## Section deltas
 - 🔴 Urgent: **-1**
-- 🟡 Needs Ev: **+1**
+- 🟡 Needs Ev: **+4**
 - 🔵 In Progress: **0**
 - 📋 Backlog: **0**
 
 ## New since last board
-- **#26** · 🟡 NEEDS EV · Garcor / Kyle Lawson — sent attached purchase order PO4046132.pdf and asked us to process it and confirm receipt. Source: gluemasters msg 192403. (~15m)
+- **#22** · 🟡 NEEDS EV · Larry Trammell — repeat Amazon buyer of Medium CA says recent bottle arrived with screw cap instead of nozzle and asks for a replacement nozzle / phone follow-up. Source: sales msg 6173. (~15m)
+- **#27** · 🟡 NEEDS EV · Garcor / Kyle Lawson — sent attached purchase order PO4046132.pdf and asked us to process it and confirm receipt. Source: gluemasters msg 192403. (~15m)
+- **#30** · 🟡 NEEDS EV · John L Ortman — Shopify contact form asks whether Ultra Thin will be offered in a small-format size; website says it is available but no purchase option is visible. Source: sales msg 6174. (~15m)
+- **#36** · 🟡 NEEDS EV · Starbond/Systemslab outreach — David Jones says he tried to call about Starbond and asks for 5 minutes. Treat as low-priority vendor/competitive outreach unless Ev recognizes it. Source: gluemasters msg 192425. (~15m)
 
 ## Dropped off / resolved
 - **prev #5** · 🔴 URGENT · DMS Packaging invoice — DMS Packaging invoice 2026-00169 dated 2026-04-30 is due on Net 15 terms for $456.28 total: April storage $275.00, shipping/freight $151.28, distribution/material handling $30.00. Source: gluemasters msg 192320.
 
 ## Big rank moves
-- None
+- **#1** from #12 (+11) · Louise Frogley — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for $41.84 + $15.00 fee and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: sales msgs 6088, 6089, 6098, 6116, 6122, 6168, 6170.
+- **#37** from #34 (-3) · Jeremy Embry / Aquarium Artisans — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: sales msg 6046.
+- **#38** from #35 (-3) · B2B sample kits — Ev confirmed on 2026-05-05 that the boxes are done and kits are ready to be sent. Status: ready for outbound/send execution; do not list box production or kit assembly as blockers. Kit assets/collateral live under gluemasters-bizdev/b2b-kit/.
+- **#39** from #36 (-3) · Pump Accelerator 8oz — Supplier: Xtralok, Chicago. UPC: 199874971148. Model: ACC0201. Target price: $14.99. Designer: Designcoffers/Fiverr; revisions in progress. Files: gluemasters-bizdev/labels/pump-accelerator-8oz/.
+- **#40** from #37 (-3) · Walmart Marketplace announced a 2026-06-01 API behavior change for GET /v3/inventories: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return 400.
+- **#44** from #41 (-3) · Shopify / marketplace backlog — ShipBob Northeast Hub move — ShipBob is moving from Kutztown to 4755 Hanoverville Road, Building E, Bethlehem, PA 18020. Transition window 2026-05-11 to 2026-05-29; no Kutztown appointments after 2026-05-22; new WRO labels show new address starting 2026-05-27; inbound arriving at Kutztown starting 2026-05-27 will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: gluemasters msg 192400. Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: 1,183 reviews. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1).
+- **#45** from #42 (-3) · Amazon PPC — Tracked state: 11 campaigns, ~$773/day spend, 2.42× ROAS, 41% ACoS. Late-day 2-month PPC review: growth is working, but account profitability is still loose; best current wins are 8oz Thick Auto, 8oz Medium Auto, and CA Glue Core Exact, while 2oz Thick Auto, conquest, and defense need tightening. Backlog: wire flywheel data into MoneySamurai PPC frontend; bias next optimization pass toward cutting waste in 2oz Thick Auto / conquest / defense and scaling the stronger exact/discovery winners more carefully.
+- **#46** from #43 (-3) · Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg 6216158 GLUE MASTERS; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: gluemasters msgs 192263, 192271.
 
 ## Top 8 new entrants
-- **#8** · Walmart unshipped order — auto-cancel risk. (~25m)
+- **#1** · Louise Frogley — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for $41.84 + $15.00 fee and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: sales msgs 6088, 6089, 6098, 6116, 6122, 6168, 6170. (~7m)
 
 ## Top 8 exits
 - **prev #5** · DMS Packaging invoice — DMS Packaging invoice 2026-00169 dated 2026-04-30 is due on Net 15 terms for $456.28 total: April storage $275.00, shipping/freight $151.28, distribution/material handling $30.00. Source: gluemasters msg 192320.
@@ -44,12 +54,12 @@ Compared with: 2026-05-07
 - 2026-05-06.md: Standing system risk is still pre-deploy git hygiene: workspace/report churn, local `gluemasters-bizdev` edits, and MoneySamurai local/ahead changes still need review before any push/deploy-style action.
 
 ## Current top 8
-- **#1** · A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: gluemasters msgs 192183, 192184, 191451, 191683, 192371. (~25m)
-- **#2** · Gemifly LLC — new PayPal invoice 1001-0243 for $7,449.98 was sent to Gemifly LLC on 2026-05-04; track for payment. Earlier open amount listed was $1,513.23, now superseded by the new larger invoice unless Ev says otherwise. Source: sales msg 6134. (~15m)
-- **#3** · Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. (~20m)
-- **#4** · Amazon account security check / Meta partner request — Amazon sent a password recovery notice tied to a reset attempt from Chrome on macOS near Washington. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from “Join the Meta Agency Partner Program”. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: sales msg 6141. Sources: gluemasters msg 192139, sales msg 6141. (~18m)
-- **#5** · Amazon refunds — Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: gluemasters msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: gluemasters msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: gluemasters msg 192188. (~7m)
-- **#6** · ICU Shopify upsell app token — In Cart Upsell says the store token expires Thu 2026-04-30 and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: sales msg 6090. (~20m)
-- **#7** · Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at moneysamurai/drafts/b2b-email-drafts-2026-03-24.md. (~15m)
-- **#8** · Walmart unshipped order — auto-cancel risk. (~25m)
+- **#1** · Louise Frogley — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for $41.84 + $15.00 fee and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: sales msgs 6088, 6089, 6098, 6116, 6122, 6168, 6170. (~7m)
+- **#2** · A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: gluemasters msgs 192183, 192184, 191451, 191683, 192371. (~25m)
+- **#3** · Gemifly LLC — PayPal invoice 1001-0243 remains unpaid; PayPal reminder on 2026-05-08 shows $7,424.15 due on receipt (earlier sent notice showed $7,449.98). Track for payment / reconcile amount if needed. Earlier open amount listed was $1,513.23, now superseded by the new larger invoice unless Ev says otherwise. Sources: sales msgs 6134, 6172. (~15m)
+- **#4** · Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. (~20m)
+- **#5** · Amazon account security check / Meta partner request — Amazon sent a password recovery notice tied to a reset attempt from Chrome on macOS near Washington. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from “Join the Meta Agency Partner Program”. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: sales msg 6141. Sources: gluemasters msg 192139, sales msg 6141. (~18m)
+- **#6** · Amazon refunds — Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: gluemasters msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: gluemasters msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: gluemasters msg 192188. (~7m)
+- **#7** · ICU Shopify upsell app token — In Cart Upsell says the store token expires Thu 2026-04-30 and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: sales msg 6090. (~20m)
+- **#8** · Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at moneysamurai/drafts/b2b-email-drafts-2026-03-24.md. (~15m)
 

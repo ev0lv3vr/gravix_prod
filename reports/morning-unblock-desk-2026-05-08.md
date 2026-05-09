@@ -1,13 +1,13 @@
 # Morning Unblock Desk — 2026-05-08
 
-Generated: 2026-05-07 23:05 PDT
+Generated: 2026-05-08 14:00 PDT
 
 ## Snapshot
-- Total unblock / verify items: **9**
+- Total unblock / verify items: **10**
 - Do now: **3**
-- Operator-owned: **5**
+- Operator-owned: **6**
 - Ev-owned: **2**
-- Surfaces: **Amazon Seller Central, ShipBob / UPS, Shopify Admin, Walmart Marketplace**
+- Surfaces: **Amazon Seller Central, PayPal / finance trail, ShipBob / UPS, Shopify Admin, Walmart Marketplace**
 
 ## Do now
 - **Amazon account security check / Meta partner request** — Amazon sent a password recovery notice tied to a reset attempt from Chrome on macOS near Washington. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from “Join the Meta Agency Partner Program”. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: `sales` msg 6141. Sources: `gluemasters` msg 192139, `sales` msg 6141. (Amazon Seller Central; Ev; security; msgs 6141, 192139)
@@ -27,7 +27,7 @@ Generated: 2026-05-07 23:05 PDT
 - **A3 Partners Gemiflex shipment / invoice** — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371. (ShipBob / UPS; Operator; ops; msgs 192183, 192184, 191451, 191683, 192371)
   - First step: Verify delivery status for tracking 1Z43A99A0348588986 and confirm whether invoice 26-04271 needs a reminder or calendar hold.
   - Success: Done when delivery is confirmed and the payable follow-up is clearly parked.
-- **Louise Frogley** — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Needs refund vs replacement/reship decision. Source: `sales` msgs 6088, 6089, 6098, 6116, 6122. (ShipBob / UPS; Operator; ops; msgs 6088, 6089, 6098, 6116, 6122)
+- **Louise Frogley** — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for $41.84 + $15.00 fee and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs 6088, 6089, 6098, 6116, 6122, 6168, 6170. (Shopify Admin; Operator; ops; msgs 6088, 6089, 6098, 6116, 6122, 6168, 6170)
   - First step: Open the source system in-browser and clear the blocker from the live operating surface, not from email.
   - Success: Done when the live surface confirms the blocker is cleared and the state file can be updated confidently.
 - **Malcolm Industries** — new bulk inquiry for CA adhesive + activator shipment to Pakistan; needs quote/reply path and likely COA/MSDS support. Source: `sales` msg 6145. (ShipBob / UPS; Operator; ops; msgs 6145)
@@ -36,6 +36,9 @@ Generated: 2026-05-07 23:05 PDT
 - **Shopify API token** — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. (Shopify Admin; Operator; access)
   - First step: Open Shopify admin, regenerate or replace the broken API credential, then re-test inventory visibility in the affected workflow.
   - Success: Done when inventory visibility is back and the dependent workflow no longer shows blind/dead API access.
+- **Gemifly LLC** — PayPal invoice 1001-0243 remains unpaid; PayPal reminder on 2026-05-08 shows $7,424.15 due on receipt (earlier sent notice showed $7,449.98). Track for payment / reconcile amount if needed. Earlier open amount listed was $1,513.23, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs 6134, 6172. (PayPal / finance trail; Operator; verify; msgs 6134, 6172)
+  - First step: Open the source system in-browser and clear the blocker from the live operating surface, not from email.
+  - Success: Done when the live surface confirms the blocker is cleared and the state file can be updated confidently.
 
 ## Needs Ev in-browser
 - **Amazon account security check / Meta partner request** — Amazon sent a password recovery notice tied to a reset attempt from Chrome on macOS near Washington. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from “Join the Meta Agency Partner Program”. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: `sales` msg 6141. Sources: `gluemasters` msg 192139, `sales` msg 6141. (Amazon Seller Central; Ev; security; msgs 6141, 192139)
@@ -55,7 +58,7 @@ Generated: 2026-05-07 23:05 PDT
 - **Amazon FBA unfulfillable removal** — Amazon created automated unfulfillable FBA removal order gZRKfHwQJb. Completion notice later arrived confirming the removal request completed successfully; no immediate action remains unless Ev wants to review Seller Central removal settings/address/frequency. Sources: `gluemasters` msgs 192161, 192366. (Amazon Seller Central; Shared; ops; msgs 192161, 192366)
   - First step: Open FBA removal settings/order gZRKfHwQJb and verify destination, cadence, and whether any additional unfulfillable inventory is queued.
   - Success: Done when the settings are confirmed or adjusted and any follow-up action is recorded.
-- **Louise Frogley** — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Needs refund vs replacement/reship decision. Source: `sales` msgs 6088, 6089, 6098, 6116, 6122. (ShipBob / UPS; Operator; ops; msgs 6088, 6089, 6098, 6116, 6122)
+- **Louise Frogley** — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for $41.84 + $15.00 fee and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs 6088, 6089, 6098, 6116, 6122, 6168, 6170. (Shopify Admin; Operator; ops; msgs 6088, 6089, 6098, 6116, 6122, 6168, 6170)
   - First step: Open the source system in-browser and clear the blocker from the live operating surface, not from email.
   - Success: Done when the live surface confirms the blocker is cleared and the state file can be updated confidently.
 - **Malcolm Industries** — new bulk inquiry for CA adhesive + activator shipment to Pakistan; needs quote/reply path and likely COA/MSDS support. Source: `sales` msg 6145. (ShipBob / UPS; Operator; ops; msgs 6145)
@@ -64,4 +67,7 @@ Generated: 2026-05-07 23:05 PDT
 - **Shopify API token** — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. (Shopify Admin; Operator; access)
   - First step: Open Shopify admin, regenerate or replace the broken API credential, then re-test inventory visibility in the affected workflow.
   - Success: Done when inventory visibility is back and the dependent workflow no longer shows blind/dead API access.
+- **Gemifly LLC** — PayPal invoice 1001-0243 remains unpaid; PayPal reminder on 2026-05-08 shows $7,424.15 due on receipt (earlier sent notice showed $7,449.98). Track for payment / reconcile amount if needed. Earlier open amount listed was $1,513.23, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs 6134, 6172. (PayPal / finance trail; Operator; verify; msgs 6134, 6172)
+  - First step: Open the source system in-browser and clear the blocker from the live operating surface, not from email.
+  - Success: Done when the live surface confirms the blocker is cleared and the state file can be updated confidently.
 
