@@ -12,7 +12,7 @@ Use instead:
 Important correction:
 - ShipBob UROs are resolved and must not be resurfaced as active ops debt unless fresh evidence shows a new issue.
 
-Last checked: 2026-05-08 6:00 PM PT
+Last checked: 2026-05-09 6:00 PM PT
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
 - Midday review re-confirmed no change to retirement status.
 - EOD review re-confirmed no change to retirement status; evening updates were captured in live state/journal instead of reviving this board.
@@ -24,3 +24,4 @@ Last checked: 2026-05-08 6:00 PM PT
 - 2026-05-06 EOD check confirmed no change: board remains retired; today’s ads refresh, Shohreh Amazon-resale reply, A3 past-due capture, and late monitor results were recorded in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/2026-05-06.md` instead of reopening this file.
 - 2026-05-07 EOD check confirmed no change: board remains retired; today’s DMS payment confirmation, May 6 ads refresh, Garcor purchase order capture, and late strategy notes were recorded in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/2026-05-07.md` instead of reviving this board.
 - 2026-05-08 EOD check confirmed no change: board remains retired; today’s ops-pack refresh, John L Ortman Ultra Thin blocker capture, Louise chargeback-state capture, and late green monitor/email passes were recorded in live state and `memory/2026-05-08.md` instead of reopening this board.
+- 2026-05-09 EOD check confirmed no change: board remains retired; today’s Morning Money Desk work, fresh Gregory refund / Munera acquisition-interest captures, and late calm monitor results were recorded in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/2026-05-09.md` instead of reviving this board.

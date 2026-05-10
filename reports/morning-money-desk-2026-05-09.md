@@ -1,17 +1,19 @@
 # Morning Money Desk — 2026-05-09
 
-Generated: 2026-05-08 23:06 PDT
+Generated: 2026-05-09 14:00 PDT
 
 ## Snapshot
-- Collect / receivables visible: **$7,449.98**
+- Collect / receivables visible: **$9,255.98**
 - Payables / outbound cash visible: **$6,597.07**
 - Leakage / disputes visible: **$162.02**
 - Pipeline / upside visible: **$16,030.20**
 - Overdue or due-now items: **2**
-- Undated money items: **10**
+- Undated money items: **11**
 
 ## Collect now
 - **Gemifly LLC** — PayPal invoice 1001-0243 remains unpaid; PayPal reminder on 2026-05-08 shows $7,424.15 due on receipt (earlier sent notice showed $7,449.98). Track for payment / reconcile amount if needed. Earlier open amount listed was $1,513.23, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs 6134, 6172. (due now; Operator; $7,449.98; msgs 6134, 6172)
+  - Collect or reconcile inbound cash.
+- **Garcor / Kyle Lawson** — sent attached purchase order PO4046132.pdf and asked us to process it and confirm receipt. PayPal invoice 1001-0244 for $1,806.00 was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg 192403, `sales` msgs 6165, 6178. (undated; Operator; $1,806; msgs 192403, 6165, 6178)
   - Collect or reconcile inbound cash.
 
 ## Pay / verify outbound
@@ -23,7 +25,7 @@ Generated: 2026-05-08 23:06 PDT
   - Reduce leakage from refunds, disputes, or fulfillment misses.
 - **Louise Frogley** — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for $41.84 + $15.00 fee and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs 6088, 6089, 6098, 6116, 6122, 6168, 6170. (undated; Operator; $56.84; msgs 6088, 6089, 6098, 6116, 6122, 6168, 6170)
   - Reduce leakage from refunds, disputes, or fulfillment misses.
-- **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs 192323, 192326. (undated; Ev; $14.99; msgs 192323, 192326)
+- **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. Sources: `gluemasters` msgs 192323, 192326, 192443. (undated; Ev; $14.99; msgs 192323, 192326, 192443)
   - Margin / marketplace decision, not an automatic price cut.
 
 ## Pipeline / upside

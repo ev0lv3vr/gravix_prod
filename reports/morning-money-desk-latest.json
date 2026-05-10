@@ -1,14 +1,14 @@
 {
   "summary": {
-    "target_date": "2026-05-09",
-    "generated_at": "2026-05-08 23:06 PDT",
-    "collect_total": 7449.98,
+    "target_date": "2026-05-10",
+    "generated_at": "2026-05-09 23:09 PDT",
+    "collect_total": 9255.98,
     "pay_total": 6597.07,
-    "protect_total": 162.02,
+    "protect_total": 177.23,
     "upside_total": 16030.2,
     "overdue_count": 2,
-    "undated_count": 10,
-    "items_total": 12
+    "undated_count": 11,
+    "items_total": 13
   },
   "collect_now": [
     {
@@ -24,6 +24,21 @@
         "6172"
       ],
       "note": "Collect or reconcile inbound cash."
+    },
+    {
+      "lane": "collect",
+      "title": "Garcor / Kyle Lawson",
+      "detail": "sent attached purchase order PO4046132.pdf and asked us to process it and confirm receipt. PayPal invoice 1001-0244 for $1,806.00 was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg 192403, `sales` msgs 6165, 6178.",
+      "amount": 1806.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "192403",
+        "6165",
+        "6178"
+      ],
+      "note": "Collect or reconcile inbound cash."
     }
   ],
   "pay_verify": [
@@ -33,7 +48,7 @@
       "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371.",
       "amount": 6597.07,
       "due_date": "2026-04-25",
-      "due_status": "overdue 14d",
+      "due_status": "overdue 15d",
       "owner": "Ev",
       "sources": [
         "192183",
@@ -49,15 +64,16 @@
     {
       "lane": "protect",
       "title": "Amazon refunds",
-      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188.",
-      "amount": 90.19,
+      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438.",
+      "amount": 105.4,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
       "sources": [
         "192357",
         "192328",
-        "192188"
+        "192188",
+        "192438"
       ],
       "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
     },
@@ -83,14 +99,15 @@
     {
       "lane": "protect",
       "title": "Walmart Marketplace performance/pricing",
-      "detail": "Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs 192323, 192326.",
+      "detail": "Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. Sources: `gluemasters` msgs 192323, 192326, 192443.",
       "amount": 14.99,
       "due_date": null,
       "due_status": "undated",
       "owner": "Ev",
       "sources": [
         "192323",
-        "192326"
+        "192326",
+        "192443"
       ],
       "note": "Margin / marketplace decision, not an automatic price cut."
     }
@@ -204,12 +221,27 @@
       "note": "Collect or reconcile inbound cash."
     },
     {
+      "lane": "collect",
+      "title": "Garcor / Kyle Lawson",
+      "detail": "sent attached purchase order PO4046132.pdf and asked us to process it and confirm receipt. PayPal invoice 1001-0244 for $1,806.00 was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg 192403, `sales` msgs 6165, 6178.",
+      "amount": 1806.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "192403",
+        "6165",
+        "6178"
+      ],
+      "note": "Collect or reconcile inbound cash."
+    },
+    {
       "lane": "pay",
       "title": "A3 Partners Gemiflex shipment / invoice",
       "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371.",
       "amount": 6597.07,
       "due_date": "2026-04-25",
-      "due_status": "overdue 14d",
+      "due_status": "overdue 15d",
       "owner": "Ev",
       "sources": [
         "192183",
@@ -223,15 +255,16 @@
     {
       "lane": "protect",
       "title": "Amazon refunds",
-      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188.",
-      "amount": 90.19,
+      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438.",
+      "amount": 105.4,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
       "sources": [
         "192357",
         "192328",
-        "192188"
+        "192188",
+        "192438"
       ],
       "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
     },
@@ -257,14 +290,15 @@
     {
       "lane": "protect",
       "title": "Walmart Marketplace performance/pricing",
-      "detail": "Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs 192323, 192326.",
+      "detail": "Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. Sources: `gluemasters` msgs 192323, 192326, 192443.",
       "amount": 14.99,
       "due_date": null,
       "due_status": "undated",
       "owner": "Ev",
       "sources": [
         "192323",
-        "192326"
+        "192326",
+        "192443"
       ],
       "note": "Margin / marketplace decision, not an automatic price cut."
     },

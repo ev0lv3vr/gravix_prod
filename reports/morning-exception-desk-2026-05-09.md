@@ -1,10 +1,10 @@
 # Morning Exception Desk — 2026-05-09
 
-Generated: 2026-05-08 23:06 PDT
+Generated: 2026-05-09 14:00 PDT
 
 ## Snapshot
-- Total findings: **12**
-- Past-dated active items: **8**
+- Total findings: **13**
+- Past-dated active items: **9**
 - Amount parser risks: **0**
 - Urgent items missing source: **1**
 - Passive items still in urgent: **3**
@@ -16,6 +16,8 @@ Generated: 2026-05-08 23:06 PDT
   - Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action.
 - **HIGH · stale_date · needs_ev** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-05-06.
   - **Cute Things & Creative Concepts / Shohreh** — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on **Amazon** after the $16,030.20 quote. Ev sent a reply on **2026-05-06** saying **no Amazon resale authorization**; wait for her response. Sources: `sales` msgs **6087**, **6100**, **6101**, **6149**.
+- **HIGH · stale_date · needs_ev** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-05-07.
+  - **Garcor / Kyle Lawson** — sent attached purchase order **PO4046132.pdf** and asked us to process it and confirm receipt. PayPal invoice **1001-0244** for **$1,806.00** was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg **192403**, `sales` msgs **6165**, **6178**.
 - **HIGH · stale_date · needs_ev** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-05-08.
   - **Gemifly LLC** — PayPal invoice **1001-0243** remains unpaid; PayPal reminder on 2026-05-08 shows **$7,424.15 due on receipt** (earlier sent notice showed **$7,449.98**). Track for payment / reconcile amount if needed. Earlier open amount listed was **$1,513.23**, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs **6134**, **6172**.
 - **HIGH · stale_date · needs_ev** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-04-27.
@@ -33,5 +35,5 @@ Generated: 2026-05-08 23:06 PDT
 - **MEDIUM · passive_urgent · urgent** — Passive/watch-only language is still living in the urgent lane.
   - Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs **192263**, **192271**.
 - **MEDIUM · passive_urgent · urgent** — Passive/watch-only language is still living in the urgent lane.
-  - Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard** and **late shipment 50% vs 5% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 46.15%** (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192323**, **192326**.
+  - Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard** and **late shipment 50% vs 5% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 46.15%** (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says **1 shipped order has a late origin scan** and needs carrier scan/tracking accuracy confirmed within **24 hours**; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. Sources: `gluemasters` msgs **192323**, **192326**, **192443**.
 

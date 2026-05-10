@@ -1,14 +1,14 @@
 # Business State Audit — 2026-05-09
 
-Generated: 2026-05-08 23:06 PDT
+Generated: 2026-05-09 14:00 PDT
 
 ## Snapshot
 - Active items scanned: **46**
-- Past-date references in active items: **8**
-- Relative time phrases to clean up: **1**
+- Past-date references in active items: **9**
+- Relative time phrases to clean up: **2**
 - Urgent items missing source evidence: **1**
 - Possible duplicate source IDs: **0**
-- Total findings: **10**
+- Total findings: **12**
 
 ## Findings
 - **HIGH · stale_date_ref · in_progress** — Active task still contains a past-dated reference; verify whether it should be rewritten, resolved, or escalated. Refs: 2026-05-05.
@@ -17,6 +17,8 @@ Generated: 2026-05-08 23:06 PDT
   - Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action.
 - **HIGH · stale_date_ref · needs_ev** — Active task still contains a past-dated reference; verify whether it should be rewritten, resolved, or escalated. Refs: 2026-05-06.
   - **Cute Things & Creative Concepts / Shohreh** — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on **Amazon** after the $16,030.20 quote. Ev sent a reply on **2026-05-06** saying **no Amazon resale authorization**; wait for her response. Sources: `sales` msgs **6087**, **6100**, **6101**, **6149**.
+- **HIGH · stale_date_ref · needs_ev** — Active task still contains a past-dated reference; verify whether it should be rewritten, resolved, or escalated. Refs: 2026-05-07.
+  - **Garcor / Kyle Lawson** — sent attached purchase order **PO4046132.pdf** and asked us to process it and confirm receipt. PayPal invoice **1001-0244** for **$1,806.00** was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg **192403**, `sales` msgs **6165**, **6178**.
 - **HIGH · stale_date_ref · needs_ev** — Active task still contains a past-dated reference; verify whether it should be rewritten, resolved, or escalated. Refs: 2026-05-08.
   - **Gemifly LLC** — PayPal invoice **1001-0243** remains unpaid; PayPal reminder on 2026-05-08 shows **$7,424.15 due on receipt** (earlier sent notice showed **$7,449.98**). Track for payment / reconcile amount if needed. Earlier open amount listed was **$1,513.23**, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs **6134**, **6172**.
 - **HIGH · stale_date_ref · needs_ev** — Active task still contains a past-dated reference; verify whether it should be rewritten, resolved, or escalated. Refs: 2026-04-27.
@@ -27,6 +29,8 @@ Generated: 2026-05-08 23:06 PDT
   - A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**.
 - **HIGH · stale_date_ref · urgent** — Active task still contains a past-dated reference; verify whether it should be rewritten, resolved, or escalated. Refs: 2026-04-30.
   - ICU Shopify upsell app token — In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: `sales` msg **6090**.
+- **MEDIUM · stale_relative_ref · needs_ev** — Active task uses relative timing language that will go stale in durable state. Refs: midday.
+  - **Deane Belk / Good Friends of Bryan County** — Shopify contact form asks to speak with someone about **Thick viscosity / no-drip CA glue** for nonprofit luncheon centerpieces; she followed up again on 2026-05-09 saying this is her second attempt and she needs assistance. Ev requested a draft response at midday; draft was provided but not sent by me. Sources: `sales` msgs **6105**, **6179**, **6180**.
 - **MEDIUM · stale_relative_ref · needs_ev** — Active task uses relative timing language that will go stale in durable state. Refs: midday.
   - **John L Ortman** — Shopify contact form asks whether **Ultra Thin** will be offered in a small-format size; website says it is available but no purchase option is visible. Midday 2026-05-08 check found mixed evidence: current shopping/feed + B2B collateral only expose **Ultra Thin 16oz**, but internal SKU/cost references also mention **GM8OZ5CPS** and **GM2OZ5CPS**. Real blocker is product truth: confirm whether 8oz/2oz Ultra Thin are actually sellable/live before replying. Source: `sales` msg **6174**.
 - **MEDIUM · urgent_without_source · urgent** — Urgent item lacks explicit source evidence/message reference.
