@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Morning Handoff — 2026-04-25</title>
+<style>
+:root {--bg:#0A1628;--surface:#111B2E;--border:#1E293B;--text:#fff;--muted:#94A3B8;--accent:#3B82F6;}
+*{box-sizing:border-box} body{margin:0;padding:24px;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,sans-serif}
+.wrap{max-width:1100px;margin:0 auto} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px} h1{margin:0 0 6px} .sub,.muted{color:var(--muted)}
+ul{margin:8px 0 0 18px} li{margin:6px 0} button{background:var(--accent);border:none;color:white;border-radius:10px;padding:8px 10px;font-weight:650;cursor:pointer}
+a{color:#93C5FD}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Morning Handoff</h1>
+  <div class="sub">2026-04-24 23:06 PDT · tight operator view for the first hour</div>
+  <p><a href="./morning-ops-hub-latest.html">Open full ops hub</a></p>
+  <p><button id="copyBtn">Copy starter checklist</button></p>
+  <div class="grid">
+    <div class="panel"><h3>Do first</h3><ul><li>Jeremy Embry / Aquarium Artisans — Wants urgent CA + accelerator support for Monday aquascape job. Needs 16oz Medium + 16oz Thick with accelerator ASAP. Also wants 2oz Medium + 2oz Thick for store. Source: `sales` msg 6046. <span class='muted'>(~18m)</span></li><li>Insurance audit — Overdue; data reportedly ready around $637K. Ev must submit/handle final PDF. <span class='muted'>(~20m)</span></li><li>American Express account/payment follow-up — Past-due notice for account ending 271002 came in earlier. New Amex emails show a $1,000 payment received (msg 192107) but also a transaction declined due to past-due status shortly before/around processing (msg 192106). Ev should verify the Amex balance/status directly in Amex, not through email links. Sources: `gluemasters` msgs 192094, 192106, 192107. <span class='muted'>(~18m)</span></li><li>Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. <span class='muted'>(~15m)</span></li><li>Walmart unshipped order — auto-cancel risk. <span class='muted'>(~25m)</span></li></ul></div>
+    <div class="panel"><h3>Needs Ev</h3><ul><li>Insurance audit — Overdue; data reportedly ready around $637K. Ev must submit/handle final PDF.</li><li>Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.</li><li>Walmart unshipped order — auto-cancel risk.</li><li>Gemifly LLC — $1,513.23 PayPal invoice outstanding.</li><li>Josh Mintz — 8oz Medium sample to New Orleans overdue.</li><li>Jason F return — decision pending.</li></ul></div>
+    <div class="panel"><h3>Customer risk</h3><ul><li>Heather / Amazon — A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.</li><li>Walmart unshipped order — auto-cancel risk.</li><li>Jason F return — decision pending.</li><li>Eric Patrick — asked how to open 8oz bottle. Draft exists at `moneysamurai/drafts/customer-replies-2026-04-09.md`; source msg 5941.</li><li>Antonio Gutierrez — order #6000, asks if shipped + ship date. Draft exists, needs shipping fields; source msg 5930.</li><li>Michael Nasholm — 20% partial refund was promised but not done; customer followed up.</li></ul></div>
+    <div class="panel"><h3>Unblock / verify</h3><ul><li>Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.</li><li>Timeout watchlist: 1 critical, 1 medium, 3 ready timeout patches.</li><li>Verify ads-daily-pull after the 3600s bump; latest observed run hit 1800057 ms on a 1800s timeout.</li><li>Trend: 1 regressing, 1 improving, 0 newly surfaced risks across 3 saved days.</li><li>Ads incident snapshot: campaigns, keywords failed, 8 core duplicate retry loops, 6 core poll timeouts.</li><li>Ads likely cause: Amazon returned duplicate report IDs that remained PENDING even after fresh-name retries.</li><li>Ops debt exposure: $1,715.54 open, $0/day true burn, $0 30-day burn exposure.</li></ul></div>
+  </div>
+</div>
+<script>
+const text = "Morning stack for 2026-04-25:\n\n- [ ] Jeremy Embry / Aquarium Artisans \u2014 Wants urgent CA + accelerator support for Monday aquascape job. Needs 16oz Medium + 16oz Thick with accelerator ASAP. Also wants 2oz Medium + 2oz Thick for store. Source: `sales` msg 6046.\n- [ ] Insurance audit \u2014 Overdue; data reportedly ready around $637K. Ev must submit/handle final PDF.\n- [ ] American Express account/payment follow-up \u2014 Past-due notice for account ending 271002 came in earlier. New Amex emails show a $1,000 payment received (msg 192107) but also a transaction declined due to past-due status shortly before/around processing (msg 192106). Ev should verify the Amex balance/status directly in Amex, not through email links. Sources: `gluemasters` msgs 192094, 192106, 192107.\n- [ ] Heather / Amazon \u2014 A-to-Z risk. Order 114-0636756-1872255. Source msg 191366. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.\n- [ ] Walmart unshipped order \u2014 auto-cancel risk.\n";
+document.getElementById('copyBtn').addEventListener('click', () => navigator.clipboard.writeText(text).catch(() => window.prompt('Copy this text:', text)));
+</script>
+</body>
+</html>

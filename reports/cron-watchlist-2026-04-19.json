@@ -1,0 +1,359 @@
+{
+  "generated_at": "2026-04-19 23:02:52 PDT",
+  "title": "Cron timeout headroom watchlist",
+  "summary": {
+    "jobs_scanned": 13,
+    "critical": 1,
+    "high": 0,
+    "medium": 0,
+    "patches_ready": 1
+  },
+  "jobs": [
+    {
+      "id": "c6565127-2875-4a1d-be8f-1c0021dd0ade",
+      "name": "moneysamurai-sync-trigger",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 */2 * * *",
+        "tz": "America/Los_Angeles",
+        "staggerMs": 300000
+      },
+      "model": "sonnet",
+      "timeout_seconds": 60,
+      "last_status": "error",
+      "last_duration_ms": 60063,
+      "last_error": "cron: job execution timed out",
+      "consecutive_errors": 2,
+      "last_run_at": "2026-04-19 22:01:09 PDT",
+      "next_run_at": "2026-04-20 00:01:09 PDT",
+      "timeout_ratio": 1.001,
+      "risk": "critical",
+      "reasons": [
+        "Latest run failed due to timeout."
+      ],
+      "proposed_timeout_seconds": 120,
+      "recommended_patch": {
+        "jobId": "c6565127-2875-4a1d-be8f-1c0021dd0ade",
+        "patch": {
+          "payload": {
+            "timeoutSeconds": 120
+          }
+        }
+      }
+    },
+    {
+      "id": "7fcc3d6b-1236-4a3a-9a9a-26af5bc179e6",
+      "name": "service-health-monitor",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "every",
+        "everyMs": 600000,
+        "anchorMs": 1772004132304
+      },
+      "model": "sonnet",
+      "timeout_seconds": 60,
+      "last_status": "ok",
+      "last_duration_ms": 29353,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-19 22:55:30 PDT",
+      "next_run_at": "2026-04-19 23:05:30 PDT",
+      "timeout_ratio": 0.489,
+      "risk": "ok",
+      "reasons": [
+        "Latest run has comfortable timeout headroom."
+      ],
+      "proposed_timeout_seconds": 60,
+      "recommended_patch": null
+    },
+    {
+      "id": "05a6e66b-d1df-46af-b164-4e55cbb6bb9f",
+      "name": "ads-daily-pull",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 6 * * *",
+        "tz": "America/Los_Angeles"
+      },
+      "model": null,
+      "timeout_seconds": 1800,
+      "last_status": "ok",
+      "last_duration_ms": 686647,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-19 17:51:49 PDT",
+      "next_run_at": "2026-04-20 06:00:00 PDT",
+      "timeout_ratio": 0.381,
+      "risk": "ok",
+      "reasons": [
+        "Latest run has comfortable timeout headroom."
+      ],
+      "proposed_timeout_seconds": 1800,
+      "recommended_patch": null
+    },
+    {
+      "id": "c5e436d0-65c5-4f57-a9b0-6c2b40b921af",
+      "name": "moneysamurai-keep-alive",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "every",
+        "everyMs": 600000,
+        "anchorMs": 1770226950074
+      },
+      "model": "sonnet",
+      "timeout_seconds": 30,
+      "last_status": "ok",
+      "last_duration_ms": 10330,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-19 22:54:09 PDT",
+      "next_run_at": "2026-04-19 23:04:09 PDT",
+      "timeout_ratio": 0.344,
+      "risk": "ok",
+      "reasons": [
+        "Latest run has comfortable timeout headroom."
+      ],
+      "proposed_timeout_seconds": 30,
+      "recommended_patch": null
+    },
+    {
+      "id": "4b6e8fa4-c145-4a72-9496-74ebfb9a0683",
+      "name": "gravix-aggregate-knowledge",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 4 * * *",
+        "tz": "America/Los_Angeles"
+      },
+      "model": "sonnet",
+      "timeout_seconds": 60,
+      "last_status": "ok",
+      "last_duration_ms": 19972,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-19 17:51:16 PDT",
+      "next_run_at": "2026-04-20 04:00:00 PDT",
+      "timeout_ratio": 0.333,
+      "risk": "ok",
+      "reasons": [
+        "Latest run has comfortable timeout headroom."
+      ],
+      "proposed_timeout_seconds": 60,
+      "recommended_patch": null
+    },
+    {
+      "id": "47169cc0-9df9-4539-bdec-60405109e017",
+      "name": "gravix-send-followups",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 10 * * *",
+        "tz": "America/Los_Angeles"
+      },
+      "model": "sonnet",
+      "timeout_seconds": 60,
+      "last_status": "ok",
+      "last_duration_ms": 12539,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-19 17:51:36 PDT",
+      "next_run_at": "2026-04-20 10:00:00 PDT",
+      "timeout_ratio": 0.209,
+      "risk": "ok",
+      "reasons": [
+        "Latest run has comfortable timeout headroom."
+      ],
+      "proposed_timeout_seconds": 60,
+      "recommended_patch": null
+    },
+    {
+      "id": "08054f94-6178-4f45-83b2-348ab56cda17",
+      "name": "evgueni-email-monitor",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "every",
+        "everyMs": 1800000,
+        "anchorMs": 1771278892000
+      },
+      "model": "sonnet",
+      "timeout_seconds": 120,
+      "last_status": "ok",
+      "last_duration_ms": 22286,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-19 22:42:52 PDT",
+      "next_run_at": "2026-04-19 23:12:52 PDT",
+      "timeout_ratio": 0.186,
+      "risk": "ok",
+      "reasons": [
+        "Latest run has comfortable timeout headroom."
+      ],
+      "proposed_timeout_seconds": 120,
+      "recommended_patch": null
+    },
+    {
+      "id": "d94e9f6f-458c-44d5-993c-02e6b0930c50",
+      "name": "ads-weekly-report",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9 * * 1",
+        "tz": "America/Los_Angeles"
+      },
+      "model": null,
+      "timeout_seconds": 300,
+      "last_status": "ok",
+      "last_duration_ms": 34263,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-13 09:01:23 PDT",
+      "next_run_at": "2026-04-20 09:00:00 PDT",
+      "timeout_ratio": 0.114,
+      "risk": "ok",
+      "reasons": [
+        "Latest run has comfortable timeout headroom."
+      ],
+      "proposed_timeout_seconds": 300,
+      "recommended_patch": null
+    },
+    {
+      "id": "280c5ddc-93ca-4011-980e-4740a51a4eb5",
+      "name": "sales-email-monitor",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "every",
+        "everyMs": 1800000,
+        "anchorMs": 1770835361437
+      },
+      "model": null,
+      "timeout_seconds": 120,
+      "last_status": "ok",
+      "last_duration_ms": 12949,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-19 22:42:22 PDT",
+      "next_run_at": "2026-04-19 23:12:22 PDT",
+      "timeout_ratio": 0.108,
+      "risk": "ok",
+      "reasons": [
+        "Latest run has comfortable timeout headroom."
+      ],
+      "proposed_timeout_seconds": 120,
+      "recommended_patch": null
+    },
+    {
+      "id": "0c669322-d126-42b6-9647-81a4929ad148",
+      "name": "Nightly build (autonomous)",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 23 * * *",
+        "tz": "America/Los_Angeles"
+      },
+      "model": "openai-codex/gpt-5.4",
+      "timeout_seconds": null,
+      "last_status": "ok",
+      "last_duration_ms": 320149,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-19 17:45:02 PDT",
+      "next_run_at": "2026-04-19 23:00:00 PDT",
+      "timeout_ratio": null,
+      "risk": "unknown",
+      "reasons": [
+        "No explicit timeoutSeconds set."
+      ],
+      "proposed_timeout_seconds": null,
+      "recommended_patch": null
+    },
+    {
+      "id": "00045a1b-65ab-446d-b8a7-f888398b9d9a",
+      "name": "Morning briefing",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9 * * *",
+        "tz": "America/Los_Angeles"
+      },
+      "model": "openai-codex/gpt-5.4",
+      "timeout_seconds": null,
+      "last_status": "ok",
+      "last_duration_ms": 37449,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-19 17:50:22 PDT",
+      "next_run_at": "2026-04-20 09:00:00 PDT",
+      "timeout_ratio": null,
+      "risk": "unknown",
+      "reasons": [
+        "No explicit timeoutSeconds set."
+      ],
+      "proposed_timeout_seconds": null,
+      "recommended_patch": null
+    },
+    {
+      "id": "ccee3f89-b7f3-444e-a878-445ab6644d98",
+      "name": "Midday check",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 14 * * *",
+        "tz": "America/Los_Angeles"
+      },
+      "model": "openai-codex/gpt-5.4",
+      "timeout_seconds": null,
+      "last_status": "ok",
+      "last_duration_ms": 16531,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-19 17:51:00 PDT",
+      "next_run_at": "2026-04-20 14:00:00 PDT",
+      "timeout_ratio": null,
+      "risk": "unknown",
+      "reasons": [
+        "No explicit timeoutSeconds set."
+      ],
+      "proposed_timeout_seconds": null,
+      "recommended_patch": null
+    },
+    {
+      "id": "c45a8e68-2f60-4d79-bfb8-35be1b4e1ac5",
+      "name": "EOD summary",
+      "enabled": true,
+      "job_type": "agentTurn",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 18 * * *",
+        "tz": "America/Los_Angeles"
+      },
+      "model": "openai-codex/gpt-5.4",
+      "timeout_seconds": null,
+      "last_status": "ok",
+      "last_duration_ms": 51799,
+      "last_error": null,
+      "consecutive_errors": 0,
+      "last_run_at": "2026-04-19 18:03:17 PDT",
+      "next_run_at": "2026-04-20 18:00:00 PDT",
+      "timeout_ratio": null,
+      "risk": "unknown",
+      "reasons": [
+        "No explicit timeoutSeconds set."
+      ],
+      "proposed_timeout_seconds": null,
+      "recommended_patch": null
+    }
+  ]
+}

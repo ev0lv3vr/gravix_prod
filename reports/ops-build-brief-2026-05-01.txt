@@ -1,0 +1,89 @@
+OPS BUILD BRIEF — 2026-05-01
+Generated: 2026-05-01 14:01 PDT
+
+Artifacts:
+- reports/morning-ops-hub-latest.html
+- reports/morning-priority-pack-latest.md
+- reports/ops-debt-dashboard-latest.html
+- reports/ads-pull-dashboard-latest.html
+- reports/ads-pull-incident-latest.html
+- reports/morning-handoff-latest.html
+- reports/morning-decision-desk-latest.html
+- reports/morning-customer-desk-latest.html
+- reports/morning-delta-brief-latest.html
+- reports/artifact-freshness-latest.html
+- reports/state-audit-latest.html
+- latest cron-watchlist-*.html (dated report)
+- reports/cron-trend-report-latest.html
+
+Morning pack freshness:
+- Status: FRESH
+- Newest source edit: 2026-05-01 14:01 PDT
+- Build lag vs newest source: 0 min
+- BUSINESS_STATE.md: 2026-05-01 12:57 PDT (64 min old)
+- MEMORY.md: 2026-05-01 08:57 PDT (303 min old)
+- memory/2026-05-01.md: 2026-05-01 14:01 PDT (0 min old)
+- memory/2026-04-30.md: 2026-04-30 18:02 PDT (1199 min old)
+
+Artifact trust check:
+- OK: 13 / 13
+- Stale: 0
+- Missing: 0
+- Mismatched latest vs dated: 0
+
+Business state audit:
+- Active items scanned: 44
+- Past-date refs: 5
+- Relative-time refs: 5
+- Urgent items missing source: 2
+- Duplicate source IDs: 0
+
+Amazon Ads daily pull (local status):
+- Latest day: 2026-04-30
+- Latest status: OK (failed: —)
+- Current invalid streak: 0
+- Latest pull log: logs/ads-daily/2026-04-24_060021.log
+
+Cron timeout watchlist:
+- Jobs scanned: 13
+- Critical: 1
+- High: 0
+- Medium: 1
+- Ready timeout patches: 3
+- Hottest job: ads-daily-pull (critical, last 1800057 ms on 1800 s timeout)
+
+Cron trend (multi-day):
+- Days compared: 3
+- Regressing jobs: 1
+- Improving jobs: 1
+- New risks: 0
+- Delta vs previous: critical 0, high 0, medium 0, patches 0
+- Worst regression: ads-daily-pull (ok → critical)
+
+Ops debt (from ops-debt.json):
+- Open items: 9 (active/critical: 7)
+- Daily burn (true): $0/day
+- Accrued (open): $1,715.54
+- 30-day burn exposure: $0
+- One-time dollars open: $1,715.54
+
+BUSINESS_STATE.md queue depth:
+- 🔴 Urgent: 11
+- 🟡 Needs Ev: 21
+- 🔵 In progress: 9
+- 📋 Backlog: 3
+- Total open tasks ranked: 44
+
+Top 8 morning actions (ranked):
+1. R&R Fabrications shipment — first thing Apr 30 — Ev asked to be reminded first thing in the morning to create shipment for R&R Fabrications. PO: **30 bottles of 16oz Medium viscosity CA**, ship to **R&R Fabrications, 601 E Washington St, St Henry, OH 45883**, provide UPS tracking once shipped. Source: `sales` msg **6086**. PayPal invoice **1001-0242** for **$1,289.70** was sent to `jeff@rrfabrications.com` morning 2026-04-30. Source: `sales` msg **6099**. (25m)
+2. Insurance audit — Overdue; data reportedly ready around **$637K**. Ev must submit/handle final PDF. (20m)
+3. A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**. (25m)
+4. **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (15m)
+5. Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs **192263**, **192271**. (18m)
+6. **Walmart unshipped order** — auto-cancel risk. (25m)
+7. Amazon refund / product-not-as-described — Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**. (7m)
+8. Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**. (18m)
+
+Build again:
+- ./scripts/ops_build.py
+

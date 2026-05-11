@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>B2B Kit Dispatch Desk — 2026-05-08</title>
+<style>
+:root {--bg:#0A1628;--surface:#111B2E;--surface2:#0F1A2C;--border:#1E293B;--text:#fff;--muted:#94A3B8;--accent:#3B82F6;}
+*{box-sizing:border-box} body{margin:0;padding:24px;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,sans-serif}
+.wrap{max-width:1240px;margin:0 auto} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.card,.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px} .card .k{color:var(--muted);font-size:12px} .card .v{font-size:28px;font-weight:760;margin-top:4px}
+.panel{margin-top:12px} .two{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px} @media (max-width: 980px){.two{grid-template-columns:1fr}}
+.muted,.meta{color:var(--muted)} .links{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 18px} a.link{color:#93C5FD;text-decoration:none;background:#102446;border:1px solid var(--border);padding:6px 10px;border-radius:10px;font-size:13px}
+button{background:var(--accent);border:none;color:#fff;border-radius:10px;padding:8px 10px;font-weight:650;cursor:pointer} table{width:100%;border-collapse:collapse} th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top} th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+ul{margin:8px 0 0 18px} li{margin:6px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>B2B Kit Dispatch Desk</h1>
+  <div class="muted">2026-05-08 14:00 PDT · planned ship date 2026-05-08 · source gluemasters-bizdev/b2b/b2b-kit-recipients-2026-05-05.json</div>
+  <div class="links"><a class="link" href="../gluemasters-bizdev/b2b/b2b-kit-recipient-list-2026-05-05.md">Recipient notes</a><a class="link" href="../gluemasters-bizdev/b2b/outreach-log.md">Outreach log</a><a class="link" href="./b2b-kit-dispatch-labels-latest.csv">Label CSV</a><a class="link" href="./morning-ops-hub-latest.html">Morning ops hub</a></div>
+  <p><button id="copyReady">Copy ready batch</button></p>
+  <div class="grid"><div class='card'><div class='k'>Ready now</div><div class='v'>1</div></div><div class='card'><div class='k'>Verify then ship</div><div class='v'>9</div></div><div class='card'><div class='k'>Needs info</div><div class='v'>3</div></div><div class='card'><div class='k'>Next wave</div><div class='v'>0</div></div><div class='card'><div class='k'>Hold</div><div class='v'>6</div></div></div>
+  <div class="two">
+    <div class="panel">
+      <h3>Ready batch</h3>
+      <table>
+        <thead><tr><th>Priority</th><th>Company</th><th>Attention</th><th>Ship-to</th><th>Status</th><th>Why / subject</th></tr></thead>
+        <tbody><tr><td>0.1</td><td><b>Josh Mintz Art</b><div class='meta'>Warm / existing</div></td><td>Josh Mintz</td><td>5008 2B Magazine St, New Orleans, LA 70115</td><td>Ready now</td><td>Existing sample request; CRM says 8oz Medium sample overdue.</td></tr><tr><td>0.3</td><td><b>Dynasty Global</b><div class='meta'>Warm / existing</div></td><td>Eli</td><td>—</td><td>Verify then ship</td><td>Legitimate distributor/dealer inquiry; kit can support catalog conversation if Ev wants to engage.</td></tr><tr><td>0.4</td><td><b>KMS, LLC</b><div class='meta'>Warm / existing</div></td><td>Brittni</td><td>—</td><td>Verify then ship</td><td>Stale wholesale/distributor inquiry; can re-open with kit offer.</td></tr><tr><td>1</td><td><b>EDCO Awards &amp; Specialties</b><div class='meta'>Cold whale Play B</div></td><td>Mike Szczesny, VP / Production Manager</td><td>3702 Davie Blvd, Fort Lauderdale, FL 33312</td><td>Verify then ship</td><td>Art glass and crystal clear bonds; fast cure supporting 3-5 day turnaround.<div class='meta'>Subject: Sent you a CA adhesive kit for your art glass / crystal line</div><div class='meta'>Kit: Thin, Medium, Thick, Accelerator</div></td></tr><tr><td>2</td><td><b>Crown Awards</b><div class='meta'>Cold whale Play B</div></td><td>Lora Lupis, Managing Director / Production Manager</td><td>9 Skyline Drive, Hawthorne, NY 10532-2100</td><td>Verify then ship</td><td>Bulk CA reliability for high-volume trophy/plaque assembly.<div class='meta'>Subject: Sent a bulk CA sample kit for Crown’s production team</div><div class='meta'>Kit: Medium, Thick, Thin, Accelerator</div></td></tr><tr><td>3</td><td><b>PersonalizationMall.com</b><div class='meta'>Cold whale Play B</div></td><td>Karina Torres, Operations Manager</td><td>850 Veterans Parkway, Bolingbrook, IL 60440-4944</td><td>Verify then ship</td><td>One CA supplier across mixed-material personalized assembly; fast cure plus scale-ready fulfillment.<div class='meta'>Subject: Sent a CA adhesive kit for your Bolingbrook production team</div><div class='meta'>Kit: Medium, Thin, Thick, Accelerator</div></td></tr></tbody>
+      </table>
+    </div>
+    <div>
+      <div class="panel"><h3>Strategy guardrails</h3><ul><li>Sample kit status is ready; old docs saying physical assembly is needed are stale.</li><li>Ship no more than 3 cold whale kits per week so follow-up remains manageable.</li><li>Use warm/inbound sends first when address is known, then cold whale Play B.</li><li>Do not cold-send duplicate kits to accounts marked converted in outreach-log without verifying status.</li></ul></div>
+      <div class="panel"><h3>Follow-up cadence</h3><ul><li><b>Day 0</b> · 2026-05-08 — Ship kit + same-day email</li><li><b>Day 4</b> · 2026-05-12 — Check that the kit landed</li><li><b>Day 7</b> · 2026-05-15 — LinkedIn touch where contact exists</li><li><b>Day 10</b> · 2026-05-18 — Cost-per-bond / volume math email</li><li><b>Day 14</b> · 2026-05-22 — Phone follow-up to facility</li><li><b>Day 21</b> · 2026-05-29 — Case-study / social proof follow-up</li><li><b>Day 30</b> · 2026-06-07 — Close-loop / park for nurture</li></ul></div>
+    </div>
+  </div>
+  <div class="two">
+    <div class="panel"><h3>Needs info first</h3><table><thead><tr><th>Company</th><th>What’s missing</th></tr></thead><tbody><tr><td><b>Mountain Man&#x27;s Creative Arts</b></td><td>Inbound B2B inquiry; reply first and confirm sample kit destination. <span class='meta'>(address_needed)</span></td></tr><tr><td><b>Woodchuck USA</b></td><td>needs_enrichment_refresh <span class='meta'>(needs_enrichment_refresh)</span></td></tr><tr><td><b>Frame It Easy</b></td><td>needs_enrichment_refresh <span class='meta'>(needs_enrichment_refresh)</span></td></tr></tbody></table></div>
+    <div class="panel"><h3>Next wave / hold</h3><table><thead><tr><th>Company</th><th>Note</th></tr></thead><tbody><tr><td><b>Cristaux International</b></td><td>outreach-log says converted wholesale; verify current account status before kit</td></tr><tr><td><b>Crown Trophy</b></td><td>outreach-log says converted wholesale; do not confuse with Crown Awards</td></tr><tr><td><b>Quintex / OTL</b></td><td>stale prior sample/contact history; wait for fresh reply</td></tr><tr><td><b>Donaldson</b></td><td>existing account/order path, not cold kit</td></tr><tr><td><b>Arka / Sean</b></td><td>active quote path; ask quantity/annual volume first</td></tr><tr><td><b>Gemifly LLC</b></td><td>invoice already sent; track payment</td></tr></tbody></table></div>
+  </div>
+</div>
+<script>
+const copyText = "- 0.1 \u00b7 Josh Mintz Art \u2014 Josh Mintz \u2014 5008 2B Magazine St, New Orleans, LA 70115\n- 1 \u00b7 EDCO Awards & Specialties \u2014 Mike Szczesny, VP / Production Manager \u2014 3702 Davie Blvd, Fort Lauderdale, FL 33312\n- 2 \u00b7 Crown Awards \u2014 Lora Lupis, Managing Director / Production Manager \u2014 9 Skyline Drive, Hawthorne, NY 10532-2100\n- 3 \u00b7 PersonalizationMall.com \u2014 Karina Torres, Operations Manager \u2014 850 Veterans Parkway, Bolingbrook, IL 60440-4944";
+document.getElementById('copyReady').addEventListener('click', () => navigator.clipboard.writeText(copyText).catch(() => window.prompt('Copy this text:', copyText)));
+</script>
+</body>
+</html>

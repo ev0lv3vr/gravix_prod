@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <title>Ads Pull Incident Report — 2026-05-08</title>
+  <style>
+    :root { --bg:#0A1628; --surface:#111B2E; --border:rgba(148,163,184,0.18); --text:#fff; --muted:#94A3B8; --blue:#3B82F6; --green:#22C55E; --yellow:#F59E0B; --red:#EF4444; --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,sans-serif}
+    .wrap{max-width:1180px;margin:0 auto;padding:24px} .sub{color:var(--muted);margin-top:6px} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+    .card,.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px} .k{color:var(--muted);font-size:12px} .v{margin-top:8px;font-size:20px;font-weight:750}
+    .pill{display:inline-block;padding:4px 9px;border-radius:999px;font-size:12px;border:1px solid var(--border)} .pill.ok{color:#BBF7D0;background:rgba(34,197,94,.14)} .pill.warn{color:#FDE68A;background:rgba(245,158,11,.14)} .pill.bad{color:#FECACA;background:rgba(239,68,68,.16)}
+    table{width:100%;border-collapse:collapse} th,td{padding:9px 8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top} th{color:var(--muted);font-size:12px} .mono{font-family:var(--mono)}
+    ul{margin:8px 0 0 18px} li{margin:6px 0} .cmd{font-family:var(--mono);font-size:12px;background:rgba(148,163,184,.08);border:1px solid var(--border);padding:10px;border-radius:10px;margin-top:10px;white-space:pre-wrap}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:12px} @media (max-width:900px){.two{grid-template-columns:1fr}}
+    a{color:#93C5FD}
+  </style>
+</head>
+<body>
+<div class='wrap'>
+  <h1>Amazon Ads Pull Incident Report</h1>
+  <div class='sub'>2026-05-08 14:00 PDT · <span class='pill bad'>CRITICAL</span> · log <span class='mono'>logs/ads-daily/2026-04-24_060021.log</span></div>
+
+  <div class='grid'><div class='card'><div class='k'>Snapshot</div><div class='v'>2026-04-23</div></div><div class='card'><div class='k'>Failed reports</div><div class='v'>campaigns, keywords</div></div><div class='card'><div class='k'>Core dup retries</div><div class='v'>8</div></div><div class='card'><div class='k'>Core timeouts</div><div class='v'>6</div></div></div>
+
+  <div class='two'>
+    <div class='panel'><h3 style='margin:0'>Likely cause</h3><ul><li>Amazon returned duplicate report IDs that remained PENDING even after fresh-name retries.</li><li>Campaign and keyword reports appear stuck in Amazon&#x27;s reporting queue, not locally failing fast.</li></ul></div>
+    <div class='panel'><h3 style='margin:0'>What matters</h3><ul><li>Core datasets failed: campaigns, keywords. Search terms still landed, so the outage is partial rather than a total auth failure.</li><li>Long pending windows observed: campaigns (1189s max observed), keywords (1189s max observed).</li><li>Chunked search-term fallback succeeded and preserved 415 rows, so search-term diagnostics are still usable.</li><li>campaigns.json and keywords.json were saved as literal empty arrays (`[]`), which matches the silent-failure pattern rather than a real zero-spend day.</li></ul></div>
+  </div>
+
+  <div class='panel' style='margin-top:12px'>
+    <h3 style='margin:0 0 8px'>Report breakdown</h3>
+    <table>
+      <thead><tr><th>Report</th><th>Final</th><th>Attempts</th><th>Timeouts</th><th>Dup retries</th><th>Max poll</th><th>Rows</th><th>Last report ID</th></tr></thead>
+      <tbody><tr><td class='mono'>campaigns</td><td>failed</td><td class='mono'>3</td><td class='mono'>3</td><td class='mono'>4</td><td class='mono'>1189s</td><td class='mono'>0</td><td class='mono'>cfd1a284-2fa4-4bb3-858c-5e2574d1de2e</td></tr><tr><td class='mono'>keywords</td><td>failed</td><td class='mono'>3</td><td class='mono'>3</td><td class='mono'>4</td><td class='mono'>1189s</td><td class='mono'>0</td><td class='mono'>8058c988-26c3-4bed-a37d-568420ac9c0e</td></tr><tr><td class='mono'>search-terms</td><td>completed</td><td class='mono'>16</td><td class='mono'>9</td><td class='mono'>18</td><td class='mono'>1191s</td><td class='mono'>415</td><td class='mono'>4c20112f-c6ae-4383-9b9a-fdf1f635f4d4</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class='panel' style='margin-top:12px'>
+    <h3 style='margin:0 0 8px'>Next commands</h3>
+    <div class='cmd'>python3 moneysamurai/tools/ads-report-inspect.py --from-log logs/ads-daily/2026-04-24_060021.log --watch --interval 30 --timeout 1200</div><div class='cmd'>python3 moneysamurai/scripts/ads-daily-pull.py 2026-04-17 2026-04-23</div><div class='cmd'>python3 scripts/ads_pull_incident_report.py</div>
+  </div>
+</div>
+</body>
+</html>

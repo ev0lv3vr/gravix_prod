@@ -1,0 +1,65 @@
+OPS BUILD BRIEF — 2026-04-28
+Generated: 2026-04-27 23:05 PDT
+
+Artifacts:
+- reports/morning-ops-hub-latest.html
+- reports/morning-priority-pack-latest.md
+- reports/ops-debt-dashboard-latest.html
+- reports/ads-pull-dashboard-latest.html
+- reports/ads-pull-incident-latest.html
+- reports/morning-handoff-latest.html
+- reports/morning-decision-desk-latest.html
+- reports/morning-customer-desk-latest.html
+- reports/morning-delta-brief-latest.html
+- latest cron-watchlist-*.html (dated report)
+- reports/cron-trend-report-latest.html
+
+Amazon Ads daily pull (local status):
+- Latest day: 2026-04-26
+- Latest status: OK (failed: —)
+- Current invalid streak: 0
+- Latest pull log: logs/ads-daily/2026-04-24_060021.log
+
+Cron timeout watchlist:
+- Jobs scanned: 13
+- Critical: 1
+- High: 0
+- Medium: 1
+- Ready timeout patches: 3
+- Hottest job: ads-daily-pull (critical, last 1800057 ms on 1800 s timeout)
+
+Cron trend (multi-day):
+- Days compared: 3
+- Regressing jobs: 1
+- Improving jobs: 1
+- New risks: 0
+- Delta vs previous: critical 0, high 0, medium 0, patches 0
+- Worst regression: ads-daily-pull (ok → critical)
+
+Ops debt (from ops-debt.json):
+- Open items: 9 (active/critical: 7)
+- Daily burn (true): $0/day
+- Accrued (open): $1,715.54
+- 30-day burn exposure: $0
+- One-time dollars open: $1,715.54
+
+BUSINESS_STATE.md queue depth:
+- 🔴 Urgent: 8
+- 🟡 Needs Ev: 15
+- 🔵 In progress: 7
+- 📋 Backlog: 2
+- Total open tasks ranked: 32
+
+Top 8 morning actions (ranked):
+1. Insurance audit — Overdue; data reportedly ready around **$637K**. Ev must submit/handle final PDF. (20m)
+2. A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**. (25m)
+3. **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (15m)
+4. **Walmart unshipped order** — auto-cancel risk. (25m)
+5. Amazon refund / product-not-as-described — Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**. (7m)
+6. Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**. (18m)
+7. American Express account/payment follow-up — Past-due notice for account ending **271002** came in earlier. New Amex emails show a **$1,000 payment received** (msg **192107**) but also a **transaction declined due to past-due status** shortly before/around processing (msg **192106**). Fresh 2026-04-26 Amex notice says account ending **271002** is past due: **$620 past due / $1,256 total due** (msg **192157**). Fresh 2026-04-25 Amex notice says an **Electrify America $40** transaction declined because one or more accounts is past due; account shown as ending **794007** (msg **192151**). A separate Amex statement-ready email also arrived for account ending **94007**, payment due **Tue May 19, 2026** (msg **192149**). New 2026-04-26 Amex notice says the card enrolled for an Amex virtual card number has been suspended for account ending **94007**; Chrome/Android virtual-card purchases may fail until Ev contacts Amex (msg **192165**). Ev should verify the Amex balance/status directly in Amex, not through email links. Sources: `gluemasters` msgs **192094**, **192106**, **192107**, **192149**, **192151**, **192157**, **192165**. (18m)
+8. Amazon account security check — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg **192139**. (18m)
+
+Build again:
+- ./scripts/ops_build.py
+

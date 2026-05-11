@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Morning Ops Hub — 2026-04-30</title>
+  <style>
+    :root {--bg:#0A1628;--surface:#111B2E;--surface2:#0F1A2C;--accent:#3B82F6;--text:#fff;--muted:#94A3B8;--border:#1E293B;--good:#22c55e;--bad:#ef4444;}
+    *{box-sizing:border-box} body{margin:0;padding:24px;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,sans-serif}
+    h1{margin:0 0 6px} .sub{color:var(--muted);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .wrap{max-width:1200px;margin:0 auto}
+    .links{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 18px}
+    a.link{color:#93C5FD;text-decoration:none;background:#102446;border:1px solid var(--border);padding:6px 10px;border-radius:10px;font-size:13px}
+    a.link:hover{border-color:#2b3a52}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0 18px}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px}
+    .k{color:var(--muted);font-size:12px} .v{font-size:26px;font-weight:750;margin-top:4px}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:12px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width: 900px){.two{grid-template-columns:1fr}}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{display:inline-flex;gap:8px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:13px;color:var(--muted)}
+    .pill input{accent-color:var(--accent)}
+    input[type="text"]{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px;min-width:260px}
+    button{background:var(--accent);border:none;color:white;border-radius:10px;padding:8px 10px;font-weight:650;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid var(--border);color:var(--text)}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+    th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+    .muted{color:var(--muted)}
+    .badge{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:2px 8px;font-size:12px;color:var(--muted)}
+    .task{white-space:pre-wrap}
+    .ok{color:var(--good)} .warn{color:var(--bad)}
+    ul{margin:8px 0 0 18px} li{margin:6px 0;color:var(--muted)}
+    code{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:12px;color:#93C5FD}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Morning Ops Hub</h1>
+    <div class="sub">
+      <span class="badge">2026-04-30</span>
+      <span class="muted">Generated: 2026-04-29 23:03 PDT</span>
+      <span class="muted">·</span>
+      <span class="muted">Freshness: FRESH</span>
+      <span class="muted">·</span>
+      <span class="muted">73 min behind newest source</span>
+      <span class="muted">·</span>
+      <span class="muted">Local file friendly (no fetch)</span>
+    </div>
+
+    <div class="links"><a class='link' href='../BUSINESS_STATE.md' target='_blank' rel='noreferrer'>Business State</a><a class='link' href='../KANBAN.md' target='_blank' rel='noreferrer'>Retired KANBAN</a><a class='link' href='./morning-priority-pack-latest.md' target='_blank' rel='noreferrer'>Priority Pack (latest)</a><a class='link' href='./morning-execution-board-latest.html' target='_blank' rel='noreferrer'>Execution Board (latest)</a><a class='link' href='./morning-execution-board-latest.json' target='_blank' rel='noreferrer'>Execution Board JSON (latest)</a><a class='link' href='./morning-handoff-latest.html' target='_blank' rel='noreferrer'>Morning Handoff (latest)</a><a class='link' href='./morning-decision-desk-latest.html' target='_blank' rel='noreferrer'>Morning Decision Desk (latest)</a><a class='link' href='./morning-customer-desk-latest.html' target='_blank' rel='noreferrer'>Morning Customer Desk (latest)</a><a class='link' href='./morning-delta-brief-latest.html' target='_blank' rel='noreferrer'>Morning Delta Brief (latest)</a><a class='link' href='./artifact-freshness-latest.html' target='_blank' rel='noreferrer'>Artifact Freshness (latest)</a><a class='link' href='./ads-pull-incident-latest.html' target='_blank' rel='noreferrer'>Ads Pull Incident (latest)</a><a class='link' href='./ops-debt-dashboard-latest.html' target='_blank' rel='noreferrer'>Ops Debt Dashboard (latest)</a><a class='link' href='./cron-watchlist-2026-04-22.html' target='_blank' rel='noreferrer'>Cron Watchlist (latest dated)</a><a class='link' href='./cron-trend-report-latest.html' target='_blank' rel='noreferrer'>Cron Trend Report (latest dated)</a><a class='link' href='./cron-timeout-dashboard-2026-04-19.html' target='_blank' rel='noreferrer'>Cron Timeout Dashboard (latest dated)</a><a class='link' href='./' target='_blank' rel='noreferrer'>Reports folder</a></div>
+
+    <div id="cards" class="grid"></div>
+
+    <div class="panel">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <div style="font-weight:750;margin-bottom:4px">Top 8 (copy/paste checklist)</div>
+          <div class="muted">This is what you do first. If you only do 4: do the first 4.</div>
+        </div>
+        <div class="row">
+          <button id="copyTop">Copy top 8</button>
+          <button id="copyBlock" class="secondary">Copy 90-min block</button>
+        </div>
+      </div>
+      <ul id="topList"></ul>
+    </div>
+
+    <div class="two">
+      <div class="panel">
+        <div class="row" style="justify-content:space-between">
+          <div>
+            <div style="font-weight:750;margin-bottom:4px">Unblockers first</div>
+            <div class="muted">Tasks blocked on access, login, confirmation, or Ev decisions.</div>
+          </div>
+          <button id="copyBlockers" class="secondary">Copy unblockers</button>
+        </div>
+        <ul id="blockerList"></ul>
+      </div>
+
+      <div class="panel">
+        <div class="row" style="justify-content:space-between">
+          <div>
+            <div style="font-weight:750;margin-bottom:4px">Customer risk queue</div>
+            <div class="muted">Anything likely to turn into churn, claims, or angry follow-up.</div>
+          </div>
+          <button id="copyCustomer" class="secondary">Copy customer risk</button>
+        </div>
+        <ul id="customerList"></ul>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="panel">
+        <div style="font-weight:750;margin-bottom:4px">Deadline / overdue view</div>
+        <div class="muted">Use this to avoid missing date-driven landmines.</div>
+        <ul id="deadlineList"></ul>
+      </div>
+
+      <div class="panel">
+        <div style="font-weight:750;margin-bottom:4px">True burn queue</div>
+        <div class="muted">Only tasks with explicit daily bleed/loss signals.</div>
+        <ul id="burnList"></ul>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="row" style="justify-content:space-between;gap:14px">
+        <div class="row">
+          <span class="pill"><input id="fUrgent" type="checkbox" checked /> 🔴 Urgent</span>
+          <span class="pill"><input id="fNeeds" type="checkbox" checked /> 🟡 Needs Ev</span>
+          <span class="pill"><input id="fInProg" type="checkbox" checked /> 🔵 In Progress</span>
+          <span class="pill"><input id="fBacklog" type="checkbox" /> 📋 Backlog</span>
+          <span class="pill"><input id="fBurn" type="checkbox" /> Burn/day only</span>
+        </div>
+        <div class="row">
+          <input id="search" type="text" placeholder="Search tasks (e.g. heather, refund, shipbob, sds)" />
+        </div>
+      </div>
+      <div style="height:10px"></div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Section</th>
+            <th>Task</th>
+            <th>Days</th>
+            <th>Amount</th>
+            <th>Burn/day</th>
+            <th>Deadline</th>
+            <th>ETA</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div style="font-weight:750;margin-bottom:6px">Freshness / trust check</div>
+      <ul id="freshnessList"></ul>
+    </div>
+
+    <div class="panel">
+      <div style="font-weight:750;margin-bottom:6px">Recent memory context</div>
+      <ul id="ctx"></ul>
+    </div>
+
+    <div class="panel">
+      <div class="muted">Pro tip: to refresh the full morning stack, run:</div>
+      <div><code>python3 scripts/ops_build.py --date YYYY-MM-DD</code></div>
+    </div>
+  </div>
+
+  <script>
+    const DATA = {"date": "2026-04-30", "generated_at": "2026-04-29 23:03 PDT", "total_open": 40, "section_counts": {"urgent": 10, "needs_ev": 18, "in_progress": 9, "backlog": 3}, "top_actions": [{"section": "urgent", "section_label": "🔴 URGENT", "text": "Insurance audit — Overdue; data reportedly ready around **$637K**. Ev must submit/handle final PDF.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 50.0, "est_minutes": 20}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**.", "days": null, "amount": 501.25, "daily_burn": null, "deadline": "2026-05-27", "days_to_deadline": 28, "score": 48.18, "est_minutes": 25}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 45.0, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Walmart unshipped order** — auto-cancel risk.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 44.0, "est_minutes": 25}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Amazon refund / product-not-as-described — Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**.", "days": null, "amount": 36.83, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.31, "est_minutes": 7}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**.", "days": null, "amount": 8.99, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.07, "est_minutes": 18}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Amazon account security check — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg **192139**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.0, "est_minutes": 18}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.0, "est_minutes": 20}], "all_tasks_ranked": [{"section": "urgent", "section_label": "🔴 URGENT", "text": "Insurance audit — Overdue; data reportedly ready around **$637K**. Ev must submit/handle final PDF.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 50.0, "est_minutes": 20}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**.", "days": null, "amount": 501.25, "daily_burn": null, "deadline": "2026-05-27", "days_to_deadline": 28, "score": 48.18, "est_minutes": 25}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 45.0, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Walmart unshipped order** — auto-cancel risk.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 44.0, "est_minutes": 25}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Amazon refund / product-not-as-described — Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**.", "days": null, "amount": 36.83, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.31, "est_minutes": 7}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**.", "days": null, "amount": 8.99, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.07, "est_minutes": 18}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Amazon account security check — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg **192139**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.0, "est_minutes": 18}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.0, "est_minutes": 20}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "ICU Shopify upsell app token — In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: `sales` msg **6090**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.0, "est_minutes": 20}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "R&R Fabrications shipment — first thing Apr 30 — Ev asked to be reminded first thing in the morning to create shipment for R&R Fabrications. PO: **30 bottles of 16oz Medium viscosity CA**, ship to **R&R Fabrications, 601 E Washington St, St Henry, OH 45883**, provide UPS tracking once shipped. Source: `sales` msg **6086**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.0, "est_minutes": 25}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Fastenal supplier onboarding — Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs **192233**, **192240**, **192242**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.0, "est_minutes": 18}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Amazon FBA unfulfillable removal — Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**. Next automated removal may be created **2026-04-27** if unfulfillable inventory remains. Needs Seller Central verification if Ev wants to change removal settings/address/frequency. Source: `gluemasters` msg **192161**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.0, "est_minutes": 18}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Gemifly LLC** — **$1,513.23** PayPal invoice outstanding.", "days": null, "amount": 1513.23, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 37.61, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**TikTok/Amazon influencer outreach** — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 35.0, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Josh Mintz** — 8oz Medium sample to New Orleans overdue.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 35.0, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Jason F return** — decision pending.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 29.0, "est_minutes": 10}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**The Escape Game** — Shopify contact form asks for a receipt for a **$229.95** transaction authorized/cleared **2026-04-27**. Ev said there is only one order; reply sent 2026-04-29 asking them to confirm the exact glue/product, specifically whether it was **8oz Thin viscosity CA glue**. Await customer confirmation, then resend receipt. Source: `sales` msg **6091**.", "days": null, "amount": 229.95, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 26.92, "est_minutes": 8}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "New morning customer-response artifact is live for testing: `reports/morning-customer-desk-latest.html` (plus `.md` / `.json`), generated by `scripts/build_customer_response_desk.py`; it distills the customer/B2B queue into hot risks, draft-backed replies, missing-info blockers, and a one-page full queue, and is linked from the morning ops hub/build.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 26.0, "est_minutes": 20}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Cute Things & Creative Concepts / Shohreh** — bulk quote request for **200× 2oz CA**, **100× 2oz Thin**, **100× 8oz Thick**, **100× 2oz Medium**. Ev requested immediate pricing with free freight; draft quote prepared with 8oz at **$20.29/unit** and total **$5,105**. Source: `sales` msg **6087**.", "days": null, "amount": 20.29, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.17, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Eric Patrick** — asked how to open 8oz bottle. Draft exists at `moneysamurai/drafts/customer-replies-2026-04-09.md`; source msg **5941**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Antonio Gutierrez** — order **#6000**, asks if shipped + ship date. Draft exists, needs shipping fields; source msg **5930**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 25}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Michael Nasholm** — 20% partial refund was promised but not done; customer followed up.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 7}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that he was checking and would update shortly. Needs tracking/shipping status follow-up. Source: `sales` msgs **6088**, **6089**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 25}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 8}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Dynasty Global / Eli** — dealer inquiry; needs Ev decision.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 10}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Ethan Miller** — order **#5786**, 4× Thick 16oz replacement not created at ShipBob.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 25}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**KMS LLC / Brittni** — wholesale distributor inquiry stale.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Christopher Webber** — B2B inquiry stale.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 15}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "**Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.", "days": 7, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 18.9, "est_minutes": 20}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "Pump Accelerator 8oz — Supplier: Xtralok, Chicago. UPC: **199874971148**. Model: **ACC0201**. Target price: **$14.99**. Designer: Designcoffers/Fiverr; revisions in progress. Files: `gluemasters-bizdev/labels/pump-accelerator-8oz/`.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 14.0, "est_minutes": 20}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 14.0, "est_minutes": 20}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "`sales-email-monitor`: **180s → 240s**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 14.0, "est_minutes": 20}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "`evgueni-email-monitor`: **120s → 180s**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 14.0, "est_minutes": 20}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "`ads-daily-pull`: **1800s → 3600s**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 14.0, "est_minutes": 20}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "New morning decision artifact is live for testing: `reports/morning-decision-desk-latest.html` (plus `.md` / `.json`), generated by `scripts/build_decision_brief.py`; it pulls source IDs, draft refs, money-at-stake, and unblockers into one morning-ready view and is linked from the morning ops hub/build.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 14.0, "est_minutes": 10}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "Nightly 2026-04-29 improvement: the morning ops pack/hub now includes freshness/trust signals (`FRESH / AGING / STALE`, newest source edit time, build lag, and source timestamps for loaded journals/state files) via `scripts/kanban_morning_builder.py` + `scripts/ops_build.py`, so morning review can quickly tell whether the pack is current before acting.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 14.0, "est_minutes": 20}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "Amazon PPC — Tracked state: 11 campaigns, ~$773/day spend, 2.42× ROAS, 41% ACoS. Late-day 2-month PPC review: growth is working, but account profitability is still loose; best current wins are 8oz Thick Auto, 8oz Medium Auto, and CA Glue Core Exact, while **2oz Thick Auto**, conquest, and defense need tightening. Backlog: wire flywheel data into MoneySamurai PPC frontend; bias next optimization pass toward cutting waste in **2oz Thick Auto / conquest / defense** and scaling the stronger exact/discovery winners more carefully.", "days": 2, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 7.4, "est_minutes": 30}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "Shopify / marketplace backlog — Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: **1,183 reviews**. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1).", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 6.0, "est_minutes": 7}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 6.0, "est_minutes": 30}], "memory_context": ["2026-04-29.md: No new blocker surfaced from this pass. Live urgent items remain the already-open queue: Shopify token access, ICU upsell token expiring **2026-04-30**, insurance audit, and customer/B2B follow-up items already captured in `BUSINESS_STATE.md`.", "2026-04-29.md: **Insurance audit** still needs Ev’s final PDF handling.", "2026-04-29.md: Customer/B2B queue still needs movement on **Heather / Amazon**, **Jeff Davis / R&R**, **The Escape Game receipt**, **Louise Frogley shipping follow-up**, and the bulk-quote/order threads already listed in `BUSINESS_STATE.md`.", "2026-04-29.md: Amazon Ads needs a business review tomorrow for the **spend collapse / weak ROAS** signal, even though the automation itself is healthy.", "2026-04-28.md: Amazon Ads daily pull for snapshot **2026-04-27** is valid/complete: campaigns **10**, keywords **102**, search terms **137**, no failed reports; **$116.50** spend / **$370.96** ad-attributed sales / **31.4% ACoS** / **3.18× ROAS**.", "2026-04-28.md: No genuinely new blocker surfaced in this pass beyond the already-open Florida annual report deadline and the existing Ev-owned queue.", "2026-04-28.md: Confirmed the two real changes that mattered most today were: **(1)** the Florida annual report / company renewal deadline now sitting at **2026-05-01** with a **$400** late-penalty risk if missed, and **(2)** the Amex situation materially improved by evening — payment processed and the virtual card reactivated, so the earlier Amex fire is resolved and should stay buried.", "2026-04-27.md: Amazon Ads daily pull for snapshot **2026-04-26** is complete/valid: campaigns **10**, keywords **121**, search terms **410**, no failed reports; digest shows **$708.60** spend, **$2,152.91** sales, **69** orders, **32.9% ACoS**, **3.04× ROAS**.", "2026-04-27.md: Gates: `python3 -m unittest tests/test_ads_daily_pull.py` passed; `npm run build` passed. `npm run lint` remains blocked by pre-existing repo-wide TS/ESLint debt unrelated to this patch; `npm test` and `npm run type-check` scripts are missing in package.json.", "2026-04-27.md: Ev confirmed the Jeremy/Aquarium Artisans pricing / “what do you want to do moving forward” reply was sent. Moved Jeremy out of Needs Ev and into wait-for-response state in BUSINESS_STATE.md."], "quick_math": {"one_time_total": 2310.54, "daily_burn_total": 0.0}, "freshness": {"status": "fresh", "lag_minutes": 73, "newest_source_at": "2026-04-29 21:49 PDT", "sources": [{"label": "BUSINESS_STATE.md", "path": "BUSINESS_STATE.md", "updated_at": "2026-04-29 21:49 PDT", "age_minutes": 73}, {"label": "MEMORY.md", "path": "MEMORY.md", "updated_at": "2026-04-29 18:01 PDT", "age_minutes": 302}, {"label": "memory/2026-04-29.md", "path": "memory/2026-04-29.md", "updated_at": "2026-04-29 18:02 PDT", "age_minutes": 301}], "memory_files_loaded": [{"path": "memory/2026-04-29.md", "updated_at": "2026-04-29 18:02 PDT"}]}, "focus": {"blockers": [{"section": "urgent", "section_label": "🔴 URGENT", "text": "Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.0, "est_minutes": 20}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Fastenal supplier onboarding — Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs **192233**, **192240**, **192242**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.0, "est_minutes": 18}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**The Escape Game** — Shopify contact form asks for a receipt for a **$229.95** transaction authorized/cleared **2026-04-27**. Ev said there is only one order; reply sent 2026-04-29 asking them to confirm the exact glue/product, specifically whether it was **8oz Thin viscosity CA glue**. Await customer confirmation, then resend receipt. Source: `sales` msg **6091**.", "days": null, "amount": 229.95, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 26.92, "est_minutes": 8}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Dynasty Global / Eli** — dealer inquiry; needs Ev decision.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 10}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "**Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.", "days": 7, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 18.9, "est_minutes": 20}], "customer_risk": [{"section": "urgent", "section_label": "🔴 URGENT", "text": "A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**.", "days": null, "amount": 501.25, "daily_burn": null, "deadline": "2026-05-27", "days_to_deadline": 28, "score": 48.18, "est_minutes": 25}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 45.0, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Walmart unshipped order** — auto-cancel risk.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 44.0, "est_minutes": 25}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Amazon refund / product-not-as-described — Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**.", "days": null, "amount": 36.83, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.31, "est_minutes": 7}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**.", "days": null, "amount": 8.99, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.07, "est_minutes": 18}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "Amazon FBA unfulfillable removal — Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**. Next automated removal may be created **2026-04-27** if unfulfillable inventory remains. Needs Seller Central verification if Ev wants to change removal settings/address/frequency. Source: `gluemasters` msg **192161**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 40.0, "est_minutes": 18}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Jason F return** — decision pending.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 29.0, "est_minutes": 10}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**The Escape Game** — Shopify contact form asks for a receipt for a **$229.95** transaction authorized/cleared **2026-04-27**. Ev said there is only one order; reply sent 2026-04-29 asking them to confirm the exact glue/product, specifically whether it was **8oz Thin viscosity CA glue**. Await customer confirmation, then resend receipt. Source: `sales` msg **6091**.", "days": null, "amount": 229.95, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 26.92, "est_minutes": 8}], "deadlines": [{"section": "urgent", "section_label": "🔴 URGENT", "text": "A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**.", "days": null, "amount": 501.25, "daily_burn": null, "deadline": "2026-05-27", "days_to_deadline": 28, "score": 48.18, "est_minutes": 25}], "burn": []}};
+    const clean = (s) => (s || '').replaceAll('**', '');
+    const fmtMoney = (v) => {
+      if (v === null || v === undefined) return '—';
+      const rounded = Math.abs(v - Math.round(v)) < 0.0001;
+      return rounded ? `$${Math.round(v).toLocaleString()}` : `$${v.toFixed(2)}`;
+    };
+
+    function renderCards() {
+      const counts = DATA.section_counts || {};
+      const cards = [
+        { k: '🔴 Urgent', v: counts.urgent ?? 0 },
+        { k: '🟡 Needs Ev', v: counts.needs_ev ?? 0 },
+        { k: '🔵 In Progress', v: counts.in_progress ?? 0 },
+        { k: '📋 Backlog', v: counts.backlog ?? 0 },
+        { k: 'Total Open', v: DATA.total_open ?? 0 },
+        { k: 'One-time $ at stake', v: fmtMoney(DATA.quick_math?.one_time_total ?? null) },
+        { k: 'Daily burn', v: `$${Math.round(DATA.quick_math?.daily_burn_total ?? 0)}/d` },
+      ];
+      document.getElementById('cards').innerHTML = cards
+        .map(c => `<div class="card"><div class="k">${c.k}</div><div class="v">${c.v}</div></div>`)
+        .join('');
+    }
+
+    function renderTop() {
+      const top = (DATA.top_actions || []).slice(0, 8);
+      document.getElementById('topList').innerHTML = top
+        .map(t => `<li><b>${t.est_minutes}m</b> — ${clean(t.text)}</li>`)
+        .join('') || '<li class="muted">No tasks found.</li>';
+    }
+
+    function sectionEnabled(t) {
+      const s = t.section;
+      const urgent = document.getElementById('fUrgent').checked;
+      const needs = document.getElementById('fNeeds').checked;
+      const inprog = document.getElementById('fInProg').checked;
+      const backlog = document.getElementById('fBacklog').checked;
+      if (s === 'urgent') return urgent;
+      if (s === 'needs_ev') return needs;
+      if (s === 'in_progress') return inprog;
+      if (s === 'backlog') return backlog;
+      return true;
+    }
+
+    function renderRows() {
+      const burnOnly = document.getElementById('fBurn').checked;
+      const q = (document.getElementById('search').value || '').trim().toLowerCase();
+      const tasks = (DATA.all_tasks_ranked || []).filter(t => {
+        if (!sectionEnabled(t)) return false;
+        if (burnOnly && !(t.daily_burn && t.daily_burn > 0)) return false;
+        if (q && !clean(t.text).toLowerCase().includes(q)) return false;
+        return true;
+      });
+      document.getElementById('rows').innerHTML = tasks
+        .slice(0, 60)
+        .map((t, idx) => {
+          const burn = (t.daily_burn && t.daily_burn > 0) ? `<span class="warn">${fmtMoney(t.daily_burn)}</span>` : '—';
+          const dl = t.deadline
+            ? (t.days_to_deadline !== null && t.days_to_deadline !== undefined
+              ? (t.days_to_deadline <= 0 ? `${t.deadline} (OVERDUE)` : `${t.deadline} (D-${t.days_to_deadline})`)
+              : t.deadline)
+            : '—';
+          return `
+            <tr>
+              <td>${idx + 1}</td>
+              <td>${clean(t.section_label)}</td>
+              <td class="task">${clean(t.text)}</td>
+              <td>${t.days ?? '—'}</td>
+              <td>${fmtMoney(t.amount)}</td>
+              <td>${burn}</td>
+              <td>${dl}</td>
+              <td>${t.est_minutes}m</td>
+              <td>${t.score}</td>
+            </tr>
+          `;
+        }).join('') || `<tr><td colspan="9" class="muted">No tasks matched the filter.</td></tr>`;
+    }
+
+    function renderContext() {
+      const ctx = DATA.memory_context || [];
+      document.getElementById('ctx').innerHTML = ctx.map(c => `<li>${c}</li>`).join('') || '<li class="muted">No memory context found.</li>';
+    }
+
+    function renderFreshness() {
+      const freshness = DATA.freshness || {};
+      const sources = freshness.sources || [];
+      const items = [
+        `<li><b>Status:</b> ${String(freshness.status || 'unknown').toUpperCase()}</li>`,
+        `<li><b>Newest source edit:</b> ${freshness.newest_source_at || '—'}</li>`,
+        `<li><b>Build lag vs newest source:</b> ${freshness.lag_minutes ?? 0} min</li>`,
+        ...sources.slice(0, 6).map(s => `<li>${s.label} — ${s.updated_at} (${s.age_minutes} min old)</li>`)
+      ];
+      document.getElementById('freshnessList').innerHTML = items.join('');
+    }
+
+    function renderFocusLists() {
+      const focus = DATA.focus || {};
+      const paint = (id, items, formatter) => {
+        document.getElementById(id).innerHTML = (items || []).map(formatter).join('') || '<li class="muted">Nothing surfaced.</li>';
+      };
+      paint('blockerList', focus.blockers, (t) => `<li>${clean(t.text)}</li>`);
+      paint('customerList', focus.customer_risk, (t) => `<li>${clean(t.text)}</li>`);
+      paint('deadlineList', focus.deadlines, (t) => {
+        const dl = t.deadline
+          ? (t.days_to_deadline !== null && t.days_to_deadline !== undefined
+            ? (t.days_to_deadline <= 0 ? `${t.deadline} (OVERDUE)` : `${t.deadline} (D-${t.days_to_deadline})`)
+            : t.deadline)
+          : 'No explicit date';
+        return `<li><b>${dl}</b> — ${clean(t.text)}</li>`;
+      });
+      paint('burnList', focus.burn, (t) => `<li><b>${fmtMoney(t.daily_burn)}/day</b> — ${clean(t.text)}</li>`);
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).catch(() => {
+        // fallback: prompt
+        window.prompt('Copy this text:', text);
+      });
+    }
+
+    function wireCopyButtons() {
+      document.getElementById('copyTop').addEventListener('click', () => {
+        const top = (DATA.top_actions || []).slice(0, 8);
+        const lines = [
+          `Morning Ops — ${DATA.date} (${DATA.generated_at})`,
+          '',
+          ...top.map((t, i) => `- [ ] ${i+1}. ${clean(t.text)} (${t.est_minutes}m)`),
+          ''
+        ];
+        copyText(lines.join('
+'));
+      });
+      document.getElementById('copyBlock').addEventListener('click', () => {
+        const block = (DATA.top_actions || []).slice(0, 4);
+        const lines = [
+          `90-min block — ${DATA.date}`,
+          '',
+          ...block.map(t => `- [ ] ${clean(t.text)} (${t.est_minutes}m)`),
+          ''
+        ];
+        copyText(lines.join('
+'));
+      });
+      document.getElementById('copyBlockers').addEventListener('click', () => {
+        const items = (DATA.focus?.blockers || []).slice(0, 8);
+        copyText([`Unblockers — ${DATA.date}`, '', ...items.map(t => `- [ ] ${clean(t.text)}`), ''].join('
+'));
+      });
+      document.getElementById('copyCustomer').addEventListener('click', () => {
+        const items = (DATA.focus?.customer_risk || []).slice(0, 8);
+        copyText([`Customer risk — ${DATA.date}`, '', ...items.map(t => `- [ ] ${clean(t.text)}`), ''].join('
+'));
+      });
+    }
+
+    function wireFilters() {
+      for (const id of ['fUrgent','fNeeds','fInProg','fBacklog','fBurn']) {
+        document.getElementById(id).addEventListener('change', renderRows);
+      }
+      document.getElementById('search').addEventListener('input', () => {
+        // small debounce
+        clearTimeout(window.__t);
+        window.__t = setTimeout(renderRows, 80);
+      });
+    }
+
+    renderCards();
+    renderTop();
+    renderFreshness();
+    renderContext();
+    renderFocusLists();
+    renderRows();
+    wireCopyButtons();
+    wireFilters();
+  </script>
+</body>
+</html>

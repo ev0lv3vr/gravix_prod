@@ -1,0 +1,42 @@
+OPS BUILD BRIEF — 2026-04-18
+Generated: 2026-04-17 23:02 PDT
+
+Artifacts:
+- reports/morning-ops-hub-latest.html
+- reports/morning-priority-pack-latest.md
+- reports/ops-debt-dashboard-latest.html
+- reports/ads-pull-dashboard-latest.html
+
+Amazon Ads daily pull (local status):
+- Latest day: 2026-04-16
+- Latest status: DEGRADED (failed: campaigns, keywords)
+- Current invalid streak: 2
+- Latest pull log: logs/ads-daily/2026-04-12/00_status_summary.log
+
+Ops debt (from ops-debt.json):
+- Open items: 11 (active/critical: 9)
+- Daily burn (true): $33/day
+- Accrued (open): $3,197.54
+- 30-day burn exposure: $990
+- One-time dollars open: $1,715.54
+
+KANBAN queue depth:
+- 🔴 Urgent: 5
+- 🟡 Needs Ev: 16
+- 🔵 In progress: 4
+- 📋 Backlog: 10
+- Total open tasks ranked: 35
+
+Top 8 morning actions (ranked):
+1. **ShipBob UROs** — 56+ days, ~$1K accrued ($18/day). Harsh Khanna escalated 3/26. (25m)
+2. **Insurance audit** — 63+ days overdue. Ashlin Hadden / Veracity. Data ready ($637K). Ev must submit PDF. (20m)
+3. **Amazon CA suppressed** — 18+ days, ~$270+ lost ($15/day). Needs WHMIS SDS submission. **Blocked:** Seller Central access (OpenClaw browser currently logged out; user Chrome attach requires Chrome running). (18m)
+4. **Heather (Amazon)** — 20+ days no reply. A-to-Z claim risk. **Details recovered** (Himalaya msg id **191366**, 2026-03-24, Order **114-0636756-1872255**): buyer says **they have not received an update from Amazon nor a replacement**. Draft path: `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md` (**updated 2026-04-13**, ready to send once logged in). (8m)
+5. **Shopify API dead** — 42+ days. No inventory visibility. Needs token regen. (20m)
+6. **Teikametrics $149** — they replied 4/8: **no refund** (claims cancellation was 2 days into cycle); promised no further billing + stop pacing emails, but pacing email still arrived (e.g. **4/9 msg id 191754**). **Chargeback deadline (Apr 14 EOD) has passed** → Ev: check if bank still allows; otherwise treat as sunk + ensure no more billing. (7m)
+7. **Donaldson $2,340** — paid, needs to ship. 1801 W Vine St, Harrisonville MO 64701. Weekend lost. Note: procurement says they’re **closed May 25 (Memorial Day)** → **don’t schedule deliveries** that date. NET30 request is generally possible (submit justification). **EOD:** still pending shipping execution. (20m)
+8. **A3 Partners PO 28** — UPS ETA Apr 3. Invoice $3,312.37 due 4/25. (20m)
+
+Build again:
+- ./scripts/ops_build.py
+

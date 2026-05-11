@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Morning Customer Desk — 2026-04-29</title>
+<style>
+:root {--bg:#0A1628;--surface:#111B2E;--border:#1E293B;--text:#fff;--muted:#94A3B8;--accent:#3B82F6;}
+*{box-sizing:border-box} body{margin:0;padding:24px;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,sans-serif}
+.wrap{max-width:1200px;margin:0 auto} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.card,.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px}
+.k{color:var(--muted);font-size:12px} .v{font-size:26px;font-weight:750;margin-top:4px} .meta,.muted{color:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px} @media (max-width: 900px){.two{grid-template-columns:1fr}}
+ul{margin:8px 0 0 18px} li{margin:7px 0} button{background:var(--accent);border:none;color:white;border-radius:10px;padding:8px 10px;font-weight:650;cursor:pointer} a{color:#93C5FD} .badge{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:2px 8px;font-size:12px;color:var(--muted);margin-left:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Morning Customer Desk</h1>
+  <div class="muted">2026-04-28 23:05 PDT · customer/B2B reply queue with draft refs and missing-info flags</div>
+  <p><a href="./morning-ops-hub-latest.html">Open full ops hub</a> · <a href="./morning-decision-desk-latest.html">Decision desk</a> · <a href="../BUSINESS_STATE.md">Business State</a></p>
+  <p><button id="copyBtn">Copy hot reply list</button></p>
+  <div class="grid"><div class='card'><div class='k'>Queue</div><div class='v'>15</div></div><div class='card'><div class='k'>Hot risks</div><div class='v'>2</div></div><div class='card'><div class='k'>Draft-ready</div><div class='v'>2</div></div><div class='card'><div class='k'>Needs info</div><div class='v'>4</div></div><div class='card'><div class='k'>Money visible</div><div class='v'>$1,513.23</div></div></div>
+  <div class="two">
+    <div class='panel'><h3>Hot risks first</h3><ul><li><b>Michael Nasholm</b> — 20% partial refund was promised but not done; customer followed up. <span class='badge'>needs_reply</span></li><li><b>Heather / Amazon</b> — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. <span class='meta'>· msgs 191366</span> <span class='meta'>· moneysamurai/drafts/b2b-email-drafts-2026-03-24.md</span> <span class='badge'>draft_ready</span></li></ul></div>
+    <div class='panel'><h3>Draft-backed replies</h3><ul><li><b>Heather / Amazon</b> — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. <span class='meta'>· msgs 191366</span> <span class='meta'>· moneysamurai/drafts/b2b-email-drafts-2026-03-24.md</span> <span class='badge'>draft_ready</span></li><li><b>Eric Patrick</b> — asked how to open 8oz bottle. Draft exists at `moneysamurai/drafts/customer-replies-2026-04-09.md`; source msg **5941**. <span class='meta'>· msgs 5941</span> <span class='meta'>· moneysamurai/drafts/customer-replies-2026-04-09.md</span> <span class='badge'>draft_ready</span></li></ul></div>
+  </div>
+  <div class="two">
+    <div class='panel'><h3>Needs info before reply</h3><ul><li><b>Ethan Miller</b> — order **#5786**, 4× Thick 16oz replacement not created at ShipBob. <span class='badge'>needs_info</span></li><li><b>Antonio Gutierrez</b> — order **#6000**, asks if shipped + ship date. Draft exists, needs shipping fields; source msg **5930**. <span class='meta'>· msgs 5930</span> <span class='badge'>needs_info</span></li><li><b>Dynasty Global / Eli</b> — dealer inquiry; needs Ev decision. <span class='badge'>needs_info</span></li><li><b>Jason F return</b> — decision pending. <span class='badge'>needs_info</span></li></ul></div>
+    <div class='panel'><h3>Full queue</h3><ul><li><b>Michael Nasholm</b> — 20% partial refund was promised but not done; customer followed up. <span class='badge'>needs_reply</span></li><li><b>Heather / Amazon</b> — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. <span class='meta'>· msgs 191366</span> <span class='meta'>· moneysamurai/drafts/b2b-email-drafts-2026-03-24.md</span> <span class='badge'>draft_ready</span></li><li><b>Sam Tillery</b> — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**. <span class='meta'>· msgs 6061</span> <span class='badge'>needs_reply</span></li><li><b>Walmart unshipped order</b> — auto-cancel risk. <span class='badge'>needs_reply</span></li><li><b>Christopher Webber</b> — B2B inquiry stale. <span class='badge'>needs_reply</span></li><li><b>Ethan Miller</b> — order **#5786**, 4× Thick 16oz replacement not created at ShipBob. <span class='badge'>needs_info</span></li><li><b>Josh Mintz</b> — 8oz Medium sample to New Orleans overdue. <span class='badge'>needs_reply</span></li><li><b>KMS LLC / Brittni</b> — wholesale distributor inquiry stale. <span class='badge'>needs_reply</span></li><li><b>TikTok/Amazon influencer outreach</b> — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**. <span class='meta'>· msgs 6066</span> <span class='badge'>watch</span></li><li><b>Gemifly LLC</b> — **$1,513.23** PayPal invoice outstanding. <span class='meta'>· $1,513.23</span> <span class='badge'>watch</span></li><li><b>Antonio Gutierrez</b> — order **#6000**, asks if shipped + ship date. Draft exists, needs shipping fields; source msg **5930**. <span class='meta'>· msgs 5930</span> <span class='badge'>needs_info</span></li><li><b>Dynasty Global / Eli</b> — dealer inquiry; needs Ev decision. <span class='badge'>needs_info</span></li><li><b>Eric Patrick</b> — asked how to open 8oz bottle. Draft exists at `moneysamurai/drafts/customer-replies-2026-04-09.md`; source msg **5941**. <span class='meta'>· msgs 5941</span> <span class='meta'>· moneysamurai/drafts/customer-replies-2026-04-09.md</span> <span class='badge'>draft_ready</span></li><li><b>Jason F return</b> — decision pending. <span class='badge'>needs_info</span></li><li><b>Jeremy Embry / Aquarium Artisans</b> — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**. <span class='meta'>· msgs 6046</span> <span class='badge'>watch</span></li></ul></div>
+  </div>
+</div>
+<script>
+const text = "Customer desk \u2014 2026-04-29\n\n- [ ] Michael Nasholm \u2014 20% partial refund was promised but not done; customer followed up.\n- [ ] Heather / Amazon \u2014 A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.";
+document.getElementById('copyBtn').addEventListener('click', () => navigator.clipboard.writeText(text).catch(() => window.prompt('Copy this text:', text)));
+</script>
+</body>
+</html>

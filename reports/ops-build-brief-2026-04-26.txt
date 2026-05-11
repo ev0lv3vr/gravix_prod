@@ -1,0 +1,63 @@
+OPS BUILD BRIEF — 2026-04-26
+Generated: 2026-04-25 23:04 PDT
+
+Artifacts:
+- reports/morning-ops-hub-latest.html
+- reports/morning-priority-pack-latest.md
+- reports/ops-debt-dashboard-latest.html
+- reports/ads-pull-dashboard-latest.html
+- reports/ads-pull-incident-latest.html
+- reports/morning-handoff-latest.html
+- reports/morning-decision-desk-latest.html
+- latest cron-watchlist-*.html (dated report)
+- reports/cron-trend-report-latest.html
+
+Amazon Ads daily pull (local status):
+- Latest day: 2026-04-24
+- Latest status: OK (failed: —)
+- Current invalid streak: 0
+- Latest pull log: logs/ads-daily/2026-04-24_060021.log
+
+Cron timeout watchlist:
+- Jobs scanned: 13
+- Critical: 1
+- High: 0
+- Medium: 1
+- Ready timeout patches: 3
+- Hottest job: ads-daily-pull (critical, last 1800057 ms on 1800 s timeout)
+
+Cron trend (multi-day):
+- Days compared: 3
+- Regressing jobs: 1
+- Improving jobs: 1
+- New risks: 0
+- Delta vs previous: critical 0, high 0, medium 0, patches 0
+- Worst regression: ads-daily-pull (ok → critical)
+
+Ops debt (from ops-debt.json):
+- Open items: 9 (active/critical: 7)
+- Daily burn (true): $0/day
+- Accrued (open): $1,715.54
+- 30-day burn exposure: $0
+- One-time dollars open: $1,715.54
+
+BUSINESS_STATE.md queue depth:
+- 🔴 Urgent: 6
+- 🟡 Needs Ev: 14
+- 🔵 In progress: 4
+- 📋 Backlog: 2
+- Total open tasks ranked: 26
+
+Top 8 morning actions (ranked):
+1. Jeremy Embry / Aquarium Artisans — Wants urgent CA + accelerator support for Monday aquascape job. Needs 16oz Medium + 16oz Thick with accelerator ASAP. Also wants 2oz Medium + 2oz Thick for store. Source: `sales` msg **6046**. (18m)
+2. Insurance audit — Overdue; data reportedly ready around **$637K**. Ev must submit/handle final PDF. (20m)
+3. American Express account/payment follow-up — Past-due notice for account ending **271002** came in earlier. New Amex emails show a **$1,000 payment received** (msg **192107**) but also a **transaction declined due to past-due status** shortly before/around processing (msg **192106**). A separate Amex statement-ready email also arrived for account ending **94007**, payment due **Tue May 19, 2026** (msg **192149**). Ev should verify the Amex balance/status directly in Amex, not through email links. Sources: `gluemasters` msgs **192094**, **192106**, **192107**, **192149**. (18m)
+4. **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (15m)
+5. **Walmart unshipped order** — auto-cancel risk. (25m)
+6. Donaldson onboarding — Rachael Fitzgerald says onboarding is almost finished. Needs either Quality/ISO certification copies or one final super-glue certification form. Donaldson AP also pushed back on **NET30** and asked whether Gluemasters will accept **NET60** for expected purchases around **3–4x/year**. Sources: `sales` msgs **6048**, **6060**. (18m)
+7. Amazon account security check — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg **192139**. (18m)
+8. Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. (20m)
+
+Build again:
+- ./scripts/ops_build.py
+

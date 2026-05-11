@@ -1,0 +1,39 @@
+# Morning Exception Desk — 2026-05-09
+
+Generated: 2026-05-09 14:00 PDT
+
+## Snapshot
+- Total findings: **13**
+- Past-dated active items: **9**
+- Amount parser risks: **0**
+- Urgent items missing source: **1**
+- Passive items still in urgent: **3**
+
+## Findings
+- **HIGH · stale_date · in_progress** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-05-05.
+  - B2B sample kits — Ev confirmed on **2026-05-05** that the boxes are done and kits are ready to be sent. Status: ready for outbound/send execution; do **not** list box production or kit assembly as blockers. Kit assets/collateral live under `gluemasters-bizdev/b2b-kit/`.
+- **HIGH · stale_date · in_progress** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-05-02.
+  - Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action.
+- **HIGH · stale_date · needs_ev** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-05-06.
+  - **Cute Things & Creative Concepts / Shohreh** — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on **Amazon** after the $16,030.20 quote. Ev sent a reply on **2026-05-06** saying **no Amazon resale authorization**; wait for her response. Sources: `sales` msgs **6087**, **6100**, **6101**, **6149**.
+- **HIGH · stale_date · needs_ev** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-05-07.
+  - **Garcor / Kyle Lawson** — sent attached purchase order **PO4046132.pdf** and asked us to process it and confirm receipt. PayPal invoice **1001-0244** for **$1,806.00** was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg **192403**, `sales` msgs **6165**, **6178**.
+- **HIGH · stale_date · needs_ev** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-05-08.
+  - **Gemifly LLC** — PayPal invoice **1001-0243** remains unpaid; PayPal reminder on 2026-05-08 shows **$7,424.15 due on receipt** (earlier sent notice showed **$7,449.98**). Track for payment / reconcile amount if needed. Earlier open amount listed was **$1,513.23**, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs **6134**, **6172**.
+- **HIGH · stale_date · needs_ev** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-04-27.
+  - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
+- **HIGH · stale_date · needs_ev** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-05-03, 2026-05-08.
+  - **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for **$41.84 + $15.00 fee** and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**, **6168**, **6170**.
+- **HIGH · stale_date · urgent** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-04-30, 2026-04-25, 2026-04-30.
+  - A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**.
+- **HIGH · stale_date · urgent** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-04-30.
+  - ICU Shopify upsell app token — In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: `sales` msg **6090**.
+- **MEDIUM · missing_source · urgent** — Urgent item lacks explicit source evidence/message reference.
+  - Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.
+- **MEDIUM · passive_urgent · urgent** — Passive/watch-only language is still living in the urgent lane.
+  - Amazon product safety / affiliate notices — Amazon flagged a **Thermos Stainless King food jar** order (**111-9829889-5064236**) with a stop-use / recall notice tied to a CPSC announcement. Amazon Associates/Influencer says account **redwaspnet-20** has been closed/rejected for over 3 years and a remaining **$114.30** balance will be forfeited after **7 days**; email says no action needed, but surface if Ev cares about recovering/appealing it. Source: `gluemasters` msg **192362**. Needs Ev review only if these personal/affiliate notices matter operationally; otherwise keep them low priority and do not let them crowd business-critical work. Sources: `gluemasters` msgs **192266**, **192362**.
+- **MEDIUM · passive_urgent · urgent** — Passive/watch-only language is still living in the urgent lane.
+  - Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs **192263**, **192271**.
+- **MEDIUM · passive_urgent · urgent** — Passive/watch-only language is still living in the urgent lane.
+  - Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard** and **late shipment 50% vs 5% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 46.15%** (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says **1 shipped order has a late origin scan** and needs carrier scan/tracking accuracy confirmed within **24 hours**; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. Sources: `gluemasters` msgs **192323**, **192326**, **192443**.
+

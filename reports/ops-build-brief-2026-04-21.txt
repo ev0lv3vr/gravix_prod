@@ -1,0 +1,51 @@
+OPS BUILD BRIEF — 2026-04-21
+Generated: 2026-04-20 23:03 PDT
+
+Artifacts:
+- reports/morning-ops-hub-latest.html
+- reports/morning-priority-pack-latest.md
+- reports/ops-debt-dashboard-latest.html
+- reports/ads-pull-dashboard-latest.html
+- latest cron-watchlist-*.html (dated report)
+
+Amazon Ads daily pull (local status):
+- Latest day: 2026-04-19
+- Latest status: DEGRADED (failed: campaigns, keywords)
+- Current invalid streak: 1
+- Latest pull log: logs/ads-daily/2026-04-12/00_status_summary.log
+
+Cron timeout watchlist:
+- Jobs scanned: 13
+- Critical: 1
+- High: 0
+- Medium: 1
+- Ready timeout patches: 3
+- Hottest job: gravix-aggregate-knowledge (critical, last 60067 ms on 60 s timeout)
+
+Ops debt (from ops-debt.json):
+- Open items: 11 (active/critical: 9)
+- Daily burn (true): $33/day
+- Accrued (open): $3,296.54
+- 30-day burn exposure: $990
+- One-time dollars open: $1,715.54
+
+KANBAN queue depth:
+- 🔴 Urgent: 4
+- 🟡 Needs Ev: 16
+- 🔵 In progress: 4
+- 📋 Backlog: 10
+- Total open tasks ranked: 34
+
+Top 8 morning actions (ranked):
+1. **ShipBob UROs** — 56+ days, ~$1K accrued ($18/day). Harsh Khanna escalated 3/26. (25m)
+2. **Insurance audit** — 63+ days overdue. Ashlin Hadden / Veracity. Data ready ($637K). Ev must submit PDF. (20m)
+3. **Heather (Amazon)** — 20+ days no reply. A-to-Z claim risk. **Details recovered** (Himalaya msg id **191366**, 2026-03-24, Order **114-0636756-1872255**): buyer says **they have not received an update from Amazon nor a replacement**. Draft path: `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md` (**updated 2026-04-13**, ready to send once logged in). (8m)
+4. **Shopify API dead** — 42+ days. No inventory visibility. Needs token regen. (20m)
+5. **Teikametrics $149** — they replied 4/8: **no refund** (claims cancellation was 2 days into cycle); promised no further billing + stop pacing emails, but pacing email still arrived (e.g. **4/9 msg id 191754**). **Chargeback deadline (Apr 14 EOD) has passed** → Ev: check if bank still allows; otherwise treat as sunk + ensure no more billing. (7m)
+6. **A3 Partners PO 28** — UPS ETA Apr 3. Invoice $3,312.37 due 4/25. (20m)
+7. **Walmart unshipped order** — auto-cancel risk. (25m)
+8. **Josh Mintz** — 8oz Medium sample to New Orleans, overdue since 3/24 (12 days). (15m)
+
+Build again:
+- ./scripts/ops_build.py
+

@@ -1,0 +1,4 @@
+\n===== 01_pull_reports =====
+python3 -u moneysamurai/scripts/ads-daily-pull.py
+(log: /Users/evolve/.openclaw/workspace/runs/ads-daily-pull/20260411T130027Z/01_pull_reports.log)
+

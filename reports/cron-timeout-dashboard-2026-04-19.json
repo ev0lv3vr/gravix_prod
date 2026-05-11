@@ -1,0 +1,186 @@
+{
+  "generated_at": "2026-04-19 17:45 America/Los_Angeles",
+  "title": "Nightly cron timeout triage",
+  "summary": {
+    "jobs_in_scope": 3,
+    "jobs_currently_degraded": 3,
+    "latest_pattern": "hard timeout at ~60000 ms",
+    "likely_root_cause": "cron wrapper budget too small for intermittent network/auth work",
+    "confidence": "medium-high"
+  },
+  "jobs": [
+    {
+      "name": "gravix-aggregate-knowledge",
+      "job_id": "4b6e8fa4-c145-4a72-9496-74ebfb9a0683",
+      "status": "degraded",
+      "schedule": "daily 04:00 PT",
+      "last_ok_duration_ms": 23157,
+      "latest_timeout_at": "2026-04-17 04:01 PT",
+      "timeouts": 4,
+      "last_runs": [
+        {
+          "at": "2026-04-17 04:01 PT",
+          "status": "error",
+          "duration_ms": 60080,
+          "note": "hard timeout"
+        },
+        {
+          "at": "2026-04-16 04:00 PT",
+          "status": "ok",
+          "duration_ms": 23157,
+          "note": "aggregate-knowledge + aggregate-metrics both returned 200"
+        },
+        {
+          "at": "2026-04-15 04:00 PT",
+          "status": "ok",
+          "duration_ms": 22376,
+          "note": "healthy baseline"
+        },
+        {
+          "at": "2026-04-03 04:01 PT",
+          "status": "error",
+          "duration_ms": 60016,
+          "note": "hard timeout"
+        },
+        {
+          "at": "2026-04-02 04:01 PT",
+          "status": "error",
+          "duration_ms": 60016,
+          "note": "hard timeout"
+        },
+        {
+          "at": "2026-04-01 04:00 PT",
+          "status": "ok",
+          "duration_ms": 53861,
+          "note": "near the timeout ceiling even when successful"
+        }
+      ],
+      "findings": [
+        "Healthy runs usually finish in 15-25s.",
+        "Timeout failures clamp almost exactly at 60s, which points to wrapper/runtime budget, not random app exceptions.",
+        "One successful run landed at 53.8s, proving the job can get dangerously close to the ceiling under normal conditions.",
+        "The underlying Gravix cron endpoints already log to cron_run_log in the API, so backend-side timing can be inspected separately tomorrow."
+      ],
+      "next_actions": [
+        "Bump cron timeout budget above 60s for this job before changing business logic.",
+        "Split summary work from endpoint execution if the cron framework is spending part of the 60s budget on narration/delivery.",
+        "Query Gravix cron_run_log for the matching timestamps to confirm whether the backend finished after the wrapper timed out or never reached completion."
+      ]
+    },
+    {
+      "name": "gravix-send-followups",
+      "job_id": "47169cc0-9df9-4539-bdec-60405109e017",
+      "status": "degraded",
+      "schedule": "daily 10:00 PT",
+      "last_ok_duration_ms": 32123,
+      "latest_timeout_at": "2026-04-17 10:01 PT",
+      "timeouts": 5,
+      "last_runs": [
+        {
+          "at": "2026-04-17 10:01 PT",
+          "status": "error",
+          "duration_ms": 60073,
+          "note": "hard timeout"
+        },
+        {
+          "at": "2026-04-16 10:00 PT",
+          "status": "ok",
+          "duration_ms": 32123,
+          "note": "HTTP 200 with {sent:0,pending:0}"
+        },
+        {
+          "at": "2026-04-15 10:00 PT",
+          "status": "ok",
+          "duration_ms": 23589,
+          "note": "healthy baseline"
+        },
+        {
+          "at": "2026-04-04 10:01 PT",
+          "status": "error",
+          "duration_ms": 60014,
+          "note": "hard timeout"
+        },
+        {
+          "at": "2026-04-03 10:01 PT",
+          "status": "error",
+          "duration_ms": 60012,
+          "note": "hard timeout"
+        },
+        {
+          "at": "2026-03-27 10:00 PT",
+          "status": "ok",
+          "duration_ms": 33698,
+          "note": "sent 5 followups successfully"
+        }
+      ],
+      "findings": [
+        "Success cases sit around 10-34s, including days when real followup emails were sent.",
+        "Failures are again pinned at ~60s, same signature as the other broken jobs.",
+        "Because this job can send actual emails, extending budget is lower risk than changing the followup query/sending logic blind."
+      ],
+      "next_actions": [
+        "Increase timeout budget first.",
+        "If failures persist, instrument send_pending_followups() with per-phase timing: candidate fetch, email render, send loop, final DB update.",
+        "Check whether any provider call is blocking when there are zero sends due, since healthy runs with sent:0 still sometimes take 20-30s."
+      ]
+    },
+    {
+      "name": "moneysamurai-sync-trigger",
+      "job_id": "c6565127-2875-4a1d-be8f-1c0021dd0ade",
+      "status": "degraded",
+      "schedule": "every 2h-ish trigger loop",
+      "last_ok_duration_ms": 45543,
+      "latest_timeout_at": "2026-04-18 15:02 PT",
+      "timeouts": 19,
+      "last_runs": [
+        {
+          "at": "2026-04-18 15:02 PT",
+          "status": "ok",
+          "duration_ms": 45543,
+          "note": "latest successful trigger"
+        },
+        {
+          "at": "2026-04-17 13:02 PT",
+          "status": "error",
+          "duration_ms": 60086,
+          "note": "hard timeout"
+        },
+        {
+          "at": "2026-04-17 11:01 PT",
+          "status": "ok",
+          "duration_ms": 26250,
+          "note": "healthy trigger"
+        },
+        {
+          "at": "2026-04-17 09:02 PT",
+          "status": "error",
+          "duration_ms": 60079,
+          "note": "hard timeout"
+        },
+        {
+          "at": "2026-04-17 07:01 PT",
+          "status": "ok",
+          "duration_ms": 39058,
+          "note": "healthy trigger"
+        },
+        {
+          "at": "2026-04-16 22:59 PT",
+          "status": "ok",
+          "duration_ms": 54634,
+          "note": "dangerously close to timeout ceiling"
+        }
+      ],
+      "findings": [
+        "This job is the noisiest: many successes between 25-56s and many failures pinned at ~60s.",
+        "The business action usually succeeds once the script gets through auth and trigger POST; failures correlate with a long preflight chain rather than trigger rejection.",
+        "Historical summaries show schema mismatches in cleanup logic: code tried public.sync_status and sync_jobs.error_message, but working paths were amazon_accounts.sync_status and sync_jobs.error.",
+        "That mismatch likely adds avoidable retries/noise and burns precious time inside the 60s wrapper."
+      ],
+      "next_actions": [
+        "Trim the preflight/reset path so it only touches known-good tables/columns.",
+        "Keep auth-token generation and trigger POST, but move optional cleanup to a best-effort fast path or separate maintenance job.",
+        "Raise timeout budget above 60s anyway, because even successful runs routinely exceed 45s."
+      ]
+    }
+  ]
+}

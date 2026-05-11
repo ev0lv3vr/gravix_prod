@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Morning Ops Hub — 2026-04-14</title>
+  <style>
+    :root {--bg:#0A1628;--surface:#111B2E;--surface2:#0F1A2C;--accent:#3B82F6;--text:#fff;--muted:#94A3B8;--border:#1E293B;--good:#22c55e;--bad:#ef4444;}
+    *{box-sizing:border-box} body{margin:0;padding:24px;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,sans-serif}
+    h1{margin:0 0 6px} .sub{color:var(--muted);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .wrap{max-width:1200px;margin:0 auto}
+    .links{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 18px}
+    a.link{color:#93C5FD;text-decoration:none;background:#102446;border:1px solid var(--border);padding:6px 10px;border-radius:10px;font-size:13px}
+    a.link:hover{border-color:#2b3a52}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0 18px}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px}
+    .k{color:var(--muted);font-size:12px} .v{font-size:26px;font-weight:750;margin-top:4px}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:12px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{display:inline-flex;gap:8px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:13px;color:var(--muted)}
+    .pill input{accent-color:var(--accent)}
+    input[type="text"]{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px;min-width:260px}
+    button{background:var(--accent);border:none;color:white;border-radius:10px;padding:8px 10px;font-weight:650;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid var(--border);color:var(--text)}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+    th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+    .muted{color:var(--muted)}
+    .badge{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:2px 8px;font-size:12px;color:var(--muted)}
+    .task{white-space:pre-wrap}
+    .ok{color:var(--good)} .warn{color:var(--bad)}
+    ul{margin:8px 0 0 18px} li{margin:6px 0;color:var(--muted)}
+    code{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:12px;color:#93C5FD}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Morning Ops Hub</h1>
+    <div class="sub">
+      <span class="badge">2026-04-14</span>
+      <span class="muted">Generated: 2026-04-13 23:09 PDT</span>
+      <span class="muted">·</span>
+      <span class="muted">Local file friendly (no fetch)</span>
+    </div>
+
+    <div class="links"><a class='link' href='../KANBAN.md' target='_blank' rel='noreferrer'>KANBAN</a><a class='link' href='./morning-priority-pack-latest.md' target='_blank' rel='noreferrer'>Priority Pack (latest)</a><a class='link' href='./morning-execution-board-latest.html' target='_blank' rel='noreferrer'>Execution Board (latest)</a><a class='link' href='./morning-execution-board-latest.json' target='_blank' rel='noreferrer'>Execution Board JSON (latest)</a><a class='link' href='./ops-debt-dashboard-latest.html' target='_blank' rel='noreferrer'>Ops Debt Dashboard (latest)</a><a class='link' href='./' target='_blank' rel='noreferrer'>Reports folder</a></div>
+
+    <div id="cards" class="grid"></div>
+
+    <div class="panel">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <div style="font-weight:750;margin-bottom:4px">Top 8 (copy/paste checklist)</div>
+          <div class="muted">This is what you do first. If you only do 4: do the first 4.</div>
+        </div>
+        <div class="row">
+          <button id="copyTop">Copy top 8</button>
+          <button id="copyBlock" class="secondary">Copy 90-min block</button>
+        </div>
+      </div>
+      <ul id="topList"></ul>
+    </div>
+
+    <div class="panel">
+      <div class="row" style="justify-content:space-between;gap:14px">
+        <div class="row">
+          <span class="pill"><input id="fUrgent" type="checkbox" checked /> 🔴 Urgent</span>
+          <span class="pill"><input id="fNeeds" type="checkbox" checked /> 🟡 Needs Ev</span>
+          <span class="pill"><input id="fInProg" type="checkbox" checked /> 🔵 In Progress</span>
+          <span class="pill"><input id="fBacklog" type="checkbox" /> 📋 Backlog</span>
+          <span class="pill"><input id="fBurn" type="checkbox" /> Burn/day only</span>
+        </div>
+        <div class="row">
+          <input id="search" type="text" placeholder="Search tasks (e.g. heather, refund, shipbob, sds)" />
+        </div>
+      </div>
+      <div style="height:10px"></div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Section</th>
+            <th>Task</th>
+            <th>Days</th>
+            <th>Amount</th>
+            <th>Burn/day</th>
+            <th>Deadline</th>
+            <th>ETA</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div style="font-weight:750;margin-bottom:6px">Recent memory context</div>
+      <ul id="ctx"></ul>
+    </div>
+
+    <div class="panel">
+      <div class="muted">Pro tip: to refresh all these artifacts, run:</div>
+      <div><code>python3 scripts/kanban_morning_builder.py</code></div>
+    </div>
+  </div>
+
+  <script>
+    const DATA = {"date": "2026-04-14", "generated_at": "2026-04-13 23:09 PDT", "total_open": 34, "section_counts": {"urgent": 5, "needs_ev": 15, "in_progress": 4, "backlog": 10}, "top_actions": [{"section": "urgent", "section_label": "🔴 URGENT", "text": "**ShipBob UROs** — 56+ days, ~$1K accrued ($18/day). Harsh Khanna escalated 3/26.", "days": 56, "amount": 1000.0, "daily_burn": 18.0, "deadline": null, "days_to_deadline": null, "score": 107.53, "est_minutes": 25}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "**Insurance audit** — 63+ days overdue. Ashlin Hadden / Veracity. Data ready ($637K). Ev must submit PDF.", "days": 63, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 94.1, "est_minutes": 20}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "**Amazon CA suppressed** — 18+ days, ~$270+ lost ($15/day). Needs WHMIS SDS submission. **Blocked:** Seller Central access (OpenClaw browser currently logged out; user Chrome attach requires Chrome running).", "days": 18, "amount": 270.0, "daily_burn": 15.0, "deadline": null, "days_to_deadline": null, "score": 83.85, "est_minutes": 18}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "**Heather (Amazon)** — 20+ days no reply. A-to-Z claim risk. **Details recovered** (Himalaya msg id **191366**, 2026-03-24, Order **114-0636756-1872255**): buyer says **they have not received an update from Amazon nor a replacement**. Draft path: `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md` (**updated 2026-04-13**, ready to send once logged in).", "days": 20, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 74.0, "est_minutes": 8}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "**Shopify API dead** — 42+ days. No inventory visibility. Needs token regen.", "days": 42, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 69.4, "est_minutes": 20}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Teikametrics $149** — they replied 4/8: **no refund** (claims cancellation was 2 days into cycle); promised no further billing + stop pacing emails, but pacing email still arrived (e.g. **4/9 msg id 191754**). Ev decide: chargeback by **Apr 14**.", "days": 2, "amount": 149.0, "daily_burn": null, "deadline": "2026-04-14", "days_to_deadline": 1, "score": 51.64, "est_minutes": 7}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "**A3 Partners PO 28** — UPS ETA Apr 3. Invoice $3,312.37 due 4/25.", "days": null, "amount": 3312.37, "daily_burn": null, "deadline": "2026-04-25", "days_to_deadline": 12, "score": 45.6, "est_minutes": 20}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Donaldson $2,340** — paid, needs to ship. 1801 W Vine St, Harrisonville MO 64701. Weekend lost.", "days": null, "amount": 2340.0, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 44.5, "est_minutes": 25}], "all_tasks_ranked": [{"section": "urgent", "section_label": "🔴 URGENT", "text": "**ShipBob UROs** — 56+ days, ~$1K accrued ($18/day). Harsh Khanna escalated 3/26.", "days": 56, "amount": 1000.0, "daily_burn": 18.0, "deadline": null, "days_to_deadline": null, "score": 107.53, "est_minutes": 25}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "**Insurance audit** — 63+ days overdue. Ashlin Hadden / Veracity. Data ready ($637K). Ev must submit PDF.", "days": 63, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 94.1, "est_minutes": 20}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "**Amazon CA suppressed** — 18+ days, ~$270+ lost ($15/day). Needs WHMIS SDS submission. **Blocked:** Seller Central access (OpenClaw browser currently logged out; user Chrome attach requires Chrome running).", "days": 18, "amount": 270.0, "daily_burn": 15.0, "deadline": null, "days_to_deadline": null, "score": 83.85, "est_minutes": 18}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "**Heather (Amazon)** — 20+ days no reply. A-to-Z claim risk. **Details recovered** (Himalaya msg id **191366**, 2026-03-24, Order **114-0636756-1872255**): buyer says **they have not received an update from Amazon nor a replacement**. Draft path: `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md` (**updated 2026-04-13**, ready to send once logged in).", "days": 20, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 74.0, "est_minutes": 8}, {"section": "urgent", "section_label": "🔴 URGENT", "text": "**Shopify API dead** — 42+ days. No inventory visibility. Needs token regen.", "days": 42, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 69.4, "est_minutes": 20}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Teikametrics $149** — they replied 4/8: **no refund** (claims cancellation was 2 days into cycle); promised no further billing + stop pacing emails, but pacing email still arrived (e.g. **4/9 msg id 191754**). Ev decide: chargeback by **Apr 14**.", "days": 2, "amount": 149.0, "daily_burn": null, "deadline": "2026-04-14", "days_to_deadline": 1, "score": 51.64, "est_minutes": 7}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "**A3 Partners PO 28** — UPS ETA Apr 3. Invoice $3,312.37 due 4/25.", "days": null, "amount": 3312.37, "daily_burn": null, "deadline": "2026-04-25", "days_to_deadline": 12, "score": 45.6, "est_minutes": 20}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Donaldson $2,340** — paid, needs to ship. 1801 W Vine St, Harrisonville MO 64701. Weekend lost.", "days": null, "amount": 2340.0, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 44.5, "est_minutes": 25}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Walmart unshipped order** — auto-cancel risk.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 44.0, "est_minutes": 25}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Josh Mintz** — 8oz Medium sample to New Orleans, overdue since 3/24 (12 days).", "days": 12, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 43.4, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Gemifly LLC** — $1,513.23 PayPal invoice outstanding (auto-reminder sent 4/3).", "days": null, "amount": 1513.23, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 37.61, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**KMS LLC (Brittni)** — wholesale distributor, 15+ days silence.", "days": 15, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 35.5, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Christopher Webber** — B2B inquiry, 11+ days.", "days": 11, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 32.7, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Jason F return** — decision pending.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 29.0, "est_minutes": 10}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Vercel billing** — $53.31 card retry.", "days": null, "amount": 53.31, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.44, "est_minutes": 15}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Reply: Eric Patrick (Shopify contact form)** — asked how to open 8oz bottle (inner plastic cap/plug). Email: epatrick@americansteelfabllc.com, phone 248-941-8433. Draft ready (`moneysamurai/drafts/customer-replies-2026-04-09.md`), msg id **5941**.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 8}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Reply: Antonio Gutierrez (Shopify)** — order **#6000**: asking if shipped + ship date. Email: gluemasters@vividcreativeaquatics.com, phone 602-284-2106. Draft ready (`moneysamurai/drafts/customer-replies-2026-04-09.md`), msg id **5930** (needs ship status fields filled).", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 8}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Michael Nasholm** — 20% partial refund on Shopify PROMISED, NOT DONE. Customer followed up 4/3.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 7}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Dynasty Global (Eli)** — dealer inquiry, Ev decision needed.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 10}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Ethan Miller** — order #5786, 4× Thick 16oz replacement not created at ShipBob.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 25}, {"section": "needs_ev", "section_label": "🟡 NEEDS EV", "text": "**Claude/Anthropic billing** — billing block hit earlier cron run; fix billing/credits or switch affected jobs to another model.", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 25.0, "est_minutes": 15}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "**Amazon PPC** — 11 campaigns, ~$773/day spend, 2.42× ROAS, 41% ACoS.", "days": null, "amount": 773.0, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 20.44, "est_minutes": 20}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "**Designcoffers** — pump accelerator label revisions (Fiverr).", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 14.0, "est_minutes": 20}, {"section": "in_progress", "section_label": "🔵 IN PROGRESS", "text": "**Ads daily pull** — ✅ **confirmed working 2026-04-12** (snapshot **2026-04-11**): campaigns (10) + keywords (97) + search-terms (308; 57 new) pulled successfully; digest + dashboard generated. Latest run logs: `logs/ads-daily/2026-04-12/01_pull_reports.log` + `04_generate_digest.log` + `05_dashboard_gen.log`. Code fix: `moneysamurai@93bbb4e` (fallbacks/chunking + better failure surfacing).", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 14.0, "est_minutes": 20}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "**2026-04-20** — Nudge Petite Keep (Kaylee Hobbs) re: reorder", "days": null, "amount": null, "daily_burn": null, "deadline": "2026-04-20", "days_to_deadline": 7, "score": 14.0, "est_minutes": 30}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "2oz Thick Auto budget increase ($25→$50/day)", "days": null, "amount": 25.0, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 6.21, "est_minutes": 30}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "Wire flywheel data into MoneySamurai PPC frontend", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 6.0, "est_minutes": 30}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "Back-in-stock notification app (Shopify)", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 6.0, "est_minutes": 30}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "Refund policy links to gravixadhesives.com (needs `write_legal_policies`)", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 6.0, "est_minutes": 7}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "Google Search Console sitemap submission", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 6.0, "est_minutes": 30}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "Opinew review import verification (1,183 reviews)", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 6.0, "est_minutes": 30}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "Bundle offers (needs product strategy)", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 6.0, "est_minutes": 30}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "B2B Batch 1 outreach (EDCO, Crown Awards, PersonalizationMall)", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 6.0, "est_minutes": 30}, {"section": "backlog", "section_label": "📋 BACKLOG", "text": "Oversold inventory: Gel 20g (-6), Thick 2oz (-1)", "days": null, "amount": null, "daily_burn": null, "deadline": null, "days_to_deadline": null, "score": 6.0, "est_minutes": 30}], "memory_context": ["2026-04-13.md: **Heather (Amazon) reply** (draft ready; needs send in Seller Central).", "2026-04-13.md: Ops backlog unchanged: insurance audit submission, ShipBob UROs, Shopify API token regen, Teikametrics chargeback decision (deadline **Apr 14**), and the rest of the customer/B2B reply queue.", "2026-04-12.md: All other high-risk ops items remain open (Heather reply send, insurance audit submission, ShipBob UROs, Shopify API token regen, Teikametrics chargeback decision, etc.).", "2026-04-11.md: Heather (Amazon) reply still pending (needs her original message details).", "2026-04-11.md: Heather reply can be finalized/sent now (still needs Ev to actually send).", "2026-04-11.md: Commit: `moneysamurai@93bbb4e` (needs a real run tomorrow morning to confirm it unblocks search-terms)."], "quick_math": {"one_time_total": 9435.91, "daily_burn_total": 33.0}};
+    const clean = (s) => (s || '').replaceAll('**', '');
+    const fmtMoney = (v) => {
+      if (v === null || v === undefined) return '—';
+      const rounded = Math.abs(v - Math.round(v)) < 0.0001;
+      return rounded ? `$${Math.round(v).toLocaleString()}` : `$${v.toFixed(2)}`;
+    };
+
+    function renderCards() {
+      const counts = DATA.section_counts || {};
+      const cards = [
+        { k: '🔴 Urgent', v: counts.urgent ?? 0 },
+        { k: '🟡 Needs Ev', v: counts.needs_ev ?? 0 },
+        { k: '🔵 In Progress', v: counts.in_progress ?? 0 },
+        { k: '📋 Backlog', v: counts.backlog ?? 0 },
+        { k: 'Total Open', v: DATA.total_open ?? 0 },
+        { k: 'One-time $ at stake', v: fmtMoney(DATA.quick_math?.one_time_total ?? null) },
+        { k: 'Daily burn', v: `$${Math.round(DATA.quick_math?.daily_burn_total ?? 0)}/d` },
+      ];
+      document.getElementById('cards').innerHTML = cards
+        .map(c => `<div class="card"><div class="k">${c.k}</div><div class="v">${c.v}</div></div>`)
+        .join('');
+    }
+
+    function renderTop() {
+      const top = (DATA.top_actions || []).slice(0, 8);
+      document.getElementById('topList').innerHTML = top
+        .map(t => `<li><b>${t.est_minutes}m</b> — ${clean(t.text)}</li>`)
+        .join('') || '<li class="muted">No tasks found.</li>';
+    }
+
+    function sectionEnabled(t) {
+      const s = t.section;
+      const urgent = document.getElementById('fUrgent').checked;
+      const needs = document.getElementById('fNeeds').checked;
+      const inprog = document.getElementById('fInProg').checked;
+      const backlog = document.getElementById('fBacklog').checked;
+      if (s === 'urgent') return urgent;
+      if (s === 'needs_ev') return needs;
+      if (s === 'in_progress') return inprog;
+      if (s === 'backlog') return backlog;
+      return true;
+    }
+
+    function renderRows() {
+      const burnOnly = document.getElementById('fBurn').checked;
+      const q = (document.getElementById('search').value || '').trim().toLowerCase();
+      const tasks = (DATA.all_tasks_ranked || []).filter(t => {
+        if (!sectionEnabled(t)) return false;
+        if (burnOnly && !(t.daily_burn && t.daily_burn > 0)) return false;
+        if (q && !clean(t.text).toLowerCase().includes(q)) return false;
+        return true;
+      });
+      document.getElementById('rows').innerHTML = tasks
+        .slice(0, 60)
+        .map((t, idx) => {
+          const burn = (t.daily_burn && t.daily_burn > 0) ? `<span class="warn">${fmtMoney(t.daily_burn)}</span>` : '—';
+          const dl = t.deadline
+            ? (t.days_to_deadline !== null && t.days_to_deadline !== undefined
+              ? (t.days_to_deadline <= 0 ? `${t.deadline} (OVERDUE)` : `${t.deadline} (D-${t.days_to_deadline})`)
+              : t.deadline)
+            : '—';
+          return `
+            <tr>
+              <td>${idx + 1}</td>
+              <td>${clean(t.section_label)}</td>
+              <td class="task">${clean(t.text)}</td>
+              <td>${t.days ?? '—'}</td>
+              <td>${fmtMoney(t.amount)}</td>
+              <td>${burn}</td>
+              <td>${dl}</td>
+              <td>${t.est_minutes}m</td>
+              <td>${t.score}</td>
+            </tr>
+          `;
+        }).join('') || `<tr><td colspan="9" class="muted">No tasks matched the filter.</td></tr>`;
+    }
+
+    function renderContext() {
+      const ctx = DATA.memory_context || [];
+      document.getElementById('ctx').innerHTML = ctx.map(c => `<li>${c}</li>`).join('') || '<li class="muted">No memory context found.</li>';
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).catch(() => {
+        // fallback: prompt
+        window.prompt('Copy this text:', text);
+      });
+    }
+
+    function wireCopyButtons() {
+      document.getElementById('copyTop').addEventListener('click', () => {
+        const top = (DATA.top_actions || []).slice(0, 8);
+        const lines = [
+          `Morning Ops — ${DATA.date} (${DATA.generated_at})`,
+          '',
+          ...top.map((t, i) => `- [ ] ${i+1}. ${clean(t.text)} (${t.est_minutes}m)`),
+          ''
+        ];
+        copyText(lines.join('
+'));
+      });
+      document.getElementById('copyBlock').addEventListener('click', () => {
+        const block = (DATA.top_actions || []).slice(0, 4);
+        const lines = [
+          `90-min block — ${DATA.date}`,
+          '',
+          ...block.map(t => `- [ ] ${clean(t.text)} (${t.est_minutes}m)`),
+          ''
+        ];
+        copyText(lines.join('
+'));
+      });
+    }
+
+    function wireFilters() {
+      for (const id of ['fUrgent','fNeeds','fInProg','fBacklog','fBurn']) {
+        document.getElementById(id).addEventListener('change', renderRows);
+      }
+      document.getElementById('search').addEventListener('input', () => {
+        // small debounce
+        clearTimeout(window.__t);
+        window.__t = setTimeout(renderRows, 80);
+      });
+    }
+
+    renderCards();
+    renderTop();
+    renderContext();
+    renderRows();
+    wireCopyButtons();
+    wireFilters();
+  </script>
+</body>
+</html>

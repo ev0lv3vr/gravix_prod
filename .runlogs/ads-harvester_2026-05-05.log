@@ -1,0 +1,76 @@
+============================================================
+🌾 Amazon Ads Search Term Harvester
+   Mode: EXECUTE
+   Min Orders: 3
+   Max ACoS: 30.0%
+============================================================
+
+📂 Loading search-terms-master.json...
+   ✅ 2354 search terms in master DB
+📂 Loading keywords from 2026-05-04...
+   ✅ 94 keywords loaded
+   📌 69 existing exact match keywords
+
+🔍 Scanning for harvest candidates...
+   ✅ Found 2 candidates
+
+📋 Building harvest plan...
+
+────────────────────────────────────────────────────────────
+  HARVEST PLAN (2 terms)
+────────────────────────────────────────────────────────────
+
+  "think super glue"
+    Orders: 4 | ACoS: 2.9% | Sales: $135.96 | CPC: $0.97
+    → Sales - CA Glue Core Exact / Head Terms
+    → Bid: $1.07
+    ← Source: Discovery - 8oz Thick Auto*SP-A-DSC
+
+  "10 oz thick super glue"
+    Orders: 4 | ACoS: 2.9% | Sales: $135.96 | CPC: $1.00
+    → Sales - CA Glue Core Exact / Head Terms
+    → Bid: $1.10
+    ← Source: Discovery - 8oz Thick Auto*SP-A-DSC
+🔑 Authenticating with Amazon Ads API...
+   ✅ Authenticated (expires in 3600s)
+
+────────────────────────────────────────────────────────────
+  EXECUTING HARVEST (EXECUTE)
+────────────────────────────────────────────────────────────
+
+  [1/2] "think super glue"
+      Orders: 4 | ACoS: 2.9% | Sales: $135.96
+      → Campaign: Sales - CA Glue Core Exact
+      → Ad Group: Head Terms
+      → Bid: $1.07
+      📝 Creating EXACT keyword...
+      ✅ Keyword created (HTTP 207)
+      🚫 Adding NEGATIVE_EXACT in source: Discovery - 8oz Thick Auto*SP-A-DSC...
+      ✅ Negative added (HTTP 207)
+
+  [2/2] "10 oz thick super glue"
+      Orders: 4 | ACoS: 2.9% | Sales: $135.96
+      → Campaign: Sales - CA Glue Core Exact
+      → Ad Group: Head Terms
+      → Bid: $1.10
+      📝 Creating EXACT keyword...
+      ✅ Keyword created (HTTP 207)
+      🚫 Adding NEGATIVE_EXACT in source: Discovery - 8oz Thick Auto*SP-A-DSC...
+      ✅ Negative added (HTTP 207)
+
+💾 Updated search-terms-master.json
+💾 Logged 2 harvest actions to changes.json
+
+============================================================
+🌾 HARVEST SUMMARY (EXECUTE)
+============================================================
+  Total candidates:     2
+  Keywords created:     2
+  Negatives created:    2
+  Average bid:          $1.08
+
+  Terms harvested:
+    ✅ "think super glue" → Sales - CA Glue Core Exact / Head Terms @ $1.07
+    ✅ "10 oz thick super glue" → Sales - CA Glue Core Exact / Head Terms @ $1.10
+
+============================================================

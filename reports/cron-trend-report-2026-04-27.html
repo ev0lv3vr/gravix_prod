@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>Cron risk trend report</title>
+<style>
+body { font-family: Inter, -apple-system, sans-serif; background:#0A1628; color:#fff; margin:0; padding:32px; }
+.wrap { max-width:1200px; margin:0 auto; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
+.card { background:#111B2E; border:1px solid #1E293B; border-radius:14px; padding:14px; }
+.compact { padding:12px; }
+.panel { background:#111B2E; border:1px solid #1E293B; border-radius:16px; padding:18px; margin-top:18px; }
+.top { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-top:12px; }
+.stats div { background:#0b1220; border:1px solid #1E293B; border-radius:10px; padding:10px; }
+.badge { color:#fff; padding:6px 10px; border-radius:999px; font-weight:700; font-size:12px; }
+h1,h2,h3 { margin:0; }
+span { display:block; color:#94A3B8; font-size:12px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
+strong { font-size:18px; }
+.muted { color:#94A3B8; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; }
+.series { margin-top:12px; color:#cbd5e1; }
+.error { margin-top:10px; color:#fca5a5; }
+.empty { color:#94A3B8; }
+.mini { color:#cbd5e1; margin-top:6px; }
+</style>
+</head>
+<body><div class='wrap'>
+  <h1>Cron risk trend report</h1>
+  <p class='muted'>Generated at 2026-04-26 23:05:23 PDT</p>
+
+  <div class='grid'>
+    <div class='card'><div class='muted'>Latest date</div><div style='font-size:28px;font-weight:800'>2026-04-22</div></div>
+    <div class='card'><div class='muted'>Days compared</div><div style='font-size:28px;font-weight:800'>3</div></div>
+    <div class='card'><div class='muted'>Regressing jobs</div><div style='font-size:28px;font-weight:800'>1</div></div>
+    <div class='card'><div class='muted'>Improving jobs</div><div style='font-size:28px;font-weight:800'>1</div></div>
+    <div class='card'><div class='muted'>New risks</div><div style='font-size:28px;font-weight:800'>0</div></div>
+    <div class='card'><div class='muted'>Critical Δ vs prev</div><div style='font-size:28px;font-weight:800'>0</div></div>
+  </div>
+
+  <div class='panel'>
+    <h2>Day-by-day summary</h2>
+    <div class='grid' style='margin-top:12px'><div class='card compact'><div class='muted'>2026-04-19</div><div class='mini'>critical 1 · high 0 · medium 0</div><div class='mini'>patches 1</div></div><div class='card compact'><div class='muted'>2026-04-21</div><div class='mini'>critical 1 · high 0 · medium 1</div><div class='mini'>patches 3</div></div><div class='card compact'><div class='muted'>2026-04-22</div><div class='mini'>critical 1 · high 0 · medium 1</div><div class='mini'>patches 3</div></div></div>
+  </div>
+
+  <div class='panel'><h2>Regressing jobs</h2>
+            <section class='card'>
+              <div class='top'>
+                <div>
+                  <h3>ads-daily-pull</h3>
+                  <div class='muted mono'>05a6e66b-d1df-46af-b164-4e55cbb6bb9f</div>
+                </div>
+                <span class='badge' style='background:#dc2626'>CRITICAL</span>
+              </div>
+              <div class='stats'>
+                <div><span>risk move</span><strong>ok → critical</strong></div>
+                <div><span>last status</span><strong>error</strong></div>
+                <div><span>timeout</span><strong>1800 s</strong></div>
+                <div><span>last duration</span><strong>1800057 ms</strong></div>
+              </div>
+              <div class='series'>2026-04-19:ok → 2026-04-21:medium → 2026-04-22:critical</div>
+              <div class='error'>cron: job execution timed out</div>
+            </section>
+            </div>
+  <div class='panel'><h2>New risks</h2><div class='empty'>No newly surfaced risks.</div></div>
+  <div class='panel'><h2>Stable open risks</h2><div class='empty'>No stable open risks.</div></div>
+  <div class='panel'><h2>Improving jobs</h2>
+            <section class='card'>
+              <div class='top'>
+                <div>
+                  <h3>moneysamurai-sync-trigger</h3>
+                  <div class='muted mono'>c6565127-2875-4a1d-be8f-1c0021dd0ade</div>
+                </div>
+                <span class='badge' style='background:#ca8a04'>MEDIUM</span>
+              </div>
+              <div class='stats'>
+                <div><span>risk move</span><strong>critical → medium</strong></div>
+                <div><span>last status</span><strong>ok</strong></div>
+                <div><span>timeout</span><strong>120 s</strong></div>
+                <div><span>last duration</span><strong>78754 ms</strong></div>
+              </div>
+              <div class='series'>2026-04-19:critical → 2026-04-21:ok → 2026-04-22:medium</div>
+              
+            </section>
+            </div>
+</div></body>
+</html>

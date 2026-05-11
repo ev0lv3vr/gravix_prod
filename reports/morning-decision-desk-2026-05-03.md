@@ -1,0 +1,51 @@
+# Morning Decision Desk — 2026-05-03
+
+Generated: 2026-05-03 14:01 PDT
+
+## Snapshot
+- Needs Ev: **14**
+- Customer queue: **24**
+- Unblockers: **6**
+- Verify now: **2**
+- Visible money at stake: **$2,060.30**
+
+## Needs Ev first
+- **Amazon account security check** — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg **192139**. (msgs 192139)
+- **Shopify API token** — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.
+- **ICU Shopify upsell app token** — In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: `sales` msg **6090**. (msgs 6090)
+- **Fastenal supplier onboarding** — Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs **192233**, **192240**, **192242**. (msgs 192233, 192240, 192242)
+- **Trademark maintenance filing — pending USPTO acceptance** — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs **192263**, **192271**. (msgs 192263, 192271)
+- **Amazon FBA unfulfillable removal** — Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**. Next automated removal may be created **2026-04-27** if unfulfillable inventory remains. Needs Seller Central verification if Ev wants to change removal settings/address/frequency. Source: `gluemasters` msg **192161**. (msgs 192161)
+- **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**. ($8.99; msgs 192175, 192177)
+- **A3 Partners Gemiflex shipment / invoice** — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**. ($501.25; msgs 192183, 192184)
+
+## Verify / account checks
+- **Amazon account security check** — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg **192139**. (msgs 192139)
+- **A3 Partners Gemiflex shipment / invoice** — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**. ($501.25; msgs 192183, 192184)
+
+## Unblockers
+- **Amazon account security check** — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Source: `gluemasters` msg **192139**. (msgs 192139)
+- **Shopify API token** — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.
+- **ICU Shopify upsell app token** — In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: `sales` msg **6090**. (msgs 6090)
+- **Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.** — Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`. (refs: GET /v3/inventories)
+- **Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.** — Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**. (msgs 6080; refs: GET /v3/inventories, api/)
+- **Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action.** — Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action. (refs: api/trigger-sync.js, api/get-auth-token.js)
+
+## Customer queue
+- **Amazon FBA unfulfillable removal** — Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**. Next automated removal may be created **2026-04-27** if unfulfillable inventory remains. Needs Seller Central verification if Ev wants to change removal settings/address/frequency. Source: `gluemasters` msg **192161**. (msgs 192161)
+- **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**. ($8.99; msgs 192175, 192177)
+- **A3 Partners Gemiflex shipment / invoice** — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**. ($501.25; msgs 192183, 192184)
+- **Amazon refund / product-not-as-described** — Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**. ($36.83; msgs 192188)
+- **Amazon product safety recall notice** — Amazon flagged a **Thermos Stainless King food jar** order (**111-9829889-5064236**) with a stop-use / recall notice tied to a CPSC announcement. Needs Ev review only if this personal-order safety notice matters operationally; otherwise keep it low priority and do not let it crowd business-critical work. Source: `gluemasters` msg **192266**. (msgs 192266)
+- **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (msgs 191366; refs: moneysamurai/drafts/b2b-email-drafts-2026-03-24.md)
+- **Eric Patrick** — asked how to open 8oz bottle. Draft exists at `moneysamurai/drafts/customer-replies-2026-04-09.md`; source msg **5941**. (msgs 5941; refs: moneysamurai/drafts/customer-replies-2026-04-09.md)
+- **Antonio Gutierrez** — order **#6000**, asks if shipped + ship date. Draft exists, needs shipping fields; source msg **5930**. (msgs 5930)
+- **Michael Nasholm** — 20% partial refund was promised but not done; customer followed up.
+- **Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**. (msgs 6061)
+
+## Money at stake
+- **Gemifly LLC** — **$1,513.23** PayPal invoice outstanding. ($1,513.23)
+- **A3 Partners Gemiflex shipment / invoice** — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Sources: `gluemasters` msgs **192183**, **192184**. ($501.25; msgs 192183, 192184)
+- **Amazon refund / product-not-as-described** — Amazon initiated a **$36.83** refund for order **111-6918255-6449022** / ASIN **B01CDPIIXK** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: `gluemasters` msg **192188**. ($36.83; msgs 192188)
+- **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows **on-time delivery 83.3% vs 90% standard**; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 38.75%** and top recommended price cuts: `20GRGELCAGM` **$8.99 → $6.99**, `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. Sources: `gluemasters` msgs **192175**, **192177**. ($8.99; msgs 192175, 192177)
+

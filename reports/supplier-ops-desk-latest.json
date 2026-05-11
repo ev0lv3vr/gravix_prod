@@ -1,0 +1,382 @@
+{
+  "date": "2026-05-11",
+  "generated_at": "2026-05-10 23:05 PDT",
+  "summary": {
+    "total_items": 7,
+    "collect_total": 9255.98,
+    "pay_total": 6597.07,
+    "watch_total": 2,
+    "relationship_total": 1,
+    "do_now": 5
+  },
+  "do_now": [
+    {
+      "title": "Gemifly LLC",
+      "detail": "PayPal invoice 1001-0243 remains unpaid; PayPal reminder on 2026-05-08 shows $7,424.15 due on receipt (earlier sent notice showed $7,449.98). Track for payment / reconcile amount if needed. Earlier open amount listed was $1,513.23, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs 6134, 6172.",
+      "bucket": "Collect / confirm inbound cash",
+      "owner": "Ev",
+      "urgency": "now",
+      "surface": "PayPal / inbox trail",
+      "first_step": "Check whether PayPal invoice 1001-0243 landed and reconcile the visible amount before nudging again.",
+      "success_check": "Done when the invoice is either paid/reconciled or has a clear next collection step.",
+      "due_date": null,
+      "due_status": "due now",
+      "sources": [
+        "6134",
+        "6172"
+      ],
+      "amount": 7449.98,
+      "score": 18
+    },
+    {
+      "title": "Garcor / Kyle Lawson",
+      "detail": "sent attached purchase order PO4046132.pdf and asked us to process it and confirm receipt. PayPal invoice 1001-0244 for $1,806.00 was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg 192403, `sales` msgs 6165, 6178.",
+      "bucket": "Collect / confirm inbound cash",
+      "owner": "Ev",
+      "urgency": "now",
+      "surface": "PayPal / inbox trail",
+      "first_step": "Confirm whether PayPal invoice 1001-0244 for the PO has been paid; if not, prep the clean receipt/processing confirmation follow-up.",
+      "success_check": "Done when Garcor is either marked paid or has a ready next-touch note tied to the PO + invoice.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "192403",
+        "6165",
+        "6178"
+      ],
+      "amount": 1806.0,
+      "score": 12
+    },
+    {
+      "title": "A3 Partners Gemiflex shipment / invoice",
+      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371.",
+      "bucket": "Pay / verify supplier pressure",
+      "owner": "Ev",
+      "urgency": "now",
+      "surface": "Supplier ledger / bank",
+      "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
+      "success_check": "Done when delivery status and the real payable posture are both explicit.",
+      "due_date": "2026-04-25",
+      "due_status": "overdue 16d",
+      "sources": [
+        "192183",
+        "192184",
+        "191451",
+        "191683",
+        "192371"
+      ],
+      "amount": 6597.07,
+      "score": 21
+    },
+    {
+      "title": "Walmart Marketplace performance/pricing",
+      "detail": "Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. Sources: `gluemasters` msgs 192323, 192326, 192443.",
+      "bucket": "Fulfillment / warehouse watch",
+      "owner": "Operator",
+      "urgency": "now",
+      "surface": "Walmart Marketplace",
+      "first_step": "Find the affected Walmart order and confirm whether the carrier scan/tracking story is clean within the 24-hour window.",
+      "success_check": "Done when the order is identified and either cleared or escalated.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "192323",
+        "192326",
+        "192443"
+      ],
+      "amount": null,
+      "score": 9
+    },
+    {
+      "title": "ShipBob Northeast Hub move",
+      "detail": "ShipBob is moving from Kutztown to 4755 Hanoverville Road, Building E, Bethlehem, PA 18020. Transition window 2026-05-11 to 2026-05-29; no Kutztown appointments after 2026-05-22; new WRO labels show new address starting 2026-05-27; inbound arriving at Kutztown starting 2026-05-27 will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory.",
+      "bucket": "Fulfillment / warehouse watch",
+      "owner": "Shared",
+      "urgency": "now",
+      "surface": "ShipBob / carrier",
+      "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
+      "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
+      "due_date": "2026-05-22",
+      "due_status": "due in 11d",
+      "sources": [
+        "192400"
+      ],
+      "amount": null,
+      "score": 6
+    }
+  ],
+  "collect_confirm": [
+    {
+      "title": "Gemifly LLC",
+      "detail": "PayPal invoice 1001-0243 remains unpaid; PayPal reminder on 2026-05-08 shows $7,424.15 due on receipt (earlier sent notice showed $7,449.98). Track for payment / reconcile amount if needed. Earlier open amount listed was $1,513.23, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs 6134, 6172.",
+      "bucket": "Collect / confirm inbound cash",
+      "owner": "Ev",
+      "urgency": "now",
+      "surface": "PayPal / inbox trail",
+      "first_step": "Check whether PayPal invoice 1001-0243 landed and reconcile the visible amount before nudging again.",
+      "success_check": "Done when the invoice is either paid/reconciled or has a clear next collection step.",
+      "due_date": null,
+      "due_status": "due now",
+      "sources": [
+        "6134",
+        "6172"
+      ],
+      "amount": 7449.98,
+      "score": 18
+    },
+    {
+      "title": "Garcor / Kyle Lawson",
+      "detail": "sent attached purchase order PO4046132.pdf and asked us to process it and confirm receipt. PayPal invoice 1001-0244 for $1,806.00 was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg 192403, `sales` msgs 6165, 6178.",
+      "bucket": "Collect / confirm inbound cash",
+      "owner": "Ev",
+      "urgency": "now",
+      "surface": "PayPal / inbox trail",
+      "first_step": "Confirm whether PayPal invoice 1001-0244 for the PO has been paid; if not, prep the clean receipt/processing confirmation follow-up.",
+      "success_check": "Done when Garcor is either marked paid or has a ready next-touch note tied to the PO + invoice.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "192403",
+        "6165",
+        "6178"
+      ],
+      "amount": 1806.0,
+      "score": 12
+    }
+  ],
+  "pay_verify": [
+    {
+      "title": "A3 Partners Gemiflex shipment / invoice",
+      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371.",
+      "bucket": "Pay / verify supplier pressure",
+      "owner": "Ev",
+      "urgency": "now",
+      "surface": "Supplier ledger / bank",
+      "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
+      "success_check": "Done when delivery status and the real payable posture are both explicit.",
+      "due_date": "2026-04-25",
+      "due_status": "overdue 16d",
+      "sources": [
+        "192183",
+        "192184",
+        "191451",
+        "191683",
+        "192371"
+      ],
+      "amount": 6597.07,
+      "score": 21
+    },
+    {
+      "title": "Fastenal supplier onboarding",
+      "detail": "Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs 192233, 192240, 192242.",
+      "bucket": "Pay / verify supplier pressure",
+      "owner": "Ev",
+      "urgency": "soon",
+      "surface": "Fastenal / Smartsheet",
+      "first_step": "Package the supplier-onboarding path into one morning checklist: self-assessment, onboarding request, and ACH form, plus whether Ev wants to pursue Level 3 later.",
+      "success_check": "Done when the onboarding path is clear enough to execute without rereading the whole thread.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "192233",
+        "192240",
+        "192242"
+      ],
+      "amount": null,
+      "score": 11
+    }
+  ],
+  "fulfillment_watch": [
+    {
+      "title": "Walmart Marketplace performance/pricing",
+      "detail": "Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. Sources: `gluemasters` msgs 192323, 192326, 192443.",
+      "bucket": "Fulfillment / warehouse watch",
+      "owner": "Operator",
+      "urgency": "now",
+      "surface": "Walmart Marketplace",
+      "first_step": "Find the affected Walmart order and confirm whether the carrier scan/tracking story is clean within the 24-hour window.",
+      "success_check": "Done when the order is identified and either cleared or escalated.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "192323",
+        "192326",
+        "192443"
+      ],
+      "amount": null,
+      "score": 9
+    },
+    {
+      "title": "ShipBob Northeast Hub move",
+      "detail": "ShipBob is moving from Kutztown to 4755 Hanoverville Road, Building E, Bethlehem, PA 18020. Transition window 2026-05-11 to 2026-05-29; no Kutztown appointments after 2026-05-22; new WRO labels show new address starting 2026-05-27; inbound arriving at Kutztown starting 2026-05-27 will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory.",
+      "bucket": "Fulfillment / warehouse watch",
+      "owner": "Shared",
+      "urgency": "now",
+      "surface": "ShipBob / carrier",
+      "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
+      "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
+      "due_date": "2026-05-22",
+      "due_status": "due in 11d",
+      "sources": [
+        "192400"
+      ],
+      "amount": null,
+      "score": 6
+    }
+  ],
+  "relationship_followup": [
+    {
+      "title": "Donaldson / Rachael Fitzgerald",
+      "detail": "account setup is still pending on Donaldson Finance side; Rachael reached out internally to see what is holding it up. They are good on inventory for now and will re-order when they break into the second case; usage for the new bottle size is still unknown. Ev already replied asking her to keep us updated. Sources: `sales` msg 6137, `gluemasters` msgs 192353, 192354.",
+      "bucket": "Onboarding / relationship follow-up",
+      "owner": "Operator",
+      "urgency": "watch",
+      "surface": "Email / vendor portal",
+      "first_step": "Capture the exact current state of Donaldson finance onboarding and whether anything is actually waiting on us.",
+      "success_check": "Done when the thread is clearly either waiting on Donaldson or has a next outbound ask.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "6137",
+        "192353",
+        "192354"
+      ],
+      "amount": null,
+      "score": 4
+    }
+  ],
+  "all_items": [
+    {
+      "title": "Gemifly LLC",
+      "detail": "PayPal invoice 1001-0243 remains unpaid; PayPal reminder on 2026-05-08 shows $7,424.15 due on receipt (earlier sent notice showed $7,449.98). Track for payment / reconcile amount if needed. Earlier open amount listed was $1,513.23, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs 6134, 6172.",
+      "bucket": "Collect / confirm inbound cash",
+      "owner": "Ev",
+      "urgency": "now",
+      "surface": "PayPal / inbox trail",
+      "first_step": "Check whether PayPal invoice 1001-0243 landed and reconcile the visible amount before nudging again.",
+      "success_check": "Done when the invoice is either paid/reconciled or has a clear next collection step.",
+      "due_date": null,
+      "due_status": "due now",
+      "sources": [
+        "6134",
+        "6172"
+      ],
+      "amount": 7449.98,
+      "score": 18
+    },
+    {
+      "title": "Garcor / Kyle Lawson",
+      "detail": "sent attached purchase order PO4046132.pdf and asked us to process it and confirm receipt. PayPal invoice 1001-0244 for $1,806.00 was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg 192403, `sales` msgs 6165, 6178.",
+      "bucket": "Collect / confirm inbound cash",
+      "owner": "Ev",
+      "urgency": "now",
+      "surface": "PayPal / inbox trail",
+      "first_step": "Confirm whether PayPal invoice 1001-0244 for the PO has been paid; if not, prep the clean receipt/processing confirmation follow-up.",
+      "success_check": "Done when Garcor is either marked paid or has a ready next-touch note tied to the PO + invoice.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "192403",
+        "6165",
+        "6178"
+      ],
+      "amount": 1806.0,
+      "score": 12
+    },
+    {
+      "title": "A3 Partners Gemiflex shipment / invoice",
+      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371.",
+      "bucket": "Pay / verify supplier pressure",
+      "owner": "Ev",
+      "urgency": "now",
+      "surface": "Supplier ledger / bank",
+      "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
+      "success_check": "Done when delivery status and the real payable posture are both explicit.",
+      "due_date": "2026-04-25",
+      "due_status": "overdue 16d",
+      "sources": [
+        "192183",
+        "192184",
+        "191451",
+        "191683",
+        "192371"
+      ],
+      "amount": 6597.07,
+      "score": 21
+    },
+    {
+      "title": "Fastenal supplier onboarding",
+      "detail": "Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs 192233, 192240, 192242.",
+      "bucket": "Pay / verify supplier pressure",
+      "owner": "Ev",
+      "urgency": "soon",
+      "surface": "Fastenal / Smartsheet",
+      "first_step": "Package the supplier-onboarding path into one morning checklist: self-assessment, onboarding request, and ACH form, plus whether Ev wants to pursue Level 3 later.",
+      "success_check": "Done when the onboarding path is clear enough to execute without rereading the whole thread.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "192233",
+        "192240",
+        "192242"
+      ],
+      "amount": null,
+      "score": 11
+    },
+    {
+      "title": "Walmart Marketplace performance/pricing",
+      "detail": "Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. Sources: `gluemasters` msgs 192323, 192326, 192443.",
+      "bucket": "Fulfillment / warehouse watch",
+      "owner": "Operator",
+      "urgency": "now",
+      "surface": "Walmart Marketplace",
+      "first_step": "Find the affected Walmart order and confirm whether the carrier scan/tracking story is clean within the 24-hour window.",
+      "success_check": "Done when the order is identified and either cleared or escalated.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "192323",
+        "192326",
+        "192443"
+      ],
+      "amount": null,
+      "score": 9
+    },
+    {
+      "title": "ShipBob Northeast Hub move",
+      "detail": "ShipBob is moving from Kutztown to 4755 Hanoverville Road, Building E, Bethlehem, PA 18020. Transition window 2026-05-11 to 2026-05-29; no Kutztown appointments after 2026-05-22; new WRO labels show new address starting 2026-05-27; inbound arriving at Kutztown starting 2026-05-27 will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory.",
+      "bucket": "Fulfillment / warehouse watch",
+      "owner": "Shared",
+      "urgency": "now",
+      "surface": "ShipBob / carrier",
+      "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
+      "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
+      "due_date": "2026-05-22",
+      "due_status": "due in 11d",
+      "sources": [
+        "192400"
+      ],
+      "amount": null,
+      "score": 6
+    },
+    {
+      "title": "Donaldson / Rachael Fitzgerald",
+      "detail": "account setup is still pending on Donaldson Finance side; Rachael reached out internally to see what is holding it up. They are good on inventory for now and will re-order when they break into the second case; usage for the new bottle size is still unknown. Ev already replied asking her to keep us updated. Sources: `sales` msg 6137, `gluemasters` msgs 192353, 192354.",
+      "bucket": "Onboarding / relationship follow-up",
+      "owner": "Operator",
+      "urgency": "watch",
+      "surface": "Email / vendor portal",
+      "first_step": "Capture the exact current state of Donaldson finance onboarding and whether anything is actually waiting on us.",
+      "success_check": "Done when the thread is clearly either waiting on Donaldson or has a next outbound ask.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "6137",
+        "192353",
+        "192354"
+      ],
+      "amount": null,
+      "score": 4
+    }
+  ]
+}
