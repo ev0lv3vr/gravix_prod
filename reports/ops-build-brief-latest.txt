@@ -1,5 +1,5 @@
-OPS BUILD BRIEF — 2026-05-10
-Generated: 2026-05-09 23:09 PDT
+OPS BUILD BRIEF — 2026-05-11
+Generated: 2026-05-10 23:05 PDT
 
 Artifacts:
 - reports/morning-ops-hub-latest.html
@@ -13,6 +13,7 @@ Artifacts:
 - reports/morning-decision-desk-latest.html
 - reports/morning-customer-desk-latest.html
 - reports/morning-money-desk-latest.html
+- reports/supplier-ops-desk-latest.html
 - reports/morning-commerce-desk-latest.html
 - reports/brand-narrative-desk-latest.html
 - reports/b2b-kit-dispatch-desk-latest.html
@@ -29,14 +30,14 @@ Artifacts:
 
 Morning pack freshness:
 - Status: AGING
-- Newest source edit: 2026-05-09 18:03 PDT
-- Build lag vs newest source: 306 min
-- BUSINESS_STATE.md: 2026-05-09 18:03 PDT (306 min old)
-- MEMORY.md: 2026-05-08 23:06 PDT (1443 min old)
-- memory/2026-05-09.md: 2026-05-09 18:03 PDT (306 min old)
+- Newest source edit: 2026-05-10 18:02 PDT
+- Build lag vs newest source: 302 min
+- BUSINESS_STATE.md: 2026-05-10 18:02 PDT (302 min old)
+- MEMORY.md: 2026-05-08 23:06 PDT (2878 min old)
+- memory/2026-05-10.md: 2026-05-10 18:02 PDT (302 min old)
 
 Artifact trust check:
-- OK: 22 / 22
+- OK: 23 / 23
 - Stale: 0
 - Missing: 0
 - Mismatched latest vs dated: 0
@@ -46,13 +47,13 @@ Git hygiene:
 - High risk: 2
 - Medium risk: 0
 - Low/noise only: 0
-- Changed files visible: 138
-- Hottest repo: moneysamurai — Code changes present (api/cron-trigger-sync.cjs); review before deploy/push.
+- Changed files visible: 133
+- Hottest repo: moneysamurai — Code changes present (api/tmp-cron-ms-sync-trigger.cjs, api/tmp-cron-ms-sync-trigger-openclaw.cjs); review before deploy/push.
 
 Business state audit:
-- Active items scanned: 47
-- Past-date refs: 10
-- Relative-time refs: 2
+- Active items scanned: 48
+- Past-date refs: 11
+- Relative-time refs: 0
 - Urgent items missing source: 1
 - Duplicate source IDs: 0
 
@@ -69,18 +70,25 @@ Morning money desk:
 - Pipeline / upside visible: $16,030.20
 - Overdue or due-now items: 2
 
+Supplier ops desk:
+- Collect / confirm inbound cash: $9,255.98
+- Pay / verify supplier pressure: $6,597.07
+- Fulfillment / warehouse watch items: 2
+- Relationship follow-ups: 1
+- Do-now supplier items: 5
+
 Amazon Ads daily pull (local status):
-- Latest day: 2026-05-08
+- Latest day: 2026-05-09
 - Latest status: OK (failed: —)
 - Current invalid streak: 0
 - Latest pull log: logs/ads-daily/2026-04-24_060021.log
 
 Amazon Ads growth plan execution:
-- Overall completion: 57%
+- Overall completion: 66%
 - Live changes executed: 100% (36/36 actions)
-- Monitoring completion: 29% (2/7 valid post-change pulls)
-- Days remaining before default next scale wave: 5
-- Latest post-change day: 2026-05-08 — spend $101.48, sales $249.62, ACOS 40.7%
+- Monitoring completion: 43% (3/7 valid post-change pulls)
+- Days remaining before default next scale wave: 4
+- Latest post-change day: 2026-05-09 — spend $68.57, sales $52.99, ACOS 129.4%
 - Rule: Do not run a second scale wave until 7 valid post-change daily pulls are reviewed, unless Ev explicitly overrides.
 
 Cron timeout watchlist:
@@ -109,9 +117,9 @@ Ops debt (from ops-debt.json):
 BUSINESS_STATE.md queue depth:
 - 🔴 Urgent: 10
 - 🟡 Needs Ev: 28
-- 🔵 In progress: 7
+- 🔵 In progress: 8
 - 📋 Backlog: 2
-- Total open tasks ranked: 47
+- Total open tasks ranked: 48
 
 Top 8 morning actions (ranked):
 1. **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for **$41.84 + $15.00 fee** and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**, **6168**, **6170**. (7m)

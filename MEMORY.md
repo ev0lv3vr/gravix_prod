@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-05-08
+Last updated: 2026-05-10
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -68,6 +68,7 @@ Last updated: 2026-05-08
 - Nightly 2026-05-03: added a `Morning Actionability Desk` to the ops pack (`reports/morning-actionability-latest.html` plus dated output), wired into `scripts/ops_build.py` and the ops hub; also tuned the ranking in `scripts/kanban_morning_builder.py` to demote passive/watch-only items and pull executable access/token blockers higher in the morning queue.
 - Nightly 2026-05-05: added a dedicated B2B sample-kit dispatch builder (`scripts/build_b2b_kit_dispatch_desk.py`) that turns the hydrated recipient queue into `reports/b2b-kit-dispatch-desk-2026-05-06.{md,html,json}` plus `reports/b2b-kit-dispatch-labels-2026-05-06.csv`, then wired it into `scripts/ops_build.py`, the morning ops hub, and artifact freshness checks so Ev has a morning-ready kit batch/label desk instead of only raw recipient notes.
 - Nightly 2026-05-08: added a dedicated Morning Money Desk (`scripts/build_morning_money_desk.py`) with outputs `reports/morning-money-desk-2026-05-09.{md,html,json}` + latest aliases, and wired it into `scripts/ops_build.py`, the morning ops hub, the build brief, and artifact freshness checks so the morning pack now has a one-screen cash view (collect, pay/verify, leakage, upside).
+- Nightly 2026-05-10: added a dedicated Supplier Ops Desk (`scripts/build_supplier_ops_desk.py`) with outputs `reports/supplier-ops-desk-2026-05-11.{md,html,json}` + latest aliases, and wired it into `scripts/ops_build.py`, the ops hub navigation, build brief, and artifact freshness checks so morning review can see supplier cash collection, vendor payable pressure, fulfillment cutovers, and onboarding follow-ups in one screen.
 
 ### Pump Accelerator 8oz (New Product)
 - Supplier: Xtralok (Chicago), pump spray bottle
