@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Check, ChevronDown, ChevronUp, Star, Calculator, Calendar } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -231,8 +230,6 @@ export default function PricingPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#0A1628]">
-      <Header />
-
       <div className="container mx-auto px-6 py-20">
         {/* ─── Page Header (Component 4.1) ─── */}
         <div className="text-center mb-16">
