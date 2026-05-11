@@ -1,6 +1,6 @@
 # Morning Handoff — 2026-05-10
 
-Generated: 2026-05-09 23:09 PDT
+Generated: 2026-05-10 14:00 PDT
 Source: morning execution board + ops debt + cron watchlist/trend
 
 ## Do first
@@ -36,7 +36,7 @@ Source: morning execution board + ops debt + cron watchlist/trend
 - Timeout watchlist: 1 critical, 1 medium, 3 ready timeout patches.
 - Verify ads-daily-pull after the 3600s bump; latest observed run hit 1800057 ms on a 1800s timeout.
 - Trend: 1 regressing, 1 improving, 0 newly surfaced risks across 3 saved days.
-- Ads growth plan: 57% overall; live execution 100% (36/36 actions); monitoring 29% (2/7 valid post-change pulls).
+- Ads growth plan: 66% overall; live execution 100% (36/36 actions); monitoring 43% (3/7 valid post-change pulls).
 - Ads growth rule: Do not run a second scale wave until 7 valid post-change daily pulls are reviewed, unless Ev explicitly overrides.
 - Ops debt exposure: $1,715.54 open, $0/day true burn, $0 30-day burn exposure.
 

@@ -1,6 +1,6 @@
 # Morning Priority Pack — 2026-05-10
 
-Generated: 2026-05-09 23:09 PDT
+Generated: 2026-05-10 14:00 PDT
 Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 
 ## Queue Depth
@@ -13,7 +13,7 @@ Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 ## Top 8 morning actions (ranked)
 1. [🟡 NEEDS EV] **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for **$41.84 + $15.00 fee** and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**, **6168**, **6170**. (75d, $56.84) — score 95.97, ~7m
 2. [🟡 NEEDS EV] **Garcor / Kyle Lawson** — sent attached purchase order **PO4046132.pdf** and asked us to process it and confirm receipt. PayPal invoice **1001-0244** for **$1,806.00** was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg **192403**, `sales` msgs **6165**, **6178**. ($1,806, deadline 2026-05-09 (OVERDUE)) — score 64.05, ~15m
-3. [🔴 URGENT] A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**. ($501.25, deadline 2026-05-27 (D-18)) — score 60.18, ~25m
+3. [🔴 URGENT] A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**. ($501.25, deadline 2026-05-27 (D-17)) — score 60.18, ~25m
 4. [🟡 NEEDS EV] **Gemifly LLC** — PayPal invoice **1001-0243** remains unpaid; PayPal reminder on 2026-05-08 shows **$7,424.15 due on receipt** (earlier sent notice showed **$7,449.98**). Track for payment / reconcile amount if needed. Earlier open amount listed was **$1,513.23**, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs **6134**, **6172**. ($7,449.98) — score 53.0, ~15m
 5. [🔴 URGENT] Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. — score 52.0, ~20m
 6. [🔴 URGENT] Amazon account security check / Meta partner request — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from **“Join the Meta Agency Partner Program”**. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: `sales` msg **6141**. Sources: `gluemasters` msg **192139**, `sales` msg **6141**. — score 48.0, ~18m
@@ -45,9 +45,9 @@ Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 - 30-day burn exposure: **$0**
 
 ## Freshness
-- Pack status: **AGING**
+- Pack status: **STALE**
 - Newest source edit: **2026-05-09 18:03 PDT**
-- Build lag vs newest source: **306 min**
-- BUSINESS_STATE.md: 2026-05-09 18:03 PDT (306 min old)
-- MEMORY.md: 2026-05-08 23:06 PDT (1443 min old)
-- memory/2026-05-09.md: 2026-05-09 18:03 PDT (306 min old)
+- Build lag vs newest source: **1196 min**
+- BUSINESS_STATE.md: 2026-05-09 18:03 PDT (1196 min old)
+- MEMORY.md: 2026-05-08 23:06 PDT (2333 min old)
+- memory/2026-05-09.md: 2026-05-09 18:03 PDT (1197 min old)
