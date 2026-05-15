@@ -237,7 +237,15 @@ export class ApiClient {
       const msg = typeof error.detail === 'string' ? error.detail : (error.message || 'Failed to create analysis');
       throw new ApiError(msg, response.status, error.detail);
     }
-    return response.json();
+    const body = await response.json();
+    if (body?.status === 'failed') {
+      throw new ApiError(
+        body.error_detail || 'AI analysis failed while generating the report. Please try again.',
+        502,
+        body
+      );
+    }
+    return body;
   }
 
   async getFailureAnalysis(id: string): Promise<FailureAnalysis> {

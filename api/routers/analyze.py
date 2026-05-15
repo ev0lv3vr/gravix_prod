@@ -126,6 +126,9 @@ async def create_analysis(
 
         # Update record with results
         root_causes = ai_result.get("root_causes", [])
+        if not isinstance(root_causes, list) or not root_causes:
+            raise ValueError("AI analysis returned no root causes")
+
         update_data = {
             "root_causes": root_causes,
             "contributing_factors": ai_result.get("contributing_factors", []),
@@ -190,10 +193,16 @@ async def create_analysis(
 
     except Exception as e:
         logger.exception(f"Analysis failed: {e}")
-        db.table("failure_analyses").update(
-            {"status": "failed", "updated_at": datetime.now(timezone.utc).isoformat()}
-        ).eq("id", analysis_id).execute()
-        record["status"] = "failed"
+        try:
+            db.table("failure_analyses").update(
+                {"status": "failed", "updated_at": datetime.now(timezone.utc).isoformat()}
+            ).eq("id", analysis_id).execute()
+        except Exception as db_err:
+            logger.exception(f"Failed to mark analysis {analysis_id} as failed: {db_err}")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="AI analysis failed while generating the report. Please try again.",
+        ) from e
 
     # Filter AI output based on user's plan tier (store full, serve filtered)
     user_plan = user.get("plan", "free")
