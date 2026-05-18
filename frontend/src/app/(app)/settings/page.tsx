@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { api, type UsageResponse } from '@/lib/api';
+import { API_URL, SUPABASE_URL } from '@/lib/env';
 import {
   notificationsApi,
   type NotificationPreferences,
@@ -369,9 +370,7 @@ function OrganizationBrandingSection() {
       };
       localStorage.setItem('gravix_branding', JSON.stringify(branding));
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-        const ref = supabaseUrl.match(/\/\/([^.]+)\./)?.[1] || '';
+        const ref = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || '';
         const raw = ref ? localStorage.getItem(`sb-${ref}-auth-token`) : null;
         const token = raw ? JSON.parse(raw)?.access_token : null;
         if (token) {

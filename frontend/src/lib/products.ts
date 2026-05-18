@@ -3,6 +3,7 @@
  */
 
 import { api } from './api';
+import { API_URL } from './env';
 
 // ============================================================================
 // Types
@@ -112,8 +113,6 @@ export interface PatternAlert {
 // ============================================================================
 // API Functions (extend ApiClient)
 // ============================================================================
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
   // Reuse the api client's auth mechanism

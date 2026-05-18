@@ -1,11 +1,12 @@
 import { MetadataRoute } from 'next';
+import { APP_URL } from '@/lib/env';
 
 /**
  * Sitemap generation
  * Sprint 10.4: SEO optimization
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://gravix.com';
+  const baseUrl = APP_URL;
 
   return [
     {

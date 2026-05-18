@@ -4,6 +4,7 @@
  */
 
 import { supabase } from './supabase';
+import { API_URL, SUPABASE_URL } from './env';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -33,13 +34,10 @@ export interface PatternAlert {
 // API Client
 // ---------------------------------------------------------------------------
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
-
 async function getAuthHeaders(): Promise<Record<string, string>> {
   if (typeof window !== 'undefined') {
     try {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-      const ref = supabaseUrl.match(/\/\/([^.]+)\./)?.[1] || '';
+      const ref = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || '';
       if (ref) {
         const raw = localStorage.getItem(`sb-${ref}-auth-token`);
         if (raw) {

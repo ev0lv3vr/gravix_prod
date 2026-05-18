@@ -4,8 +4,7 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
+import { API_URL } from '@/lib/env';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

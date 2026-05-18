@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { API_URL } from '@/lib/env';
 import { ReactNode, useEffect, useState } from 'react';
 
 interface ToolLayoutProps {
@@ -17,7 +18,6 @@ export function ToolLayout({ formPanel, resultsPanel, className }: ToolLayoutPro
   });
 
   useEffect(() => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
     fetch(`${API_URL}/v1/stats/public`)
       .then(res => res.json())
       .then(data => {

@@ -7,8 +7,7 @@ import { Check, ChevronDown, ChevronUp, Star, Calculator, Calendar } from 'lucid
 import { useAuth } from '@/contexts/AuthContext';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { fetchPlanPricing, DEFAULT_PLAN_PRICES, type PlanKey } from '@/lib/pricing';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
+import { API_URL } from '@/lib/env';
 
 /* ──────────────────────────── plan data ──────────────────────────── */
 

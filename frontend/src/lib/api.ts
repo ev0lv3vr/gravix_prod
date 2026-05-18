@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { API_URL, SUPABASE_URL } from './env';
 import type { FailureAnalysis, SpecRequest, Case, User } from './types';
 
 /**
@@ -115,8 +116,6 @@ function mapUserProfile(u: ApiUserProfile): User {
   };
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
-
 export class ApiClient {
   // Cache the session promise to avoid redundant getSession() calls
   // within the same tick (e.g., 4 parallel API calls on dashboard load)
@@ -146,8 +145,7 @@ export class ApiClient {
       const testSession = (window as any).__GRAVIX_TEST_SESSION__ as { access_token?: string } | undefined;
       if (testSession?.access_token) return testSession.access_token;
 
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-      const ref = supabaseUrl.match(/\/\/([^.]+)\./)?.[1] || '';
+      const ref = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || '';
 
       // 1) Prefer canonical Supabase key; 2) fallback legacy alias
       const keys = [
@@ -196,8 +194,7 @@ export class ApiClient {
     // Backfill localStorage so future page loads use the fast path
     if (session?.access_token && typeof window !== 'undefined') {
       try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-        const ref = supabaseUrl.match(/\/\/([^.]+)\./)?.[1] || '';
+        const ref = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || '';
         if (ref) {
           const serialized = JSON.stringify({
             access_token: session.access_token,

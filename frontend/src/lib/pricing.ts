@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
+import { API_URL } from './env';
 
 export type PlanKey = 'free' | 'pro' | 'quality' | 'enterprise';
 

@@ -3,6 +3,7 @@ import { DM_Sans, JetBrains_Mono } from 'next/font/google';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { PlanProvider } from '@/contexts/PlanContext';
 import { QueryProvider } from '@/contexts/QueryProvider';
+import { APP_URL } from '@/lib/env';
 import '@/styles/globals.css';
 
 const dmSans = DM_Sans({
@@ -18,7 +19,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://gravix.com'),
+  metadataBase: new URL(APP_URL),
   title: {
     default: 'GRAVIX — Industrial Adhesive Specification & Failure Analysis',
     template: '%s | GRAVIX',

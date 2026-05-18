@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { API_URL, SUPABASE_URL, TEST_MODE } from '@/lib/env';
 import type { User, Session, AuthError, AuthChangeEvent } from '@supabase/supabase-js';
 
 interface AuthContextType {
@@ -72,13 +73,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const maybeHoldoutTestAuth = async (email: string): Promise<{ error: AuthError | null } | null> => {
     const host = typeof window !== 'undefined' ? window.location.hostname : '';
     const isPreviewHost = host.includes('.vercel.app');
-    const testMode = process.env.NEXT_PUBLIC_TEST_MODE === 'true' || isPreviewHost;
+    const testMode = TEST_MODE || isPreviewHost;
     const normalized = email.trim().toLowerCase();
     const isAllowed = normalized.startsWith('test-') && normalized.endsWith('@gravix.com');
     if (!testMode || !isAllowed) return null;
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
       const res = await fetch(`${API_URL}/api/auth/test/session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -114,8 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       (window as any).__GRAVIX_TEST_SESSION__ = fakeSession;
 
       // Keep compatibility with ApiClient localStorage fast-path auth header
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-      const ref = supabaseUrl.match(/\/\/([^.]+)\./)?.[1] || '';
+      const ref = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || '';
       if (ref) {
         localStorage.setItem(
           `sb-${ref}-auth-token`,

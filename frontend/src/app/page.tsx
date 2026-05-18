@@ -6,6 +6,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Check, Factory, Plane, Heart, Cpu, HardHat } from 'lucide-react';
 import { fetchPlanPricing, formatUsd, DEFAULT_PLAN_PRICES } from '@/lib/pricing';
+import { API_URL } from '@/lib/env';
 
 export default function LandingPage() {
   return (
@@ -99,7 +100,6 @@ function SocialProofBar() {
   const [industryText] = useState('Used by automotive, aerospace & medical device teams');
 
   useEffect(() => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gravix-prod.onrender.com';
     fetch(`${API_URL}/api/admin/stats`)
       .then(res => {
         if (!res.ok) throw new Error('primary stats endpoint failed');
