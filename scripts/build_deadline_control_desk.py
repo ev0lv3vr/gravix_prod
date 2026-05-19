@@ -76,8 +76,6 @@ def _due_date(text: str, target: date) -> str | None:
     lower = text.lower()
     if any(name in lower for name in ["gemifly", "garcor", "waterrower", "petite keep"]):
         return None
-    if "119113698556759" in lower:
-        return "2026-05-15"
     if "buy with prime" in lower and "case 20290685991" in lower:
         return "2026-06-12"
     dates = sorted(set(DATE_RE.findall(text)))
@@ -152,10 +150,10 @@ def _first_step(title: str, detail: str) -> tuple[str, str]:
             "Open ShipBob product review and fill net weight/net volume for product IDs 8696101 and 8696102; confirm the other flagged products are resolved.",
             "Done when ShipBob shows no deadline-blocking DG/HAZMAT review left for the five flagged products.",
         )
-    if "walmart" in text or "119113698556759" in text:
+    if "walmart" in text:
         return (
-            "Handle PO 119113698556759 first: upload valid tracking if shipped, or proactively cancel before it damages performance further.",
-            "Done when the Walmart order no longer appears as unshipped/past expected ship date.",
+            "Open Walmart Marketplace performance/pricing dashboards and decide whether to act on valid-tracking, late-shipment, and suggested price-cut issues.",
+            "Done when the Walmart performance/pricing decision is recorded or no action remains.",
         )
     if "a3 partners" in text:
         return (
@@ -253,7 +251,6 @@ def _is_candidate(item: Item) -> bool:
         "shipbob dg",
         "hazmat",
         "walmart",
-        "119113698556759",
         "quickbooks",
         "beyaz",
         "buy with prime",

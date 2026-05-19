@@ -73,7 +73,6 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Fresh Walmart pricing digest shows **price competitiveness 47.83%** (+8.1% WoW), Buy Box win rate 100%, and top recommended price cuts remain `20GRGELCAGM` **$8.99 → $6.99** and `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes.
 - New 2026-05-09 Walmart Partner Performance alert says **1 shipped order has a late origin scan** and needs carrier scan/tracking accuracy confirmed within **24 hours**; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check.
 - New 2026-05-14 Walmart auto-cancel warning says **1 order has today as expected ship date and no tracking uploaded**. Impacted order from attachment: PO **119113590713297**, item **2476466849**, **1× Professional Grade Cyanoacrylate "Super Glue" by Glue Masters - 2 oz - Medium Viscosity, Clear**, GMV **$19.75**, ESD **2026-05-14**, EDD **2026-05-23**. Needs valid tracking uploaded today or proactive cancellation to avoid auto-cancel.
-- New 2026-05-16 Walmart auto-cancel warning says **1 order is past expected ship date** and needs tracking uploaded today or proactive cancellation. Impacted order from attachment: PO **119113698556759**, item **2476466849**, **1× Professional Grade Cyanoacrylate "Super Glue" by Glue Masters - 2 oz - Medium Viscosity, Clear**, GMV **$14.50**, ESD **2026-05-15**, EDD **2026-05-27**.
 - Sources: `gluemasters` msgs **192323**, **192326**, **192443**, **192554**, **192595**, **192619**, **192624**.
 
 ### A3 Partners Gemiflex shipment / invoice
@@ -134,7 +133,6 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Munera Capital / Josef Kozorezov** — acquisition-interest outreach asking whether we’d explore acquiring Glue Masters; added to MoneySamurai as stage `contacted`. Low-priority unless Ev wants to engage. Source: `sales` msg **6177**.
 - **Ethan Miller** — order **#5786**, 4× Thick 16oz replacement not created at ShipBob.
 - **Josh Mintz** — 8oz Medium sample to New Orleans overdue.
-- **Walmart unshipped order** — auto-cancel risk.
 - **KMS LLC / Brittni** — wholesale distributor inquiry stale.
 - **Christopher Webber** — B2B inquiry stale.
 - **Jason F return** — decision pending.
