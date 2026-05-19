@@ -227,17 +227,7 @@ def _first_step(title: str, detail: str) -> tuple[str, str]:
 
 
 def _manual_items() -> list[Item]:
-    return [
-        Item(
-            title="ShipBob DG/HAZMAT product review",
-            detail="ShipBob says flagged DG/HAZMAT items must be reviewed/resolved by 2026-05-19 or affected products may experience order delays, order holds, or inventory quarantine. Product IDs 8696101 and 8696102 need net weight and net volume filled in; ShipBob says 5 products need review total. Source: gluemasters msg 192586.",
-            source_section="urgent",
-            sources=["192586"],
-            amount=None,
-            tags=["needs_ev"],
-            draft_paths=[],
-        )
-    ]
+    return []
 
 
 def _is_candidate(item: Item) -> bool:

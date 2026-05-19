@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-19 11:01 AM PT
+Last updated: 2026-05-19 2:42 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -10,12 +10,6 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - QuickBooks Online says a bank/financial-institution connection expired and recent transactions cannot be displayed until an authorized account holder reauthorizes it in **Accounting > Bank transactions**.
 - After reconnecting, QuickBooks should attempt to download missed transactions.
 - Source: `gluemasters` msg **192589**.
-
-### ShipBob DG/HAZMAT product review
-- ShipBob says flagged DG/HAZMAT items must be reviewed/resolved by **Tuesday 2026-05-19** or affected products may experience order delays, order holds, or inventory quarantine.
-- Specific IDs called out: **8696101** and **8696102** need net weight and net volume filled in; ShipBob says **5 products** need review total.
-- Note from ShipBob: expedited shipping is not possible for orders containing DG items.
-- Source: `gluemasters` msg **192586**.
 
 ### Amex foreign transaction alert — Supabase
 - American Express sent a foreign-transaction alert for account ending **794007**: **SUPABASE**, Singapore SGP, **$44.22**, dated **2026-05-17**.
@@ -67,8 +61,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Fresh Walmart performance snapshot shows **on-time delivery 100% vs 90% standard**, but **valid tracking 87.5% vs 99% standard** and **late shipment 25% vs 5% standard**; cancellations/negative feedback/returns/item-not-received all 0%.
 - Fresh Walmart pricing digest shows **price competitiveness 47.83%** (+8.1% WoW), Buy Box win rate 100%, and top recommended price cuts remain `20GRGELCAGM` **$8.99 → $6.99** and `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes.
 - New 2026-05-09 Walmart Partner Performance alert says **1 shipped order has a late origin scan** and needs carrier scan/tracking accuracy confirmed within **24 hours**; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check.
-- New 2026-05-14 Walmart auto-cancel warning says **1 order has today as expected ship date and no tracking uploaded**. Impacted order from attachment: PO **119113590713297**, item **2476466849**, **1× Professional Grade Cyanoacrylate "Super Glue" by Glue Masters - 2 oz - Medium Viscosity, Clear**, GMV **$19.75**, ESD **2026-05-14**, EDD **2026-05-23**. Needs valid tracking uploaded today or proactive cancellation to avoid auto-cancel.
-- Sources: `gluemasters` msgs **192323**, **192326**, **192443**, **192554**, **192595**, **192619**, **192624**.
+- The prior PO-specific Walmart auto-cancel item was marked done/out on 2026-05-19; do not resurface PO **119113590713297** unless Walmart sends a fresh alert.
+- Sources: `gluemasters` msgs **192323**, **192326**, **192443**, **192619**, **192624**.
 
 ### A3 Partners Gemiflex shipment / invoice
 - A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**.
@@ -188,6 +182,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ## 🟢 Resolved / do not resurface without fresh evidence
 
+- **ShipBob DG/HAZMAT product review** — Ev marked this done on 2026-05-19. Remove from active deadline/shipment queues and do not resurface unless ShipBob sends a fresh DG/HAZMAT review or hold notice. Original source: `gluemasters` msg **192586**; done source: Ev Telegram **2026-05-19 14:42 PT**.
 - **Anne Johnson / Mountain Dog Millworks delivery-risk contact** — Ev marked this done on 2026-05-18 after the urgent contact form about 2 large super glue containers. Do not resurface unless Anne follows up with a fresh issue. Source: Ev Telegram **2026-05-18 14:03 PT**, original `sales` msg **6243**.
 - **Bank of America OPEX low-balance alert** — Ev marked this done on 2026-05-18. Do not resurface the checking ending **6560** below-$100 alert unless a fresh Bank of America alert appears. Source: Ev Telegram **2026-05-18 14:03 PT**, original `gluemasters` msg **192623**.
 - **Christopher Webber / Mountain Man's Creative Arts B2B inquiry** — Ev marked this done on 2026-05-19. Remove from active B2B/sample-kit queues and do not resurface unless Christopher follows up with a fresh issue. Source: Ev Telegram **2026-05-19 11:01 PT**.

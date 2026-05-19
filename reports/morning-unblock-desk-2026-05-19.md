@@ -1,13 +1,13 @@
 # Morning Unblock Desk — 2026-05-19
 
-Generated: 2026-05-19 11:04 PDT
+Generated: 2026-05-19 14:44 PDT
 
 ## Snapshot
-- Total unblock / verify items: **13**
+- Total unblock / verify items: **12**
 - Do now: **3**
 - Operator-owned: **7**
-- Ev-owned: **3**
-- Surfaces: **Amazon Seller Central, Browser / manual verify, ShipBob / UPS, Shopify Admin, Walmart Marketplace**
+- Ev-owned: **2**
+- Surfaces: **Amazon Seller Central, Browser / manual verify, ShipBob / UPS, Shopify Admin**
 
 ## Do now
 - **Amazon account security check / Meta partner request** — Amazon sent a password recovery notice tied to a reset attempt from Chrome on macOS near Washington. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from “Join the Meta Agency Partner Program”. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: `sales` msg 6141. Sources: `gluemasters` msg 192139, `sales` msg 6141. (Amazon Seller Central; Ev; security; msgs 6141, 192139)
@@ -50,17 +50,11 @@ Generated: 2026-05-19 11:04 PDT
 - **Amex foreign transaction alert — Supabase** — American Express sent a foreign-transaction alert for account ending 794007: SUPABASE, Singapore SGP, $44.22, dated 2026-05-17. This may be a normal Supabase platform charge, but Ev should verify in Amex if it is not recognized. Source: `gluemasters` msg 192605. (Browser / manual verify; Ev; verify; msgs 192605)
   - First step: Open the source system in-browser and clear the blocker from the live operating surface, not from email.
   - Success: Done when the live surface confirms the blocker is cleared and the state file can be updated confidently.
-- **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows on-time delivery 100% vs 90% standard, but valid tracking 87.5% vs 99% standard and late shipment 25% vs 5% standard; cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 47.83% (+8.1% WoW), Buy Box win rate 100%, and top recommended price cuts remain `20GRGELCAGM` $8.99 → $6.99 and `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. New 2026-05-14 Walmart auto-cancel warning says 1 order has today as expected ship date and no tracking uploaded. Impacted order from attachment: PO 119113590713297, item 2476466849, 1× Professional Grade Cyanoacrylate "Super Glue" by Glue Masters - 2 oz - Medium Viscosity, Clear, GMV $19.75, ESD 2026-05-14, EDD 2026-05-23. Needs valid tracking uploaded today or proactive cancellation to avoid auto-cancel. Sources: `gluemasters` msgs 192323, 192326, 192443, 192554, 192595, 192619, 192624. (Walmart Marketplace; Ev; ops; msgs 192323, 192326, 192443, 192554, 192595, 192619, 192624)
-  - First step: Open the Walmart performance/pricing dashboards and decide whether to act on on-time delivery risk and the suggested price cuts.
-  - Success: Done when Ev accepts or rejects the pricing/performance actions and the decision is recorded.
 
 ## Watch / lower urgency
 - **Amex foreign transaction alert — Supabase** — American Express sent a foreign-transaction alert for account ending 794007: SUPABASE, Singapore SGP, $44.22, dated 2026-05-17. This may be a normal Supabase platform charge, but Ev should verify in Amex if it is not recognized. Source: `gluemasters` msg 192605. (Browser / manual verify; Ev; verify; msgs 192605)
   - First step: Open the source system in-browser and clear the blocker from the live operating surface, not from email.
   - Success: Done when the live surface confirms the blocker is cleared and the state file can be updated confidently.
-- **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows on-time delivery 100% vs 90% standard, but valid tracking 87.5% vs 99% standard and late shipment 25% vs 5% standard; cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 47.83% (+8.1% WoW), Buy Box win rate 100%, and top recommended price cuts remain `20GRGELCAGM` $8.99 → $6.99 and `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. New 2026-05-14 Walmart auto-cancel warning says 1 order has today as expected ship date and no tracking uploaded. Impacted order from attachment: PO 119113590713297, item 2476466849, 1× Professional Grade Cyanoacrylate "Super Glue" by Glue Masters - 2 oz - Medium Viscosity, Clear, GMV $19.75, ESD 2026-05-14, EDD 2026-05-23. Needs valid tracking uploaded today or proactive cancellation to avoid auto-cancel. Sources: `gluemasters` msgs 192323, 192326, 192443, 192554, 192595, 192619, 192624. (Walmart Marketplace; Ev; ops; msgs 192323, 192326, 192443, 192554, 192595, 192619, 192624)
-  - First step: Open the Walmart performance/pricing dashboards and decide whether to act on on-time delivery risk and the suggested price cuts.
-  - Success: Done when Ev accepts or rejects the pricing/performance actions and the decision is recorded.
 - **A3 Partners Gemiflex shipment / invoice** — A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632. (ShipBob / UPS; Operator; ops; msgs 192183, 192184, 191451, 191683, 192371, 192632)
   - First step: Verify delivery status for tracking 1Z43A99A0348588986 and confirm whether invoice 26-04271 needs a reminder or calendar hold.
   - Success: Done when delivery is confirmed and the payable follow-up is clearly parked.
@@ -79,4 +73,7 @@ Generated: 2026-05-19 11:04 PDT
 - **Shopify API token** — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround. (Shopify Admin; Operator; access)
   - First step: Open Shopify admin, regenerate or replace the broken API credential, then re-test inventory visibility in the affected workflow.
   - Success: Done when inventory visibility is back and the dependent workflow no longer shows blind/dead API access.
+- **Munera Capital / Josef Kozorezov** — acquisition-interest outreach asking whether we’d explore acquiring Glue Masters; added to MoneySamurai as stage `contacted`. Low-priority unless Ev wants to engage. Source: `sales` msg 6177. (Browser / manual verify; Shared; access; msgs 6177)
+  - First step: Open the source system in-browser and clear the blocker from the live operating surface, not from email.
+  - Success: Done when the live surface confirms the blocker is cleared and the state file can be updated confidently.
 

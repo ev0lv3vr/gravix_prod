@@ -1,14 +1,14 @@
 # Morning Money Desk — 2026-05-19
 
-Generated: 2026-05-19 11:04 PDT
+Generated: 2026-05-19 14:43 PDT
 
 ## Snapshot
 - Collect / receivables visible: **$7,493.14**
 - Payables / outbound cash visible: **$6,597.07**
-- Leakage / disputes visible: **$3,982.93**
+- Leakage / disputes visible: **$3,963.18**
 - Pipeline / upside visible: **$16,030.20**
 - Overdue or due-now items: **1**
-- Undated money items: **15**
+- Undated money items: **14**
 
 ## Collect now
 - **Gemifly LLC** — PayPal invoice 1001-0243 is paid as of 2026-05-16: $7,424.15 received from Gemifly LLC, transaction 1JB03438J23145733, PayPal Seller Protection eligible, ship-to address unconfirmed. Invoice line items: 815× Gemiflex V1 ($6,552.60), 10,000× dispensing tips ($600.00), 500× Natural Pin Cap EXTRA ($125.00), shipping ($146.55). Next step: fulfill/ship the paid Gemiflex/tips/caps order, using normal unconfirmed-address caution. Sources: `sales` msgs 6134, 6172, 6235. (undated; Operator; $7,424.15; msgs 6134, 6172, 6235)
@@ -31,8 +31,6 @@ Generated: 2026-05-19 11:04 PDT
   - Reduce leakage from refunds, disputes, or fulfillment misses.
 - **Louise Frogley** — order #6055 delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for $41.84 + $15.00 fee and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs 6088, 6089, 6098, 6116, 6122, 6168, 6170. (undated; Operator; $56.84; msgs 6088, 6089, 6098, 6116, 6122, 6168, 6170)
   - Reduce leakage from refunds, disputes, or fulfillment misses.
-- **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows on-time delivery 100% vs 90% standard, but valid tracking 87.5% vs 99% standard and late shipment 25% vs 5% standard; cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 47.83% (+8.1% WoW), Buy Box win rate 100%, and top recommended price cuts remain `20GRGELCAGM` $8.99 → $6.99 and `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. New 2026-05-14 Walmart auto-cancel warning says 1 order has today as expected ship date and no tracking uploaded. Impacted order from attachment: PO 119113590713297, item 2476466849, 1× Professional Grade Cyanoacrylate "Super Glue" by Glue Masters - 2 oz - Medium Viscosity, Clear, GMV $19.75, ESD 2026-05-14, EDD 2026-05-23. Needs valid tracking uploaded today or proactive cancellation to avoid auto-cancel. Sources: `gluemasters` msgs 192323, 192326, 192443, 192554, 192595, 192619, 192624. (undated; Ev; $19.75; msgs 192323, 192326, 192443, 192554, 192595, 192619, 192624)
-  - Margin / marketplace decision, not an automatic price cut.
 
 ## Pipeline / upside
 - **Cute Things & Creative Concepts / Shohreh** — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on Amazon after the $16,030.20 quote. Ev sent a reply on 2026-05-06 saying no Amazon resale authorization; wait for her response. Sources: `sales` msgs 6087, 6100, 6101, 6149. (undated; Operator; $16,030.20; msgs 6087, 6100, 6101, 6149)

@@ -1,14 +1,14 @@
 # Business State Audit — 2026-05-19
 
-Generated: 2026-05-19 11:04 PDT
+Generated: 2026-05-19 14:44 PDT
 
 ## Snapshot
-- Active items scanned: **57**
+- Active items scanned: **56**
 - Past-date references in active items: **13**
-- Relative time phrases to clean up: **3**
+- Relative time phrases to clean up: **2**
 - Urgent items missing source evidence: **1**
 - Possible duplicate source IDs: **0**
-- Total findings: **17**
+- Total findings: **16**
 
 ## Findings
 - **HIGH · stale_date_ref · in_progress** — Active task still contains a past-dated reference; verify whether it should be rewritten, resolved, or escalated. Refs: 2026-05-05.
@@ -41,7 +41,5 @@ Generated: 2026-05-19 11:04 PDT
   - **Wet Work Studios / Sam Slobusky** — new wholesale account inquiry for an initial order of **80× 16oz Ultra Thin**; asks what documents are required for account setup. Midday 2026-05-15 local product check reduced the product-truth blocker: Shopify product **Glue Masters Ultra Thin CA Glue — 16oz** is active as SKU **16OZ05CAGM** with quantity **91**, and ShipBob product ID **8696104** shows **91 fulfillable** plus **30 awaiting**. Draft reply exists at `moneysamurai/drafts/midday-quick-wins-2026-05-15.md`; needs Ev pricing/terms approval before sending. Source: `sales` msg **6207**.
 - **MEDIUM · stale_relative_ref · urgent** — Active task uses relative timing language that will go stale in durable state. Refs: tomorrow, morning.
   - Shipux sales order SO14531 — Ev requested an urgent shipping update for Shipux sales order **SO14531 - 001034** because it had no shipping update since **2026-05-08** and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-13 that they missed it and **will ship tomorrow morning**. Ev's copy to `administrator@shipux.com` bounced because that mailbox does not exist, but `info@shipux.com` delivered and got the reply. Next step: watch for tracking on 2026-05-14 and update the waiting customer when available. Sources: `gluemasters` msgs **192543**, **192545**.
-- **MEDIUM · stale_relative_ref · urgent** — Active task uses relative timing language that will go stale in durable state. Refs: today.
-  - Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 100% vs 90% standard**, but **valid tracking 87.5% vs 99% standard** and **late shipment 25% vs 5% standard**; cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 47.83%** (+8.1% WoW), Buy Box win rate 100%, and top recommended price cuts remain `20GRGELCAGM` **$8.99 → $6.99** and `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says **1 shipped order has a late origin scan** and needs carrier scan/tracking accuracy confirmed within **24 hours**; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. New 2026-05-14 Walmart auto-cancel warning says **1 order has today as expected ship date and no tracking uploaded**. Impacted order from attachment: PO **119113590713297**, item **2476466849**, **1× Professional Grade Cyanoacrylate "Super Glue" by Glue Masters - 2 oz - Medium Viscosity, Clear**, GMV **$19.75**, ESD **2026-05-14**, EDD **2026-05-23**. Needs valid tracking uploaded today or proactive cancellation to avoid auto-cancel. Sources: `gluemasters` msgs **192323**, **192326**, **192443**, **192554**, **192595**, **192619**, **192624**.
 - **MEDIUM · urgent_without_source · urgent** — Urgent item lacks explicit source evidence/message reference.
   - Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.

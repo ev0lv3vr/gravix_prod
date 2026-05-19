@@ -1,14 +1,14 @@
 # Morning Priority Pack — 2026-05-19
 
-Generated: 2026-05-19 11:04 PDT
+Generated: 2026-05-19 14:43 PDT
 Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 
 ## Queue Depth
-- 🔴 URGENT: **16**
+- 🔴 URGENT: **15**
 - 🟡 NEEDS EV: **31**
 - 🔵 IN PROGRESS: **8**
 - 📋 BACKLOG: **2**
-- Total open: **57**
+- Total open: **56**
 
 ## Top 8 morning actions (ranked)
 1. [🟡 NEEDS EV] **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for **$41.84 + $15.00 fee** and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**, **6168**, **6170**. (75d, $56.84) — score 95.97, ~7m
@@ -16,9 +16,9 @@ Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 3. [🔴 URGENT] Insurance midterm sales/product check — Ashlin Hadden Insurance asked whether Gluemasters is still on schedule for estimated **$900k** annual sales and whether any products have been added/discontinued. If sales/product mix has changed materially, Ev should reply so coverage can be adjusted; otherwise no policy adjustment is needed until renewal. Claire followed up again on 2026-05-18 asking Ev to confirm whether business/products/sales pace have changed. Sources: `gluemasters` msgs **192475**, **192631**. ($900,000) — score 75.0, ~8m
 4. [🟡 NEEDS EV] **Garcor / Kyle Lawson / David Young** — PO/payment corrected: David Young paid PayPal invoice **1001-0244** for **$1,806.00** on 2026-05-11 (transaction **8L633560LT2348943**) for **420× 20g Gel**, but Garcor used the wrong card on that first payment and it has been refunded per Ev on 2026-05-13. David then paid invoice **1001-0245** for **$1,806.00** on 2026-05-13 (transaction **8U542068D8830142E**) as the valid payment for the order. PayPal notice says Seller Protection eligible and ship-to address unconfirmed. Next step: fulfill/ship one paid 420-unit order only; do not treat invoice 1001-0244 as an open duplicate-payment risk. Sources: Ev Telegram **2026-05-13 13:40 PT**, `gluemasters` msgs **192403**, **192479**, `sales` msgs **6165**, **6178**, **6191**, **6194**, **6208**. ($3,612) — score 74.0, ~7m
 5. [🔴 URGENT] A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. A3 sent new invoice **26-05151** for **$732.63**, due **2026-06-14**. Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**, **192632**. ($501.25, deadline 2026-05-27 (D-8)) — score 60.18, ~25m
-6. [🔴 URGENT] ShipBob DG/HAZMAT product review — ShipBob says flagged DG/HAZMAT items must be reviewed/resolved by **Tuesday 2026-05-19** or affected products may experience order delays, order holds, or inventory quarantine. Specific IDs called out: **8696101** and **8696102** need net weight and net volume filled in; ShipBob says **5 products** need review total. Note from ShipBob: expedited shipping is not possible for orders containing DG items. Source: `gluemasters` msg **192586**. (deadline 2026-05-19 (OVERDUE)) — score 60.0, ~25m
-7. [🟡 NEEDS EV] **Gemifly LLC** — PayPal invoice **1001-0243** is paid as of 2026-05-16: **$7,424.15** received from Gemifly LLC, transaction **1JB03438J23145733**, PayPal Seller Protection eligible, ship-to address unconfirmed. Invoice line items: **815× Gemiflex V1** ($6,552.60), **10,000× dispensing tips** ($600.00), **500× Natural Pin Cap EXTRA** ($125.00), **shipping** ($146.55). Next step: fulfill/ship the paid Gemiflex/tips/caps order, using normal unconfirmed-address caution. Sources: `sales` msgs **6134**, **6172**, **6235**. ($7,424.15) — score 57.0, ~25m
-8. [🔴 URGENT] Buy with Prime compliance notice — Amazon Buy with Prime opened case **20290685991** on 2026-05-13 saying Gluemasters may be non-compliant because two active Buy with Prime integrations are displaying and the Buy with Prime collection/product tiles show an **Add to Cart** CTA that may block the widget/checkout experience. URLs flagged: `https://gluemasters.com/collections/buy-with-prime/products/ca-glue-gel-20g` and `https://gluemasters.com/collections/buy-with-prime`. Requested fix within **30 calendar days**: keep only one Buy with Prime integration active and either implement Collections for Buy with Prime or remove the incorrect CTA. Risk is Buy with Prime suspension if not corrected. Source: `gluemasters` msg **192533**. — score 55.0, ~18m
+6. [🟡 NEEDS EV] **Gemifly LLC** — PayPal invoice **1001-0243** is paid as of 2026-05-16: **$7,424.15** received from Gemifly LLC, transaction **1JB03438J23145733**, PayPal Seller Protection eligible, ship-to address unconfirmed. Invoice line items: **815× Gemiflex V1** ($6,552.60), **10,000× dispensing tips** ($600.00), **500× Natural Pin Cap EXTRA** ($125.00), **shipping** ($146.55). Next step: fulfill/ship the paid Gemiflex/tips/caps order, using normal unconfirmed-address caution. Sources: `sales` msgs **6134**, **6172**, **6235**. ($7,424.15) — score 57.0, ~25m
+7. [🔴 URGENT] Buy with Prime compliance notice — Amazon Buy with Prime opened case **20290685991** on 2026-05-13 saying Gluemasters may be non-compliant because two active Buy with Prime integrations are displaying and the Buy with Prime collection/product tiles show an **Add to Cart** CTA that may block the widget/checkout experience. URLs flagged: `https://gluemasters.com/collections/buy-with-prime/products/ca-glue-gel-20g` and `https://gluemasters.com/collections/buy-with-prime`. Requested fix within **30 calendar days**: keep only one Buy with Prime integration active and either implement Collections for Buy with Prime or remove the incorrect CTA. Risk is Buy with Prime suspension if not corrected. Source: `gluemasters` msg **192533**. — score 55.0, ~18m
+8. [🔴 URGENT] Shipux sales order SO14531 — Ev requested an urgent shipping update for Shipux sales order **SO14531 - 001034** because it had no shipping update since **2026-05-08** and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-13 that they missed it and **will ship tomorrow morning**. Ev's copy to `administrator@shipux.com` bounced because that mailbox does not exist, but `info@shipux.com` delivered and got the reply. Next step: watch for tracking on 2026-05-14 and update the waiting customer when available. Sources: `gluemasters` msgs **192543**, **192545**. — score 54.0, ~8m
 
 ## 90-minute execution block
 -  7m • **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for **$41.84 + $15.00 fee** and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**, **6168**, **6170**.
@@ -32,12 +32,12 @@ Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 - 2026-05-19.md: Generated testable artifacts for the morning: `reports/deadline-control-desk-latest.html`, `reports/deadline-control-desk-latest.md`, `reports/morning-ops-hub-latest.html`, and `reports/ops-build-brief-latest.txt`.
 - 2026-05-19.md: Deadline desk summary for **2026-05-19**: **15** total deadline/control items, **1 due today**, **3 overdue**, **8 shipment/account risks**, **3 finance/admin items**, **2 access/compliance items**, and **2 revenue decisions**. First listed item is the ShipBob DG/HAZMAT review due today for product IDs **8696101** and **8696102**.
 - 2026-05-19.md: Committed as `f99243c feat: add deadline control desk`; nothing was pushed.
+- 2026-05-19.md: Ev said “hazmat is done”; this maps to the ShipBob DG/HAZMAT product review for product IDs **8696101** and **8696102** / five flagged products. Removed it from active deadline/shipment queues and the deadline-desk manual injection; do not resurface unless ShipBob sends a fresh DG/HAZMAT review or hold notice.
 - 2026-05-18.md: Manual pull completed successfully at about **1:24 AM PT**. Snapshot `moneysamurai/data/ads/daily/2026-05-17` is valid with **10 campaigns**, **96 keywords**, **49 search terms**, and no failed reports.
 - 2026-05-18.md: Created `moneysamurai/drafts/midday-quick-wins-2026-05-18.md` with a focused Anne Johnson / Mountain Dog Millworks lookup/callback path, near-deadline blockers, paid fulfillment handoffs, and do-not-resurface reminders.
 - 2026-05-18.md: Accomplishments today: recovered the lagging Amazon Ads daily pull for snapshot **2026-05-17** at about **1:24 AM PT**. Snapshot is valid with **10 campaigns**, **96 keywords**, **49 search terms**, no failed reports, and same-day attributed metrics of **$87.52 spend**, **$235.91 sales**, **37.1% ACoS**, and **2.70x ROAS**.
 - 2026-05-18.md: Ops-pack progress: rebuilt the full **2026-05-18** ops pack at midday with `python3 scripts/ops_build.py --date 2026-05-18`; artifact freshness ended at **23 / 23 OK**, stale **0**, missing **0**, mismatched latest-vs-dated **0**. Created `moneysamurai/drafts/midday-quick-wins-2026-05-18.md` to concentrate the urgent lookup/callback path, near-deadline blockers, paid fulfillment handoffs, and do-not-resurface reminders.
 - 2026-05-18.md: Resolved today: Ev marked **Anne Johnson / Mountain Dog Millworks** done at **2:03 PM PT** after the urgent delivery-risk contact form; do not resurface unless Anne follows up. Ev also marked the **Bank of America OPEX low-balance alert** done; do not resurface checking ending **6560** below-$100 alert unless a fresh bank alert appears.
-- 2026-05-18.md: Pending items for tomorrow: ShipBob DG/HAZMAT net weight/net volume review by **2026-05-19**; QuickBooks bank reconnect; Buy with Prime compliance case **20290685991**; insurance midterm sales/product confirmation; Shopify API token recovery; paid fulfillment handoffs for Gemifly, Garcor, WaterRower, and Petite Keep; Wet Work Studios pricing/terms approval; Champion Fiberglass product mapping/quote; Tyler Panzer / TJP Art donation decision; optional Amex Supabase verification only if unrecognized.
 
 ## Financial quick math
 - One-time dollars visible in tasks: **$928,146.29**
@@ -46,9 +46,9 @@ Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 
 ## Freshness
 - Pack status: **FRESH**
-- Newest source edit: **2026-05-19 11:03 PDT**
+- Newest source edit: **2026-05-19 14:43 PDT**
 - Build lag vs newest source: **0 min**
-- BUSINESS_STATE.md: 2026-05-19 11:03 PDT (0 min old)
-- MEMORY.md: 2026-05-19 10:27 PDT (37 min old)
-- memory/2026-05-19.md: 2026-05-19 11:03 PDT (0 min old)
-- memory/2026-05-18.md: 2026-05-19 10:27 PDT (37 min old)
+- BUSINESS_STATE.md: 2026-05-19 14:43 PDT (0 min old)
+- MEMORY.md: 2026-05-19 14:43 PDT (0 min old)
+- memory/2026-05-19.md: 2026-05-19 14:43 PDT (0 min old)
+- memory/2026-05-18.md: 2026-05-19 10:27 PDT (256 min old)
