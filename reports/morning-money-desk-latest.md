@@ -1,6 +1,6 @@
 # Morning Money Desk — 2026-05-19
 
-Generated: 2026-05-19 10:27 PDT
+Generated: 2026-05-19 11:04 PDT
 
 ## Snapshot
 - Collect / receivables visible: **$7,493.14**
@@ -8,7 +8,7 @@ Generated: 2026-05-19 10:27 PDT
 - Leakage / disputes visible: **$3,982.93**
 - Pipeline / upside visible: **$16,030.20**
 - Overdue or due-now items: **1**
-- Undated money items: **16**
+- Undated money items: **15**
 
 ## Collect now
 - **Gemifly LLC** — PayPal invoice 1001-0243 is paid as of 2026-05-16: $7,424.15 received from Gemifly LLC, transaction 1JB03438J23145733, PayPal Seller Protection eligible, ship-to address unconfirmed. Invoice line items: 815× Gemiflex V1 ($6,552.60), 10,000× dispensing tips ($600.00), 500× Natural Pin Cap EXTRA ($125.00), shipping ($146.55). Next step: fulfill/ship the paid Gemiflex/tips/caps order, using normal unconfirmed-address caution. Sources: `sales` msgs 6134, 6172, 6235. (undated; Operator; $7,424.15; msgs 6134, 6172, 6235)
@@ -40,8 +40,6 @@ Generated: 2026-05-19 10:27 PDT
 - **Arka / Sean** — chose stock 700 cps in 2oz bottles, ships now for the CO 80110 quote path. Next step: get initial quantity / annual volume and price the stock 2oz Medium option. Draft follow-up created at `moneysamurai/drafts/arka-stock-700cps-2oz-followup-2026-05-04.md`. Sources: `sales` msgs 6112, 6131. (undated; Operator; msgs 6112, 6131)
   - Revenue opportunity waiting for quote, response, or decision.
 - **Champion Fiberglass / Miguel Garcia** — new RFQ for 52× Gluemasters 1500 CPS Super Glue, 2g, 4 ct. Ship/contact context: Champion Fiberglass, 6400 Spring Stuebner Rd, Spring, TX 77389; Miguel Garcia / Purchasing Manager. Needs product mapping, quote, and reply. Source: `sales` msg 6218. (undated; Operator; msgs 6218)
-  - Revenue opportunity waiting for quote, response, or decision.
-- **Christopher Webber** — B2B inquiry stale. (undated; Operator)
   - Revenue opportunity waiting for quote, response, or decision.
 - **Donaldson / Rachael Fitzgerald** — account setup is still pending on Donaldson Finance side; Rachael reached out internally to see what is holding it up. They are good on inventory for now and will re-order when they break into the second case; usage for the new bottle size is still unknown. Ev already replied asking her to keep us updated. Sources: `sales` msg 6137, `gluemasters` msgs 192353, 192354. (undated; Operator; msgs 6137, 192353, 192354)
   - Revenue opportunity waiting for quote, response, or decision.

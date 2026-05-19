@@ -1,13 +1,13 @@
 # B2B Kit Dispatch Desk — 2026-05-19
 
-Generated: 2026-05-19 10:27 PDT
+Generated: 2026-05-19 11:04 PDT
 Planned ship date: 2026-05-19
 Source: `gluemasters-bizdev/b2b/b2b-kit-recipients-2026-05-05.json`
 
 ## Snapshot
 - Ready now: **1**
 - Verify then ship: **9**
-- Needs info first: **3**
+- Needs info first: **2**
 - Next wave: **0**
 - Hold / do not ship cold: **6**
 
@@ -35,7 +35,6 @@ Source: `gluemasters-bizdev/b2b/b2b-kit-recipients-2026-05-05.json`
   - Kit mix: Medium, Thin, Thick, Accelerator
 
 ## Needs info first
-- **Mountain Man's Creative Arts** — Inbound B2B inquiry; reply first and confirm sample kit destination. (address_needed)
 - **Woodchuck USA** — needs_enrichment_refresh (needs_enrichment_refresh)
 - **Frame It Easy** — needs_enrichment_refresh (needs_enrichment_refresh)
 

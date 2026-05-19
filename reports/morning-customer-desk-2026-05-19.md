@@ -1,9 +1,9 @@
 # Morning Customer Desk — 2026-05-19
 
-Generated: 2026-05-19 10:27 PDT
+Generated: 2026-05-19 11:04 PDT
 
 ## Snapshot
-- Customer queue: **31**
+- Customer queue: **30**
 - Hot risks: **4**
 - Draft-backed replies: **3**
 - Needs missing info / decision: **7**
@@ -35,7 +35,6 @@ Generated: 2026-05-19 10:27 PDT
 - **Garcor / Kyle Lawson / David Young** — PO/payment corrected: David Young paid PayPal invoice **1001-0244** for **$1,806.00** on 2026-05-11 (transaction **8L633560LT2348943**) for **420× 20g Gel**, but Garcor used the wrong card on that first payment and it has been refunded per Ev on 2026-05-13. David then paid invoice **1001-0245** for **$1,806.00** on 2026-05-13 (transaction **8U542068D8830142E**) as the valid payment for the order. PayPal notice says Seller Protection eligible and ship-to address unconfirmed. Next step: fulfill/ship one paid 420-unit order only; do not treat invoice 1001-0244 as an open duplicate-payment risk. Sources: Ev Telegram **2026-05-13 13:40 PT**, `gluemasters` msgs **192403**, **192479**, `sales` msgs **6165**, **6178**, **6191**, **6194**, **6208**. ($3,612; msgs 192403, 192479, 6165, 6178, 6191, 6194, 6208)
 - **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`. (msgs 191366; refs: moneysamurai/drafts/b2b-email-drafts-2026-03-24.md)
 - **Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**. (msgs 6061)
-- **Christopher Webber** — B2B inquiry stale.
 - **Ethan Miller** — order **#5786**, 4× Thick 16oz replacement not created at ShipBob.
 - **Josh Mintz** — 8oz Medium sample to New Orleans overdue.
 - **KMS LLC / Brittni** — wholesale distributor inquiry stale.

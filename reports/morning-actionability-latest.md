@@ -1,9 +1,9 @@
 # Morning Actionability Desk — 2026-05-19
 
-Generated: 2026-05-19 10:27 PDT
+Generated: 2026-05-19 11:04 PDT
 
 ## Snapshot
-- Active items scanned: **58**
+- Active items scanned: **57**
 - Access / token blockers: **8**
 - Passive / watch-only items: **10**
 - Stale date refs still active: **13**
@@ -22,9 +22,9 @@ Generated: 2026-05-19 10:27 PDT
   - Amazon FBA unfulfillable removal — Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**. Completion notice later arrived confirming the removal request completed successfully; no immediate action remains unless Ev wants to review Seller Central removal settings/address/frequency. Sources: `gluemasters` msgs **192161**, **192366**.
 - **#40 · needs_ev · score 25.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
   - **Amazon buyer message / Karaoke Machine Store** — Amazon buyer message is waiting in Seller Central for order **113-4386244-8272243**, ASIN **B0DFPG9PJN** Singing Machine Platinum Plus. Source: `gluemasters` msg **192280**.
-- **#46 · in_progress · score 22.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
+- **#45 · in_progress · score 22.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
   - Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action.
-- **#56 · in_progress · score 14.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
+- **#55 · in_progress · score 14.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
   - Latest manual cron pass on **2026-05-10 4:01 PM PT** successfully reset the MoneySamurai account sync state to **healthy**, cleared queued/running jobs to **failed**, and triggered a fresh full-category sync (`products`, `orders`, `inventory`, `financial`, `restock`).
 
 ## Passive / watch-only context
@@ -38,15 +38,15 @@ Generated: 2026-05-19 10:27 PDT
   - Amazon FBA unfulfillable removal — Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**. Completion notice later arrived confirming the removal request completed successfully; no immediate action remains unless Ev wants to review Seller Central removal settings/address/frequency. Sources: `gluemasters` msgs **192161**, **192366**.
 - **#25 · urgent · score 34.85** — Useful context, but likely not first-block execution work.
   - Amazon product safety / affiliate notices — Amazon flagged a **Thermos Stainless King food jar** order (**111-9829889-5064236**) with a stop-use / recall notice tied to a CPSC announcement. Amazon Associates/Influencer says account **redwaspnet-20** has been closed/rejected for over 3 years and a remaining **$114.30** balance will be forfeited after **7 days**; email says no action needed, but surface if Ev cares about recovering/appealing it. Source: `gluemasters` msg **192362**. Needs Ev review only if these personal/affiliate notices matter operationally; otherwise keep them low priority and do not let them crowd business-critical work. Sources: `gluemasters` msgs **192266**, **192362**.
-- **#45 · needs_ev · score 23.0** — Useful context, but likely not first-block execution work.
+- **#44 · needs_ev · score 23.0** — Useful context, but likely not first-block execution work.
   - **TikTok/Amazon influencer outreach** — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**.
-- **#47 · needs_ev · score 21.0** — Useful context, but likely not first-block execution work.
+- **#46 · needs_ev · score 21.0** — Useful context, but likely not first-block execution work.
   - **Starbond/Systemslab outreach** — David Jones says he tried to call about **Starbond** and asks for 5 minutes. Treat as low-priority vendor/competitive outreach unless Ev recognizes it. Source: `gluemasters` msg **192425**.
-- **#48 · needs_ev · score 21.0** — Useful context, but likely not first-block execution work.
+- **#47 · needs_ev · score 21.0** — Useful context, but likely not first-block execution work.
   - **Munera Capital / Josef Kozorezov** — acquisition-interest outreach asking whether we’d explore acquiring Glue Masters; added to MoneySamurai as stage `contacted`. Low-priority unless Ev wants to engage. Source: `sales` msg **6177**.
-- **#49 · needs_ev · score 15.0** — Useful context, but likely not first-block execution work.
+- **#48 · needs_ev · score 15.0** — Useful context, but likely not first-block execution work.
   - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
-- **#58 · urgent · score 4.0** — Useful context, but likely not first-block execution work.
+- **#57 · urgent · score 4.0** — Useful context, but likely not first-block execution work.
   - Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs **192263**, **192271**.
 
 ## Past-dated active items
@@ -68,11 +68,11 @@ Generated: 2026-05-19 10:27 PDT
   - **Cute Things & Creative Concepts / Shohreh** — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on **Amazon** after the $16,030.20 quote. Ev sent a reply on **2026-05-06** saying **no Amazon resale authorization**; wait for her response. Sources: `sales` msgs **6087**, **6100**, **6101**, **6149**.
 - **#34 · needs_ev · score 29.36** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-13.
   - **WaterRower / NOHRD / Abel Sanchez / Peter King** — PO **00039435** received for **15× CA Medium 700 CPS / WRC1505**, 16oz, **$42.99** each, total **$644.85**, C.O.D., ship to **WATERROWER | NOHRD, 560 Metacom Ave, Warren, RI 02885**, ship via Best Way. PayPal invoice **1001-0246** was sent and paid on 2026-05-13 by Peter King / `peter@waterrower.com`; transaction **4W686707JS430003G**, Seller Protection eligible, PayPal ship-to address unconfirmed. Next step: fulfill/ship the paid order. Sources: `sales` msgs **6206**, **6210**, **6211**.
-- **#46 · in_progress · score 22.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-02.
+- **#45 · in_progress · score 22.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-02.
   - Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action.
-- **#49 · needs_ev · score 15.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-04-27.
+- **#48 · needs_ev · score 15.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-04-27.
   - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
-- **#50 · in_progress · score 14.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-05.
+- **#49 · in_progress · score 14.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-05.
   - B2B sample kits — Ev confirmed on **2026-05-05** that the boxes are done and kits are ready to be sent. Status: ready for outbound/send execution; do **not** list box production or kit assembly as blockers. Kit assets/collateral live under `gluemasters-bizdev/b2b-kit/`.
 
 ## High-ranked but low-action items

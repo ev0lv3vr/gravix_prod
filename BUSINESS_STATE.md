@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-18 2:03 PM PT
+Last updated: 2026-05-19 11:01 AM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -129,7 +129,6 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Ethan Miller** — order **#5786**, 4× Thick 16oz replacement not created at ShipBob.
 - **Josh Mintz** — 8oz Medium sample to New Orleans overdue.
 - **KMS LLC / Brittni** — wholesale distributor inquiry stale.
-- **Christopher Webber** — B2B inquiry stale.
 - **Jason F return** — decision pending.
 
 ## 🔵 Active product / growth
@@ -191,6 +190,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 - **Anne Johnson / Mountain Dog Millworks delivery-risk contact** — Ev marked this done on 2026-05-18 after the urgent contact form about 2 large super glue containers. Do not resurface unless Anne follows up with a fresh issue. Source: Ev Telegram **2026-05-18 14:03 PT**, original `sales` msg **6243**.
 - **Bank of America OPEX low-balance alert** — Ev marked this done on 2026-05-18. Do not resurface the checking ending **6560** below-$100 alert unless a fresh Bank of America alert appears. Source: Ev Telegram **2026-05-18 14:03 PT**, original `gluemasters` msg **192623**.
+- **Christopher Webber / Mountain Man's Creative Arts B2B inquiry** — Ev marked this done on 2026-05-19. Remove from active B2B/sample-kit queues and do not resurface unless Christopher follows up with a fresh issue. Source: Ev Telegram **2026-05-19 11:01 PT**.
 - **Clarion Bathware / Megan Best order #6099 ETA** — Megan asked when order **#6099** would ship; a reply was already sent with OSM tracking **9239590318421410007161**, and Megan replied “Thank you.” No further action unless she follows up. Sources: `sales` msgs **6227**, **6228**.
 - **Deane Belk / Good Friends of Bryan County reorder** — `DEANE20` discount was created and the reorder/refund path was sent in-thread on 2026-05-14. After ShipBob-side cancellation of order **#6111**, Deane confirmed she completed the replacement order with the correct Good Friends card. Do not keep the “send 2× 16oz Thick order path” item active unless Deane raises a fresh issue. Sources: `sales` msgs **6216**, **6221**, **6222**.
 - **R&R Fabrications shipment / invoice** — Ev marked R&R done on 2026-05-03, and Jeffery Davis paid PayPal invoice **1001-0242** for **$1,289.70** on 2026-05-04. Do not resurface the shipment/invoice as active unless a fresh R&R follow-up appears. Sources: `sales` msgs **6086**, **6099**, **6117**, **6130**.

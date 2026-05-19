@@ -1,14 +1,14 @@
 # Morning Priority Pack — 2026-05-19
 
-Generated: 2026-05-19 10:27 PDT
+Generated: 2026-05-19 11:04 PDT
 Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 
 ## Queue Depth
 - 🔴 URGENT: **16**
-- 🟡 NEEDS EV: **32**
+- 🟡 NEEDS EV: **31**
 - 🔵 IN PROGRESS: **8**
 - 📋 BACKLOG: **2**
-- Total open: **58**
+- Total open: **57**
 
 ## Top 8 morning actions (ranked)
 1. [🟡 NEEDS EV] **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for **$41.84 + $15.00 fee** and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**, **6168**, **6170**. (75d, $56.84) — score 95.97, ~7m
@@ -46,9 +46,9 @@ Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 
 ## Freshness
 - Pack status: **FRESH**
-- Newest source edit: **2026-05-19 10:27 PDT**
+- Newest source edit: **2026-05-19 11:03 PDT**
 - Build lag vs newest source: **0 min**
-- BUSINESS_STATE.md: 2026-05-19 10:27 PDT (0 min old)
-- MEMORY.md: 2026-05-19 10:27 PDT (0 min old)
-- memory/2026-05-19.md: 2026-05-19 10:27 PDT (0 min old)
-- memory/2026-05-18.md: 2026-05-19 10:27 PDT (0 min old)
+- BUSINESS_STATE.md: 2026-05-19 11:03 PDT (0 min old)
+- MEMORY.md: 2026-05-19 10:27 PDT (37 min old)
+- memory/2026-05-19.md: 2026-05-19 11:03 PDT (0 min old)
+- memory/2026-05-18.md: 2026-05-19 10:27 PDT (37 min old)

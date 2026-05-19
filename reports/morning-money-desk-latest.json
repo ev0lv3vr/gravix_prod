@@ -1,14 +1,14 @@
 {
   "summary": {
     "target_date": "2026-05-19",
-    "generated_at": "2026-05-19 10:27 PDT",
+    "generated_at": "2026-05-19 11:04 PDT",
     "collect_total": 7493.14,
     "pay_total": 6597.07,
     "protect_total": 3982.93,
     "upside_total": 16030.2,
     "overdue_count": 1,
-    "undated_count": 16,
-    "items_total": 17
+    "undated_count": 15,
+    "items_total": 16
   },
   "collect_now": [
     {
@@ -211,17 +211,6 @@
       "sources": [
         "6218"
       ],
-      "note": "Revenue opportunity waiting for quote, response, or decision."
-    },
-    {
-      "lane": "upside",
-      "title": "Christopher Webber",
-      "detail": "B2B inquiry stale.",
-      "amount": null,
-      "due_date": null,
-      "due_status": "undated",
-      "owner": "Operator",
-      "sources": [],
       "note": "Revenue opportunity waiting for quote, response, or decision."
     },
     {
@@ -470,17 +459,6 @@
       "sources": [
         "6218"
       ],
-      "note": "Revenue opportunity waiting for quote, response, or decision."
-    },
-    {
-      "lane": "upside",
-      "title": "Christopher Webber",
-      "detail": "B2B inquiry stale.",
-      "amount": null,
-      "due_date": null,
-      "due_status": "undated",
-      "owner": "Operator",
-      "sources": [],
       "note": "Revenue opportunity waiting for quote, response, or decision."
     },
     {
