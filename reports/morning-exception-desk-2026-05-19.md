@@ -1,10 +1,10 @@
 # Morning Exception Desk — 2026-05-19
 
-Generated: 2026-05-19 10:24 PDT
+Generated: 2026-05-19 10:27 PDT
 
 ## Snapshot
-- Total findings: **18**
-- Past-dated active items: **14**
+- Total findings: **17**
+- Past-dated active items: **13**
 - Amount parser risks: **0**
 - Urgent items missing source: **1**
 - Passive items still in urgent: **3**
@@ -28,8 +28,6 @@ Generated: 2026-05-19 10:24 PDT
   - **WaterRower / NOHRD / Abel Sanchez / Peter King** — PO **00039435** received for **15× CA Medium 700 CPS / WRC1505**, 16oz, **$42.99** each, total **$644.85**, C.O.D., ship to **WATERROWER | NOHRD, 560 Metacom Ave, Warren, RI 02885**, ship via Best Way. PayPal invoice **1001-0246** was sent and paid on 2026-05-13 by Peter King / `peter@waterrower.com`; transaction **4W686707JS430003G**, Seller Protection eligible, PayPal ship-to address unconfirmed. Next step: fulfill/ship the paid order. Sources: `sales` msgs **6206**, **6210**, **6211**.
 - **HIGH · stale_date · urgent** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-04-30, 2026-04-25, 2026-04-30.
   - A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. A3 sent new invoice **26-05151** for **$732.63**, due **2026-06-14**. Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**, **192632**.
-- **HIGH · stale_date · urgent** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-05-14.
-  - Beyaz bank statements task overdue — ClickUp sent an overdue reminder for task **“Send Beyaz statements from all banks”**, originally due **2026-05-14**. Needs Ev handling unless statements were already sent outside the visible email/task context. Source: `gluemasters` msg **192585**.
 - **HIGH · stale_date · urgent** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-05-13.
   - Buy with Prime compliance notice — Amazon Buy with Prime opened case **20290685991** on 2026-05-13 saying Gluemasters may be non-compliant because two active Buy with Prime integrations are displaying and the Buy with Prime collection/product tiles show an **Add to Cart** CTA that may block the widget/checkout experience. URLs flagged: `https://gluemasters.com/collections/buy-with-prime/products/ca-glue-gel-20g` and `https://gluemasters.com/collections/buy-with-prime`. Requested fix within **30 calendar days**: keep only one Buy with Prime integration active and either implement Collections for Buy with Prime or remove the incorrect CTA. Risk is Buy with Prime suspension if not corrected. Source: `gluemasters` msg **192533**.
 - **HIGH · stale_date · urgent** — Past-dated reference is still active and may need confirmation, rewrite, or cleanup. Refs: 2026-04-30.

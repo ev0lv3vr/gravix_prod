@@ -1,13 +1,13 @@
 # Deadline Control Desk — 2026-05-19
 
-Generated: 2026-05-19 10:24 PDT
+Generated: 2026-05-19 10:27 PDT
 
 ## Snapshot
-- Total deadline items: **14**
+- Total deadline items: **13**
 - Due today: **1**
-- Overdue: **2**
+- Overdue: **1**
 - Operator-owned: **8**
-- Ev-owned: **4**
+- Ev-owned: **3**
 
 ## Do first
 - **ShipBob DG/HAZMAT product review** — ShipBob says flagged DG/HAZMAT items must be reviewed/resolved by 2026-05-19 or affected products may experience order delays, order holds, or inventory quarantine. Product IDs 8696101 and 8696102 need net weight and net volume filled in; ShipBob says 5 products need review total. Source: gluemasters msg 192586. (due today; ShipBob; Operator; msgs 192586)
@@ -62,9 +62,6 @@ Generated: 2026-05-19 10:24 PDT
 - **Insurance midterm sales/product check** — Ashlin Hadden Insurance asked whether Gluemasters is still on schedule for estimated $900k annual sales and whether any products have been added/discontinued. If sales/product mix has changed materially, Ev should reply so coverage can be adjusted; otherwise no policy adjustment is needed until renewal. Claire followed up again on 2026-05-18 asking Ev to confirm whether business/products/sales pace have changed. Sources: `gluemasters` msgs 192475, 192631. (overdue 1d; Email / insurance; Ev; $900,000; msgs 192475, 192631)
   - First step: Confirm whether sales pace/product mix changed materially from the estimated $900k annual sales posture.
   - Success: Done when Ashlin Hadden has either a no-change confirmation or updated business/product details.
-- **Beyaz bank statements task overdue** — ClickUp sent an overdue reminder for task “Send Beyaz statements from all banks”, originally due 2026-05-14. Needs Ev handling unless statements were already sent outside the visible email/task context. Source: `gluemasters` msg 192585. (overdue 5d; Bank / ClickUp; Ev; msgs 192585)
-  - First step: Gather/send all Beyaz bank statements or confirm they were already sent outside visible email/task context.
-  - Success: Done when the ClickUp reminder can be closed with evidence.
 - **QuickBooks bank connection expired** — QuickBooks Online says a bank/financial-institution connection expired and recent transactions cannot be displayed until an authorized account holder reauthorizes it in Accounting > Bank transactions. After reconnecting, QuickBooks should attempt to download missed transactions. Source: `gluemasters` msg 192589. (undated; QuickBooks; Shared; msgs 192589)
   - First step: Have an authorized user reconnect the expired bank feed in Accounting > Bank transactions, then verify missed transactions start downloading.
   - Success: Done when QuickBooks shows the connection healthy and recent transactions visible.

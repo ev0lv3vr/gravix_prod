@@ -1,6 +1,6 @@
 # Morning Money Desk — 2026-05-19
 
-Generated: 2026-05-19 10:24 PDT
+Generated: 2026-05-19 10:27 PDT
 
 ## Snapshot
 - Collect / receivables visible: **$7,493.14**

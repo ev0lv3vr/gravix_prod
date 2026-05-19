@@ -1,54 +1,52 @@
 # Morning Actionability Desk — 2026-05-19
 
-Generated: 2026-05-19 10:24 PDT
+Generated: 2026-05-19 10:27 PDT
 
 ## Snapshot
-- Active items scanned: **59**
+- Active items scanned: **58**
 - Access / token blockers: **8**
-- Passive / watch-only items: **11**
-- Stale date refs still active: **14**
-- High-ranked but low-action items: **1**
+- Passive / watch-only items: **10**
+- Stale date refs still active: **13**
+- High-ranked but low-action items: **0**
 
 ## Blocked on access / token / login
 - **#2 · backlog · score 92.83** — Needs authenticated access, token refresh, or direct account/security check before progress.
   - Shopify / marketplace backlog — **ShipBob Northeast Hub move** — ShipBob is moving from Kutztown to **4755 Hanoverville Road, Building E, Bethlehem, PA 18020**. Transition window **2026-05-11 to 2026-05-29**; no Kutztown appointments after **2026-05-22**; new WRO labels show new address starting **2026-05-27**; inbound arriving at Kutztown starting **2026-05-27** will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg **192400**. ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg **192468**. ShipBob updated the Claims Page effective **2026-05-18**: lost-in-transit claims can be filed from **7 days after estimated delivery** through **45 days post-EDD**, uninsured LIT liability is capped at the lesser of **$100** or the carrier limit, and proactive claim filing is opt-in with a **25% fee** on approved payouts. Source: `gluemasters` msg **192620**. Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: **1,183 reviews**. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1).
-- **#11 · urgent · score 52.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
+- **#10 · urgent · score 52.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
   - Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.
-- **#12 · urgent · score 48.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
+- **#11 · urgent · score 48.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
   - Amazon account security check / Meta partner request — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from **“Join the Meta Agency Partner Program”**. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: `sales` msg **6141**. Sources: `gluemasters` msg **192139**, `sales` msg **6141**.
-- **#14 · urgent · score 45.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
+- **#13 · urgent · score 45.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
   - ICU Shopify upsell app token — In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: `sales` msg **6090**.
-- **#21 · urgent · score 36.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
+- **#20 · urgent · score 36.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
   - Amazon FBA unfulfillable removal — Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**. Completion notice later arrived confirming the removal request completed successfully; no immediate action remains unless Ev wants to review Seller Central removal settings/address/frequency. Sources: `gluemasters` msgs **192161**, **192366**.
-- **#41 · needs_ev · score 25.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
+- **#40 · needs_ev · score 25.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
   - **Amazon buyer message / Karaoke Machine Store** — Amazon buyer message is waiting in Seller Central for order **113-4386244-8272243**, ASIN **B0DFPG9PJN** Singing Machine Platinum Plus. Source: `gluemasters` msg **192280**.
-- **#47 · in_progress · score 22.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
+- **#46 · in_progress · score 22.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
   - Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action.
-- **#57 · in_progress · score 14.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
+- **#56 · in_progress · score 14.0** — Needs authenticated access, token refresh, or direct account/security check before progress.
   - Latest manual cron pass on **2026-05-10 4:01 PM PT** successfully reset the MoneySamurai account sync state to **healthy**, cleared queued/running jobs to **failed**, and triggered a fresh full-category sync (`products`, `orders`, `inventory`, `financial`, `restock`).
 
 ## Passive / watch-only context
-- **#5 · urgent · score 69.0** — Useful context, but likely not first-block execution work.
-  - Beyaz bank statements task overdue — ClickUp sent an overdue reminder for task **“Send Beyaz statements from all banks”**, originally due **2026-05-14**. Needs Ev handling unless statements were already sent outside the visible email/task context. Source: `gluemasters` msg **192585**.
-- **#12 · urgent · score 48.0** — Useful context, but likely not first-block execution work.
+- **#11 · urgent · score 48.0** — Useful context, but likely not first-block execution work.
   - Amazon account security check / Meta partner request — Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**. If this was not Ev, he should verify account security directly in Amazon, not through the email link. Facebook/Meta sent a Business Manager partner request from **“Join the Meta Agency Partner Program”**. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: `sales` msg **6141**. Sources: `gluemasters` msg **192139**, `sales` msg **6141**.
-- **#17 · needs_ev · score 43.0** — Useful context, but likely not first-block execution work.
+- **#16 · needs_ev · score 43.0** — Useful context, but likely not first-block execution work.
   - **Cute Things & Creative Concepts / Shohreh** — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on **Amazon** after the $16,030.20 quote. Ev sent a reply on **2026-05-06** saying **no Amazon resale authorization**; wait for her response. Sources: `sales` msgs **6087**, **6100**, **6101**, **6149**.
-- **#18 · urgent · score 42.0** — Useful context, but likely not first-block execution work.
+- **#17 · urgent · score 42.0** — Useful context, but likely not first-block execution work.
   - Walmart Marketplace performance/pricing — Fresh Walmart performance snapshot shows **on-time delivery 100% vs 90% standard**, but **valid tracking 87.5% vs 99% standard** and **late shipment 25% vs 5% standard**; cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows **price competitiveness 47.83%** (+8.1% WoW), Buy Box win rate 100%, and top recommended price cuts remain `20GRGELCAGM` **$8.99 → $6.99** and `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says **1 shipped order has a late origin scan** and needs carrier scan/tracking accuracy confirmed within **24 hours**; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. New 2026-05-14 Walmart auto-cancel warning says **1 order has today as expected ship date and no tracking uploaded**. Impacted order from attachment: PO **119113590713297**, item **2476466849**, **1× Professional Grade Cyanoacrylate "Super Glue" by Glue Masters - 2 oz - Medium Viscosity, Clear**, GMV **$19.75**, ESD **2026-05-14**, EDD **2026-05-23**. Needs valid tracking uploaded today or proactive cancellation to avoid auto-cancel. Sources: `gluemasters` msgs **192323**, **192326**, **192443**, **192554**, **192595**, **192619**, **192624**.
-- **#21 · urgent · score 36.0** — Useful context, but likely not first-block execution work.
+- **#20 · urgent · score 36.0** — Useful context, but likely not first-block execution work.
   - Amazon FBA unfulfillable removal — Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**. Completion notice later arrived confirming the removal request completed successfully; no immediate action remains unless Ev wants to review Seller Central removal settings/address/frequency. Sources: `gluemasters` msgs **192161**, **192366**.
-- **#26 · urgent · score 34.85** — Useful context, but likely not first-block execution work.
+- **#25 · urgent · score 34.85** — Useful context, but likely not first-block execution work.
   - Amazon product safety / affiliate notices — Amazon flagged a **Thermos Stainless King food jar** order (**111-9829889-5064236**) with a stop-use / recall notice tied to a CPSC announcement. Amazon Associates/Influencer says account **redwaspnet-20** has been closed/rejected for over 3 years and a remaining **$114.30** balance will be forfeited after **7 days**; email says no action needed, but surface if Ev cares about recovering/appealing it. Source: `gluemasters` msg **192362**. Needs Ev review only if these personal/affiliate notices matter operationally; otherwise keep them low priority and do not let them crowd business-critical work. Sources: `gluemasters` msgs **192266**, **192362**.
-- **#46 · needs_ev · score 23.0** — Useful context, but likely not first-block execution work.
+- **#45 · needs_ev · score 23.0** — Useful context, but likely not first-block execution work.
   - **TikTok/Amazon influencer outreach** — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**.
-- **#48 · needs_ev · score 21.0** — Useful context, but likely not first-block execution work.
+- **#47 · needs_ev · score 21.0** — Useful context, but likely not first-block execution work.
   - **Starbond/Systemslab outreach** — David Jones says he tried to call about **Starbond** and asks for 5 minutes. Treat as low-priority vendor/competitive outreach unless Ev recognizes it. Source: `gluemasters` msg **192425**.
-- **#49 · needs_ev · score 21.0** — Useful context, but likely not first-block execution work.
+- **#48 · needs_ev · score 21.0** — Useful context, but likely not first-block execution work.
   - **Munera Capital / Josef Kozorezov** — acquisition-interest outreach asking whether we’d explore acquiring Glue Masters; added to MoneySamurai as stage `contacted`. Low-priority unless Ev wants to engage. Source: `sales` msg **6177**.
-- **#50 · needs_ev · score 15.0** — Useful context, but likely not first-block execution work.
+- **#49 · needs_ev · score 15.0** — Useful context, but likely not first-block execution work.
   - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
-- **#59 · urgent · score 4.0** — Useful context, but likely not first-block execution work.
+- **#58 · urgent · score 4.0** — Useful context, but likely not first-block execution work.
   - Trademark maintenance filing — pending USPTO acceptance — PCH filed the Combined Declaration of Use and Incontestability (Sections 8 & 15) for trademark reg **6216158 GLUE MASTERS**; USPTO filing receipt received 2026-05-01. Next step is passive monitoring for USPTO acceptance/Office action over the next 1–2 months; no Ev e-sign action remains unless PCH flags an irregularity. Sources: `gluemasters` msgs **192263**, **192271**.
 
 ## Past-dated active items
@@ -58,30 +56,29 @@ Generated: 2026-05-19 10:24 PDT
   - Insurance midterm sales/product check — Ashlin Hadden Insurance asked whether Gluemasters is still on schedule for estimated **$900k** annual sales and whether any products have been added/discontinued. If sales/product mix has changed materially, Ev should reply so coverage can be adjusted; otherwise no policy adjustment is needed until renewal. Claire followed up again on 2026-05-18 asking Ev to confirm whether business/products/sales pace have changed. Sources: `gluemasters` msgs **192475**, **192631**.
 - **#4 · needs_ev · score 74.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-11, 2026-05-13, 2026-05-13.
   - **Garcor / Kyle Lawson / David Young** — PO/payment corrected: David Young paid PayPal invoice **1001-0244** for **$1,806.00** on 2026-05-11 (transaction **8L633560LT2348943**) for **420× 20g Gel**, but Garcor used the wrong card on that first payment and it has been refunded per Ev on 2026-05-13. David then paid invoice **1001-0245** for **$1,806.00** on 2026-05-13 (transaction **8U542068D8830142E**) as the valid payment for the order. PayPal notice says Seller Protection eligible and ship-to address unconfirmed. Next step: fulfill/ship one paid 420-unit order only; do not treat invoice 1001-0244 as an open duplicate-payment risk. Sources: Ev Telegram **2026-05-13 13:40 PT**, `gluemasters` msgs **192403**, **192479**, `sales` msgs **6165**, **6178**, **6191**, **6194**, **6208**.
-- **#5 · urgent · score 69.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-14.
-  - Beyaz bank statements task overdue — ClickUp sent an overdue reminder for task **“Send Beyaz statements from all banks”**, originally due **2026-05-14**. Needs Ev handling unless statements were already sent outside the visible email/task context. Source: `gluemasters` msg **192585**.
-- **#6 · urgent · score 60.18** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-04-30, 2026-04-25, 2026-04-30.
+- **#5 · urgent · score 60.18** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-04-30, 2026-04-25, 2026-04-30.
   - A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. A3 sent new invoice **26-05151** for **$732.63**, due **2026-06-14**. Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**, **192632**.
-- **#9 · urgent · score 55.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-13.
+- **#8 · urgent · score 55.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-13.
   - Buy with Prime compliance notice — Amazon Buy with Prime opened case **20290685991** on 2026-05-13 saying Gluemasters may be non-compliant because two active Buy with Prime integrations are displaying and the Buy with Prime collection/product tiles show an **Add to Cart** CTA that may block the widget/checkout experience. URLs flagged: `https://gluemasters.com/collections/buy-with-prime/products/ca-glue-gel-20g` and `https://gluemasters.com/collections/buy-with-prime`. Requested fix within **30 calendar days**: keep only one Buy with Prime integration active and either implement Collections for Buy with Prime or remove the incorrect CTA. Risk is Buy with Prime suspension if not corrected. Source: `gluemasters` msg **192533**.
-- **#10 · urgent · score 54.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-13, 2026-05-14.
+- **#9 · urgent · score 54.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-13, 2026-05-14.
   - Shipux sales order SO14531 — Ev requested an urgent shipping update for Shipux sales order **SO14531 - 001034** because it had no shipping update since **2026-05-08** and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-13 that they missed it and **will ship tomorrow morning**. Ev's copy to `administrator@shipux.com` bounced because that mailbox does not exist, but `info@shipux.com` delivered and got the reply. Next step: watch for tracking on 2026-05-14 and update the waiting customer when available. Sources: `gluemasters` msgs **192543**, **192545**.
-- **#14 · urgent · score 45.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-04-30.
+- **#13 · urgent · score 45.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-04-30.
   - ICU Shopify upsell app token — In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Source: `sales` msg **6090**.
-- **#17 · needs_ev · score 43.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-06.
+- **#16 · needs_ev · score 43.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-06.
   - **Cute Things & Creative Concepts / Shohreh** — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on **Amazon** after the $16,030.20 quote. Ev sent a reply on **2026-05-06** saying **no Amazon resale authorization**; wait for her response. Sources: `sales` msgs **6087**, **6100**, **6101**, **6149**.
-- **#35 · needs_ev · score 29.36** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-13.
+- **#34 · needs_ev · score 29.36** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-13.
   - **WaterRower / NOHRD / Abel Sanchez / Peter King** — PO **00039435** received for **15× CA Medium 700 CPS / WRC1505**, 16oz, **$42.99** each, total **$644.85**, C.O.D., ship to **WATERROWER | NOHRD, 560 Metacom Ave, Warren, RI 02885**, ship via Best Way. PayPal invoice **1001-0246** was sent and paid on 2026-05-13 by Peter King / `peter@waterrower.com`; transaction **4W686707JS430003G**, Seller Protection eligible, PayPal ship-to address unconfirmed. Next step: fulfill/ship the paid order. Sources: `sales` msgs **6206**, **6210**, **6211**.
-- **#47 · in_progress · score 22.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-02.
+- **#46 · in_progress · score 22.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-02.
   - Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action.
-- **#50 · needs_ev · score 15.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-04-27.
+- **#49 · needs_ev · score 15.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-04-27.
   - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
+- **#50 · in_progress · score 14.0** — Contains past-dated reference; may need rewrite, confirmation, or demotion. Refs: 2026-05-05.
+  - B2B sample kits — Ev confirmed on **2026-05-05** that the boxes are done and kits are ready to be sent. Status: ready for outbound/send execution; do **not** list box production or kit assembly as blockers. Kit assets/collateral live under `gluemasters-bizdev/b2b-kit/`.
 
 ## High-ranked but low-action items
-- **#5 · urgent · score 69.0** — Surfaced high in the ranked board despite weak immediate action signal. Refs: 2026-05-14.
-  - Beyaz bank statements task overdue — ClickUp sent an overdue reminder for task **“Send Beyaz statements from all banks”**, originally due **2026-05-14**. Needs Ev handling unless statements were already sent outside the visible email/task context. Source: `gluemasters` msg **192585**.
+- None surfaced.
 
 ## Urgent items missing source evidence
-- **#11 · urgent · score 52.0** — Urgent item has no explicit message/source pointer.
+- **#10 · urgent · score 52.0** — Urgent item has no explicit message/source pointer.
   - Shopify API token — Current API access is dead; inventory visibility is degraded/blind. Needs token regeneration or browser/API workaround.
 

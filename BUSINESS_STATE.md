@@ -17,11 +17,6 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Note from ShipBob: expedited shipping is not possible for orders containing DG items.
 - Source: `gluemasters` msg **192586**.
 
-### Beyaz bank statements task overdue
-- ClickUp sent an overdue reminder for task **“Send Beyaz statements from all banks”**, originally due **2026-05-14**.
-- Needs Ev handling unless statements were already sent outside the visible email/task context.
-- Source: `gluemasters` msg **192585**.
-
 ### Amex foreign transaction alert — Supabase
 - American Express sent a foreign-transaction alert for account ending **794007**: **SUPABASE**, Singapore SGP, **$44.22**, dated **2026-05-17**.
 - This may be a normal Supabase platform charge, but Ev should verify in Amex if it is not recognized.

@@ -1,12 +1,12 @@
 # Morning Unblock Desk — 2026-05-19
 
-Generated: 2026-05-19 10:24 PDT
+Generated: 2026-05-19 10:27 PDT
 
 ## Snapshot
-- Total unblock / verify items: **14**
+- Total unblock / verify items: **13**
 - Do now: **3**
 - Operator-owned: **7**
-- Ev-owned: **4**
+- Ev-owned: **3**
 - Surfaces: **Amazon Seller Central, Browser / manual verify, ShipBob / UPS, Shopify Admin, Walmart Marketplace**
 
 ## Do now
@@ -53,9 +53,6 @@ Generated: 2026-05-19 10:24 PDT
 - **Walmart Marketplace performance/pricing** — Fresh Walmart performance snapshot shows on-time delivery 100% vs 90% standard, but valid tracking 87.5% vs 99% standard and late shipment 25% vs 5% standard; cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 47.83% (+8.1% WoW), Buy Box win rate 100%, and top recommended price cuts remain `20GRGELCAGM` $8.99 → $6.99 and `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. New 2026-05-14 Walmart auto-cancel warning says 1 order has today as expected ship date and no tracking uploaded. Impacted order from attachment: PO 119113590713297, item 2476466849, 1× Professional Grade Cyanoacrylate "Super Glue" by Glue Masters - 2 oz - Medium Viscosity, Clear, GMV $19.75, ESD 2026-05-14, EDD 2026-05-23. Needs valid tracking uploaded today or proactive cancellation to avoid auto-cancel. Sources: `gluemasters` msgs 192323, 192326, 192443, 192554, 192595, 192619, 192624. (Walmart Marketplace; Ev; ops; msgs 192323, 192326, 192443, 192554, 192595, 192619, 192624)
   - First step: Open the Walmart performance/pricing dashboards and decide whether to act on on-time delivery risk and the suggested price cuts.
   - Success: Done when Ev accepts or rejects the pricing/performance actions and the decision is recorded.
-- **Beyaz bank statements task overdue** — ClickUp sent an overdue reminder for task “Send Beyaz statements from all banks”, originally due 2026-05-14. Needs Ev handling unless statements were already sent outside the visible email/task context. Source: `gluemasters` msg 192585. (Browser / manual verify; Ev; verify; msgs 192585)
-  - First step: Open the source system in-browser and clear the blocker from the live operating surface, not from email.
-  - Success: Done when the live surface confirms the blocker is cleared and the state file can be updated confidently.
 
 ## Watch / lower urgency
 - **Amex foreign transaction alert — Supabase** — American Express sent a foreign-transaction alert for account ending 794007: SUPABASE, Singapore SGP, $44.22, dated 2026-05-17. This may be a normal Supabase platform charge, but Ev should verify in Amex if it is not recognized. Source: `gluemasters` msg 192605. (Browser / manual verify; Ev; verify; msgs 192605)
