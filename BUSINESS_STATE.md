@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-20 8:56 AM PT
+Last updated: 2026-05-20 12:56 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -21,6 +21,17 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - American Express sent a foreign-transaction alert for account ending **794007**: **SUPABASE**, Singapore SGP, **$44.22**, dated **2026-05-17**.
 - This may be a normal Supabase platform charge, but Ev should verify in Amex if it is not recognized.
 - Source: `gluemasters` msg **192605**.
+
+### Amex ANA / Membership Rewards alerts
+- American Express sent a foreign-transaction alert for **ANA All Nippon Airways**, **Japan**, **¥893,830**, dated **2026-05-20**, on account ending **794007**; a matching large-purchase alert references account ending **94007**.
+- American Express also confirmed **24,770 Membership Rewards points** redeemed for a **$148.62** statement credit on account ending **94007**.
+- Treat as expected travel/rewards activity only if Ev recognizes it; otherwise verify directly in Amex.
+- Sources: `gluemasters` msgs **192686**, **192687**, **192688**.
+
+### Amex card-not-present alert — Electrify America
+- American Express sent a card-not-present alert for **ELECTRIFY AMERICA**, **$40.00**, dated **2026-05-20**, on account ending **794007**.
+- Treat as expected EV charging/preauth only if Ev recognizes it.
+- Source: `gluemasters` msg **192683**.
 
 ### Evolve Bank digital payment — account closure
 - Evolve Bank & Trust / Checkbook sent a digital payment for **$14.67** with remittance info **Account Closure**.
@@ -176,6 +187,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
 - Latest checked ads folder: **2026-05-19**; 2026-05-19 pull completed at **2026-05-20 02:41 PT** with campaigns, keywords, search terms, and valid `pull-status.json`. Same-day May 19 Amazon Ads attributed metrics: **$109.06 spend / $448.54 sales / 24.3% ACoS / 4.11× ROAS**, with **10 campaigns**, **93 keywords**, and **66 search terms**. Digest status is **healthy — strong ROAS**; strongest campaign was `8oz Thick Auto` with **$18.59 spend / $283.96 sales / 6.5% ACoS**, while `Head Term Conquest` spent **$14.90** with zero sales. On **2026-05-07 6:30 PM PT**, after Ev approved the first conservative growth batch, Amazon Ads API accepted **20 campaign-level negative exacts**, **12 proven exact keyword bid raises (~10%)**, and **+10% budget bumps** on four winner campaigns: `Discovery - 8oz Thick Auto` **$60→$66**, `Sales - CA Glue Core Exact` **$50→$55**, `Discovery - 8oz Medium Auto` **$50→$55**, and `Sales - Thin CA Glue` **$35→$38.50**. Execution log: `moneysamurai/reports/ads-master-actions-execution-latest.json`. Monitor next 3–7 daily pulls before any second scaling wave. Prior 2026-05-04 recovery remains resolved; no current invalid-streak incident is open.
 - Microsoft Advertising charged Gluemasters account **F145YB38** / card ending **5553** for **$399.76** on **2026-05-20** after reaching billing threshold/monthly billing date. Source: `gluemasters` msg **192673**.
+- Amazon initiated a payout of **$999.15** to bank ending **388** on **2026-05-20 17:02 PDT**, expected within 3-5 days. Source: `gluemasters` msg **192684**.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
