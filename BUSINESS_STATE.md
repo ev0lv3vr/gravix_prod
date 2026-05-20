@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-19 2:42 PM PT
+Last updated: 2026-05-19 5:56 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -15,6 +15,11 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - American Express sent a foreign-transaction alert for account ending **794007**: **SUPABASE**, Singapore SGP, **$44.22**, dated **2026-05-17**.
 - This may be a normal Supabase platform charge, but Ev should verify in Amex if it is not recognized.
 - Source: `gluemasters` msg **192605**.
+
+### Evolve Bank digital payment — account closure
+- Evolve Bank & Trust / Checkbook sent a digital payment for **$14.67** with remittance info **Account Closure**.
+- Needs Ev deposit/review if this account-closure payment is expected.
+- Source: `gluemasters` msg **192670**.
 
 ### Amazon account security check / Meta partner request
 - Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**.
@@ -73,9 +78,10 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ### Shipux sales order SO14531
 - Ev requested an urgent shipping update for Shipux sales order **SO14531 - 001034** because it had no shipping update since **2026-05-08** and a customer is waiting for tracking.
-- Shipux / Tomas replied on 2026-05-13 that they missed it and **will ship tomorrow morning**. Ev's copy to `administrator@shipux.com` bounced because that mailbox does not exist, but `info@shipux.com` delivered and got the reply.
-- Next step: watch for tracking on 2026-05-14 and update the waiting customer when available.
-- Sources: `gluemasters` msgs **192543**, **192545**.
+- Shipux / Tomas replied on 2026-05-19 that it **has shipped**; Odoo sales order notice shows UPS tracking **1ZYV02810391168524**.
+- Shipux invoice **INV/2026/05/001308** for **$36.92** is due **2026-05-19** for SO14531.
+- Next step: update the waiting customer with tracking and verify/pay the Shipux invoice if not already handled.
+- Sources: `gluemasters` msgs **192543**, **192545**, **192666**, **192667**, **192668**.
 
 ### Amazon refunds
 - Amazon initiated a **$15.21** refund for order **111-7692391-0638603** / ASIN **B01MDNS8QB** / SKU **GM2M** / item **2oz Medium**; reason **Customer Return**. Source: `gluemasters` msg **192357**.
@@ -162,7 +168,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.
 - Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
-- Latest checked ads folder: **2026-05-17**; manual early-morning recovery pull completed at **2026-05-18 01:24 PT** with campaigns, keywords, search terms, and valid `pull-status.json`. Same-day May 17 Amazon Ads attributed metrics: **$87.52 spend / $235.91 sales / 37.1% ACoS / 2.70× ROAS**, with **10 campaigns**, **96 keywords**, and **49 search terms**. On **2026-05-07 6:30 PM PT**, after Ev approved the first conservative growth batch, Amazon Ads API accepted **20 campaign-level negative exacts**, **12 proven exact keyword bid raises (~10%)**, and **+10% budget bumps** on four winner campaigns: `Discovery - 8oz Thick Auto` **$60→$66**, `Sales - CA Glue Core Exact` **$50→$55**, `Discovery - 8oz Medium Auto` **$50→$55**, and `Sales - Thin CA Glue` **$35→$38.50**. Execution log: `moneysamurai/reports/ads-master-actions-execution-latest.json`. Monitor next 3–7 daily pulls before any second scaling wave. Prior 2026-05-04 recovery remains resolved; no current invalid-streak incident is open.
+- Latest checked ads folder: **2026-05-18**; 2026-05-18 pull completed at **2026-05-19 07:36 PT** with campaigns, keywords, search terms, and valid `pull-status.json`. Same-day May 18 Amazon Ads attributed metrics: **$85.97 spend / $110.96 sales / 77.5% ACoS / 1.29× ROAS**, with **10 campaigns**, **89 keywords**, and **99 search terms**. Digest status is **warning — high ACoS**, led by `8oz Medium Glue - keywords` spending **$18.13** with zero sales. On **2026-05-07 6:30 PM PT**, after Ev approved the first conservative growth batch, Amazon Ads API accepted **20 campaign-level negative exacts**, **12 proven exact keyword bid raises (~10%)**, and **+10% budget bumps** on four winner campaigns: `Discovery - 8oz Thick Auto` **$60→$66**, `Sales - CA Glue Core Exact` **$50→$55**, `Discovery - 8oz Medium Auto` **$50→$55**, and `Sales - Thin CA Glue` **$35→$38.50**. Execution log: `moneysamurai/reports/ads-master-actions-execution-latest.json`. Monitor next 3–7 daily pulls before any second scaling wave. Prior 2026-05-04 recovery remains resolved; no current invalid-streak incident is open.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
