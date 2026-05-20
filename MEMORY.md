@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-05-18
+Last updated: 2026-05-19
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -86,6 +86,9 @@ Last updated: 2026-05-18
 - Afternoon 2026-05-18: Ev marked **Anne Johnson / Mountain Dog Millworks** and the **Bank of America OPEX low-balance alert** done via Telegram at 14:03 PT. Active state moved both to resolved/do-not-resurface unless fresh follow-up appears. Original sources: `sales` msg **6243**, `gluemasters` msg **192623**.
 - Morning 2026-05-16 (9 AM window): Walmart sent another auto-cancel warning for **1 order past expected ship date** (`gluemasters` msg **192595**). This PO has since been removed from the active operating queue; do not resurface unless a fresh Walmart alert appears.
 - Afternoon 2026-05-19: Ev marked the **ShipBob DG/HAZMAT product review** done via Telegram at 14:42 PT. Remove the product-review deadline from active deadline/shipment queues and do not resurface unless ShipBob sends a fresh DG/HAZMAT review or hold notice. Original source: `gluemasters` msg **192586**.
+- 2026-05-19 EOD: Walmart PO **119113590713297** was already marked out/done, Beyaz bank-statement task was confirmed spam/noise, and Christopher Webber / Mountain Man's Creative Arts was marked done. Do not resurface those as active queue items unless a fresh source appears.
+- 2026-05-19 evening: Shipux resolved sales order **SO14531 - 001034** as shipped with UPS tracking **1ZYV02810391168524** and invoice **INV/2026/05/001308** for **$36.92** due **2026-05-19**. Next action is customer tracking update plus invoice verification/payment if not already handled.
+- 2026-05-19 evening: Evolve Bank & Trust / Checkbook sent a **$14.67** digital payment with remittance **Account Closure**; surface for Ev deposit/review.
 - Morning 2026-05-17 (9 AM window): Amex sent a foreign-transaction alert for account ending **794007**: **SUPABASE**, Singapore SGP, **$44.22**, dated **2026-05-17** (`gluemasters` msg **192605**). Treat as likely platform/subscription noise unless Ev does not recognize it, but surface for verification. Amazon FBA shipment **FBA19CWS4QFN** was received in full and fully processed into fulfillable inventory (`gluemasters` msg **192603**). ShipBob sent another payment-received notice with a blank amount (`gluemasters` msg **192601**), not actionable without a real balance/invoice amount.
 - Evening 2026-05-16 (6 PM window): Gemifly LLC paid PayPal invoice **1001-0243** for **$7,424.15** (`sales` msg **6235**), transaction **1JB03438J23145733**, Seller Protection eligible, ship-to address unconfirmed. Active state now treats the Gemifly order as paid and ready for fulfillment/shipping with normal unconfirmed-address caution; invoice contents were **815× Gemiflex V1**, **10,000× dispensing tips**, **500× Natural Pin Cap EXTRA**, and shipping.
 
