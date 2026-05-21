@@ -12,7 +12,9 @@ Use instead:
 Important correction:
 - ShipBob UROs are resolved and must not be resurfaced as active ops debt unless fresh evidence shows a new issue.
 
-Last checked: 2026-05-19 6:00 PM PT
+Last checked: 2026-05-20 6:00 PM PT
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-05-20 EOD check confirmed no change: board remains retired; today's ads recovery/current status, ops-pack rebuild, MIAccounting/Microsoft Ads/Amazon payout/Amex/travel captures, Gemifly invoice 1001-0248, A3 delivery confirmation, and tomorrow handoff were recorded in live state and `memory/2026-05-20.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
 - 2026-05-19 EOD check confirmed no change: board remains retired; today's deadline-control build, Walmart/Beyaz/Christopher Webber/ShipBob DG-HAZMAT resolutions, Shipux shipping update, Evolve Bank payment note, ads status, and tomorrow handoff were recorded in live state and `memory/2026-05-19.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
