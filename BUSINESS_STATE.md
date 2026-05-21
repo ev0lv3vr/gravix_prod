@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-20 12:56 PM PT
+Last updated: 2026-05-20 5:56 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -27,6 +27,13 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - American Express also confirmed **24,770 Membership Rewards points** redeemed for a **$148.62** statement credit on account ending **94007**.
 - Treat as expected travel/rewards activity only if Ev recognizes it; otherwise verify directly in Amex.
 - Sources: `gluemasters` msgs **192686**, **192687**, **192688**.
+
+### Travel bookings / Amex alerts
+- Agoda booking **1005553226** confirmed for **Cross Hotel Kyoto**, check-in **2026-07-14**, check-out **2026-07-19**, 1 room / 3 adults, paid **$1,190.86** on card ending **4007**; cancellation policy says **non-refundable from 2026-05-21 05:19 Kyoto time**. Matching Amex large-purchase alert for **AGODA COMPANY PTELTD $1,190.86** on account ending **94007**.
+- Agoda booking **1005557122** confirmed for **MIMARU Tokyo Shinjuku West**, check-in **2026-07-10**, check-out **2026-07-14**, 1 room / 3 adults, total **$2,215.45**, automatic charge scheduled **2026-06-29**, card ending **4007**; free cancellation before **2026-07-01**.
+- teamLab Planets TOKYO ticket purchase completed for **2026-07-12 09:00-09:30 JST**, total **¥10,200**; matching Amex foreign-transaction alert on account ending **794007**.
+- Treat as expected travel planning unless Ev does not recognize any booking/charge.
+- Sources: `gluemasters` msgs **192691**, **192692**, **192693**, **192697**, **192698**.
 
 ### Amex card-not-present alert — Electrify America
 - American Express sent a card-not-present alert for **ELECTRIFY AMERICA**, **$40.00**, dated **2026-05-20**, on account ending **794007**.
@@ -88,10 +95,11 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ### A3 Partners Gemiflex shipment / invoice
 - A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**.
+- A3/Joe forwarded a UPS delivery confirmation for tracking **1Z43A99A0347067700**: delivered **2026-05-20 12:27 PM**, ship-to **David Christensen**, Mesa AZ, **28 lb**, references **PO#29** and **BH**.
 - A3 invoice **26-04271** is due **2026-05-27** for **$501.25**.
 - A3 sent new invoice **26-05151** for **$732.63**, due **2026-06-14**.
 - Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact.
-- Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**, **192632**.
+- Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**, **192632**, **192701**.
 
 ### Shipux sales order SO14531
 - Ev requested an urgent shipping update for Shipux sales order **SO14531 - 001034** because it had no shipping update since **2026-05-08** and a customer is waiting for tracking.
@@ -138,6 +146,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Larry Trammell** — repeat Amazon buyer of Medium CA says recent bottle arrived with screw cap instead of nozzle. Ev spoke with him and requested his address; Larry sent address and thanked for customer service. Next step is send replacement nozzle/bottle if not already shipped. Sources: `sales` msgs **6173**, **6187**, **6188**.
 - **Jeremy Embry / Aquarium Artisans** — Ev sent the pricing / “what do you want to do moving forward” reply on 2026-04-27; wait for Jeremy’s response before next action. Source thread: `sales` msg **6046**.
 - **Gemifly LLC** — PayPal invoice **1001-0243** is paid as of 2026-05-16: **$7,424.15** received from Gemifly LLC, transaction **1JB03438J23145733**, PayPal Seller Protection eligible, ship-to address unconfirmed. Invoice line items: **815× Gemiflex V1** ($6,552.60), **10,000× dispensing tips** ($600.00), **500× Natural Pin Cap EXTRA** ($125.00), **shipping** ($146.55). Next step: fulfill/ship the paid Gemiflex/tips/caps order, using normal unconfirmed-address caution. Sources: `sales` msgs **6134**, **6172**, **6235**.
+- **Gemifly LLC invoice 1001-0248** — PayPal invoice **1001-0248** for **$1,968.63** was sent to Gemifly LLC on 2026-05-20. Next step: watch for payment before treating as paid/ready to fulfill. Source: `sales` msg **6261**.
 - **Donaldson / Rachael Fitzgerald** — account setup is still pending on Donaldson Finance side; Rachael reached out internally to see what is holding it up. They are good on inventory for now and will re-order when they break into the second case; usage for the new bottle size is still unknown. Ev already replied asking her to keep us updated. Sources: `sales` msg **6137**, `gluemasters` msgs **192353**, **192354**.
 - **TikTok/Amazon influencer outreach** — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**.
 - **Starbond/Systemslab outreach** — David Jones says he tried to call about **Starbond** and asks for 5 minutes. Treat as low-priority vendor/competitive outreach unless Ev recognizes it. Source: `gluemasters` msg **192425**.
