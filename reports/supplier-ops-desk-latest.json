@@ -1,9 +1,9 @@
 {
-  "date": "2026-05-20",
-  "generated_at": "2026-05-20 14:01 PDT",
+  "date": "2026-05-21",
+  "generated_at": "2026-05-21 14:00 PDT",
   "summary": {
-    "total_items": 6,
-    "collect_total": 9230.15,
+    "total_items": 7,
+    "collect_total": 11198.78,
     "pay_total": 6597.07,
     "watch_total": 1,
     "relationship_total": 1,
@@ -12,7 +12,7 @@
   "do_now": [
     {
       "title": "A3 Partners Gemiflex shipment / invoice",
-      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632.",
+      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701.",
       "bucket": "Pay / verify supplier pressure",
       "owner": "Ev",
       "urgency": "now",
@@ -20,14 +20,15 @@
       "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
       "success_check": "Done when delivery status and the real payable posture are both explicit.",
       "due_date": "2026-04-25",
-      "due_status": "overdue 25d",
+      "due_status": "overdue 26d",
       "sources": [
         "192183",
         "192184",
         "191451",
         "191683",
         "192371",
-        "192632"
+        "192632",
+        "192701"
       ],
       "amount": 6597.07,
       "score": 21
@@ -42,7 +43,7 @@
       "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
       "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
       "due_date": "2026-05-22",
-      "due_status": "due in 2d",
+      "due_status": "due in 1d",
       "sources": [
         "192400",
         "192468",
@@ -94,12 +95,29 @@
       ],
       "amount": 1806.0,
       "score": 9
+    },
+    {
+      "title": "Gemifly LLC invoice 1001-0248",
+      "detail": "PayPal invoice 1001-0248 for $1,968.63 was sent to Gemifly LLC on 2026-05-20. Next step: watch for payment before treating as paid/ready to fulfill. Source: `sales` msg 6261.",
+      "bucket": "Collect / confirm inbound cash",
+      "owner": "Ev",
+      "urgency": "soon",
+      "surface": "PayPal / inbox trail",
+      "first_step": "Check whether PayPal invoice 1001-0243 landed and reconcile the visible amount before nudging again.",
+      "success_check": "Done when the invoice is either paid/reconciled or has a clear next collection step.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "6261"
+      ],
+      "amount": 1968.63,
+      "score": 9
     }
   ],
   "pay_verify": [
     {
       "title": "A3 Partners Gemiflex shipment / invoice",
-      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632.",
+      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701.",
       "bucket": "Pay / verify supplier pressure",
       "owner": "Ev",
       "urgency": "now",
@@ -107,14 +125,15 @@
       "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
       "success_check": "Done when delivery status and the real payable posture are both explicit.",
       "due_date": "2026-04-25",
-      "due_status": "overdue 25d",
+      "due_status": "overdue 26d",
       "sources": [
         "192183",
         "192184",
         "191451",
         "191683",
         "192371",
-        "192632"
+        "192632",
+        "192701"
       ],
       "amount": 6597.07,
       "score": 21
@@ -150,7 +169,7 @@
       "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
       "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
       "due_date": "2026-05-22",
-      "due_status": "due in 2d",
+      "due_status": "due in 1d",
       "sources": [
         "192400",
         "192468",
@@ -225,8 +244,25 @@
       "score": 9
     },
     {
+      "title": "Gemifly LLC invoice 1001-0248",
+      "detail": "PayPal invoice 1001-0248 for $1,968.63 was sent to Gemifly LLC on 2026-05-20. Next step: watch for payment before treating as paid/ready to fulfill. Source: `sales` msg 6261.",
+      "bucket": "Collect / confirm inbound cash",
+      "owner": "Ev",
+      "urgency": "soon",
+      "surface": "PayPal / inbox trail",
+      "first_step": "Check whether PayPal invoice 1001-0243 landed and reconcile the visible amount before nudging again.",
+      "success_check": "Done when the invoice is either paid/reconciled or has a clear next collection step.",
+      "due_date": null,
+      "due_status": "undated",
+      "sources": [
+        "6261"
+      ],
+      "amount": 1968.63,
+      "score": 9
+    },
+    {
       "title": "A3 Partners Gemiflex shipment / invoice",
-      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632.",
+      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701.",
       "bucket": "Pay / verify supplier pressure",
       "owner": "Ev",
       "urgency": "now",
@@ -234,14 +270,15 @@
       "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
       "success_check": "Done when delivery status and the real payable posture are both explicit.",
       "due_date": "2026-04-25",
-      "due_status": "overdue 25d",
+      "due_status": "overdue 26d",
       "sources": [
         "192183",
         "192184",
         "191451",
         "191683",
         "192371",
-        "192632"
+        "192632",
+        "192701"
       ],
       "amount": 6597.07,
       "score": 21
@@ -275,7 +312,7 @@
       "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
       "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
       "due_date": "2026-05-22",
-      "due_status": "due in 2d",
+      "due_status": "due in 1d",
       "sources": [
         "192400",
         "192468",
