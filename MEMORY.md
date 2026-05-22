@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-05-19
+Last updated: 2026-05-22
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -89,6 +89,10 @@ Last updated: 2026-05-19
 - 2026-05-19 EOD: Walmart PO **119113590713297** was already marked out/done, Beyaz bank-statement task was confirmed spam/noise, and Christopher Webber / Mountain Man's Creative Arts was marked done. Do not resurface those as active queue items unless a fresh source appears.
 - 2026-05-19 evening: Shipux resolved sales order **SO14531 - 001034** as shipped with UPS tracking **1ZYV02810391168524** and invoice **INV/2026/05/001308** for **$36.92** due **2026-05-19**. Next action is customer tracking update plus invoice verification/payment if not already handled.
 - 2026-05-19 evening: Evolve Bank & Trust / Checkbook sent a **$14.67** digital payment with remittance **Account Closure**; surface for Ev deposit/review.
+- Morning 2026-05-22 (9 AM window): Deane Belk / Good Friends fill-volume complaint cooled/resolved after Ev's net-weight explanation; Deane opened the third bottle, got **7 bottles to the 2 oz mark plus 1-2 squeezes into an 8th**, apologized, and said they will likely place a second order in a few weeks. Do not keep this as an active complaint unless she sends a fresh follow-up (`sales` msgs **6275**, **6276**).
+- Morning 2026-05-22 (9 AM window): Walmart sent a fresh Partner Performance auto-cancellation warning for **1 order past expected ship date** (`gluemasters` msg **192730**). Seller Center unshipped orders need inspection because the impacted-orders XLSX was referenced by email but was not available in the local download path.
+- Morning 2026-05-22 (9 AM window): fresh money/leakage items captured — Amazon refund **$15.00** for order **114-1453287-1830630** / **2OZTHICKCAGM** (`gluemasters` msg **192733**), Shopify payout **$845.47** (`sales` msg **6277**), and ShipBob payment-received notice with blank displayed amount (`gluemasters` msg **192723**).
+- Morning 2026-05-22 (9 AM window): Amazon Ads 2026-05-21 pull was still running after the 6 AM cron; latest completed folder remained **2026-05-20**, keywords were in slow `PENDING`/timeout fallback polling, token refresh had succeeded, and no durable auth failure had surfaced.
 - Morning 2026-05-17 (9 AM window): Amex sent a foreign-transaction alert for account ending **794007**: **SUPABASE**, Singapore SGP, **$44.22**, dated **2026-05-17** (`gluemasters` msg **192605**). Treat as likely platform/subscription noise unless Ev does not recognize it, but surface for verification. Amazon FBA shipment **FBA19CWS4QFN** was received in full and fully processed into fulfillable inventory (`gluemasters` msg **192603**). ShipBob sent another payment-received notice with a blank amount (`gluemasters` msg **192601**), not actionable without a real balance/invoice amount.
 - Evening 2026-05-16 (6 PM window): Gemifly LLC paid PayPal invoice **1001-0243** for **$7,424.15** (`sales` msg **6235**), transaction **1JB03438J23145733**, Seller Protection eligible, ship-to address unconfirmed. Active state now treats the Gemifly order as paid and ready for fulfillment/shipping with normal unconfirmed-address caution; invoice contents were **815× Gemiflex V1**, **10,000× dispensing tips**, **500× Natural Pin Cap EXTRA**, and shipping.
 
