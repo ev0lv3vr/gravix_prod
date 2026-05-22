@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-22 8:56 AM PT
+Last updated: 2026-05-22 12:56 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -160,6 +160,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Gemifly LLC invoice 1001-0248** — PayPal invoice **1001-0248** for **$1,968.63** was sent to Gemifly LLC on 2026-05-20. Next step: watch for payment before treating as paid/ready to fulfill. Source: `sales` msg **6261**.
 - **Donaldson / Rachael Fitzgerald** — account setup is still pending on Donaldson Finance side; Rachael reached out internally to see what is holding it up. They are good on inventory for now and will re-order when they break into the second case; usage for the new bottle size is still unknown. Ev already replied asking her to keep us updated. Sources: `sales` msg **6137**, `gluemasters` msgs **192353**, **192354**.
 - **TikTok/Amazon influencer outreach** — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**.
+- **Furniture Flipping Teacher / Lauren Hull** — influencer/collab follow-up from Melissa Hogg at Cactus Belle Co.; Lauren has ~331k YouTube subscribers and ~260k Instagram followers, with home-renovation/furniture-restoration projects ahead. Low-priority unless Ev wants a Q2 creator campaign. Sources: `gluemasters` msg **192734**, `sales` msg **6279**.
+- **Cristaux / JSabon delivery failure** — Ev's email to `JSabon@cristaux.com` bounced with **550 5.7.1 Invalid recipient address**. Subject was “Your adhesives guide, the UV-vs-CA call.” If this is a live lead, need corrected contact/address. Source: `gluemasters` msg **192739**.
 - **Starbond/Systemslab outreach** — David Jones says he tried to call about **Starbond** and asks for 5 minutes. Treat as low-priority vendor/competitive outreach unless Ev recognizes it. Source: `gluemasters` msg **192425**.
 - **Dynasty Global / Eli** — dealer inquiry; needs Ev decision.
 - **Munera Capital / Josef Kozorezov** — acquisition-interest outreach asking whether we’d explore acquiring Glue Masters; added to MoneySamurai as stage `contacted`. Low-priority unless Ev wants to engage. Source: `sales` msg **6177**.
@@ -192,6 +194,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **ShipBob Northeast Hub move** — ShipBob is moving from Kutztown to **4755 Hanoverville Road, Building E, Bethlehem, PA 18020**. Transition window **2026-05-11 to 2026-05-29**; no Kutztown appointments after **2026-05-22**; new WRO labels show new address starting **2026-05-27**; inbound arriving at Kutztown starting **2026-05-27** will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg **192400**.
 - ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg **192468**.
 - ShipBob updated the Claims Page effective **2026-05-18**: lost-in-transit claims can be filed from **7 days after estimated delivery** through **45 days post-EDD**, uninsured LIT liability is capped at the lesser of **$100** or the carrier limit, and proactive claim filing is opt-in with a **25% fee** on approved payouts. Source: `gluemasters` msg **192620**.
+- ShipBob updated Terms of Service effective **2026-06-21**; continuing to use services on/after that date accepts the updated terms. Non-urgent legal/vendor watch unless Ev wants review. Source: `gluemasters` msg **192735**.
 - Back-in-stock notification app.
 - Refund policy links to gravixadhesives.com.
 - Google Search Console sitemap submission.
