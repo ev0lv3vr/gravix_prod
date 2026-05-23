@@ -36,6 +36,8 @@ EXPECTED = [
     ("Morning Money Desk", "morning-money-desk", ["html", "json", "md"]),
     ("Deadline Control Desk", "deadline-control-desk", ["html", "json", "md"]),
     ("Supplier Ops Desk", "supplier-ops-desk", ["html", "json", "md"]),
+    ("Order Ops Closure Desk", "order-ops-desk", ["html", "json", "md"]),
+    ("Order Ops Handoff CSV", "order-ops-handoff", ["csv"]),
     ("Morning Commerce Desk", "morning-commerce-desk", ["html", "json", "md"]),
     ("Brand Narrative Desk", "brand-narrative-desk", ["html", "json", "md"]),
     ("B2B Kit Dispatch Desk", "b2b-kit-dispatch-desk", ["html", "json", "md"]),

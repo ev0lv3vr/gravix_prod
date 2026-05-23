@@ -13,6 +13,8 @@ Builds:
 - reports/morning-money-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/deadline-control-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/supplier-ops-desk-YYYY-MM-DD.{md,html,json} (+ latest)
+- reports/order-ops-desk-YYYY-MM-DD.{md,html,json} (+ latest)
+- reports/order-ops-handoff-YYYY-MM-DD.csv (+ latest)
 - reports/morning-commerce-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/brand-narrative-desk-YYYY-MM-DD.{md,html,json} (+ latest)
 - reports/b2b-kit-dispatch-desk-YYYY-MM-DD.{md,html,json} (+ latest)
@@ -96,6 +98,7 @@ class Brief:
     morning_money: dict[str, Any] | None = None
     deadline_control: dict[str, Any] | None = None
     supplier_ops: dict[str, Any] | None = None
+    order_ops: dict[str, Any] | None = None
     cron_watchlist: dict[str, Any] | None = None
     cron_trend: dict[str, Any] | None = None
     ads_growth_execution: dict[str, Any] | None = None
@@ -136,6 +139,8 @@ def render_brief(b: Brief) -> str:
     lines.append("- reports/morning-money-desk-latest.html")
     lines.append("- reports/deadline-control-desk-latest.html")
     lines.append("- reports/supplier-ops-desk-latest.html")
+    lines.append("- reports/order-ops-desk-latest.html")
+    lines.append("- reports/order-ops-handoff-latest.csv")
     lines.append("- reports/morning-commerce-desk-latest.html")
     lines.append("- reports/brand-narrative-desk-latest.html")
     lines.append("- reports/b2b-kit-dispatch-desk-latest.html")
@@ -233,6 +238,17 @@ def render_brief(b: Brief) -> str:
         lines.append(f"- Fulfillment / warehouse watch items: {supplier_ops.get('watch_total','—')}")
         lines.append(f"- Relationship follow-ups: {supplier_ops.get('relationship_total','—')}")
         lines.append(f"- Do-now supplier items: {supplier_ops.get('do_now','—')}")
+        lines.append("")
+
+    order_ops = (b.order_ops or {}).get("summary") or {}
+    if order_ops:
+        lines.append("Order ops closure desk:")
+        lines.append(f"- Closure items: {order_ops.get('total_items','—')}")
+        lines.append(f"- Do-now items: {order_ops.get('do_now','—')}")
+        lines.append(f"- Needs Ev / credentialed owner: {order_ops.get('ev_needed','—')}")
+        lines.append(f"- Marketplace firebreaks: {order_ops.get('marketplace_firebreak','—')}")
+        lines.append(f"- Customer closure items: {order_ops.get('customer_closure','—')}")
+        lines.append(f"- Paid fulfillment releases: {order_ops.get('paid_fulfillment','—')}")
         lines.append("")
 
     # Ads pull summary (optional)
@@ -384,6 +400,7 @@ def main(argv: list[str] | None = None) -> int:
     _run([sys.executable, "scripts/build_morning_money_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_deadline_control_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_supplier_ops_desk.py", "--date", date_str])
+    _run([sys.executable, "scripts/build_order_ops_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_morning_commerce_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_brand_narrative_desk.py", "--date", date_str])
     _run([sys.executable, "scripts/build_b2b_kit_dispatch_desk.py", "--date", date_str])
@@ -406,6 +423,7 @@ def main(argv: list[str] | None = None) -> int:
     morning_money_json = REPORTS / "morning-money-desk-latest.json"
     deadline_control_json = REPORTS / "deadline-control-desk-latest.json"
     supplier_ops_json = REPORTS / "supplier-ops-desk-latest.json"
+    order_ops_json = REPORTS / "order-ops-desk-latest.json"
     brand_narrative_json = REPORTS / "brand-narrative-desk-latest.json"
     cron_watchlist_json = _latest_report("cron-watchlist-*.json")
     cron_trend_json = REPORTS / "cron-trend-report-latest.json"
@@ -434,6 +452,7 @@ def main(argv: list[str] | None = None) -> int:
             morning_money=_load_json(morning_money_json) if morning_money_json.exists() else None,
             deadline_control=_load_json(deadline_control_json) if deadline_control_json.exists() else None,
             supplier_ops=_load_json(supplier_ops_json) if supplier_ops_json.exists() else None,
+            order_ops=_load_json(order_ops_json) if order_ops_json.exists() else None,
             cron_watchlist=_load_json(cron_watchlist_json) if cron_watchlist_json and cron_watchlist_json.exists() else None,
             cron_trend=_load_json(cron_trend_json) if cron_trend_json.exists() else None,
         )
@@ -461,6 +480,8 @@ def main(argv: list[str] | None = None) -> int:
     print("Built reports/morning-money-desk-latest.html")
     print("Built reports/deadline-control-desk-latest.html")
     print("Built reports/supplier-ops-desk-latest.html")
+    print("Built reports/order-ops-desk-latest.html")
+    print("Built reports/order-ops-handoff-latest.csv")
     print("Built reports/morning-commerce-desk-latest.html")
     print("Built reports/brand-narrative-desk-latest.html")
     print("Built reports/b2b-kit-dispatch-desk-latest.html")
