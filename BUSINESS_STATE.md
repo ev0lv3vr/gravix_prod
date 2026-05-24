@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-22 12:56 PM PT
+Last updated: 2026-05-23 6:00 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -39,6 +39,11 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - American Express sent a card-not-present alert for **ELECTRIFY AMERICA**, **$40.00**, dated **2026-05-20**, on account ending **794007**.
 - Treat as expected EV charging/preauth only if Ev recognizes it.
 - Source: `gluemasters` msg **192683**.
+
+### Amex card-not-present alert — Raised By Society
+- American Express sent a card-not-present alert for **RAISED BY SOCIETY**, **$89.00**, dated **2026-05-23**, on account ending **794007**.
+- Treat as expected personal/apparel spend only if Ev recognizes it; otherwise verify directly in Amex.
+- Source: `gluemasters` msg **192758**.
 
 ### Evolve Bank digital payment — account closure
 - Evolve Bank & Trust / Checkbook sent a digital payment for **$14.67** with remittance info **Account Closure**.
@@ -162,6 +167,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **TikTok/Amazon influencer outreach** — low-priority vendor/influencer pitch surfaced late day; not urgent. Source msg **6066**.
 - **Furniture Flipping Teacher / Lauren Hull** — influencer/collab follow-up from Melissa Hogg at Cactus Belle Co.; Lauren has ~331k YouTube subscribers and ~260k Instagram followers, with home-renovation/furniture-restoration projects ahead. Low-priority unless Ev wants a Q2 creator campaign. Sources: `gluemasters` msg **192734**, `sales` msg **6279**.
 - **Cristaux / JSabon delivery failure** — Ev's email to `JSabon@cristaux.com` bounced with **550 5.7.1 Invalid recipient address**. Subject was “Your adhesives guide, the UV-vs-CA call.” If this is a live lead, need corrected contact/address. Source: `gluemasters` msg **192739**.
+- **Pinnacle Brand Management / Tim Edmunds** — cold pitch for TikTok retargeting against the existing email list with a claimed 5× return guarantee and $50 gift card for a call. Low-priority marketing vendor outreach unless Ev wants to evaluate. Source: `sales` msg **6281**.
 - **Starbond/Systemslab outreach** — David Jones says he tried to call about **Starbond** and asks for 5 minutes. Treat as low-priority vendor/competitive outreach unless Ev recognizes it. Source: `gluemasters` msg **192425**.
 - **Dynasty Global / Eli** — dealer inquiry; needs Ev decision.
 - **Munera Capital / Josef Kozorezov** — acquisition-interest outreach asking whether we’d explore acquiring Glue Masters; added to MoneySamurai as stage `contacted`. Low-priority unless Ev wants to engage. Source: `sales` msg **6177**.
@@ -183,6 +189,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Model: **ACC0201**.
 - Target price: **$14.99**.
 - Designer: Designcoffers/Fiverr; revisions in progress.
+- Designcoffers says they will be on Eid al-Adha vacation **2026-05-26 through 2026-05-30** and asks for any revisions/questions before **2026-05-26**.
 - Files: `gluemasters-bizdev/labels/pump-accelerator-8oz/`.
 
 ### Amazon PPC
@@ -208,9 +215,9 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.
 - Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
-- Latest checked ads folder: **2026-05-21**; 2026-05-21 pull completed valid at **2026-05-22 09:41 PT** after slow Amazon `PENDING`/timeout fallback behavior. Same-day May 21 Amazon Ads attributed metrics: **$107.71 spend / $735.98 sales / 14 orders / 14.6% ACoS / 6.83× ROAS**, with **10 campaigns**, **90 keywords**, and **69 search terms**. Token refresh succeeded during the slow pull and no durable auth failure surfaced. Prior valid metrics for 2026-05-20 were **$82.84 spend / $221.46 sales / 37.4% ACoS / 2.67× ROAS**. On **2026-05-07 6:30 PM PT**, after Ev approved the first conservative growth batch, Amazon Ads API accepted **20 campaign-level negative exacts**, **12 proven exact keyword bid raises (~10%)**, and **+10% budget bumps** on four winner campaigns: `Discovery - 8oz Thick Auto` **$60→$66**, `Sales - CA Glue Core Exact` **$50→$55**, `Discovery - 8oz Medium Auto` **$50→$55**, and `Sales - Thin CA Glue` **$35→$38.50**. Execution log: `moneysamurai/reports/ads-master-actions-execution-latest.json`. Prior 2026-05-04 recovery remains resolved; no current invalid-streak incident is open.
+- Latest checked ads folder: **2026-05-22**; 2026-05-22 pull completed valid at **2026-05-23 06:54 PT**. Same-day May 22 Amazon Ads attributed metrics were weak: **$97.11 spend / $150.92 sales / 64.3% ACoS / 1.55× ROAS**, with **10 campaigns**, **89 keywords**, and **58 search terms**. Do not run a second scale wave without review/approval. Prior valid metrics for 2026-05-21 were **$107.71 spend / $735.98 sales / 14.6% ACoS / 6.83× ROAS**. On **2026-05-07 6:30 PM PT**, after Ev approved the first conservative growth batch, Amazon Ads API accepted **20 campaign-level negative exacts**, **12 proven exact keyword bid raises (~10%)**, and **+10% budget bumps** on four winner campaigns: `Discovery - 8oz Thick Auto` **$60→$66**, `Sales - CA Glue Core Exact` **$50→$55**, `Discovery - 8oz Medium Auto` **$50→$55**, and `Sales - Thin CA Glue` **$35→$38.50**. Execution log: `moneysamurai/reports/ads-master-actions-execution-latest.json`. Prior 2026-05-04 recovery remains resolved; no current invalid-streak incident is open.
 - Microsoft Advertising charged Gluemasters account **F145YB38** / card ending **5553** for **$399.76** on **2026-05-20** after reaching billing threshold/monthly billing date. Source: `gluemasters` msg **192673**.
-- Amazon initiated a payout of **$999.15** to bank ending **388** on **2026-05-20 17:02 PDT**, expected within 3-5 days. Amazon initiated another payout of **$946.57** to bank ending **388** on **2026-05-21 20:30 PDT**, expected within 3-5 days. Shopify initiated a **$845.47** payout on **2026-05-22**, expected in 1-2 business days. ShipBob confirmed receipt of a payment for the outstanding amount, but the email displayed a blank dollar amount. Sources: `gluemasters` msgs **192684**, **192718**, **192723**; `sales` msg **6277**.
+- Amazon initiated a payout of **$999.15** to bank ending **388** on **2026-05-20 17:02 PDT**, expected within 3-5 days. Amazon initiated another payout of **$946.57** to bank ending **388** on **2026-05-21 20:30 PDT**, expected within 3-5 days. Shopify initiated a **$845.47** payout on **2026-05-22**, expected in 1-2 business days. ShipBob confirmed receipt of payments for the outstanding amount, but the emails displayed blank dollar amounts. Sources: `gluemasters` msgs **192684**, **192718**, **192723**, **192747**; `sales` msg **6277**.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
