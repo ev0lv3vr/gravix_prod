@@ -643,7 +643,7 @@ async def admin_metrics_system(
 
     logs = (
         db.table("api_request_logs")
-        .select("status_code, duration_ms")
+        .select("method,path,status_code,duration_ms,error,created_at")
         .gte("created_at", start)
         .lte("created_at", end)
         .limit(2000)
@@ -652,24 +652,107 @@ async def admin_metrics_system(
 
     total = len(logs)
     err = sum(1 for r in logs if (r.get("status_code") or 0) >= 500)
+    client_err = sum(1 for r in logs if 400 <= (r.get("status_code") or 0) < 500)
     p95 = None
     durs = sorted([int(r.get("duration_ms") or 0) for r in logs if r.get("duration_ms") is not None])
     if durs:
         idx = int(round(0.95 * (len(durs)-1)))
         p95 = durs[idx]
 
+    endpoint_map: dict[str, dict] = {}
+    hourly_map: dict[str, dict[str, int]] = {}
+    recent_errors: list[dict] = []
+    for row in logs:
+        method = row.get("method") or "GET"
+        path = row.get("path") or "unknown"
+        status_code = int(row.get("status_code") or 0)
+        duration_ms = row.get("duration_ms")
+        key = f"{method} {path}"
+
+        endpoint = endpoint_map.setdefault(
+            key,
+            {
+                "method": method,
+                "path": path,
+                "requests": 0,
+                "errors": 0,
+                "durations": [],
+            },
+        )
+        endpoint["requests"] += 1
+        if status_code >= 500:
+            endpoint["errors"] += 1
+        if duration_ms is not None:
+            endpoint["durations"].append(int(duration_ms))
+
+        created_at = row.get("created_at")
+        if created_at:
+            hour = str(created_at)[:13] + ":00"
+            bucket = hourly_map.setdefault(hour, {"hour": hour, "requests": 0, "errors": 0})
+            bucket["requests"] += 1
+            if status_code >= 500:
+                bucket["errors"] += 1
+
+        if status_code >= 400:
+            recent_errors.append(
+                {
+                    "method": method,
+                    "path": path,
+                    "status_code": status_code,
+                    "duration_ms": duration_ms,
+                    "error": row.get("error"),
+                    "created_at": created_at,
+                }
+            )
+
+    endpoints = []
+    for endpoint in endpoint_map.values():
+        durations = sorted(endpoint.pop("durations"))
+        avg_duration = round(sum(durations) / len(durations)) if durations else None
+        p95_duration = None
+        if durations:
+            p95_duration = durations[int(round(0.95 * (len(durations) - 1)))]
+        requests = endpoint["requests"] or 1
+        endpoints.append(
+            {
+                **endpoint,
+                "avg_latency_ms": avg_duration,
+                "p95_latency_ms": p95_duration,
+                "error_rate_pct": round((endpoint["errors"] / requests) * 100, 1),
+            }
+        )
+    endpoints = sorted(
+        endpoints,
+        key=lambda endpoint: (endpoint["errors"], endpoint["requests"]),
+        reverse=True,
+    )[:12]
+
+    hourly_traffic = sorted(hourly_map.values(), key=lambda row: row["hour"])[-24:]
+    recent_errors = sorted(
+        recent_errors,
+        key=lambda row: str(row.get("created_at") or ""),
+        reverse=True,
+    )[:12]
+
     last_cron = (
         db.table("cron_run_log")
-        .select("job_name,status,created_at,result")
+        .select("job_name,status,created_at,duration_ms,result,error")
         .order("created_at", desc=True)
         .limit(10)
         .execute()
     ).data or []
 
+    cron_failures = sum(1 for row in last_cron if row.get("status") not in {"ok", "success", "completed"})
+
     return {
         "window": {"range": range, "start_date": start, "end_date": end},
         "requests_total": total,
         "server_errors": err,
+        "client_errors": client_err,
         "p95_latency_ms": p95,
+        "endpoint_performance": endpoints,
+        "hourly_traffic": hourly_traffic,
+        "recent_errors": recent_errors,
+        "cron_failures": cron_failures,
         "recent_cron_runs": last_cron,
     }

@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-24 6:00 PM PT
+Last updated: 2026-05-25 2:00 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -89,16 +89,18 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 ### Amazon FBA unfulfillable removal
 - Amazon created automated unfulfillable FBA removal order **gZRKfHwQJb**.
 - Completion notice later arrived confirming the removal request completed successfully; no immediate action remains unless Ev wants to review Seller Central removal settings/address/frequency.
-- Sources: `gluemasters` msgs **192161**, **192366**.
+- Amazon created a new automated unfulfillable FBA removal order **Fi3io7csW4** on **2026-05-25**. The next automated removal is scheduled for **2026-05-26** if more unfulfillable inventory exists.
+- Sources: `gluemasters` msgs **192161**, **192366**, **192789**.
 
 ### Walmart Marketplace performance/pricing
 - Fresh Walmart performance snapshot shows **on-time delivery 100% vs 90% standard**, but **valid tracking 87.5% vs 99% standard** and **late shipment 25% vs 5% standard**; cancellations/negative feedback/returns/item-not-received all 0%.
 - Fresh Walmart pricing digest shows **price competitiveness 47.83%** (+8.1% WoW), Buy Box win rate 100%, and top recommended price cuts remain `20GRGELCAGM` **$8.99 → $6.99** and `24MLEPOXYGM2` **$14.99 → $7.99**. Treat as recommendations only; Ev should decide before price changes.
 - Walmart sent a customer cancellation request for order **129114275520845** on **2026-05-21**; Seller Center needs the order cancelled if it has not already been handled.
 - Walmart Partner Performance sent a fresh **2026-05-22** auto-cancellation warning: **1 order is past expected ship date** and needs valid tracking uploaded today or proactive cancellation. The email references an impacted-orders XLSX, but the attachment was not present at the local download path during the heartbeat check; inspect Seller Center unshipped orders to identify/clear it.
+- Walmart Partner Performance sent a fresh **2026-05-25** late-origin-scan warning: **2 Walmart orders have late origin scans** and need carrier contact/tracking accuracy confirmation within **24 hours**.
 - Prior Walmart late-origin-scan alert said **1 shipped order has a late origin scan** and needs carrier scan/tracking accuracy confirmed within **24 hours**; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check.
 - The prior PO-specific Walmart auto-cancel item was marked done/out on 2026-05-19; do not resurface PO **119113590713297** unless Walmart sends a fresh alert.
-- Sources: `gluemasters` msgs **192323**, **192326**, **192443**, **192619**, **192624**, **192719**, **192730**.
+- Sources: `gluemasters` msgs **192323**, **192326**, **192443**, **192619**, **192624**, **192719**, **192730**, **192779**.
 
 ### Prime Day inbound inventory cutoffs
 - Amazon Freight / Ryan Anderson reminded that the first Prime Day inventory cutoff is **2026-05-27** for AWD and FBA **Minimal Shipment Splits** arrivals, and **2026-06-05** for FBA **Amazon-Optimized Shipment Splits** arrivals. Inventory arriving after those windows will not be eligible for Prime Day deals.
@@ -219,6 +221,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Microsoft Advertising charged Gluemasters account **F145YB38** / card ending **5553** for **$399.76** on **2026-05-20** after reaching billing threshold/monthly billing date. Source: `gluemasters` msg **192673**.
 - Amazon initiated a payout of **$999.15** to bank ending **388** on **2026-05-20 17:02 PDT**, expected within 3-5 days. Amazon initiated another payout of **$946.57** to bank ending **388** on **2026-05-21 20:30 PDT**, expected within 3-5 days. Shopify initiated a **$845.47** payout on **2026-05-22**, expected in 1-2 business days. ShipBob confirmed receipt of payments for the outstanding amount, but the emails displayed blank dollar amounts. Sources: `gluemasters` msgs **192684**, **192718**, **192723**, **192747**; `sales` msg **6277**.
 2026-05-24 afternoon/evening cron context: MoneySamurai sync trigger succeeded twice with HTTP 200 / `success: true` for categories products, orders, inventory, financial, and restock; service health checks stayed green (`HEARTBEAT_OK`); sales and gluemasters inbox monitors returned no actionable customer/B2B/supplier alerts. One late gluemasters email above the prior checkpoint was MLS marketing noise, and `evgueni-monitor.md` advanced to ID **192773**. Do not surface routine sync/heartbeat successes to Ev.
+2026-05-25 midday cron/session context: visible recent sessions were empty, persisted session logs showed routine `HEARTBEAT_OK` / `NO_REPLY` / sync successes plus two actionable alerts now captured above: Walmart late-origin-scan msg **192779** and Amazon FBA removal msg **192789**. No session evidence showed Shipux, Walmart credentialed cleanup, Larry, Justin, Thomas, Ethan, QuickBooks, Shopify token, Buy with Prime, or A3 resolved.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
