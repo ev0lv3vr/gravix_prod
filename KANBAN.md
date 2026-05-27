@@ -12,7 +12,11 @@ Use instead:
 Important correction:
 - ShipBob UROs are resolved and must not be resurfaced as active ops debt unless fresh evidence shows a new issue.
 
-Last checked: 2026-05-25 2:00 PM PT
+Last checked: 2026-05-26 6:00 PM PT
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-05-26 EOD check confirmed no change: board remains retired; today's FBA removal capture, late session review, Ev's "not a B2B lead / noise" correction, the false ShipBob DG/HAZMAT resurfacing correction, and tomorrow handoff were recorded in live state and `memory/2026-05-26.md` instead of reopening this board.
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-05-26 midday check confirmed no change: board remains retired; today's fresh Amazon FBA removal msg **192815** was recorded in live state and `memory/2026-05-26.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
 - 2026-05-25 midday check confirmed no change: board remains retired; today's ops-pack rebuild plus fresh Walmart late-origin-scan msg **192779** and Amazon FBA removal msg **192789** were recorded in live state and `memory/2026-05-25.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
