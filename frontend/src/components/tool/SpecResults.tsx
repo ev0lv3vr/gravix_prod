@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { FileText, ChevronDown, ChevronUp, Package } from 'lucide-react';
+import { FileText, ChevronDown, ChevronUp, Download, Loader2, Mail, Package } from 'lucide-react';
 import { AnalysisProgress, SPEC_STAGES } from '@/components/ui/AnalysisProgress';
 import { ConfidenceBadge } from '../shared/ConfidenceBadge';
 import { FeedbackPrompt } from '../results/FeedbackPrompt';
 import { KnownRisksSection, type KnownRiskData } from './KnownRisksSection';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api';
+import { buildExpertReviewMailto } from '@/lib/reportActions';
+import { showToast } from '@/lib/toast';
 import type { MatchingProduct } from '@/lib/types';
 
 interface SpecResultsProps {
@@ -59,6 +61,24 @@ interface SpecResultData {
 
 export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis, isFree = true }: SpecResultsProps) {
   const [expandedAlts, setExpandedAlts] = useState<number[]>([]);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
+
+  const handleExportPdf = async () => {
+    if (!specId || isExportingPdf) return;
+
+    setIsExportingPdf(true);
+    try {
+      await api.downloadSpecPdf(specId);
+      showToast({ message: 'PDF export started.', type: 'success' });
+    } catch (error) {
+      showToast({
+        message: error instanceof Error ? error.message : 'Failed to export PDF.',
+        type: 'error',
+      });
+    } finally {
+      setIsExportingPdf(false);
+    }
+  };
 
   /* ===== Component 2.4: Empty State ===== */
   if (status === 'idle') {
@@ -358,17 +378,27 @@ export function SpecResults({ status, data, specId, errorMessage, onNewAnalysis,
             <Button 
               variant="outline" 
               className="flex-1 min-h-[44px]"
-              onClick={() => specId && api.downloadSpecPdf(specId)}
-              disabled={!specId}
+              onClick={handleExportPdf}
+              disabled={!specId || isExportingPdf}
             >
-              Export PDF
+              {isExportingPdf ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-4 w-4" />
+              )}
+              {isExportingPdf ? 'Exporting...' : 'Export PDF'}
             </Button>
             <Button 
               variant="outline" 
               className="flex-1 min-h-[44px]"
               asChild
             >
-              <a href={`mailto:support@gravix.com?subject=Expert Review Request — Spec ${specId || ''}&body=Hi Gravix Team,%0D%0A%0D%0AI would like to request an expert review of my spec request.%0D%0A%0D%0ASpec ID: ${specId || ''}%0D%0A%0D%0AThank you!`}>
+              <a href={buildExpertReviewMailto({
+                kind: 'spec',
+                id: specId,
+                title: data.recommendedSpec.materialType,
+              })}>
+                <Mail className="mr-2 h-4 w-4" />
                 Request Expert Review
               </a>
             </Button>

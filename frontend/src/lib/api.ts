@@ -409,42 +409,43 @@ export class ApiClient {
   }
 
   // PDF Download with Auth
-  async downloadAnalysisPdf(id: string): Promise<void> {
+  private async _downloadAuthenticatedPdf(url: string, filename: string): Promise<void> {
     const headers = await this.getAuthHeaders();
-    const response = await fetch(`${API_URL}/reports/analysis/${id}/pdf`, {
-      headers,
-    });
+    const response = await fetch(url, { headers });
     if (!response.ok) {
-      throw new Error('Failed to download PDF');
+      const error = await response.json().catch(() => ({}));
+      const message = typeof error.detail === 'string'
+        ? error.detail
+        : (error.message || 'Failed to download PDF');
+      throw new ApiError(message, response.status, error.detail);
     }
+
     const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+    const disposition = response.headers.get('content-disposition');
+    const serverFilename = disposition?.match(/filename="?([^"]+)"?/i)?.[1];
+    const downloadName = serverFilename || filename;
+    const urlObject = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `gravix-analysis-${id.slice(0, 8)}.pdf`;
+    a.href = urlObject;
+    a.download = downloadName;
     document.body.appendChild(a);
     a.click();
-    window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+    window.setTimeout(() => window.URL.revokeObjectURL(urlObject), 0);
+  }
+
+  async downloadAnalysisPdf(id: string): Promise<void> {
+    await this._downloadAuthenticatedPdf(
+      `${API_URL}/reports/analysis/${id}/pdf`,
+      `gravix-analysis-${id.slice(0, 8)}.pdf`
+    );
   }
 
   async downloadSpecPdf(id: string): Promise<void> {
-    const headers = await this.getAuthHeaders();
-    const response = await fetch(`${API_URL}/reports/spec/${id}/pdf`, {
-      headers,
-    });
-    if (!response.ok) {
-      throw new Error('Failed to download PDF');
-    }
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `gravix-spec-${id.slice(0, 8)}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
+    await this._downloadAuthenticatedPdf(
+      `${API_URL}/reports/spec/${id}/pdf`,
+      `gravix-spec-${id.slice(0, 8)}.pdf`
+    );
   }
 
   // Feedback
