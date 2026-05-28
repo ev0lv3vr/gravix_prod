@@ -12,7 +12,11 @@ Use instead:
 Important correction:
 - ShipBob UROs are resolved and must not be resurfaced as active ops debt unless fresh evidence shows a new issue.
 
-Last checked: 2026-05-26 6:00 PM PT
+Last checked: 2026-05-27 6:00 PM PT
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-05-27 EOD check confirmed no change: board remains retired; today's ops-pack rebuild, ICU upsell-token re-alert, Amazon FBA removal order **1OLLCT1wj/**, Chris Kendall tracking complaint, ShipBob/Niyati follow-up, late Bank of America transfer alert **614560288** for **$26,392.00** to Barristo Enterprises, and tomorrow handoff were recorded in live state and `memory/2026-05-27.md` instead of reopening this board.
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-05-27 midday check confirmed no change: board remains retired; today's ICU token re-alert, Amazon FBA removal order **1OLLCT1wj/**, Chris Kendall tracking complaint, ShipBob/Niyati case follow-up, and current blockers were recorded in live state and `memory/2026-05-27.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
 - 2026-05-26 EOD check confirmed no change: board remains retired; today's FBA removal capture, late session review, Ev's "not a B2B lead / noise" correction, the false ShipBob DG/HAZMAT resurfacing correction, and tomorrow handoff were recorded in live state and `memory/2026-05-26.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.

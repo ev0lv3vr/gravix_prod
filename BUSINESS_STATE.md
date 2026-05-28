@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-05-26 6:00 PM PT
+Last updated: 2026-05-27 6:00 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -50,6 +50,11 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Needs Ev deposit/review if this account-closure payment is expected.
 - Source: `gluemasters` msg **192670**.
 
+### Bank of America scheduled transfer — Barristo Enterprises
+- Bank of America says funds transfer request **614560288** was scheduled on **2026-05-27** as a next-day transfer of **$26,392.00** to **Barristo Enterprises Inc.**, with a **$5.00** fee.
+- Treat as expected only if Ev recognizes the transfer; otherwise verify directly in Bank of America.
+- Source: 2026-05-27 persisted session alert at **14:36 PT**.
+
 ### Amazon account security check / Meta partner request
 - Amazon sent a password recovery notice tied to a reset attempt from **Chrome on macOS near Washington**.
 - If this was not Ev, he should verify account security directly in Amazon, not through the email link.
@@ -73,7 +78,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ### ICU Shopify upsell app token
 - In Cart Upsell says the store token expires **Thu 2026-04-30** and upsell offers will pause if the app is not opened/refreshed in Shopify admin.
-- Source: `sales` msg **6090**.
+- Fresh 2026-05-27 morning sales alert says the Shopify upsell token is expired again and offers may turn off unless someone opens/refreshes the ICU app in Shopify Admin.
+- Sources: `sales` msg **6090**; 2026-05-27 persisted session alert.
 
 ### Fastenal supplier onboarding
 - Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days.
@@ -91,7 +97,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Completion notice later arrived confirming the removal request completed successfully; no immediate action remains unless Ev wants to review Seller Central removal settings/address/frequency.
 - Amazon created a new automated unfulfillable FBA removal order **Fi3io7csW4** on **2026-05-25**. The next automated removal is scheduled for **2026-05-26** if more unfulfillable inventory exists.
 - Amazon created a new automated unfulfillable FBA removal order **Da7RqF+4Mp** on **2026-05-26**. The next automated removal is scheduled for **2026-05-27** if more unfulfillable inventory exists.
-- Sources: `gluemasters` msgs **192161**, **192366**, **192789**, **192815**.
+- Amazon created a new automated unfulfillable FBA removal order **1OLLCT1wj/** on **2026-05-27**. The next automated removal is scheduled for **2026-05-28** if more unfulfillable inventory exists.
+- Sources: `gluemasters` msgs **192161**, **192366**, **192789**, **192815**; 2026-05-27 persisted session alert.
 
 ### Walmart Marketplace performance/pricing
 - Fresh Walmart performance snapshot shows **on-time delivery 100% vs 90% standard**, but **valid tracking 87.5% vs 99% standard** and **late shipment 25% vs 5% standard**; cancellations/negative feedback/returns/item-not-received all 0%.
@@ -145,6 +152,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - **Antonio Gutierrez** — order **#6000**, asks if shipped + ship date. Draft exists, needs shipping fields; source msg **5930**.
 - **Michael Nasholm** — 20% partial refund was promised but not done; customer followed up.
 - **Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**.
+- **Chris Kendall** — customer says they ordered over a week ago, have not received a shop response, and need a tracking number/update. Contact: `clkendall47@gmail.com`, phone **917-287-3563**. Source: 2026-05-27 persisted session alert.
 - **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for **$41.84 + $15.00 fee** and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**, **6168**, **6170**.
 - **Deane Belk / Good Friends of Bryan County fill-volume complaint** — fresh 2026-05-21 thread reopened after prior reorder path: Deane says the replacement Thick 16oz bottles arrived late vs expected 2-day air and initially appeared underfilled. Ev replied with the net-weight vs fluid-volume explanation and batch weight check. Deane later opened the third bottle, got **7 bottles to the 2 oz mark plus 1-2 squeezes into an 8th**, apologized, and said they will likely place a second order in a few weeks. Treat complaint as resolved/warm unless she asks another follow-up. Sources: `sales` msgs **6270**, **6271**, **6273**, **6274**, **6275**, **6276**.
 - **Cute Things & Creative Concepts / Shohreh** — bulk quote is current; Shohreh asked whether they may sell Glue Masters products on **Amazon** after the $16,030.20 quote. Ev sent a reply on **2026-05-06** saying **no Amazon resale authorization**; wait for her response. Sources: `sales` msgs **6087**, **6100**, **6101**, **6149**.
@@ -202,6 +210,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ### Shopify / marketplace backlog
 - **ShipBob Northeast Hub move** — ShipBob is moving from Kutztown to **4755 Hanoverville Road, Building E, Bethlehem, PA 18020**. Transition window **2026-05-11 to 2026-05-29**; no Kutztown appointments after **2026-05-22**; new WRO labels show new address starting **2026-05-27**; inbound arriving at Kutztown starting **2026-05-27** will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg **192400**.
+- ShipBob / Niyati created or updated case **thread::nTthrrhGdgmmyhr_yqOvHj0::** on **2026-05-27** and said they are checking details with the concerned team after Ev's chat; wait for their follow-up unless this blocks an active shipment/order.
 - ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg **192468**.
 - ShipBob updated the Claims Page effective **2026-05-18**: lost-in-transit claims can be filed from **7 days after estimated delivery** through **45 days post-EDD**, uninsured LIT liability is capped at the lesser of **$100** or the carrier limit, and proactive claim filing is opt-in with a **25% fee** on approved payouts. Source: `gluemasters` msg **192620**.
 - ShipBob updated Terms of Service effective **2026-06-21**; continuing to use services on/after that date accepts the updated terms. Non-urgent legal/vendor watch unless Ev wants review. Source: `gluemasters` msg **192735**.
@@ -225,6 +234,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 2026-05-25 midday cron/session context: visible recent sessions were empty, persisted session logs showed routine `HEARTBEAT_OK` / `NO_REPLY` / sync successes plus two actionable alerts now captured above: Walmart late-origin-scan msg **192779** and Amazon FBA removal msg **192789**. No session evidence showed Shipux, Walmart credentialed cleanup, Larry, Justin, Thomas, Ethan, QuickBooks, Shopify token, Buy with Prime, or A3 resolved.
 2026-05-26 midday cron/session context: `memory/2026-05-26.md` was initially missing, `memory/2026-05-25.md` was read, `KANBAN.md` remained retired, visible recent sessions were empty, and persisted session logs showed routine `HEARTBEAT_OK` / `NO_REPLY` / MoneySamurai sync activity plus one new actionable alert now captured above: Amazon FBA automated unfulfillable removal order **Da7RqF+4Mp** (`gluemasters` msg **192815**). Session review did not show resolved/done signals for Shipux, Walmart credentialed cleanup, Larry, Justin, Thomas, Ethan, QuickBooks, Shopify token, Buy with Prime, Garcor, Gemifly, WaterRower, Petite Keep, Louise, or A3.
 2026-05-26 evening cron/session context: late sessions after the 2 PM checkpoint were mostly routine `HEARTBEAT_OK`, `NO_REPLY`, MoneySamurai keep-alive OK, and sync success. Ev corrected one Telegram-surfaced item at **2026-05-26 09:50 PT** / Telegram msg **12374** as **not a B2B lead, just noise**; the source item was not identifiable from the session transcript. The 5:56 PM heartbeat sent Telegram msg **12383** with an erroneous claim that the ShipBob DG/HAZMAT blocker/order **370025482** was still highest risk; this conflicts with Ev's 2026-05-19 done signal and the resolved state below, so do **not** resurface ShipBob DG/HAZMAT unless a fresh ShipBob notice appears. The same heartbeat surfaced unverified/source-ID-missing notes for `cs@gluemasters.com` bouncing, Amex account ending **94007** statement due **2026-06-19**, Shopify payout **$386.33**, Google Cloud TLS notice before **2026-06-15**, and generic Amazon Freight / marketing pitch noise; treat these as verify-before-alert context, not active queue blockers. No late session evidence showed Shipux, Walmart credentialed cleanup, Larry, Justin, Thomas, Ethan, QuickBooks, Shopify token, Buy with Prime, Garcor, Gemifly, WaterRower, Petite Keep, Louise, or A3 resolved.
+2026-05-27 midday cron/session context: `memory/2026-05-27.md` was missing before this check, so the review used yesterday's journal plus live state. Persisted sessions since morning were mostly routine `HEARTBEAT_OK`, `NO_REPLY`, OpenClaw health OK, and MoneySamurai sync successes. Fresh actionable/session alerts now captured above: ICU Shopify upsell token expired again, Amazon automated FBA removal order **1OLLCT1wj/**, Chris Kendall tracking/update complaint, and ShipBob/Niyati case follow-up **thread::nTthrrhGdgmmyhr_yqOvHj0::**. Morning brief also noted Seller Central remained blocked at Amazon password sign-in. No session evidence showed resolved/done signals for Shipux, Walmart credentialed cleanup, Larry, Justin, Thomas, Ethan, QuickBooks, Shopify token, Buy with Prime, Garcor, Gemifly, WaterRower, Petite Keep, Louise, or A3.
+2026-05-27 evening cron/session context: late persisted sessions after the 2 PM checkpoint were mostly routine `HEARTBEAT_OK`, `NO_REPLY`, OpenClaw health OK, MoneySamurai keep-alive OK, and sync success. One actionable money alert was captured above: Bank of America scheduled transfer request **614560288** for **$26,392.00** to **Barristo Enterprises Inc.** with a **$5.00** fee. No late session evidence showed resolved/done signals for Shipux, Walmart credentialed cleanup, Larry, Justin, Thomas, Ethan, QuickBooks, Shopify token, ICU Shopify app refresh, Buy with Prime, Garcor, Gemifly, WaterRower, Petite Keep, Louise, Chris Kendall, or A3. Do not reopen ShipBob DG/HAZMAT or the corrected non-B2B noise item without fresh evidence.
 - **Important correction:** the pre-fix Amazon Ads “daily” digest was mislabeled. Its default pull was a **7-day rolling window ending on the snapshot date**, so the earlier **$708.60 spend / $2,152.91 ad-attributed sales / 69 orders** for `2026-04-26` were **not same-day April 26 sales** and must not be compared to Seller Central same-day total sales. Seller Central showed **$1,129.16 total sales including organic** for Apr 26, confirming the label/logic was invalid. Fix applied 2026-04-27 in `moneysamurai@1a2f79a`: default pull is now same-day; multi-day pulls require `--rolling-7d` and are kept out of daily history; digest labels now say ad-attributed/window metrics explicitly. Correction pull completed 2026-04-27 at ~11:31 AM PT and overwrote the daily snapshot with true same-day data.
 - Recent timeout patches:
   - `sales-email-monitor`: **180s → 240s**.
