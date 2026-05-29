@@ -12,7 +12,9 @@ Use instead:
 Important correction:
 - ShipBob UROs are resolved and must not be resurfaced as active ops debt unless fresh evidence shows a new issue.
 
-Last checked: 2026-05-27 6:00 PM PT
+Last checked: 2026-05-28 6:00 PM PT
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-05-28 EOD check confirmed no change: board remains retired; today's ops-pack rebuild, Chris Kendall cooled status, MarcoRocks 2026-05-29 11:00 AM PT call, ShipBob shipping-cost-help confirmation ask, A3 Gemiflex shipment/invoice **26-05272**, Walmart WFS long-term-storage-fee alert, and tomorrow handoff were recorded in live state and `memory/2026-05-28.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
 - 2026-05-27 EOD check confirmed no change: board remains retired; today's ops-pack rebuild, ICU upsell-token re-alert, Amazon FBA removal order **1OLLCT1wj/**, Chris Kendall tracking complaint, ShipBob/Niyati follow-up, late Bank of America transfer alert **614560288** for **$26,392.00** to Barristo Enterprises, and tomorrow handoff were recorded in live state and `memory/2026-05-27.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
