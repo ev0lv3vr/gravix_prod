@@ -12,7 +12,11 @@ Use instead:
 Important correction:
 - ShipBob UROs are resolved and must not be resurfaced as active ops debt unless fresh evidence shows a new issue.
 
-Last checked: 2026-05-28 6:00 PM PT
+Last checked: 2026-05-29 6:00 PM PT
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-05-29 EOD check confirmed no change: board remains retired; today's ops-pack rebuild, Accurate Graphics B2B lead, MarcoRocks move to proposal review, ShipBob case **#02713670** closed-for-reporting but reopenable, ShipBob **$114.31** pending credit request, current blockers, and tomorrow handoff were recorded in live state and `memory/2026-05-29.md` instead of reopening this board.
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-05-29 midday check confirmed no change: board remains retired; today's ops-pack rebuild, Accurate Graphics lead, ShipBob case **#02713670** now closed-for-reporting but reopenable, current blockers, and queue metrics were recorded in live state and `memory/2026-05-29.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
 - 2026-05-28 EOD check confirmed no change: board remains retired; today's ops-pack rebuild, Chris Kendall cooled status, MarcoRocks 2026-05-29 11:00 AM PT call, ShipBob shipping-cost-help confirmation ask, A3 Gemiflex shipment/invoice **26-05272**, Walmart WFS long-term-storage-fee alert, and tomorrow handoff were recorded in live state and `memory/2026-05-28.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.

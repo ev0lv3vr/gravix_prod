@@ -1,14 +1,14 @@
 {
   "summary": {
-    "target_date": "2026-05-28",
-    "generated_at": "2026-05-28 18:02 PDT",
+    "target_date": "2026-05-29",
+    "generated_at": "2026-05-29 14:03 PDT",
     "collect_total": 9498.69,
-    "pay_total": 6597.07,
+    "pay_total": 6897.07,
     "protect_total": 8625.35,
     "upside_total": 16030.2,
     "overdue_count": 2,
-    "undated_count": 17,
-    "items_total": 19
+    "undated_count": 19,
+    "items_total": 21
   },
   "collect_now": [
     {
@@ -17,7 +17,7 @@
       "detail": "Ev requested an urgent shipping update for Shipux sales order SO14531 - 001034 because it had no shipping update since 2026-05-08 and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-19 that it has shipped; Odoo sales order notice shows UPS tracking 1ZYV02810391168524. Shipux invoice INV/2026/05/001308 for $36.92 is due 2026-05-19 for SO14531. Next step: update the waiting customer with tracking and verify/pay the Shipux invoice if not already handled. Sources: `gluemasters` msgs 192543, 192545, 192666, 192667, 192668.",
       "amount": 36.92,
       "due_date": "2026-05-19",
-      "due_status": "overdue 9d",
+      "due_status": "overdue 10d",
       "owner": "Operator",
       "sources": [
         "192543",
@@ -94,7 +94,7 @@
       "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3/Caroline forwarded UPS tracking 1Z43A99A0347220365 for the remaining 1,260 Gemiflex units on PO#29, ship-to David Christensen, Mesa AZ, 4 packages / 142 lb, UPS Ground, estimated delivery 2026-05-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. A3 sent invoice 26-05272 for $3,825.79, due 2026-06-26. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701, 192888, 192889.",
       "amount": 6597.07,
       "due_date": "2026-04-25",
-      "due_status": "overdue 33d",
+      "due_status": "overdue 34d",
       "owner": "Ev",
       "sources": [
         "192183",
@@ -108,6 +108,19 @@
         "192889"
       ],
       "note": "Verify supplier-side balance before asserting internal non-payment."
+    },
+    {
+      "lane": "pay",
+      "title": "PayPal CAD payment — CONCEPT-PET",
+      "detail": "PayPal receipt says Glue Masters sent $300.00 CAD to CONCEPT-PET on 2026-05-28, paid from PayPal balance as $226.91 USD, transaction 1L278286X78311449. Treat as expected supplier/personal payment only if Ev recognizes it; otherwise verify directly in PayPal. Source: `sales` msg 6323.",
+      "amount": 300.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Ev",
+      "sources": [
+        "6323"
+      ],
+      "note": "Confirm payable timing and avoid surprise outbound cash."
     }
   ],
   "protect_margin": [
@@ -169,7 +182,7 @@
     {
       "lane": "protect",
       "title": "Shopify / marketplace backlog",
-      "detail": "ShipBob Northeast Hub move — ShipBob is moving from Kutztown to 4755 Hanoverville Road, Building E, Bethlehem, PA 18020. Transition window 2026-05-11 to 2026-05-29; no Kutztown appointments after 2026-05-22; new WRO labels show new address starting 2026-05-27; inbound arriving at Kutztown starting 2026-05-27 will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg 192400. ShipBob / Niyati created or updated case thread::nTthrrhGdgmmyhr_yqOvHj0:: on 2026-05-27 after Ev's chat. On 2026-05-28, Niyati said the shipment is now labelled and waiting for carrier pickup; after Ev asked how ShipBob will prevent repeats, Niyati apologized and offered to help with the shipment's shipping cost if Ev confirms. They said the case may close for reporting if no reply within 8 business hours, but can be reopened by replying. Source: `gluemasters` msgs 192858, 192872, 192885. ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg 192468. ShipBob updated the Claims Page effective 2026-05-18: lost-in-transit claims can be filed from 7 days after estimated delivery through 45 days post-EDD, uninsured LIT liability is capped at the lesser of $100 or the carrier limit, and proactive claim filing is opt-in with a 25% fee on approved payouts. Source: `gluemasters` msg 192620. ShipBob updated Terms of Service effective 2026-06-21; continuing to use services on/after that date accepts the updated terms. Non-urgent legal/vendor watch unless Ev wants review. Source: `gluemasters` msg 192735. Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: 1,183 reviews. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1).",
+      "detail": "ShipBob Northeast Hub move — ShipBob is moving from Kutztown to 4755 Hanoverville Road, Building E, Bethlehem, PA 18020. Transition window 2026-05-11 to 2026-05-29; no Kutztown appointments after 2026-05-22; new WRO labels show new address starting 2026-05-27; inbound arriving at Kutztown starting 2026-05-27 will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg 192400. ShipBob / Niyati created or updated case thread::nTthrrhGdgmmyhr_yqOvHj0:: / case #02713670 on 2026-05-27 after Ev's chat. On 2026-05-28, Niyati said the shipment is now labelled and waiting for carrier pickup; after Ev asked how ShipBob will prevent repeats, Niyati apologized and offered to help with the shipment's shipping cost if Ev confirms. On 2026-05-29, Niyati closed the case for internal reporting because no confirmation was received, but said replying to the thread will reopen it without starting over. Source: `gluemasters` msgs 192858, 192872, 192885, 192903. ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg 192468. ShipBob updated the Claims Page effective 2026-05-18: lost-in-transit claims can be filed from 7 days after estimated delivery through 45 days post-EDD, uninsured LIT liability is capped at the lesser of $100 or the carrier limit, and proactive claim filing is opt-in with a 25% fee on approved payouts. Source: `gluemasters` msg 192620. ShipBob updated Terms of Service effective 2026-06-21; continuing to use services on/after that date accepts the updated terms. Non-urgent legal/vendor watch unless Ev wants review. Source: `gluemasters` msg 192735. Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: 1,183 reviews. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1).",
       "amount": 100.0,
       "due_date": null,
       "due_status": "undated",
@@ -179,6 +192,7 @@
         "192858",
         "192872",
         "192885",
+        "192903",
         "192468",
         "192620",
         "192735"
@@ -232,6 +246,19 @@
         "6100",
         "6101",
         "6149"
+      ],
+      "note": "Revenue opportunity waiting for quote, response, or decision."
+    },
+    {
+      "lane": "upside",
+      "title": "Accurate Graphics / Javier Baeza",
+      "detail": "new B2B production trial request for rubber-to-wood bonding, tight/hairline wicking gap, instant fixture under 10 sec, current adhesive f-bond H-1 Adhesive, problems with cure/bond/cost/shelf life, estimated 10-50 bottles/month. Bottle size unknown. Contact: `jbaeza@accurategraphix.com`, 678-801-0175. Shipping/address context: 6994 Rogers Lake Rd, Lithonia, GA 30058. Needs product recommendation/sample/quote path. Source: `sales` msg 6328.",
+      "amount": null,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "6328"
       ],
       "note": "Revenue opportunity waiting for quote, response, or decision."
     },
@@ -320,7 +347,7 @@
       "detail": "Ev requested an urgent shipping update for Shipux sales order SO14531 - 001034 because it had no shipping update since 2026-05-08 and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-19 that it has shipped; Odoo sales order notice shows UPS tracking 1ZYV02810391168524. Shipux invoice INV/2026/05/001308 for $36.92 is due 2026-05-19 for SO14531. Next step: update the waiting customer with tracking and verify/pay the Shipux invoice if not already handled. Sources: `gluemasters` msgs 192543, 192545, 192666, 192667, 192668.",
       "amount": 36.92,
       "due_date": "2026-05-19",
-      "due_status": "overdue 9d",
+      "due_status": "overdue 10d",
       "owner": "Operator",
       "sources": [
         "192543",
@@ -395,7 +422,7 @@
       "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3/Caroline forwarded UPS tracking 1Z43A99A0347220365 for the remaining 1,260 Gemiflex units on PO#29, ship-to David Christensen, Mesa AZ, 4 packages / 142 lb, UPS Ground, estimated delivery 2026-05-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. A3 sent invoice 26-05272 for $3,825.79, due 2026-06-26. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701, 192888, 192889.",
       "amount": 6597.07,
       "due_date": "2026-04-25",
-      "due_status": "overdue 33d",
+      "due_status": "overdue 34d",
       "owner": "Ev",
       "sources": [
         "192183",
@@ -409,6 +436,19 @@
         "192889"
       ],
       "note": "Verify supplier-side balance before asserting internal non-payment."
+    },
+    {
+      "lane": "pay",
+      "title": "PayPal CAD payment — CONCEPT-PET",
+      "detail": "PayPal receipt says Glue Masters sent $300.00 CAD to CONCEPT-PET on 2026-05-28, paid from PayPal balance as $226.91 USD, transaction 1L278286X78311449. Treat as expected supplier/personal payment only if Ev recognizes it; otherwise verify directly in PayPal. Source: `sales` msg 6323.",
+      "amount": 300.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Ev",
+      "sources": [
+        "6323"
+      ],
+      "note": "Confirm payable timing and avoid surprise outbound cash."
     },
     {
       "lane": "protect",
@@ -468,7 +508,7 @@
     {
       "lane": "protect",
       "title": "Shopify / marketplace backlog",
-      "detail": "ShipBob Northeast Hub move — ShipBob is moving from Kutztown to 4755 Hanoverville Road, Building E, Bethlehem, PA 18020. Transition window 2026-05-11 to 2026-05-29; no Kutztown appointments after 2026-05-22; new WRO labels show new address starting 2026-05-27; inbound arriving at Kutztown starting 2026-05-27 will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg 192400. ShipBob / Niyati created or updated case thread::nTthrrhGdgmmyhr_yqOvHj0:: on 2026-05-27 after Ev's chat. On 2026-05-28, Niyati said the shipment is now labelled and waiting for carrier pickup; after Ev asked how ShipBob will prevent repeats, Niyati apologized and offered to help with the shipment's shipping cost if Ev confirms. They said the case may close for reporting if no reply within 8 business hours, but can be reopened by replying. Source: `gluemasters` msgs 192858, 192872, 192885. ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg 192468. ShipBob updated the Claims Page effective 2026-05-18: lost-in-transit claims can be filed from 7 days after estimated delivery through 45 days post-EDD, uninsured LIT liability is capped at the lesser of $100 or the carrier limit, and proactive claim filing is opt-in with a 25% fee on approved payouts. Source: `gluemasters` msg 192620. ShipBob updated Terms of Service effective 2026-06-21; continuing to use services on/after that date accepts the updated terms. Non-urgent legal/vendor watch unless Ev wants review. Source: `gluemasters` msg 192735. Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: 1,183 reviews. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1).",
+      "detail": "ShipBob Northeast Hub move — ShipBob is moving from Kutztown to 4755 Hanoverville Road, Building E, Bethlehem, PA 18020. Transition window 2026-05-11 to 2026-05-29; no Kutztown appointments after 2026-05-22; new WRO labels show new address starting 2026-05-27; inbound arriving at Kutztown starting 2026-05-27 will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg 192400. ShipBob / Niyati created or updated case thread::nTthrrhGdgmmyhr_yqOvHj0:: / case #02713670 on 2026-05-27 after Ev's chat. On 2026-05-28, Niyati said the shipment is now labelled and waiting for carrier pickup; after Ev asked how ShipBob will prevent repeats, Niyati apologized and offered to help with the shipment's shipping cost if Ev confirms. On 2026-05-29, Niyati closed the case for internal reporting because no confirmation was received, but said replying to the thread will reopen it without starting over. Source: `gluemasters` msgs 192858, 192872, 192885, 192903. ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg 192468. ShipBob updated the Claims Page effective 2026-05-18: lost-in-transit claims can be filed from 7 days after estimated delivery through 45 days post-EDD, uninsured LIT liability is capped at the lesser of $100 or the carrier limit, and proactive claim filing is opt-in with a 25% fee on approved payouts. Source: `gluemasters` msg 192620. ShipBob updated Terms of Service effective 2026-06-21; continuing to use services on/after that date accepts the updated terms. Non-urgent legal/vendor watch unless Ev wants review. Source: `gluemasters` msg 192735. Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: 1,183 reviews. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1).",
       "amount": 100.0,
       "due_date": null,
       "due_status": "undated",
@@ -478,6 +518,7 @@
         "192858",
         "192872",
         "192885",
+        "192903",
         "192468",
         "192620",
         "192735"
@@ -529,6 +570,19 @@
         "6100",
         "6101",
         "6149"
+      ],
+      "note": "Revenue opportunity waiting for quote, response, or decision."
+    },
+    {
+      "lane": "upside",
+      "title": "Accurate Graphics / Javier Baeza",
+      "detail": "new B2B production trial request for rubber-to-wood bonding, tight/hairline wicking gap, instant fixture under 10 sec, current adhesive f-bond H-1 Adhesive, problems with cure/bond/cost/shelf life, estimated 10-50 bottles/month. Bottle size unknown. Contact: `jbaeza@accurategraphix.com`, 678-801-0175. Shipping/address context: 6994 Rogers Lake Rd, Lithonia, GA 30058. Needs product recommendation/sample/quote path. Source: `sales` msg 6328.",
+      "amount": null,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "6328"
       ],
       "note": "Revenue opportunity waiting for quote, response, or decision."
     },
