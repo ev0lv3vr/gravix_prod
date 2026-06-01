@@ -1,11 +1,11 @@
-# Morning Unblock Desk — 2026-05-30
+# Morning Unblock Desk — 2026-06-01
 
-Generated: 2026-05-30 14:01 PDT
+Generated: 2026-05-31 23:04 PDT
 
 ## Snapshot
-- Total unblock / verify items: **22**
+- Total unblock / verify items: **23**
 - Do now: **3**
-- Operator-owned: **15**
+- Operator-owned: **16**
 - Ev-owned: **3**
 - Surfaces: **Amazon Seller Central, Browser / manual verify, PayPal / finance trail, ShipBob / UPS, Shopify Admin**
 

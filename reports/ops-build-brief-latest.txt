@@ -1,5 +1,5 @@
-OPS BUILD BRIEF — 2026-05-30
-Generated: 2026-05-30 14:01 PDT
+OPS BUILD BRIEF — 2026-06-01
+Generated: 2026-05-31 23:04 PDT
 
 Artifacts:
 - reports/morning-ops-hub-latest.html
@@ -33,12 +33,11 @@ Artifacts:
 
 Morning pack freshness:
 - Status: FRESH
-- Newest source edit: 2026-05-30 14:01 PDT
+- Newest source edit: 2026-05-31 23:03 PDT
 - Build lag vs newest source: 0 min
-- BUSINESS_STATE.md: 2026-05-30 12:57 PDT (64 min old)
-- MEMORY.md: 2026-05-29 14:03 PDT (1438 min old)
-- memory/2026-05-30.md: 2026-05-30 14:01 PDT (0 min old)
-- memory/2026-05-29.md: 2026-05-29 18:01 PDT (1200 min old)
+- BUSINESS_STATE.md: 2026-05-31 12:58 PDT (606 min old)
+- MEMORY.md: 2026-05-29 14:03 PDT (3421 min old)
+- memory/2026-05-31.md: 2026-05-31 23:03 PDT (0 min old)
 
 Artifact trust check:
 - OK: 26 / 26
@@ -48,14 +47,14 @@ Artifact trust check:
 
 Git hygiene:
 - Repos scanned: 4
-- High risk: 0
+- High risk: 1
 - Medium risk: 1
-- Low/noise only: 1
-- Changed files visible: 104
-- Hottest repo: moneysamurai — Ahead 40.
+- Low/noise only: 0
+- Changed files visible: 145
+- Hottest repo: moneysamurai — Code changes present (drafts/frank-basanta-replacement-tops-2026-05-31.md); review before deploy/push.
 
 Business state audit:
-- Active items scanned: 79
+- Active items scanned: 82
 - Past-date refs: 26
 - Relative-time refs: 3
 - Urgent items missing source: 1
@@ -76,7 +75,7 @@ Morning money desk:
 
 Deadline control desk:
 - Total deadline items: 13
-- Due today: 1
+- Due today: 0
 - Overdue: 2
 - Shipment/account risks: 6
 - Finance/admin items: 3
@@ -97,7 +96,7 @@ Order ops closure desk:
 - Paid fulfillment releases: 5
 
 Amazon Ads daily pull (local status):
-- Latest day: 2026-05-29
+- Latest day: 2026-05-30
 - Latest status: OK (failed: —)
 - Current invalid streak: 0
 - Latest pull log: logs/ads-daily/2026-04-24_060021.log
@@ -107,10 +106,12 @@ Amazon Ads growth plan execution:
 - Live changes executed: 100% (36/36 actions)
 - Monitoring completion: 100% (7/7 valid post-change pulls)
 - Days remaining before default next scale wave: 0
-- Latest post-change day: 2026-05-29 — spend $101.96, sales $131.50, ACOS 77.5%
+- Latest post-change day: 2026-05-30 — spend $102.08, sales $203.06, ACOS 50.3%
 - Rule: Do not run a second scale wave until 7 valid post-change daily pulls are reviewed, unless Ev explicitly overrides.
 
 Cron timeout watchlist:
+- Source freshness: STALE (40 days old; source 2026-04-22)
+- Freshness warning: Cron timeout watchlist is historical only; do not treat listed risks as current blockers without a fresh source snapshot.
 - Jobs scanned: 13
 - Critical: 1
 - High: 0
@@ -119,6 +120,8 @@ Cron timeout watchlist:
 - Hottest job: ads-daily-pull (critical, last 1800057 ms on 1800 s timeout)
 
 Cron trend (multi-day):
+- Source freshness: STALE (40 days old; latest watchlist 2026-04-22)
+- Freshness warning: Cron trend is historical only; do not treat listed risks as current blockers without a fresh cron snapshot.
 - Days compared: 3
 - Regressing jobs: 1
 - Improving jobs: 1
@@ -134,11 +137,11 @@ Ops debt (from ops-debt.json):
 - One-time dollars open: $1,715.54
 
 BUSINESS_STATE.md queue depth:
-- 🔴 Urgent: 26
-- 🟡 Needs Ev: 41
+- 🔴 Urgent: 28
+- 🟡 Needs Ev: 42
 - 🔵 In progress: 10
 - 📋 Backlog: 2
-- Total open tasks ranked: 79
+- Total open tasks ranked: 82
 
 Top 8 morning actions (ranked):
 1. Shopify / marketplace backlog — **ShipBob Northeast Hub move** — ShipBob is moving from Kutztown to **4755 Hanoverville Road, Building E, Bethlehem, PA 18020**. Transition window **2026-05-11 to 2026-05-29**; no Kutztown appointments after **2026-05-22**; new WRO labels show new address starting **2026-05-27**; inbound arriving at Kutztown starting **2026-05-27** will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg **192400**. ShipBob / Niyati created or updated case **thread::nTthrrhGdgmmyhr_yqOvHj0::** / case **#02713670** on **2026-05-27** after Ev's chat. On **2026-05-28**, Niyati said the shipment is now labelled and waiting for carrier pickup; after Ev asked how ShipBob will prevent repeats, Niyati apologized and offered to help with the shipment's shipping cost if Ev confirms. On **2026-05-29**, Niyati closed the case for internal reporting because no confirmation was received, but said replying to the thread will reopen it without starting over. Source: `gluemasters` msgs **192858**, **192872**, **192885**, **192903**. ShipBob / Mohit opened a separate credit request on **2026-05-29** for SLA-breached shipments totaling **$114.31**: **370553993** ($19.18), **370345903** ($14.08), **370259129** ($19.35), **370025482** ($42.52), and **368622070** ($19.18). Next step: watch for approval/application of the credit; do not treat it as applied cash yet. Source: `gluemasters` msg **192910**. ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg **192468**. ShipBob updated the Claims Page effective **2026-05-18**: lost-in-transit claims can be filed from **7 days after estimated delivery** through **45 days post-EDD**, uninsured LIT liability is capped at the lesser of **$100** or the carrier limit, and proactive claim filing is opt-in with a **25% fee** on approved payouts. Source: `gluemasters` msg **192620**. ShipBob updated Terms of Service effective **2026-06-21**; continuing to use services on/after that date accepts the updated terms. Non-urgent legal/vendor watch unless Ev wants review. Source: `gluemasters` msg **192735**. Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: **1,183 reviews**. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1). (7m)

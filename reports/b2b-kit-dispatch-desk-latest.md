@@ -1,7 +1,7 @@
-# B2B Kit Dispatch Desk — 2026-05-30
+# B2B Kit Dispatch Desk — 2026-06-01
 
-Generated: 2026-05-30 14:01 PDT
-Planned ship date: 2026-05-30
+Generated: 2026-05-31 23:04 PDT
+Planned ship date: 2026-06-01
 Source: `gluemasters-bizdev/b2b/b2b-kit-recipients-2026-05-05.json`
 
 ## Snapshot
@@ -50,11 +50,11 @@ Source: `gluemasters-bizdev/b2b/b2b-kit-recipients-2026-05-05.json`
 - **Gemifly LLC** — invoice already sent; track payment (do_not_ship)
 
 ## Follow-up cadence
-- **Day 0 — 2026-05-30**: Ship kit + same-day email
-- **Day 4 — 2026-06-03**: Check that the kit landed
-- **Day 7 — 2026-06-06**: LinkedIn touch where contact exists
-- **Day 10 — 2026-06-09**: Cost-per-bond / volume math email
-- **Day 14 — 2026-06-13**: Phone follow-up to facility
-- **Day 21 — 2026-06-20**: Case-study / social proof follow-up
-- **Day 30 — 2026-06-29**: Close-loop / park for nurture
+- **Day 0 — 2026-06-01**: Ship kit + same-day email
+- **Day 4 — 2026-06-05**: Check that the kit landed
+- **Day 7 — 2026-06-08**: LinkedIn touch where contact exists
+- **Day 10 — 2026-06-11**: Cost-per-bond / volume math email
+- **Day 14 — 2026-06-15**: Phone follow-up to facility
+- **Day 21 — 2026-06-22**: Case-study / social proof follow-up
+- **Day 30 — 2026-07-01**: Close-loop / park for nurture
 

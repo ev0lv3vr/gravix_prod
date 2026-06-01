@@ -1,6 +1,6 @@
 # Cron risk trend report
 
-Generated: 2026-05-30 14:01:54 PDT
+Generated: 2026-05-31 23:04:50 PDT
 
 ## Summary
 
@@ -12,6 +12,14 @@ Generated: 2026-05-30 14:01:54 PDT
 - **improving jobs:** 1
 - **new risks:** 0
 - **stable open risks:** 0
+
+## Source freshness
+
+- **status:** stale
+- **report date:** 2026-06-01
+- **latest watchlist date:** 2026-04-22
+- **age days:** 40
+- **note:** Cron trend is historical only; do not treat listed risks as current blockers without a fresh cron snapshot.
 
 ## Day-by-day
 

@@ -1,9 +1,9 @@
-# Morning Customer Desk — 2026-05-30
+# Morning Customer Desk — 2026-06-01
 
-Generated: 2026-05-30 14:01 PDT
+Generated: 2026-05-31 23:04 PDT
 
 ## Snapshot
-- Customer queue: **40**
+- Customer queue: **41**
 - Hot risks: **4**
 - Draft-backed replies: **3**
 - Needs missing info / decision: **7**
@@ -37,6 +37,7 @@ Generated: 2026-05-30 14:01 PDT
 - **Sam Tillery** — says package has not arrived; subject actionable even though email body is blank. Source msg **6061**. (msgs 6061)
 - **Deane Belk / Good Friends of Bryan County fill-volume complaint** — fresh 2026-05-21 thread reopened after prior reorder path: Deane says the replacement Thick 16oz bottles arrived late vs expected 2-day air and initially appeared underfilled. Ev replied with the net-weight vs fluid-volume explanation and batch weight check. Deane later opened the third bottle, got **7 bottles to the 2 oz mark plus 1-2 squeezes into an 8th**, apologized, and said they will likely place a second order in a few weeks. Treat complaint as resolved/warm unless she asks another follow-up. Sources: `sales` msgs **6270**, **6271**, **6273**, **6274**, **6275**, **6276**. (msgs 6270, 6271, 6273, 6274, 6275, 6276)
 - **Ethan Miller** — order **#5786**, 4× Thick 16oz replacement not created at ShipBob.
+- **Frank Basanta** — Shopify contact form says he loves the 2oz Thin and Medium glues and asks whether replacement tops are available for those bottles. Needs customer support reply / replacement-top path. Contact: `fbasantajr@gmail.com`, **917-741-2158**. Source: `sales` msg **6338**. (msgs 6338)
 - **Josh Mintz** — 8oz Medium sample to New Orleans overdue.
 - **Justin Schuhmann** — Shopify contact form says his **8oz bottle cap keeps getting glued shut** and asks whether he can order a new lid. Needs customer support reply / replacement cap path. Source: `sales` msg **6267**. (msgs 6267)
 - **KMS LLC / Brittni** — wholesale distributor inquiry stale.
