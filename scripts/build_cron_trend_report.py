@@ -21,7 +21,7 @@ import html
 import json
 import re
 import shutil
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -52,7 +52,47 @@ def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def summarize_series(entries: list[tuple[str, dict[str, Any]]]) -> dict[str, Any]:
+def parse_date(value: str | None) -> date | None:
+    if not value:
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def infer_report_date(output_prefix: Path) -> str | None:
+    match = re.search(r"(\d{4}-\d{2}-\d{2})$", output_prefix.name)
+    return match.group(1) if match else None
+
+
+def source_freshness(latest_watchlist_date: str | None, report_date: str | None) -> dict[str, Any]:
+    latest = parse_date(latest_watchlist_date)
+    target = parse_date(report_date)
+    age_days = None
+    status = "unknown"
+    note = "Report date or latest watchlist date is unavailable."
+    if latest and target:
+        age_days = (target - latest).days
+        if age_days <= 1:
+            status = "fresh"
+            note = "Cron trend is based on recent watchlist evidence."
+        elif age_days <= 7:
+            status = "aging"
+            note = "Cron trend is useful, but the newest watchlist is no longer fresh."
+        else:
+            status = "stale"
+            note = "Cron trend is historical only; do not treat listed risks as current blockers without a fresh cron snapshot."
+    return {
+        "status": status,
+        "report_date": report_date,
+        "latest_watchlist_date": latest_watchlist_date,
+        "age_days": age_days,
+        "note": note,
+    }
+
+
+def summarize_series(entries: list[tuple[str, dict[str, Any]]], report_date: str | None = None) -> dict[str, Any]:
     summary_rows = []
     jobs: dict[str, dict[str, Any]] = {}
 
@@ -140,6 +180,7 @@ def summarize_series(entries: list[tuple[str, dict[str, Any]]]) -> dict[str, Any
         "generated_at": datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z"),
         "title": "Cron risk trend report",
         "days": summary_rows,
+        "source_freshness": source_freshness(latest.get("date"), report_date or latest.get("date")),
         "summary": {
             "days_compared": len(summary_rows),
             "latest_date": latest.get("date"),
@@ -172,7 +213,25 @@ def render_markdown(report: dict[str, Any]) -> str:
     ]
     for key, value in (report.get("summary") or {}).items():
         lines.append(f"- **{key.replace('_', ' ')}:** {value}")
-    lines.extend(["", "## Day-by-day", ""])
+    freshness = report.get("source_freshness") or {}
+    if freshness:
+        lines.extend(
+            [
+                "",
+                "## Source freshness",
+                "",
+                f"- **status:** {freshness.get('status')}",
+                f"- **report date:** {freshness.get('report_date')}",
+                f"- **latest watchlist date:** {freshness.get('latest_watchlist_date')}",
+                f"- **age days:** {freshness.get('age_days')}",
+                f"- **note:** {freshness.get('note')}",
+                "",
+                "## Day-by-day",
+                "",
+            ]
+        )
+    else:
+        lines.extend(["", "## Day-by-day", ""])
     for day in report.get("days") or []:
         lines.append(
             f"- {day['date']}: critical={day['critical']}, high={day['high']}, medium={day['medium']}, patches_ready={day['patches_ready']}"
@@ -240,6 +299,7 @@ def render_html(report: dict[str, Any]) -> str:
         return "".join(cards)
 
     summary = report.get("summary") or {}
+    freshness = report.get("source_freshness") or {}
     delta = summary.get("delta_vs_previous") or {}
     day_cards = "".join(
         f"<div class='card compact'><div class='muted'>{esc(day['date'])}</div><div class='mini'>critical {esc(day['critical'])} · high {esc(day['high'])} · medium {esc(day['medium'])}</div><div class='mini'>patches {esc(day['patches_ready'])}</div></div>"
@@ -284,7 +344,10 @@ strong {{ font-size:18px; }}
     <div class='card'><div class='muted'>Improving jobs</div><div style='font-size:28px;font-weight:800'>{esc(summary.get('improving_jobs'))}</div></div>
     <div class='card'><div class='muted'>New risks</div><div style='font-size:28px;font-weight:800'>{esc(summary.get('new_risks'))}</div></div>
     <div class='card'><div class='muted'>Critical Δ vs prev</div><div style='font-size:28px;font-weight:800'>{esc(delta.get('critical', '—'))}</div></div>
+    <div class='card'><div class='muted'>Source freshness</div><div style='font-size:28px;font-weight:800'>{esc(str(freshness.get('status', 'unknown')).upper())}</div><div class='mini'>{esc(freshness.get('age_days', '—'))} days old</div></div>
   </div>
+
+  {f"<div class='panel error'><strong>Freshness warning:</strong> {esc(freshness.get('note'))}</div>" if freshness.get('status') == 'stale' else ''}
 
   <div class='panel'>
     <h2>Day-by-day summary</h2>
@@ -315,9 +378,10 @@ def main() -> int:
 
     latest_date = watchlists[-1][0]
     output_prefix = Path(args.output_prefix) if args.output_prefix else REPORTS / f"cron-trend-report-{latest_date}"
+    report_date = infer_report_date(output_prefix) or latest_date
 
     entries = [(day, load_json(path)) for day, path in watchlists]
-    report = summarize_series(entries)
+    report = summarize_series(entries, report_date=report_date)
 
     output_prefix.parent.mkdir(parents=True, exist_ok=True)
     output_prefix.with_suffix(".json").write_text(json.dumps(report, indent=2), encoding="utf-8")

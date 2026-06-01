@@ -306,6 +306,13 @@ def render_brief(b: Brief) -> str:
     ct = (b.cron_trend.get("summary") or {}) if isinstance(b.cron_trend, dict) else {}
     if ct:
         lines.append("Cron trend (multi-day):")
+        freshness = b.cron_trend.get("source_freshness") or {}
+        if freshness:
+            lines.append(
+                f"- Source freshness: {str(freshness.get('status','unknown')).upper()} ({freshness.get('age_days','—')} days old; latest watchlist {freshness.get('latest_watchlist_date','—')})"
+            )
+            if freshness.get("status") == "stale":
+                lines.append(f"- Freshness warning: {freshness.get('note','—')}")
         lines.append(f"- Days compared: {ct.get('days_compared','—')}")
         lines.append(f"- Regressing jobs: {ct.get('regressing_jobs','—')}")
         lines.append(f"- Improving jobs: {ct.get('improving_jobs','—')}")
