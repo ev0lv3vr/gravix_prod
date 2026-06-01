@@ -45,6 +45,7 @@ import argparse
 import glob
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -81,6 +82,48 @@ def _fmt_money(v: float | int | None) -> str:
         return "$0"
     rounded = abs(x - round(x)) < 1e-9
     return f"${int(round(x)):,}" if rounded else f"${x:,.2f}"
+
+
+def _parse_ymd(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%d")
+    except ValueError:
+        return None
+
+
+def _source_freshness(source_date: str | None, report_date: str | None, label: str) -> dict[str, Any]:
+    source = _parse_ymd(source_date)
+    target = _parse_ymd(report_date)
+    age_days = None
+    status = "unknown"
+    note = f"{label} date or report date is unavailable."
+    if source and target:
+        age_days = (target - source).days
+        if age_days <= 1:
+            status = "fresh"
+            note = f"{label} is based on recent evidence."
+        elif age_days <= 7:
+            status = "aging"
+            note = f"{label} is useful, but the source evidence is no longer fresh."
+        else:
+            status = "stale"
+            note = f"{label} is historical only; do not treat listed risks as current blockers without a fresh source snapshot."
+    return {
+        "status": status,
+        "report_date": report_date,
+        "source_date": source_date,
+        "age_days": age_days,
+        "note": note,
+    }
+
+
+def _dated_report_source_date(path: Path | None) -> str | None:
+    if not path:
+        return None
+    match = re.search(r"(\d{4}-\d{2}-\d{2})", path.name)
+    return match.group(1) if match else None
 
 
 @dataclass
@@ -290,6 +333,13 @@ def render_brief(b: Brief) -> str:
     cw = (b.cron_watchlist.get("summary") or {}) if isinstance(b.cron_watchlist, dict) else {}
     if cw:
         lines.append("Cron timeout watchlist:")
+        freshness = b.cron_watchlist.get("source_freshness") or {}
+        if freshness:
+            lines.append(
+                f"- Source freshness: {str(freshness.get('status','unknown')).upper()} ({freshness.get('age_days','—')} days old; source {freshness.get('source_date','—')})"
+            )
+            if freshness.get("status") == "stale":
+                lines.append(f"- Freshness warning: {freshness.get('note','—')}")
         lines.append(f"- Jobs scanned: {cw.get('jobs_scanned','—')}")
         lines.append(f"- Critical: {cw.get('critical','—')}")
         lines.append(f"- High: {cw.get('high','—')}")
@@ -443,6 +493,14 @@ def main(argv: list[str] | None = None) -> int:
     brief_path = REPORTS / f"ops-build-brief-{date_str}.txt"
     latest_path = REPORTS / "ops-build-brief-latest.txt"
 
+    def load_cron_watchlist() -> dict[str, Any] | None:
+        if not cron_watchlist_json or not cron_watchlist_json.exists():
+            return None
+        payload = _load_json(cron_watchlist_json)
+        source_date = _dated_report_source_date(cron_watchlist_json)
+        payload["source_freshness"] = _source_freshness(source_date, date_str, "Cron timeout watchlist")
+        return payload
+
     def make_brief() -> Brief:
         return Brief(
             date=date_str,
@@ -460,7 +518,7 @@ def main(argv: list[str] | None = None) -> int:
             deadline_control=_load_json(deadline_control_json) if deadline_control_json.exists() else None,
             supplier_ops=_load_json(supplier_ops_json) if supplier_ops_json.exists() else None,
             order_ops=_load_json(order_ops_json) if order_ops_json.exists() else None,
-            cron_watchlist=_load_json(cron_watchlist_json) if cron_watchlist_json and cron_watchlist_json.exists() else None,
+            cron_watchlist=load_cron_watchlist(),
             cron_trend=_load_json(cron_trend_json) if cron_trend_json.exists() else None,
         )
 

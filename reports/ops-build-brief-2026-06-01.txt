@@ -1,5 +1,5 @@
 OPS BUILD BRIEF — 2026-06-01
-Generated: 2026-05-31 23:02 PDT
+Generated: 2026-05-31 23:04 PDT
 
 Artifacts:
 - reports/morning-ops-hub-latest.html
@@ -32,12 +32,12 @@ Artifacts:
 - reports/cron-trend-report-latest.html
 
 Morning pack freshness:
-- Status: AGING
-- Newest source edit: 2026-05-31 14:03 PDT
-- Build lag vs newest source: 538 min
-- BUSINESS_STATE.md: 2026-05-31 12:58 PDT (603 min old)
-- MEMORY.md: 2026-05-29 14:03 PDT (3419 min old)
-- memory/2026-05-31.md: 2026-05-31 14:03 PDT (538 min old)
+- Status: FRESH
+- Newest source edit: 2026-05-31 23:03 PDT
+- Build lag vs newest source: 0 min
+- BUSINESS_STATE.md: 2026-05-31 12:58 PDT (606 min old)
+- MEMORY.md: 2026-05-29 14:03 PDT (3421 min old)
+- memory/2026-05-31.md: 2026-05-31 23:03 PDT (0 min old)
 
 Artifact trust check:
 - OK: 26 / 26
@@ -47,10 +47,10 @@ Artifact trust check:
 
 Git hygiene:
 - Repos scanned: 4
-- High risk: 2
-- Medium risk: 0
+- High risk: 1
+- Medium risk: 1
 - Low/noise only: 0
-- Changed files visible: 148
+- Changed files visible: 145
 - Hottest repo: moneysamurai — Code changes present (drafts/frank-basanta-replacement-tops-2026-05-31.md); review before deploy/push.
 
 Business state audit:
@@ -110,6 +110,8 @@ Amazon Ads growth plan execution:
 - Rule: Do not run a second scale wave until 7 valid post-change daily pulls are reviewed, unless Ev explicitly overrides.
 
 Cron timeout watchlist:
+- Source freshness: STALE (40 days old; source 2026-04-22)
+- Freshness warning: Cron timeout watchlist is historical only; do not treat listed risks as current blockers without a fresh source snapshot.
 - Jobs scanned: 13
 - Critical: 1
 - High: 0
