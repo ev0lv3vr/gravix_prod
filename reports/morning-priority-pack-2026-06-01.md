@@ -1,6 +1,6 @@
 # Morning Priority Pack — 2026-06-01
 
-Generated: 2026-05-31 23:02 PDT
+Generated: 2026-05-31 23:04 PDT
 Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 
 ## Queue Depth
@@ -45,9 +45,9 @@ Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 - 30-day burn exposure: **$0**
 
 ## Freshness
-- Pack status: **AGING**
-- Newest source edit: **2026-05-31 14:03 PDT**
-- Build lag vs newest source: **538 min**
-- BUSINESS_STATE.md: 2026-05-31 12:58 PDT (603 min old)
-- MEMORY.md: 2026-05-29 14:03 PDT (3419 min old)
-- memory/2026-05-31.md: 2026-05-31 14:03 PDT (538 min old)
+- Pack status: **FRESH**
+- Newest source edit: **2026-05-31 23:03 PDT**
+- Build lag vs newest source: **0 min**
+- BUSINESS_STATE.md: 2026-05-31 12:58 PDT (606 min old)
+- MEMORY.md: 2026-05-29 14:03 PDT (3421 min old)
+- memory/2026-05-31.md: 2026-05-31 23:03 PDT (0 min old)
