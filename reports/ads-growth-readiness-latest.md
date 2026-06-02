@@ -1,12 +1,12 @@
 # Ads Growth Readiness Desk — 2026-06-01
 
-Generated: 2026-05-31 23:04 PDT
+Generated: 2026-06-01 18:05 PDT
 Execution log: `moneysamurai/reports/ads-master-actions-execution-latest.json`
 Plan source: `moneysamurai/reports/ads-master-plan-latest.json`
 
 ## Morning read
 - Status: **ready_for_review**
-- Post-change daily pulls observed: **24/7**
+- Post-change daily pulls observed: **25/7**
 - Days remaining before next default scale wave: **0**
 - Live changes executed: **4 budget campaigns**, **12 bid raises**, **20 negative terms**
 - Provisional ACOS guardrail for touched winners: **35.0%**
@@ -70,3 +70,4 @@ Plan source: `moneysamurai/reports/ads-master-plan-latest.json`
 | 2026-05-28 | $107.28 | $151.81 | 5 | 70.7% | 6.4% |
 | 2026-05-29 | $101.96 | $131.50 | 5 | 77.5% | 6.4% |
 | 2026-05-30 | $102.08 | $203.06 | 10 | 50.3% | 11.5% |
+| 2026-05-31 | $137.24 | $219.78 | 9 | 62.4% | 8.6% |

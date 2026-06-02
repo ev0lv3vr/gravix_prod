@@ -1,14 +1,14 @@
 # Morning Priority Pack — 2026-06-01
 
-Generated: 2026-05-31 23:04 PDT
+Generated: 2026-06-01 18:05 PDT
 Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 
 ## Queue Depth
-- 🔴 URGENT: **28**
+- 🔴 URGENT: **30**
 - 🟡 NEEDS EV: **42**
 - 🔵 IN PROGRESS: **10**
 - 📋 BACKLOG: **2**
-- Total open: **82**
+- Total open: **84**
 
 ## Top 8 morning actions (ranked)
 1. [📋 BACKLOG] Shopify / marketplace backlog — **ShipBob Northeast Hub move** — ShipBob is moving from Kutztown to **4755 Hanoverville Road, Building E, Bethlehem, PA 18020**. Transition window **2026-05-11 to 2026-05-29**; no Kutztown appointments after **2026-05-22**; new WRO labels show new address starting **2026-05-27**; inbound arriving at Kutztown starting **2026-05-27** will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg **192400**. ShipBob / Niyati created or updated case **thread::nTthrrhGdgmmyhr_yqOvHj0::** / case **#02713670** on **2026-05-27** after Ev's chat. On **2026-05-28**, Niyati said the shipment is now labelled and waiting for carrier pickup; after Ev asked how ShipBob will prevent repeats, Niyati apologized and offered to help with the shipment's shipping cost if Ev confirms. On **2026-05-29**, Niyati closed the case for internal reporting because no confirmation was received, but said replying to the thread will reopen it without starting over. Source: `gluemasters` msgs **192858**, **192872**, **192885**, **192903**. ShipBob / Mohit opened a separate credit request on **2026-05-29** for SLA-breached shipments totaling **$114.31**: **370553993** ($19.18), **370345903** ($14.08), **370259129** ($19.35), **370025482** ($42.52), and **368622070** ($19.18). Next step: watch for approval/application of the credit; do not treat it as applied cash yet. Source: `gluemasters` msg **192910**. ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg **192468**. ShipBob updated the Claims Page effective **2026-05-18**: lost-in-transit claims can be filed from **7 days after estimated delivery** through **45 days post-EDD**, uninsured LIT liability is capped at the lesser of **$100** or the carrier limit, and proactive claim filing is opt-in with a **25% fee** on approved payouts. Source: `gluemasters` msg **192620**. ShipBob updated Terms of Service effective **2026-06-21**; continuing to use services on/after that date accepts the updated terms. Non-urgent legal/vendor watch unless Ev wants review. Source: `gluemasters` msg **192735**. Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: **1,183 reviews**. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1). (90d, $328.62) — score 98.74, ~7m
@@ -28,26 +28,27 @@ Source: `BUSINESS_STATE.md` + recent `memory/*.md`
 - Planned time: **64m**
 
 ## Context from recent conversation memory
+- 2026-06-01.md: Current queue shape from the refreshed build: **82** active items scanned, **28** urgent, **42** needs Ev, **10** in progress, **2** backlog. Money desk remains **$9,498.69** collect-visible, **$6,897.07** pay/verify pressure, **$8,853.97** leakage/dispute exposure, and **$16,030.20** pipeline/upside. Order Ops remains **20** closure items, **7** do-now, **8** Ev/credentialed, **1** marketplace firebreak, **6** customer closures, and **5** paid fulfillment releases.
+- 2026-06-01.md: Captured late traceable inbox updates into active state: BofA OPEX ending **6560** below **$100** (`gluemasters` msg **192943**); Walmart valid tracking improved to **100%** but late shipment worsened to **33.3%** (`gluemasters` msg **192942**); Amex Electrify America **$40.00** card-not-present alert dated **2026-05-31** (`gluemasters` msg **192936**); PayPal CONCEPT-PET **$200 CAD / $151.13 USD** transaction **4PU68074V5759423E** (`sales` msg **6349**); Larry Trammell said a **16oz** replacement would help if possible (`sales` msg **6347**); DMS Packaging invoice **2026-00211** needs attachment read before amount/due date can be captured (`gluemasters` msg **192962**); FBA removal **1OLLCT1wj/** completed with **1 shipped / 1 cancelled** (`gluemasters` msg **192961**); Amazon refund **$15.07** for order **114-0022731-1717060** (`gluemasters` msg **192955**); Karaoke Machine Store buyer-message follow-up for order **113-4386244-8272243** (`gluemasters` msg **192954**).
+- 2026-06-01.md: Late cron/session review found routine `NO_REPLY`, `HEARTBEAT_OK`, service OK, MoneySamurai sync OK, and cron followups pending **0**.
+- 2026-06-01.md: Pending items:
 - 2026-05-31.md: Fresh customer support item: **Frank Basanta** asked whether replacement tops are available for the **2oz Thin** and **2oz Medium** glues. Contact: `fbasantajr@gmail.com`, **917-741-2158**. Needs reply / replacement-top path. Source: `sales` msg **6338**.
 - 2026-05-31.md: Amazon Ads daily pull remains current: latest folder **2026-05-30**, valid pull generated **2026-05-31 06:54 PT**, no failed reports. Morning metrics still stand: **$102.08 spend**, **$203.06 sales**, **10 orders**, **50.3% ACoS**, **1.99x ROAS**.
 - 2026-05-31.md: Current queue shape from the fresh build: **82** active items scanned, **28** urgent, **42** needs Ev, **10** in progress, **2** backlog. Money desk remains **$9,498.69** collect-visible, **$6,897.07** pay/verify pressure, **$8,853.97** leakage/dispute exposure, and **$16,030.20** pipeline/upside. Order Ops remains **20** closure items, **7** do-now, **8** Ev/credentialed, **1** marketplace firebreak, **6** customer closures, and **5** paid fulfillment releases.
 - 2026-05-30.md: B2B pipeline status unchanged since morning: Accurate Graphics needs product recommendation/sample/quote path; MarcoRocks is in weekend proposal review.
 - 2026-05-30.md: B2B pipeline status unchanged: Accurate Graphics still needs the product recommendation/sample/quote path; MarcoRocks remains in weekend proposal review.
 - 2026-05-30.md: Current queue shape from the fresh build: **79** active items scanned, **26** urgent, **41** needs Ev, **10** in progress, **2** backlog. Money desk shows **$9,498.69** collect-visible, **$6,897.07** pay/verify pressure, **$8,853.97** leakage/dispute exposure, and **$16,030.20** pipeline/upside. Order Ops shows **20** closure items, **7** do-now, **8** Ev/credentialed, **1** marketplace firebreak, **6** customer closures, and **5** paid fulfillment releases.
-- 2026-05-30.md: Captured current queue shape after rebuild: **79** active items, **26** urgent, **41** needs Ev, **10** in progress, **2** backlog. Money desk showed **$9,498.69** collect-visible, **$6,897.07** pay/verify pressure, **$8,853.97** leakage/dispute exposure, and **$16,030.20** pipeline/upside. Order Ops showed **20** closure items, **7** do-now, **8** Ev/credentialed, **1** marketplace firebreak, **6** customer closures, and **5** paid fulfillment releases.
-- 2026-05-30.md: Pending items for tomorrow: Accurate Graphics product recommendation/sample/quote path; MarcoRocks weekend-review watch for next-week questions; ShipBob **$114.31** credit approval/application watch; ShipBob case **#02713670** reopen-by-reply only if Ev wants the shipping-cost-help thread pursued; QuickBooks bank reconnect; Shopify API token recovery; ICU Shopify app refresh; Buy with Prime case **20290685991** remediation; Seller Central/Walmart/FBA credentialed cleanup including Walmart aged WFS inventory/removal review; Barristo transfer **614560288** / **$26,392.00** verification if unexpected; PayPal CONCEPT-PET **$300 CAD** and **$500 CAD** verification if unexpected; Amazon Pay TVTEKA **$21.99** verification if unexpected; A3 open-balance verification and PO#29 shipment watch; Shipux SO14531 tracking update plus **INV/2026/05/001308** verification/payment; Larry/Justin/Thomas/Ethan customer closures; paid fulfillment releases for Garcor, Gemifly paid invoice **1001-0243**, WaterRower, Petite Keep, and Frame My TV.
-- 2026-05-29.md: Current queue shape from the fresh build: **78** active items scanned, **25** urgent, **41** needs Ev, **10** in progress, **2** backlog. Money desk shows **$9,498.69** collect-visible, **$6,897.07** pay/verify pressure, **$8,625.35** leakage/dispute exposure, and **$16,030.20** pipeline/upside. Order Ops shows **19** closure items, **7** do-now, **7** Ev/credentialed, **1** marketplace firebreak, **6** customer closures, and **5** paid fulfillment releases.
-- 2026-05-29.md: **ShipBob** submitted a credit request totaling **$114.31** for SLA-breached shipments **370553993**, **370345903**, **370259129**, **370025482**, and **368622070**. Treat as pending until ShipBob confirms the credit is approved/applied. Source: `gluemasters` msg **192910**.
 
 ## Financial quick math
-- One-time dollars visible in tasks: **$967,836.83**
+- One-time dollars visible in tasks: **$967,951.90**
 - Daily burn visible in tasks: **$0/day**
 - 30-day burn exposure: **$0**
 
 ## Freshness
 - Pack status: **FRESH**
-- Newest source edit: **2026-05-31 23:03 PDT**
+- Newest source edit: **2026-06-01 18:05 PDT**
 - Build lag vs newest source: **0 min**
-- BUSINESS_STATE.md: 2026-05-31 12:58 PDT (606 min old)
-- MEMORY.md: 2026-05-29 14:03 PDT (3421 min old)
-- memory/2026-05-31.md: 2026-05-31 23:03 PDT (0 min old)
+- BUSINESS_STATE.md: 2026-06-01 18:04 PDT (0 min old)
+- MEMORY.md: 2026-05-29 14:03 PDT (4562 min old)
+- memory/2026-06-01.md: 2026-06-01 18:05 PDT (0 min old)
+- memory/2026-05-31.md: 2026-05-31 23:05 PDT (1140 min old)

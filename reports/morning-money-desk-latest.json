@@ -1,10 +1,10 @@
 {
   "summary": {
     "target_date": "2026-06-01",
-    "generated_at": "2026-05-31 23:04 PDT",
+    "generated_at": "2026-06-01 18:05 PDT",
     "collect_total": 9498.69,
     "pay_total": 6897.07,
-    "protect_total": 8853.97,
+    "protect_total": 8869.04,
     "upside_total": 16030.2,
     "overdue_count": 2,
     "undated_count": 20,
@@ -112,14 +112,15 @@
     {
       "lane": "pay",
       "title": "PayPal CAD payment — CONCEPT-PET",
-      "detail": "PayPal receipt says Glue Masters sent $300.00 CAD to CONCEPT-PET on 2026-05-28, paid from PayPal balance as $226.91 USD, transaction 1L278286X78311449. PayPal receipt says Glue Masters sent another $500.00 CAD to CONCEPT-PET on 2026-05-29, paid from PayPal balance as $378.29 USD, transaction 0897258629457592R. Treat as expected supplier/personal payments only if Ev recognizes them; otherwise verify directly in PayPal. Sources: `sales` msgs 6323, 6333.",
+      "detail": "PayPal receipt says Glue Masters sent $300.00 CAD to CONCEPT-PET on 2026-05-28, paid from PayPal balance as $226.91 USD, transaction 1L278286X78311449. PayPal receipt says Glue Masters sent another $500.00 CAD to CONCEPT-PET on 2026-05-29, paid from PayPal balance as $378.29 USD, transaction 0897258629457592R. PayPal receipt says Glue Masters sent another $200.00 CAD to CONCEPT-PET on 2026-06-01, paid from PayPal balance as $151.13 USD, transaction 4PU68074V5759423E. Treat as expected supplier/personal payments only if Ev recognizes them; otherwise verify directly in PayPal. Sources: `sales` msgs 6323, 6333, 6349.",
       "amount": 300.0,
       "due_date": null,
       "due_status": "undated",
       "owner": "Ev",
       "sources": [
         "6323",
-        "6333"
+        "6333",
+        "6349"
       ],
       "note": "Confirm payable timing and avoid surprise outbound cash."
     }
@@ -185,8 +186,8 @@
     {
       "lane": "protect",
       "title": "Amazon refunds",
-      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438. Amazon initiated a $15.14 refund for order 111-3032772-6512258 to Caroline M. Lerner / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192559. Amazon initiated a $73.80 refund for order 113-4123533-5785839 to Richard W Sewell / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 5× 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192628. Amazon initiated a $15.00 refund for order 114-1453287-1830630 to Brad Peebles / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192733.",
-      "amount": 209.34,
+      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438. Amazon initiated a $15.14 refund for order 111-3032772-6512258 to Caroline M. Lerner / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192559. Amazon initiated a $73.80 refund for order 113-4123533-5785839 to Richard W Sewell / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 5× 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192628. Amazon initiated a $15.00 refund for order 114-1453287-1830630 to Brad Peebles / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192733. Amazon initiated a $15.07 refund for order 114-0022731-1717060 to Juliana Rosenstein / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192955.",
+      "amount": 224.41,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
@@ -197,7 +198,8 @@
         "192438",
         "192559",
         "192628",
-        "192733"
+        "192733",
+        "192955"
       ],
       "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
     },
@@ -442,14 +444,15 @@
     {
       "lane": "pay",
       "title": "PayPal CAD payment — CONCEPT-PET",
-      "detail": "PayPal receipt says Glue Masters sent $300.00 CAD to CONCEPT-PET on 2026-05-28, paid from PayPal balance as $226.91 USD, transaction 1L278286X78311449. PayPal receipt says Glue Masters sent another $500.00 CAD to CONCEPT-PET on 2026-05-29, paid from PayPal balance as $378.29 USD, transaction 0897258629457592R. Treat as expected supplier/personal payments only if Ev recognizes them; otherwise verify directly in PayPal. Sources: `sales` msgs 6323, 6333.",
+      "detail": "PayPal receipt says Glue Masters sent $300.00 CAD to CONCEPT-PET on 2026-05-28, paid from PayPal balance as $226.91 USD, transaction 1L278286X78311449. PayPal receipt says Glue Masters sent another $500.00 CAD to CONCEPT-PET on 2026-05-29, paid from PayPal balance as $378.29 USD, transaction 0897258629457592R. PayPal receipt says Glue Masters sent another $200.00 CAD to CONCEPT-PET on 2026-06-01, paid from PayPal balance as $151.13 USD, transaction 4PU68074V5759423E. Treat as expected supplier/personal payments only if Ev recognizes them; otherwise verify directly in PayPal. Sources: `sales` msgs 6323, 6333, 6349.",
       "amount": 300.0,
       "due_date": null,
       "due_status": "undated",
       "owner": "Ev",
       "sources": [
         "6323",
-        "6333"
+        "6333",
+        "6349"
       ],
       "note": "Confirm payable timing and avoid surprise outbound cash."
     },
@@ -513,8 +516,8 @@
     {
       "lane": "protect",
       "title": "Amazon refunds",
-      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438. Amazon initiated a $15.14 refund for order 111-3032772-6512258 to Caroline M. Lerner / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192559. Amazon initiated a $73.80 refund for order 113-4123533-5785839 to Richard W Sewell / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 5× 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192628. Amazon initiated a $15.00 refund for order 114-1453287-1830630 to Brad Peebles / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192733.",
-      "amount": 209.34,
+      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438. Amazon initiated a $15.14 refund for order 111-3032772-6512258 to Caroline M. Lerner / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192559. Amazon initiated a $73.80 refund for order 113-4123533-5785839 to Richard W Sewell / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 5× 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192628. Amazon initiated a $15.00 refund for order 114-1453287-1830630 to Brad Peebles / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192733. Amazon initiated a $15.07 refund for order 114-0022731-1717060 to Juliana Rosenstein / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192955.",
+      "amount": 224.41,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
@@ -525,7 +528,8 @@
         "192438",
         "192559",
         "192628",
-        "192733"
+        "192733",
+        "192955"
       ],
       "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
     },

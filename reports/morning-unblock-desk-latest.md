@@ -1,9 +1,9 @@
 # Morning Unblock Desk — 2026-06-01
 
-Generated: 2026-05-31 23:04 PDT
+Generated: 2026-06-01 18:05 PDT
 
 ## Snapshot
-- Total unblock / verify items: **23**
+- Total unblock / verify items: **24**
 - Do now: **3**
 - Operator-owned: **16**
 - Ev-owned: **3**
@@ -16,7 +16,7 @@ Generated: 2026-05-31 23:04 PDT
 - **ICU Shopify upsell app token** — In Cart Upsell says the store token expires Thu 2026-04-30 and upsell offers will pause if the app is not opened/refreshed in Shopify admin. Fresh 2026-05-27 morning sales alert says the Shopify upsell token is expired again and offers may turn off unless someone opens/refreshes the ICU app in Shopify Admin. Sources: `sales` msg 6090; 2026-05-27 persisted session alert. (Shopify Admin; Operator; access; msgs 6090)
   - First step: Open the In Cart Upsell app inside Shopify admin so the store token refreshes before offers stay paused.
   - Success: Done when the app loads cleanly and the expiry/pause warning is gone or extended.
-- **Amazon buyer message / Karaoke Machine Store** — Amazon buyer message is waiting in Seller Central for order 113-4386244-8272243, ASIN B0DFPG9PJN Singing Machine Platinum Plus. Source: `gluemasters` msg 192280. (Amazon Seller Central; Shared; customer; msgs 192280)
+- **Amazon buyer message / Karaoke Machine Store** — Amazon buyer message is waiting in Seller Central for order 113-4386244-8272243, ASIN B0DFPG9PJN Singing Machine Platinum Plus. A fresh 2026-06-01 follow-up from The Karaoke Machine Store apologized for not sending the support form link earlier, provided the form URL, and asked whether the issue has been resolved. Needs Seller Central/buyer-message review if Ev wants to close it out. Sources: `gluemasters` msgs 192280, 192954. (Amazon Seller Central; Shared; customer; msgs 192280, 192954)
   - First step: Open Seller Central buyer messages for order 113-4386244-8272243 and draft/send the reply from the existing order context.
   - Success: Done when the message is answered in Seller Central and the thread is moved out of the active queue.
 
@@ -67,7 +67,7 @@ Generated: 2026-05-31 23:04 PDT
 - **Amazon FBA capacity limits** — Amazon confirmed June FBA capacity limits: 262.18 cu ft standard-size, 950.00 cu ft oversize, 160.00 cu ft extra-large, 100.00 cu ft apparel, and 200.00 cu ft footwear; Capacity Manager allocation is 0.00. Current usage as of 2026-05-27 is low: 12.32 cu ft standard-size excluding and including open shipments; all other storage types are 0.00. No capacity pressure is visible right now; request more only if a large inbound shipment is planned. Source: `gluemasters` msg 192894. (Amazon Seller Central; Operator; access; msgs 192894)
   - First step: Open the source system in-browser and clear the blocker from the live operating surface, not from email.
   - Success: Done when the live surface confirms the blocker is cleared and the state file can be updated confidently.
-- **Amazon FBA unfulfillable removal** — Amazon created automated unfulfillable FBA removal order gZRKfHwQJb. Completion notice later arrived confirming the removal request completed successfully; no immediate action remains unless Ev wants to review Seller Central removal settings/address/frequency. Amazon created a new automated unfulfillable FBA removal order Fi3io7csW4 on 2026-05-25. The next automated removal is scheduled for 2026-05-26 if more unfulfillable inventory exists. Amazon created a new automated unfulfillable FBA removal order Da7RqF+4Mp on 2026-05-26. The next automated removal is scheduled for 2026-05-27 if more unfulfillable inventory exists. Amazon created a new automated unfulfillable FBA removal order 1OLLCT1wj/ on 2026-05-27. The next automated removal is scheduled for 2026-05-28 if more unfulfillable inventory exists. Sources: `gluemasters` msgs 192161, 192366, 192789, 192815; 2026-05-27 persisted session alert. (Amazon Seller Central; Shared; ops; msgs 192161, 192366, 192789, 192815)
+- **Amazon FBA unfulfillable removal** — Amazon created automated unfulfillable FBA removal order gZRKfHwQJb. Completion notice later arrived confirming the removal request completed successfully; no immediate action remains unless Ev wants to review Seller Central removal settings/address/frequency. Amazon created a new automated unfulfillable FBA removal order Fi3io7csW4 on 2026-05-25. The next automated removal is scheduled for 2026-05-26 if more unfulfillable inventory exists. Amazon created a new automated unfulfillable FBA removal order Da7RqF+4Mp on 2026-05-26. The next automated removal is scheduled for 2026-05-27 if more unfulfillable inventory exists. Amazon created a new automated unfulfillable FBA removal order 1OLLCT1wj/ on 2026-05-27. The next automated removal is scheduled for 2026-05-28 if more unfulfillable inventory exists. Amazon completed and shipped removal request 1OLLCT1wj/ on 2026-06-01: 2 units requested, 1 successfully shipped, 1 cancelled; Seller Central order detail S01-2440854-6546333. Sources: `gluemasters` msgs 192161, 192366, 192789, 192815, 192961; 2026-05-27 persisted session alert. (Amazon Seller Central; Shared; ops; msgs 192161, 192366, 192789, 192815, 192961)
   - First step: Open FBA removal settings/order gZRKfHwQJb and verify destination, cadence, and whether any additional unfulfillable inventory is queued.
   - Success: Done when the settings are confirmed or adjusted and any follow-up action is recorded.
 - **Amazon Pay charge — TVTEKA** — Amazon Pay processed $21.99 to TVTEKA USA LLC on 2026-05-29 21:25 PDT, paid with MasterCard ending 6648, Amazon Pay payment ID P01-6070664-1723320. Treat as expected personal/subscription spend only if Ev recognizes it; otherwise verify directly in Amazon Pay/card account. Source: `gluemasters` msg 192916. (Browser / manual verify; Operator; verify; msgs 192916)
