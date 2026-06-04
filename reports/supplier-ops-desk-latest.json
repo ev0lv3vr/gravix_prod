@@ -1,6 +1,6 @@
 {
-  "date": "2026-06-02",
-  "generated_at": "2026-06-02 14:02 PDT",
+  "date": "2026-06-03",
+  "generated_at": "2026-06-03 14:02 PDT",
   "summary": {
     "total_items": 7,
     "collect_total": 11198.78,
@@ -20,7 +20,7 @@
       "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
       "success_check": "Done when delivery status and the real payable posture are both explicit.",
       "due_date": "2026-04-25",
-      "due_status": "overdue 38d",
+      "due_status": "overdue 39d",
       "sources": [
         "192183",
         "192184",
@@ -45,7 +45,7 @@
       "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
       "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
       "due_date": "2026-05-22",
-      "due_status": "overdue 11d",
+      "due_status": "overdue 12d",
       "sources": [
         "192400",
         "192858",
@@ -133,7 +133,7 @@
       "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
       "success_check": "Done when delivery status and the real payable posture are both explicit.",
       "due_date": "2026-04-25",
-      "due_status": "overdue 38d",
+      "due_status": "overdue 39d",
       "sources": [
         "192183",
         "192184",
@@ -150,7 +150,7 @@
     },
     {
       "title": "Fastenal supplier onboarding",
-      "detail": "Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs 192233, 192240, 192242.",
+      "detail": "Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Late 2026-06-02 Fastenal auto-reply says MOSL6 is closed; future emails for that branch/location should go to MOSL1@stores.fastenal.com. Sources: `gluemasters` msgs 192233, 192240, 192242.",
       "bucket": "Pay / verify supplier pressure",
       "owner": "Ev",
       "urgency": "soon",
@@ -179,7 +179,7 @@
       "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
       "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
       "due_date": "2026-05-22",
-      "due_status": "overdue 11d",
+      "due_status": "overdue 12d",
       "sources": [
         "192400",
         "192858",
@@ -286,7 +286,7 @@
       "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
       "success_check": "Done when delivery status and the real payable posture are both explicit.",
       "due_date": "2026-04-25",
-      "due_status": "overdue 38d",
+      "due_status": "overdue 39d",
       "sources": [
         "192183",
         "192184",
@@ -303,7 +303,7 @@
     },
     {
       "title": "Fastenal supplier onboarding",
-      "detail": "Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Sources: `gluemasters` msgs 192233, 192240, 192242.",
+      "detail": "Fastenal says Gluemasters is currently an unsupported transactional supplier and invited formal supplier onboarding via Smartsheet; corporate onboarding requires supplier self-assessment, onboarding request, and ACH form, reviewed in ~5–7 business days. Jerrad Lacey confirmed this is from corporate and “would be the pathway to follow.” Optional Level 3 supported/managed program would require MSA, rebate/early-pay/freight program, and EDI feeds. Late 2026-06-02 Fastenal auto-reply says MOSL6 is closed; future emails for that branch/location should go to MOSL1@stores.fastenal.com. Sources: `gluemasters` msgs 192233, 192240, 192242.",
       "bucket": "Pay / verify supplier pressure",
       "owner": "Ev",
       "urgency": "soon",
@@ -330,7 +330,7 @@
       "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
       "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
       "due_date": "2026-05-22",
-      "due_status": "overdue 11d",
+      "due_status": "overdue 12d",
       "sources": [
         "192400",
         "192858",
