@@ -1,14 +1,14 @@
 {
   "summary": {
-    "target_date": "2026-06-05",
-    "generated_at": "2026-06-05 08:57 PDT",
+    "target_date": "2026-06-06",
+    "generated_at": "2026-06-06 08:57 PDT",
     "collect_total": 9498.69,
     "pay_total": 6897.07,
-    "protect_total": 8869.04,
+    "protect_total": 8924.54,
     "upside_total": 16030.2,
     "overdue_count": 2,
-    "undated_count": 20,
-    "items_total": 22
+    "undated_count": 21,
+    "items_total": 23
   },
   "collect_now": [
     {
@@ -17,7 +17,7 @@
       "detail": "Ev requested an urgent shipping update for Shipux sales order SO14531 - 001034 because it had no shipping update since 2026-05-08 and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-19 that it has shipped; Odoo sales order notice shows UPS tracking 1ZYV02810391168524. Shipux invoice INV/2026/05/001308 for $36.92 is due 2026-05-19 for SO14531. Next step: update the waiting customer with tracking and verify/pay the Shipux invoice if not already handled. Sources: `gluemasters` msgs 192543, 192545, 192666, 192667, 192668.",
       "amount": 36.92,
       "due_date": "2026-05-19",
-      "due_status": "overdue 17d",
+      "due_status": "overdue 18d",
       "owner": "Operator",
       "sources": [
         "192543",
@@ -91,10 +91,10 @@
     {
       "lane": "pay",
       "title": "A3 Partners Gemiflex shipment / invoice",
-      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3/Caroline forwarded UPS tracking 1Z43A99A0347220365 for the remaining 1,260 Gemiflex units on PO#29, ship-to David Christensen, Mesa AZ, 4 packages / 142 lb, UPS Ground, estimated delivery 2026-05-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. A3 sent invoice 26-05272 for $3,825.79, due 2026-06-26. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701, 192888, 192889.",
+      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3/Caroline forwarded UPS tracking 1Z43A99A0347220365 for the remaining 1,260 Gemiflex units on PO#29, ship-to David Christensen, Mesa AZ, 4 packages / 142 lb, UPS Ground, estimated delivery 2026-05-30 by 7 PM. UPS confirmed an A3 Partners package with tracking 1Z43A99A0348523929 was delivered on 2026-06-05 at 3:34 PM. This resolves the June 5 delivery-watch signal for that tracking number only; it does not resolve A3 open-balance verification. Caroline Silvestro sent an example COA PDF for V-500 1Lb Lot 121261 and noted she edits these PDFs in Adobe Acrobat Pro with the logo/details. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. A3 sent invoice 26-05272 for $3,825.79, due 2026-06-26. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701, 192888, 192889, 193079, 193081.",
       "amount": 6597.07,
       "due_date": "2026-04-25",
-      "due_status": "overdue 41d",
+      "due_status": "overdue 42d",
       "owner": "Ev",
       "sources": [
         "192183",
@@ -105,7 +105,9 @@
         "192632",
         "192701",
         "192888",
-        "192889"
+        "192889",
+        "193079",
+        "193081"
       ],
       "note": "Verify supplier-side balance before asserting internal non-payment."
     },
@@ -224,6 +226,19 @@
     },
     {
       "lane": "protect",
+      "title": "Amex merchant credit — RoyalCaribbean.com",
+      "detail": "American Express reported a -$55.50 merchant credit from RoyalCaribbean.com, dated 2026-06-04, on account ending 94007. Treat as expected travel/refund activity unless Ev does not recognize it. Source: `gluemasters` msg 193067.",
+      "amount": 55.5,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "193067"
+      ],
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
+    },
+    {
+      "lane": "protect",
       "title": "Pinnacle Brand Management / Tim Edmunds",
       "detail": "cold pitch for TikTok retargeting against the existing email list with a claimed 5× return guarantee and $50 gift card for a call. Low-priority marketing vendor outreach unless Ev wants to evaluate. Source: `sales` msg 6281.",
       "amount": 50.0,
@@ -256,13 +271,14 @@
     {
       "lane": "upside",
       "title": "Accurate Graphics / Javier Baeza",
-      "detail": "new B2B production trial request for rubber-to-wood bonding, tight/hairline wicking gap, instant fixture under 10 sec, current adhesive f-bond H-1 Adhesive, problems with cure/bond/cost/shelf life, estimated 10-50 bottles/month. Bottle size unknown. Contact: `jbaeza@accurategraphix.com`, 678-801-0175. Shipping/address context: 6994 Rogers Lake Rd, Lithonia, GA 30058. Needs product recommendation/sample/quote path. Source: `sales` msg 6328.",
+      "detail": "B2B production trial request for polyurethane ejection rubber to raw dieboard/wood bonding, dip-application workflow, current adhesive f-bond H-1 Adhesive, problems with cure/bond/cost/shelf life, estimated 10-50 bottles/month. Ev replied recommending a side-by-side 100 cps + 700 cps trial kit; Javier confirmed the ship-to address is correct: 6994 Rogers Lake Rd, Lithonia, GA 30058. Contact: `jbaeza@accurategraphix.com`, 678-801-0175 / 770-484-0273 x1021. Next step: ship the trial kit, then quote from test results/monthly volume. Sources: `sales` msg 6328; `gluemasters` msg 193077.",
       "amount": null,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
       "sources": [
-        "6328"
+        "6328",
+        "193077"
       ],
       "note": "Revenue opportunity waiting for quote, response, or decision."
     },
@@ -351,7 +367,7 @@
       "detail": "Ev requested an urgent shipping update for Shipux sales order SO14531 - 001034 because it had no shipping update since 2026-05-08 and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-19 that it has shipped; Odoo sales order notice shows UPS tracking 1ZYV02810391168524. Shipux invoice INV/2026/05/001308 for $36.92 is due 2026-05-19 for SO14531. Next step: update the waiting customer with tracking and verify/pay the Shipux invoice if not already handled. Sources: `gluemasters` msgs 192543, 192545, 192666, 192667, 192668.",
       "amount": 36.92,
       "due_date": "2026-05-19",
-      "due_status": "overdue 17d",
+      "due_status": "overdue 18d",
       "owner": "Operator",
       "sources": [
         "192543",
@@ -423,10 +439,10 @@
     {
       "lane": "pay",
       "title": "A3 Partners Gemiflex shipment / invoice",
-      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3/Caroline forwarded UPS tracking 1Z43A99A0347220365 for the remaining 1,260 Gemiflex units on PO#29, ship-to David Christensen, Mesa AZ, 4 packages / 142 lb, UPS Ground, estimated delivery 2026-05-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. A3 sent invoice 26-05272 for $3,825.79, due 2026-06-26. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701, 192888, 192889.",
+      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3/Caroline forwarded UPS tracking 1Z43A99A0347220365 for the remaining 1,260 Gemiflex units on PO#29, ship-to David Christensen, Mesa AZ, 4 packages / 142 lb, UPS Ground, estimated delivery 2026-05-30 by 7 PM. UPS confirmed an A3 Partners package with tracking 1Z43A99A0348523929 was delivered on 2026-06-05 at 3:34 PM. This resolves the June 5 delivery-watch signal for that tracking number only; it does not resolve A3 open-balance verification. Caroline Silvestro sent an example COA PDF for V-500 1Lb Lot 121261 and noted she edits these PDFs in Adobe Acrobat Pro with the logo/details. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. A3 sent invoice 26-05272 for $3,825.79, due 2026-06-26. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701, 192888, 192889, 193079, 193081.",
       "amount": 6597.07,
       "due_date": "2026-04-25",
-      "due_status": "overdue 41d",
+      "due_status": "overdue 42d",
       "owner": "Ev",
       "sources": [
         "192183",
@@ -437,7 +453,9 @@
         "192632",
         "192701",
         "192888",
-        "192889"
+        "192889",
+        "193079",
+        "193081"
       ],
       "note": "Verify supplier-side balance before asserting internal non-payment."
     },
@@ -554,6 +572,19 @@
     },
     {
       "lane": "protect",
+      "title": "Amex merchant credit — RoyalCaribbean.com",
+      "detail": "American Express reported a -$55.50 merchant credit from RoyalCaribbean.com, dated 2026-06-04, on account ending 94007. Treat as expected travel/refund activity unless Ev does not recognize it. Source: `gluemasters` msg 193067.",
+      "amount": 55.5,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "193067"
+      ],
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
+    },
+    {
+      "lane": "protect",
       "title": "Pinnacle Brand Management / Tim Edmunds",
       "detail": "cold pitch for TikTok retargeting against the existing email list with a claimed 5× return guarantee and $50 gift card for a call. Low-priority marketing vendor outreach unless Ev wants to evaluate. Source: `sales` msg 6281.",
       "amount": 50.0,
@@ -584,13 +615,14 @@
     {
       "lane": "upside",
       "title": "Accurate Graphics / Javier Baeza",
-      "detail": "new B2B production trial request for rubber-to-wood bonding, tight/hairline wicking gap, instant fixture under 10 sec, current adhesive f-bond H-1 Adhesive, problems with cure/bond/cost/shelf life, estimated 10-50 bottles/month. Bottle size unknown. Contact: `jbaeza@accurategraphix.com`, 678-801-0175. Shipping/address context: 6994 Rogers Lake Rd, Lithonia, GA 30058. Needs product recommendation/sample/quote path. Source: `sales` msg 6328.",
+      "detail": "B2B production trial request for polyurethane ejection rubber to raw dieboard/wood bonding, dip-application workflow, current adhesive f-bond H-1 Adhesive, problems with cure/bond/cost/shelf life, estimated 10-50 bottles/month. Ev replied recommending a side-by-side 100 cps + 700 cps trial kit; Javier confirmed the ship-to address is correct: 6994 Rogers Lake Rd, Lithonia, GA 30058. Contact: `jbaeza@accurategraphix.com`, 678-801-0175 / 770-484-0273 x1021. Next step: ship the trial kit, then quote from test results/monthly volume. Sources: `sales` msg 6328; `gluemasters` msg 193077.",
       "amount": null,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
       "sources": [
-        "6328"
+        "6328",
+        "193077"
       ],
       "note": "Revenue opportunity waiting for quote, response, or decision."
     },

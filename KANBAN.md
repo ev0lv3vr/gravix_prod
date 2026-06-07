@@ -12,7 +12,11 @@ Use instead:
 Important correction:
 - ShipBob UROs are resolved and must not be resurfaced as active ops debt unless fresh evidence shows a new issue.
 
-Last checked: 2026-06-05 6:00 PM PT
+Last checked: 2026-06-06 6:00 PM PT
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-06-06 EOD check confirmed no change: board remains retired; today's June 6 ops-pack trust check, +3 queue delta, MoneySamurai sync trigger success, green service/keep-alive monitors, late `NO_REPLY` sales monitor, Walmart late-origin-scan warning, Amazon refund and FBA receiving signals, PayPal invoice reminder, ShipBob case-closure context, current blockers, resolved-item boundaries, and tomorrow handoff were recorded in live state and `memory/2026-06-06.md` instead of reopening this board.
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-06-06 midday check confirmed no change: board remains retired; today's June 6 ops-pack freshness/trust check, +3 queue delta, new DMS/RoyalCaribbean/Noveon items, current do-first stack, and unchanged blockers were recorded in live state and `memory/2026-06-06.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
 - 2026-06-05 EOD check confirmed no change: board remains retired; today's June 5 ops-pack freshness, midday and late inbox/session signals, A3 delivery confirmation, A3 COA example, Accurate Graphics address confirmation, DMS Monday follow-up, Noveon ROP follow-up, current blockers, and tomorrow handoff were recorded in live state and `memory/2026-06-05.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
