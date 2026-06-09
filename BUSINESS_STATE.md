@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-06-05 6:00 PM PT
+Last updated: 2026-06-08 6:00 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -104,6 +104,16 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Facebook/Meta sent a Business Manager partner request from **“Join the Meta Agency Partner Program”**. Treat as suspicious unless Ev recognizes it; do not approve/share assets from email links. Source: `sales` msg **6141**.
 - Sources: `gluemasters` msg **192139**, `sales` msg **6141**.
 
+### Google account security alert
+- Google sent a **2026-06-08** security alert for `e.netchaev@gmail.com`: new sign-in detected on a Mac, with `evgueni@gluemasters.com` listed as recovery email.
+- Treat as expected only if Ev recognizes the sign-in; otherwise review Google account activity directly.
+- Source: 2026-06-08 persisted `gluemasters` monitor alert at **9:34 AM PT**.
+
+### UPS import fees — Corner Wearables
+- UPS reported **$43.37** import fees due before delivery for a **CORNER WEARABLES LTD** shipment, with estimated delivery **Wednesday 2026-06-10**.
+- Treat as expected personal/vendor shipping only if Ev recognizes it; unpaid fees may add a surcharge.
+- Source: 2026-06-08 persisted `gluemasters` monitor alert at **12:35 PM PT**.
+
 ### Shopify API token
 - Current API access is dead; inventory visibility is degraded/blind.
 - Needs token regeneration or browser/API workaround.
@@ -167,9 +177,11 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Walmart Partner Performance sent a fresh **2026-05-22** auto-cancellation warning: **1 order is past expected ship date** and needs valid tracking uploaded today or proactive cancellation. The email references an impacted-orders XLSX, but the attachment was not present at the local download path during the heartbeat check; inspect Seller Center unshipped orders to identify/clear it.
 - Walmart Partner Performance sent another fresh **2026-06-02** auto-cancellation warning: **1 order is past expected ship date** with no tracking. Upload valid tracking today or proactively cancel in Seller Center. The morning check found Seller Central browser available but blocked at Amazon password sign-in for `evgueni@gluemasters.com`; Walmart still needs a credentialed Seller Center check.
 - Walmart Partner Performance sent a fresh **2026-05-25** late-origin-scan warning: **2 Walmart orders have late origin scans** and need carrier contact/tracking accuracy confirmation within **24 hours**.
+- Walmart Partner Performance sent another fresh **2026-06-08** late-origin-scan warning: **1 Glue Masters order has a late origin scan**; contact carrier, resolve tracking accuracy, and update tracking within **24 hours**.
+- Walmart sent a **2026-06-08** WFS replenishment warning that **3 Glue Masters WFS SKUs** may run out soon; suggested replenishment is **8oz Thin qty 4**, **16oz Medium qty 2**, and **8oz Medium qty 3**. Treat as inventory planning only until Seller Center is checked.
 - Prior Walmart late-origin-scan alert said **1 shipped order has a late origin scan** and needs carrier scan/tracking accuracy confirmed within **24 hours**; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check.
 - The prior PO-specific Walmart auto-cancel item was marked done/out on 2026-05-19; do not resurface PO **119113590713297** unless Walmart sends a fresh alert.
-- Sources: `gluemasters` msgs **192323**, **192326**, **192443**, **192619**, **192624**, **192719**, **192730**, **192779**, **192930**, **192942**, **192952**; 2026-06-02 persisted session alert at **07:03 PT**.
+- Sources: `gluemasters` msgs **192323**, **192326**, **192443**, **192619**, **192624**, **192719**, **192730**, **192779**, **192930**, **192942**, **192952**; 2026-06-02 persisted session alert at **07:03 PT**; 2026-06-08 persisted `gluemasters` monitor alerts at **7:03 AM PT** and **1:05 PM PT**.
 
 ### SDS request — 3E / Verisk for Ergon
 - 3E / Verisk requested current SDS documents for mutual client **Ergon Inc.**: **Glue Masters Accelerator**, part **ac-0102**, in **English Canada** and **French Canada** formats, notice **CNM9332**.
@@ -192,7 +204,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - A3 sent new invoice **26-05151** for **$732.63**, due **2026-06-14**.
 - A3 sent invoice **26-05272** for **$3,825.79**, due **2026-06-26**.
 - Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact.
-- Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**, **192632**, **192701**, **192888**, **192889**, **193079**, **193081**.
+- Caroline sent another **2026-06-08** open-invoices PDF; monitor summary says one invoice is overdue and another is due in 2 days under 90-day terms. Next step remains verify against bank/QuickBooks before asserting payment status.
+- Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**, **192632**, **192701**, **192888**, **192889**, **193079**, **193081**; 2026-06-08 persisted `gluemasters` monitor alert at **3:35 PM PT**.
 
 ### DMS Packaging invoice 2026-00211
 - DMS Packaging / Charlie Johnston sent invoice **2026-00211** on **2026-06-01** with a PDF attachment referenced in the email; the PDF was not downloaded locally during EOD, so amount/due date are not yet captured.
@@ -202,8 +215,9 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 ### DMS Packaging 16oz 700 cps SKU split
 - Ev asked DMS to help split received **16oz 700 cps** inventory between **68024** / Taiwan SureHold and **68024-XLC** / Chicago Xtralok because all units were received under **68024-XLC** even though bottles/labels differ and should not be comingled.
 - DMS Shipping replied on **2026-06-05** that they will look into it Monday and ask for clarification if needed.
-- Treat as vendor-follow-up pending, not resolved.
-- Source: `gluemasters` msg **193076**.
+- DMS / James replied on **2026-06-08** that they are short-handed and cannot sort all bottles today; he will prioritize the **16oz 700 cps** split and get it done tomorrow.
+- Treat as vendor-follow-up pending for **2026-06-09**, not resolved.
+- Sources: `gluemasters` msg **193076**; 2026-06-08 persisted `gluemasters` monitor alert at **12:05 PM PT**.
 
 ### Shipux sales order SO14531
 - Ev requested an urgent shipping update for Shipux sales order **SO14531 - 001034** because it had no shipping update since **2026-05-08** and a customer is waiting for tracking.
@@ -221,6 +235,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Amazon initiated a **$73.80** refund for order **113-4123533-5785839** to **Richard W Sewell** / ASIN **B00WHEM0UA** / SKU **2OZTHICKCAGM** / **5× 2oz Thick**; reason **Customer Return**. Source: `gluemasters` msg **192628**.
 - Amazon initiated a **$15.00** refund for order **114-1453287-1830630** to **Brad Peebles** / ASIN **B00WHEM0UA** / SKU **2OZTHICKCAGM** / **2oz Thick**; reason **Customer Return**. Source: `gluemasters` msg **192733**.
 - Amazon initiated a **$15.07** refund for order **114-0022731-1717060** to **Juliana Rosenstein** / ASIN **B00WHEM0UA** / SKU **2OZTHICKCAGM** / **2oz Thick**; reason **Customer Return**. Source: `gluemasters` msg **192955**.
+- Amazon initiated a **$36.96** refund for order **111-7459006-2785003** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: 2026-06-08 persisted `gluemasters` monitor alert at **2:05 PM PT**.
+- Amazon initiated a **$36.37** refund for order **114-5833430-2211417** / SKU **8OZTHICKCAGM**; reason **General adjustment**. Source: 2026-06-08 persisted `gluemasters` monitor alert at **2:35 PM PT**.
 
 ### Amazon product safety / affiliate notices
 - Amazon flagged a **Thermos Stainless King food jar** order (**111-9829889-5064236**) with a stop-use / recall notice tied to a CPSC announcement.
@@ -230,6 +246,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ## 🟡 Customer / B2B follow-up queue
 
+- **Barbara Yarus** — customer says dried glue inside the spout is blocking flow on **2oz Thick Viscosity Industrial Strength CA** and asks what she can do. Contact: `greylenascher@yahoo.com`, **201-245-4614**. Needs support reply with unclog/replacement path. Source: 2026-06-07 persisted `sales` monitor alert at **1:03 PM PT**.
+- **Matthew Keim / Evac Magnetics** — B2B reply to the US-manufactured fixturing adhesive outreach; asks whether Glue Masters sources **502 super glue** or a similar product. Contact: `matthew.keim@evacmagnetics.com`. Needs product-fit/source-positioning reply. Source: 2026-06-08 persisted `gluemasters` monitor alert at **9:04 AM PT**.
 - **Frank Basanta** — Shopify contact form says he loves the 2oz Thin and Medium glues and asks whether replacement tops are available for those bottles. Needs customer support reply / replacement-top path. Contact: `fbasantajr@gmail.com`, **917-741-2158**. Source: `sales` msg **6338**.
 - **Heather / Amazon** — A-to-Z risk. Order **114-0636756-1872255**. Source msg **191366**. Draft exists at `moneysamurai/drafts/b2b-email-drafts-2026-03-24.md`.
 - **Eric Patrick** — asked how to open 8oz bottle. Draft exists at `moneysamurai/drafts/customer-replies-2026-04-09.md`; source msg **5941**.
@@ -288,6 +306,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Target price: **$14.99**.
 - Designer: Designcoffers/Fiverr; revisions in progress.
 - Designcoffers says they will be on Eid al-Adha vacation **2026-05-26 through 2026-05-30** and asks for any revisions/questions before **2026-05-26**.
+- Designcoffers sent a **2026-06-08** Fiverr update saying changes are in process and images will be sent tomorrow.
 - Files: `gluemasters-bizdev/labels/pump-accelerator-8oz/`.
 
 ### Amazon PPC
@@ -312,6 +331,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 ## 🟣 MoneySamurai / systems
 
 - MoneySamurai is the internal analytics/ops platform.
+- Amazon API Services sent a **2026-06-08** SP-API notice: rotate the Login with Amazon client secret for app `amzn1.sp.solution.d755c225-99c0-4ed4-be2d-d3c3362f165c` before **2026-08-03T04:05:37.692Z** or API calls may be blocked. Treat as a dated credential-rotation task, not an immediate outage.
 - Walmart Marketplace announced a **2026-06-01** API behavior change for `GET /v3/inventories`: sequential cursor pagination will be enforced, and parallel/out-of-order cursor requests will return `400`.
 - Quick code sweep at midday 2026-04-28 did **not** find a live MoneySamurai Walmart inventory client or `GET /v3/inventories` usage in current `api/`, `scripts/`, or `src/` code. Treat this as a watch item, not an active integration blocker, unless Walmart inventory sync code is added later. Source: `sales` msg **6080**.
 - Ads daily pull incident is resolved as of **2026-04-25** with code fix `9539660` (`fix: harden amazon ads report polling`). Root cause was Amazon reports completing around 27–30 min while local report/duplicate polling timed out too early. Polling is now 45 min, HTTP/download timeouts are explicit, and duplicate handling has focused tests.
@@ -352,6 +372,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Nightly 2026-04-29 improvement: the morning ops pack/hub now includes freshness/trust signals (`FRESH / AGING / STALE`, newest source edit time, build lag, and source timestamps for loaded journals/state files) via `scripts/kanban_morning_builder.py` + `scripts/ops_build.py`, so morning review can quickly tell whether the pack is current before acting.
 - Midday 2026-05-10 ops refresh rebuilt the full pack with `python3 scripts/ops_build.py --date 2026-05-10`; artifact freshness is now **22 / 22 OK** with latest/daily outputs aligned at **2026-05-10 14:00 PDT**. Important nuance: source freshness still trails artifact freshness because the newest live-state/source edits were still from **2026-05-09 18:03 PDT** after that rebuild.
 - The recurring `moneysamurai-sync-trigger` cron job (`c6565127-2875-4a1d-be8f-1c0021dd0ade`, every 2h) should keep running but has Telegram delivery silenced (`delivery.mode=none`) as of 2026-04-25; do not re-enable routine success announcements.
+- 2026-06-08 EOD cron/session context: MoneySamurai sync triggers were mostly successful with HTTP 200 / full-category trigger responses, but one late run timed out at the cron wrapper before a later run succeeded. Treat as reliability watch only, not evidence of a persistent sync outage.
 - Latest manual cron pass on **2026-05-10 4:01 PM PT** successfully reset the MoneySamurai account sync state to **healthy**, cleared queued/running jobs to **failed**, and triggered a fresh full-category sync (`products`, `orders`, `inventory`, `financial`, `restock`).
 - Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action.
 - Evening 2026-05-09 check still found git hygiene noise: MoneySamurai has unreviewed local change `api/cron-trigger-sync.cjs`, and the workspace has many generated ops/report file modifications. Avoid deploy-ish actions until reviewed/cleaned.
