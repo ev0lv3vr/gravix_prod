@@ -1,6 +1,6 @@
 {
-  "date": "2026-06-08",
-  "generated_at": "2026-06-08 18:03 PDT",
+  "date": "2026-06-09",
+  "generated_at": "2026-06-09 19:32 PDT",
   "summary": {
     "total_items": 7,
     "collect_total": 11198.78,
@@ -20,7 +20,7 @@
       "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
       "success_check": "Done when delivery status and the real payable posture are both explicit.",
       "due_date": "2026-04-25",
-      "due_status": "overdue 44d",
+      "due_status": "overdue 45d",
       "sources": [
         "192183",
         "192184",
@@ -47,7 +47,7 @@
       "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
       "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
       "due_date": "2026-05-22",
-      "due_status": "overdue 17d",
+      "due_status": "overdue 18d",
       "sources": [
         "192400",
         "192858",
@@ -135,7 +135,7 @@
       "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
       "success_check": "Done when delivery status and the real payable posture are both explicit.",
       "due_date": "2026-04-25",
-      "due_status": "overdue 44d",
+      "due_status": "overdue 45d",
       "sources": [
         "192183",
         "192184",
@@ -183,7 +183,7 @@
       "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
       "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
       "due_date": "2026-05-22",
-      "due_status": "overdue 17d",
+      "due_status": "overdue 18d",
       "sources": [
         "192400",
         "192858",
@@ -290,7 +290,7 @@
       "first_step": "Verify the 165-unit Gemiflex shipment landed and compare A3's stated open balance against bank / QuickBooks truth before treating it as confirmed payable.",
       "success_check": "Done when delivery status and the real payable posture are both explicit.",
       "due_date": "2026-04-25",
-      "due_status": "overdue 44d",
+      "due_status": "overdue 45d",
       "sources": [
         "192183",
         "192184",
@@ -336,7 +336,7 @@
       "first_step": "Check for any open Northeast/Kutztown inbound or WRO work that would hit the Bethlehem cutover dates.",
       "success_check": "Done when no risky inbound remains pointed at Kutztown past the cutoff or the at-risk move is flagged.",
       "due_date": "2026-05-22",
-      "due_status": "overdue 17d",
+      "due_status": "overdue 18d",
       "sources": [
         "192400",
         "192858",

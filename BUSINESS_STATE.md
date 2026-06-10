@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-06-08 6:00 PM PT
+Last updated: 2026-06-09 7:35 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -373,6 +373,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Midday 2026-05-10 ops refresh rebuilt the full pack with `python3 scripts/ops_build.py --date 2026-05-10`; artifact freshness is now **22 / 22 OK** with latest/daily outputs aligned at **2026-05-10 14:00 PDT**. Important nuance: source freshness still trails artifact freshness because the newest live-state/source edits were still from **2026-05-09 18:03 PDT** after that rebuild.
 - The recurring `moneysamurai-sync-trigger` cron job (`c6565127-2875-4a1d-be8f-1c0021dd0ade`, every 2h) should keep running but has Telegram delivery silenced (`delivery.mode=none`) as of 2026-04-25; do not re-enable routine success announcements.
 - 2026-06-08 EOD cron/session context: MoneySamurai sync triggers were mostly successful with HTTP 200 / full-category trigger responses, but one late run timed out at the cron wrapper before a later run succeeded. Treat as reliability watch only, not evidence of a persistent sync outage.
+- 2026-06-09 EOD cron/session context: visible recent sessions were empty, and persisted Jun 9 cron logs showed OpenClaw infra instability rather than business-state movement. `service-health-monitor` recovered to `HEARTBEAT_OK` by **7:30 PM PT**, but `sales-email-monitor`, `moneysamurai-keep-alive`, and later `evgueni-email-monitor` runs were interrupted by gateway restarts; `moneysamurai-sync-trigger`, `ads-daily-pull`, and `gravix-aggregate-knowledge` were blocked by `Native hook relay unavailable`. Treat this as a command/gateway reliability incident. It does **not** prove customer/account blockers were resolved, and it means Jun 9 email/sync freshness should be considered impaired until the next successful monitor/sync run.
 - Latest manual cron pass on **2026-05-10 4:01 PM PT** successfully reset the MoneySamurai account sync state to **healthy**, cleared queued/running jobs to **failed**, and triggered a fresh full-category sync (`products`, `orders`, `inventory`, `financial`, `restock`).
 - Heartbeat git-hygiene check on 2026-05-02 surfaced surprise local MoneySamurai repo changes: `api/trigger-sync.js` modified, new `api/get-auth-token.js`, and branch ahead of origin by **21 commits**. Inspect before any deploy-ish action.
 - Evening 2026-05-09 check still found git hygiene noise: MoneySamurai has unreviewed local change `api/cron-trigger-sync.cjs`, and the workspace has many generated ops/report file modifications. Avoid deploy-ish actions until reviewed/cleaned.

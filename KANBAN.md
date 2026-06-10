@@ -12,7 +12,11 @@ Use instead:
 Important correction:
 - ShipBob UROs are resolved and must not be resurfaced as active ops debt unless fresh evidence shows a new issue.
 
-Last checked: 2026-06-08 6:00 PM PT
+Last checked: 2026-06-09 7:35 PM PT
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-06-09 EOD check confirmed no change: board remains retired; today's ops-pack rebuild, late-session/cron reliability review, unchanged business blockers, resolved-item boundaries, tomorrow handoff, and infra caveat were recorded in `BUSINESS_STATE.md` and `memory/2026-06-09.md` instead of reopening this board.
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-06-09 evening check confirmed no change: board remains retired; today's Jun 9 ops-pack rebuild, 26/26 artifact trust check, stale-source caveat, flat queue delta, recent session-log findings, unchanged blockers, and exception-desk cleanup notes were recorded in `memory/2026-06-09.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
 - 2026-06-08 EOD check confirmed no change: board remains retired; today's June 8 ops-pack rebuild/trust check, late monitor alerts, MoneySamurai sync timeout-then-success nuance, current blockers, resolved-item boundaries, and tomorrow handoff were recorded in live state and `memory/2026-06-08.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
