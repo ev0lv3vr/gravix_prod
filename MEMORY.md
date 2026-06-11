@@ -1,6 +1,6 @@
 # MEMORY.md — Durable Facts
 
-Last updated: 2026-05-29
+Last updated: 2026-06-10
 
 ## Multi-Agent Setup
 - **Main agent** (me) → `@GmVasyaBot` — Gluemasters, MoneySamurai, email, personal
@@ -25,6 +25,8 @@ Last updated: 2026-05-29
 - **Email:** sales@gluemasters.com via himalaya (`save-copy = false`)
 - **Revenue run rate:** ~$638K (Amazon $531K + Shopify $107K)
 - **Current operational status (2026-05-05):** Gluemasters does **not** sell in Canada. Do not treat Amazon CA suppression / WHMIS / SDS issues as live business priorities unless Ev explicitly says Canadian selling has resumed. Donaldson account setup is pending on Donaldson Finance side as of 2026-05-05; Rachael Fitzgerald says they are good on inventory for now and will re-order when they break into the second case, with usage for the new bottle size still unclear (`sales` msg **6137**, `gluemasters` msgs **192353**, **192354**). Jeremy Embry / Aquarium Artisans has an urgent accelerator + CA quote/fulfillment request for a Monday aquascape job (sales msg id **6046**). ShipBob announced Twin Lakes inventory will move to Kenosha in early May–June with possible zero-on-hand/downtime windows (evgueni msg id **192092**). GLUE MASTERS trademark maintenance invoice **3704** for **$1,170** was paid in full on 2026-04-29 and confirmed by PCH on 2026-04-30 (gluemasters msgs **192239**, **192256**); do not resurface as unpaid. PCH filed the GLUE MASTERS Section 8 & 15 declaration and USPTO receipt arrived 2026-05-01 (gluemasters msg **192271**); no e-sign action remains unless PCH flags an irregularity. Amex high-balance warning for account ending **94007/794007** was resolved by **$20,493.51** payment received/processed on 2026-04-30 (gluemasters msgs **192250**, **192258**); do not resurface unless a fresh Amex restriction appears. R&R Fabrications shipment/invoice and the insurance audit were both marked done by Ev on 2026-05-03; Jeffery Davis paid R&R PayPal invoice **1001-0242** for **$1,289.70** on 2026-05-04 (`sales` msg **6130**), so do not resurface R&R as active without fresh evidence.
+- **Recent resolved ops:** DMS completed the 16oz 700 cps SKU split follow-up on 2026-06-10: **68024 / Taiwan SureHold = 450**, **68024-XLC / Chicago Xtraloc = 1,724**, with back-label photos attached in `gluemasters` msg **193189**. Do not resurface as pending unless Ev asks for label-photo review or DMS sends a fresh issue.
+- **Recent resolved ops:** UPS reported the Corner Wearables package delivered on 2026-06-10 at **3:54 PM** via tracking **1ZX709B50410465993** (`gluemasters` msg **193211**). Do not resurface the earlier unpaid import-fee/delivery-watch item as active unless a fresh UPS/payment issue appears.
 
 ### MoneySamurai
 - Product data/analytics platform. Workspace: `/workspace/moneysamurai/`

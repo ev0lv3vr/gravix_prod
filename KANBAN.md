@@ -12,7 +12,9 @@ Use instead:
 Important correction:
 - ShipBob UROs are resolved and must not be resurfaced as active ops debt unless fresh evidence shows a new issue.
 
-Last checked: 2026-06-09 7:35 PM PT
+Last checked: 2026-06-10 6:00 PM PT
+- Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
+- 2026-06-10 EOD check confirmed no change: board remains retired; today's heartbeat captures, Jun 10 ops-pack rebuild, 26/26 artifact trust check, DMS split resolution, UPS Corner Wearables delivery resolution, late Amex/PayPal/ShipBob policy items, current blockers, and tomorrow handoff were recorded in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/2026-06-10.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.
 - 2026-06-09 EOD check confirmed no change: board remains retired; today's ops-pack rebuild, late-session/cron reliability review, unchanged business blockers, resolved-item boundaries, tomorrow handoff, and infra caveat were recorded in `BUSINESS_STATE.md` and `memory/2026-06-09.md` instead of reopening this board.
 - Still retired. Active state remains in `BUSINESS_STATE.md`, `MEMORY.md`, and `memory/YYYY-MM-DD.md`.

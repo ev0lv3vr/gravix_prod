@@ -1,6 +1,6 @@
 # BUSINESS_STATE.md — Active Business State
 
-Last updated: 2026-06-09 7:35 PM PT
+Last updated: 2026-06-10 6:00 PM PT
 
 This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an active source of truth.
 
@@ -39,8 +39,9 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - American Express sent a card-not-present alert for **ELECTRIFY AMERICA**, **$40.00**, dated **2026-05-20**, on account ending **794007**.
 - American Express sent another card-not-present alert for **ELECTRIFY AMERICA**, **$40.00**, dated **2026-05-27**, on account ending **794007**.
 - American Express sent another card-not-present alert for **ELECTRIFY AMERICA**, **$40.00**, dated **2026-05-31**, on account ending **794007**.
+- American Express sent another card-not-present alert for **ELECTRIFY AMERICA**, **$40.00**, dated **2026-06-10**, on account ending **794007**.
 - Treat as expected EV charging/preauth only if Ev recognizes it.
-- Sources: `gluemasters` msgs **192683**, **192864**, **192936**.
+- Sources: `gluemasters` msgs **192683**, **192864**, **192936**, **193213**.
 
 ### Amex card-not-present alert — Uber Eats
 - American Express sent a card-not-present alert for **UBER EATS**, **$37.64**, dated **2026-05-30**, on account ending **794007**.
@@ -80,6 +81,11 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Treat as expected platform/cloud spend only if Ev recognizes it; otherwise verify directly in Amex.
 - Source: 2026-06-02 morning brief/session alert.
 
+### Amex card-not-present alert — Anthropic
+- American Express sent a card-not-present alert for **ANTHROPIC PBC**, **$195.13**, dated **2026-06-10**, on account ending **794007**.
+- Treat as expected AI/platform spend only if Ev recognizes it; otherwise verify directly in Amex.
+- Source: `gluemasters` msg **193207**.
+
 ### PayPal CAD payment — CONCEPT-PET
 - PayPal receipt says Glue Masters sent **$300.00 CAD** to **CONCEPT-PET** on **2026-05-28**, paid from PayPal balance as **$226.91 USD**, transaction **1L278286X78311449**.
 - PayPal receipt says Glue Masters sent another **$500.00 CAD** to **CONCEPT-PET** on **2026-05-29**, paid from PayPal balance as **$378.29 USD**, transaction **0897258629457592R**.
@@ -90,8 +96,9 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 ### PayPal transfers to Bank of America
 - PayPal says a **$4,500.00 USD** transfer to **Bank of America x-5197** is processing, estimated arrival in **1 business day**, transaction **4R0858715Y4857015**.
 - PayPal also says a **$492.50 USD** instant transfer to **Bank of America 5197** completed successfully, with a **$7.50** fee, transaction **0UN216651S3380933**.
+- PayPal says a **$10,000.00 USD** transfer to **Bank of America x-5197** is processing, estimated arrival in **1 business day**, transaction **8MH346879U8331716**.
 - Treat as expected cash movement only if Ev recognizes the transfers; otherwise verify directly in PayPal/bank.
-- Sources: `sales` msgs **6337**, **6336**.
+- Sources: `sales` msgs **6337**, **6336**, **6413**.
 
 ### Amazon Pay charge — TVTEKA
 - Amazon Pay processed **$21.99** to **TVTEKA USA LLC** on **2026-05-29 21:25 PDT**, paid with MasterCard ending **6648**, Amazon Pay payment ID **P01-6070664-1723320**.
@@ -111,8 +118,9 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 
 ### UPS import fees — Corner Wearables
 - UPS reported **$43.37** import fees due before delivery for a **CORNER WEARABLES LTD** shipment, with estimated delivery **Wednesday 2026-06-10**.
-- Treat as expected personal/vendor shipping only if Ev recognizes it; unpaid fees may add a surcharge.
-- Source: 2026-06-08 persisted `gluemasters` monitor alert at **12:35 PM PT**.
+- UPS later reported the **CORNER WEARABLES LTD** package delivered on **2026-06-10 at 3:54 PM** via UPS Worldwide Saver, tracking **1ZX709B50410465993**.
+- Treat the unpaid-fee/delivery-watch risk as resolved unless Ev does not recognize the shipment or charge.
+- Sources: 2026-06-08 persisted `gluemasters` monitor alert at **12:35 PM PT**; `gluemasters` msg **193211**.
 
 ### Shopify API token
 - Current API access is dead; inventory visibility is degraded/blind.
@@ -178,10 +186,11 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Walmart Partner Performance sent another fresh **2026-06-02** auto-cancellation warning: **1 order is past expected ship date** with no tracking. Upload valid tracking today or proactively cancel in Seller Center. The morning check found Seller Central browser available but blocked at Amazon password sign-in for `evgueni@gluemasters.com`; Walmart still needs a credentialed Seller Center check.
 - Walmart Partner Performance sent a fresh **2026-05-25** late-origin-scan warning: **2 Walmart orders have late origin scans** and need carrier contact/tracking accuracy confirmation within **24 hours**.
 - Walmart Partner Performance sent another fresh **2026-06-08** late-origin-scan warning: **1 Glue Masters order has a late origin scan**; contact carrier, resolve tracking accuracy, and update tracking within **24 hours**.
+- Walmart Partner Performance sent another fresh **2026-06-10** late-origin-scan warning: **1 Glue Masters order has a late origin scan**; impacted-orders attachment downloaded as `/Users/evolve/Downloads/06_10_2026_10001341773_101322415_ImpactedOrders.xlsx`. Contact carrier, confirm tracking accuracy, and update tracking within **24 hours**.
 - Walmart sent a **2026-06-08** WFS replenishment warning that **3 Glue Masters WFS SKUs** may run out soon; suggested replenishment is **8oz Thin qty 4**, **16oz Medium qty 2**, and **8oz Medium qty 3**. Treat as inventory planning only until Seller Center is checked.
 - Prior Walmart late-origin-scan alert said **1 shipped order has a late origin scan** and needs carrier scan/tracking accuracy confirmed within **24 hours**; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check.
 - The prior PO-specific Walmart auto-cancel item was marked done/out on 2026-05-19; do not resurface PO **119113590713297** unless Walmart sends a fresh alert.
-- Sources: `gluemasters` msgs **192323**, **192326**, **192443**, **192619**, **192624**, **192719**, **192730**, **192779**, **192930**, **192942**, **192952**; 2026-06-02 persisted session alert at **07:03 PT**; 2026-06-08 persisted `gluemasters` monitor alerts at **7:03 AM PT** and **1:05 PM PT**.
+- Sources: `gluemasters` msgs **192323**, **192326**, **192443**, **192619**, **192624**, **192719**, **192730**, **192779**, **192930**, **192942**, **192952**, **193191**; 2026-06-02 persisted session alert at **07:03 PT**; 2026-06-08 persisted `gluemasters` monitor alerts at **7:03 AM PT** and **1:05 PM PT**.
 
 ### SDS request — 3E / Verisk for Ergon
 - 3E / Verisk requested current SDS documents for mutual client **Ergon Inc.**: **Glue Masters Accelerator**, part **ac-0102**, in **English Canada** and **French Canada** formats, notice **CNM9332**.
@@ -216,8 +225,8 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Ev asked DMS to help split received **16oz 700 cps** inventory between **68024** / Taiwan SureHold and **68024-XLC** / Chicago Xtralok because all units were received under **68024-XLC** even though bottles/labels differ and should not be comingled.
 - DMS Shipping replied on **2026-06-05** that they will look into it Monday and ask for clarification if needed.
 - DMS / James replied on **2026-06-08** that they are short-handed and cannot sort all bottles today; he will prioritize the **16oz 700 cps** split and get it done tomorrow.
-- Treat as vendor-follow-up pending for **2026-06-09**, not resolved.
-- Sources: `gluemasters` msg **193076**; 2026-06-08 persisted `gluemasters` monitor alert at **12:05 PM PT**.
+- DMS completed the split/count update on **2026-06-10**: **68024 / Taiwan SureHold = 450**, **68024-XLC / Chicago Xtraloc = 1,724**, and sent back-label photos for both batches. Treat the vendor follow-up as resolved unless Ev needs label-photo review.
+- Sources: `gluemasters` msgs **193076**, **193189**; 2026-06-08 persisted `gluemasters` monitor alert at **12:05 PM PT**.
 
 ### Shipux sales order SO14531
 - Ev requested an urgent shipping update for Shipux sales order **SO14531 - 001034** because it had no shipping update since **2026-05-08** and a customer is waiting for tracking.
@@ -237,6 +246,7 @@ This replaces `KANBAN.md`. `KANBAN.md` is retired and must not be used as an act
 - Amazon initiated a **$15.07** refund for order **114-0022731-1717060** to **Juliana Rosenstein** / ASIN **B00WHEM0UA** / SKU **2OZTHICKCAGM** / **2oz Thick**; reason **Customer Return**. Source: `gluemasters` msg **192955**.
 - Amazon initiated a **$36.96** refund for order **111-7459006-2785003** / SKU **8OZTHICKCAGM**; reason **Product not as described**. Source: 2026-06-08 persisted `gluemasters` monitor alert at **2:05 PM PT**.
 - Amazon initiated a **$36.37** refund for order **114-5833430-2211417** / SKU **8OZTHICKCAGM**; reason **General adjustment**. Source: 2026-06-08 persisted `gluemasters` monitor alert at **2:35 PM PT**.
+- Amazon initiated a **$14.92** refund for order **111-8989740-0678653** to **Allison Goldfine** / SKU **2OZTHICKCAGM** / **2oz Thick**; reason **Customer Return**. Source: `gluemasters` msg **193203**.
 
 ### Amazon product safety / affiliate notices
 - Amazon flagged a **Thermos Stainless King food jar** order (**111-9829889-5064236**) with a stop-use / recall notice tied to a CPSC announcement.

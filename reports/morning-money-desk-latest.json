@@ -1,10 +1,10 @@
 {
   "summary": {
-    "target_date": "2026-06-09",
-    "generated_at": "2026-06-09 19:32 PDT",
+    "target_date": "2026-06-10",
+    "generated_at": "2026-06-10 14:00 PDT",
     "collect_total": 9498.69,
     "pay_total": 6897.07,
-    "protect_total": 8997.87,
+    "protect_total": 9012.79,
     "upside_total": 16030.2,
     "overdue_count": 2,
     "undated_count": 21,
@@ -17,7 +17,7 @@
       "detail": "Ev requested an urgent shipping update for Shipux sales order SO14531 - 001034 because it had no shipping update since 2026-05-08 and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-19 that it has shipped; Odoo sales order notice shows UPS tracking 1ZYV02810391168524. Shipux invoice INV/2026/05/001308 for $36.92 is due 2026-05-19 for SO14531. Next step: update the waiting customer with tracking and verify/pay the Shipux invoice if not already handled. Sources: `gluemasters` msgs 192543, 192545, 192666, 192667, 192668.",
       "amount": 36.92,
       "due_date": "2026-05-19",
-      "due_status": "overdue 21d",
+      "due_status": "overdue 22d",
       "owner": "Operator",
       "sources": [
         "192543",
@@ -94,7 +94,7 @@
       "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3/Caroline forwarded UPS tracking 1Z43A99A0347220365 for the remaining 1,260 Gemiflex units on PO#29, ship-to David Christensen, Mesa AZ, 4 packages / 142 lb, UPS Ground, estimated delivery 2026-05-30 by 7 PM. UPS confirmed an A3 Partners package with tracking 1Z43A99A0348523929 was delivered on 2026-06-05 at 3:34 PM. This resolves the June 5 delivery-watch signal for that tracking number only; it does not resolve A3 open-balance verification. Caroline Silvestro sent an example COA PDF for V-500 1Lb Lot 121261 and noted she edits these PDFs in Adobe Acrobat Pro with the logo/details. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. A3 sent invoice 26-05272 for $3,825.79, due 2026-06-26. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Caroline sent another 2026-06-08 open-invoices PDF; monitor summary says one invoice is overdue and another is due in 2 days under 90-day terms. Next step remains verify against bank/QuickBooks before asserting payment status. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701, 192888, 192889, 193079, 193081; 2026-06-08 persisted `gluemasters` monitor alert at 3:35 PM PT.",
       "amount": 6597.07,
       "due_date": "2026-04-25",
-      "due_status": "overdue 45d",
+      "due_status": "overdue 46d",
       "owner": "Ev",
       "sources": [
         "192183",
@@ -188,8 +188,8 @@
     {
       "lane": "protect",
       "title": "Amazon refunds",
-      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438. Amazon initiated a $15.14 refund for order 111-3032772-6512258 to Caroline M. Lerner / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192559. Amazon initiated a $73.80 refund for order 113-4123533-5785839 to Richard W Sewell / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 5× 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192628. Amazon initiated a $15.00 refund for order 114-1453287-1830630 to Brad Peebles / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192733. Amazon initiated a $15.07 refund for order 114-0022731-1717060 to Juliana Rosenstein / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192955. Amazon initiated a $36.96 refund for order 111-7459006-2785003 / SKU 8OZTHICKCAGM; reason Product not as described. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:05 PM PT. Amazon initiated a $36.37 refund for order 114-5833430-2211417 / SKU 8OZTHICKCAGM; reason General adjustment. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:35 PM PT.",
-      "amount": 297.74,
+      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438. Amazon initiated a $15.14 refund for order 111-3032772-6512258 to Caroline M. Lerner / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192559. Amazon initiated a $73.80 refund for order 113-4123533-5785839 to Richard W Sewell / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 5× 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192628. Amazon initiated a $15.00 refund for order 114-1453287-1830630 to Brad Peebles / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192733. Amazon initiated a $15.07 refund for order 114-0022731-1717060 to Juliana Rosenstein / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192955. Amazon initiated a $36.96 refund for order 111-7459006-2785003 / SKU 8OZTHICKCAGM; reason Product not as described. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:05 PM PT. Amazon initiated a $36.37 refund for order 114-5833430-2211417 / SKU 8OZTHICKCAGM; reason General adjustment. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:35 PM PT. Amazon initiated a $14.92 refund for order 111-8989740-0678653 to Allison Goldfine / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 193203.",
+      "amount": 312.66,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
@@ -201,7 +201,8 @@
         "192559",
         "192628",
         "192733",
-        "192955"
+        "192955",
+        "193203"
       ],
       "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
     },
@@ -367,7 +368,7 @@
       "detail": "Ev requested an urgent shipping update for Shipux sales order SO14531 - 001034 because it had no shipping update since 2026-05-08 and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-19 that it has shipped; Odoo sales order notice shows UPS tracking 1ZYV02810391168524. Shipux invoice INV/2026/05/001308 for $36.92 is due 2026-05-19 for SO14531. Next step: update the waiting customer with tracking and verify/pay the Shipux invoice if not already handled. Sources: `gluemasters` msgs 192543, 192545, 192666, 192667, 192668.",
       "amount": 36.92,
       "due_date": "2026-05-19",
-      "due_status": "overdue 21d",
+      "due_status": "overdue 22d",
       "owner": "Operator",
       "sources": [
         "192543",
@@ -442,7 +443,7 @@
       "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3/Caroline forwarded UPS tracking 1Z43A99A0347220365 for the remaining 1,260 Gemiflex units on PO#29, ship-to David Christensen, Mesa AZ, 4 packages / 142 lb, UPS Ground, estimated delivery 2026-05-30 by 7 PM. UPS confirmed an A3 Partners package with tracking 1Z43A99A0348523929 was delivered on 2026-06-05 at 3:34 PM. This resolves the June 5 delivery-watch signal for that tracking number only; it does not resolve A3 open-balance verification. Caroline Silvestro sent an example COA PDF for V-500 1Lb Lot 121261 and noted she edits these PDFs in Adobe Acrobat Pro with the logo/details. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. A3 sent invoice 26-05272 for $3,825.79, due 2026-06-26. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Caroline sent another 2026-06-08 open-invoices PDF; monitor summary says one invoice is overdue and another is due in 2 days under 90-day terms. Next step remains verify against bank/QuickBooks before asserting payment status. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701, 192888, 192889, 193079, 193081; 2026-06-08 persisted `gluemasters` monitor alert at 3:35 PM PT.",
       "amount": 6597.07,
       "due_date": "2026-04-25",
-      "due_status": "overdue 45d",
+      "due_status": "overdue 46d",
       "owner": "Ev",
       "sources": [
         "192183",
@@ -534,8 +535,8 @@
     {
       "lane": "protect",
       "title": "Amazon refunds",
-      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438. Amazon initiated a $15.14 refund for order 111-3032772-6512258 to Caroline M. Lerner / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192559. Amazon initiated a $73.80 refund for order 113-4123533-5785839 to Richard W Sewell / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 5× 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192628. Amazon initiated a $15.00 refund for order 114-1453287-1830630 to Brad Peebles / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192733. Amazon initiated a $15.07 refund for order 114-0022731-1717060 to Juliana Rosenstein / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192955. Amazon initiated a $36.96 refund for order 111-7459006-2785003 / SKU 8OZTHICKCAGM; reason Product not as described. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:05 PM PT. Amazon initiated a $36.37 refund for order 114-5833430-2211417 / SKU 8OZTHICKCAGM; reason General adjustment. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:35 PM PT.",
-      "amount": 297.74,
+      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438. Amazon initiated a $15.14 refund for order 111-3032772-6512258 to Caroline M. Lerner / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192559. Amazon initiated a $73.80 refund for order 113-4123533-5785839 to Richard W Sewell / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 5× 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192628. Amazon initiated a $15.00 refund for order 114-1453287-1830630 to Brad Peebles / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192733. Amazon initiated a $15.07 refund for order 114-0022731-1717060 to Juliana Rosenstein / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192955. Amazon initiated a $36.96 refund for order 111-7459006-2785003 / SKU 8OZTHICKCAGM; reason Product not as described. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:05 PM PT. Amazon initiated a $36.37 refund for order 114-5833430-2211417 / SKU 8OZTHICKCAGM; reason General adjustment. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:35 PM PT. Amazon initiated a $14.92 refund for order 111-8989740-0678653 to Allison Goldfine / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 193203.",
+      "amount": 312.66,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
@@ -547,7 +548,8 @@
         "192559",
         "192628",
         "192733",
-        "192955"
+        "192955",
+        "193203"
       ],
       "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
     },
