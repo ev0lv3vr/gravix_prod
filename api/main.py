@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from config import settings
 from routers import health, analyze, specify, users, cases, reports, billing, stats, feedback, cron, admin, investigations, comments, notifications, templates, email_inbound, products, guided, patterns, pricing, auth_test, auth_facade
@@ -17,6 +18,22 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+
+def _apply_error_cors_headers(request: Request, response: JSONResponse) -> JSONResponse:
+    """Attach CORS headers to exception responses that bypass CORSMiddleware."""
+    origin = request.headers.get("origin")
+    if not origin:
+        return response
+
+    allowed_origins = set(settings.cors_origins)
+    is_vercel_preview = origin.startswith("https://") and origin.endswith(".vercel.app")
+    if origin in allowed_origins or is_vercel_preview:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Vary"] = "Origin"
+
+    return response
 
 
 @asynccontextmanager
@@ -72,10 +89,23 @@ async def global_exception_handler(request: Request, exc: Exception):
         },
         exc_info=True,
     )
-    return JSONResponse(
+    response = JSONResponse(
         status_code=500,
         content={"detail": "Internal server error"},
     )
+    return _apply_error_cors_headers(request, response)
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    response = JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail},
+        headers=exc.headers,
+    )
+    if exc.status_code >= 500:
+        return _apply_error_cors_headers(request, response)
+    return response
 
 
 # Include routers
@@ -110,8 +140,6 @@ app.include_router(patterns.router)
 app.include_router(pricing.router)
 app.include_router(auth_test.router)
 app.include_router(auth_facade.router)
-from routers import debug as debug_router  # TEMPORARY — remove after diagnosis
-app.include_router(debug_router.router)
 
 
 if __name__ == "__main__":

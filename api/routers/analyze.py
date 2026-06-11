@@ -10,6 +10,7 @@ import json
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status, UploadFile, File, Form
+from fastapi.responses import JSONResponse
 from typing import Optional, List
 
 from dependencies import get_current_user
@@ -30,6 +31,35 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/analyze", tags=["analysis"])
 api_router = APIRouter(prefix="/api", tags=["analysis"])
+
+
+def _mark_analysis_failed(db, analysis_id: str, error_detail: str) -> None:
+    """Persist failure status; include error_detail when the DB column exists."""
+    update_data = {
+        "status": "failed",
+        "error_detail": error_detail[:500],
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    try:
+        db.table("failure_analyses").update(update_data).eq("id", analysis_id).execute()
+    except Exception as update_error:
+        logger.warning(
+            "Could not persist failure error_detail for analysis %s: %s: %r",
+            analysis_id,
+            type(update_error).__name__,
+            update_error,
+        )
+        fallback_update_data = dict(update_data)
+        fallback_update_data.pop("error_detail", None)
+        try:
+            db.table("failure_analyses").update(fallback_update_data).eq("id", analysis_id).execute()
+        except Exception as fallback_error:
+            logger.error(
+                "Could not persist failed status for analysis %s: %s: %r",
+                analysis_id,
+                type(fallback_error).__name__,
+                fallback_error,
+            )
 
 
 @router.post("", response_model=FailureAnalysisResponse)
@@ -189,11 +219,20 @@ async def create_analysis(
             logger.debug("Feedback notification skipped", exc_info=True)
 
     except Exception as e:
-        logger.exception(f"Analysis failed: {e}")
-        db.table("failure_analyses").update(
-            {"status": "failed", "updated_at": datetime.now(timezone.utc).isoformat()}
-        ).eq("id", analysis_id).execute()
+        error_detail = f"{type(e).__name__}: {e!r}"
+        logger.exception("Analysis failed for %s: %s", analysis_id, error_detail)
+        _mark_analysis_failed(db, analysis_id, error_detail)
         record["status"] = "failed"
+        return JSONResponse(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            content={
+                "detail": "Failure analysis could not be completed",
+                "analysis_id": analysis_id,
+                "status": "failed",
+                "error_type": type(e).__name__,
+                "error_detail": str(e)[:500],
+            },
+        )
 
     # Filter AI output based on user's plan tier (store full, serve filtered)
     user_plan = user.get("plan", "free")
