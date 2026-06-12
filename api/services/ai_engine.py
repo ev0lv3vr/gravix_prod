@@ -96,31 +96,20 @@ async def _call_claude(
     last_error = None
     for attempt in range(settings.max_retries_ai):
         try:
-            payload_bytes = len(json.dumps(payload))
             logger.info(
-                f"DEBUG Claude call: url={CLAUDE_API_URL}, model={payload.get('model')}, "
-                f"key_prefix={headers.get('x-api-key', '')[:20]}, "
-                f"anthropic_version={headers.get('anthropic-version')}, "
-                f"prompt_length={len(str(payload.get('messages', '')))}, "
-                f"timeout=120(hardcoded), settings_val={settings.ai_timeout_seconds}, "
-                f"payload_bytes={payload_bytes}, "
-                f"system_prompt_length={len(payload.get('system', ''))}"
-            )
-
-            logger.info(
-                f"DEBUG full payload: {json.dumps(payload)[:3000]}"
-            )
-            logger.info(
-                f"DEBUG request params: max_tokens={payload.get('max_tokens')}, "
-                f"stream={'stream' in payload}, "
-                f"extra_keys={[k for k in payload if k not in ('model','max_tokens','system','messages')]}"
+                "Claude API request: model=%s max_tokens=%s timeout=%ss prompt_length=%s",
+                payload.get("model"),
+                payload.get("max_tokens"),
+                settings.ai_timeout_seconds,
+                len(user_prompt),
             )
 
             def _sync_post():
-                with httpx.Client(timeout=120) as client:  # TEMPORARY hardcode — revert to settings.ai_timeout_seconds
+                with httpx.Client(timeout=settings.ai_timeout_seconds) as client:
                     return client.post(CLAUDE_API_URL, headers=headers, json=payload)
 
             response = await asyncio.to_thread(_sync_post)
+            logger.info("Claude API response received: status=%s", response.status_code)
             response.raise_for_status()
             data = response.json()
             if isinstance(data, dict) and data.get("usage"):

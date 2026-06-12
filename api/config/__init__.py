@@ -45,7 +45,7 @@ class Settings(BaseSettings):
 
     # AI Settings
     max_retries_ai: int = 3
-    ai_timeout_seconds: int = 60
+    ai_timeout_seconds: int = 90
 
     # Stripe
     stripe_secret_key: str = ""

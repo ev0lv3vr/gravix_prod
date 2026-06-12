@@ -1,42 +1,88 @@
 {
   "summary": {
-    "target_date": "2026-05-11",
-    "generated_at": "2026-05-10 23:05 PDT",
-    "collect_total": 9255.98,
-    "pay_total": 6597.07,
-    "protect_total": 177.23,
+    "target_date": "2026-06-10",
+    "generated_at": "2026-06-10 14:00 PDT",
+    "collect_total": 9498.69,
+    "pay_total": 6897.07,
+    "protect_total": 9012.79,
     "upside_total": 16030.2,
     "overdue_count": 2,
-    "undated_count": 11,
-    "items_total": 13
+    "undated_count": 21,
+    "items_total": 23
   },
   "collect_now": [
     {
       "lane": "collect",
-      "title": "Gemifly LLC",
-      "detail": "PayPal invoice 1001-0243 remains unpaid; PayPal reminder on 2026-05-08 shows $7,424.15 due on receipt (earlier sent notice showed $7,449.98). Track for payment / reconcile amount if needed. Earlier open amount listed was $1,513.23, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs 6134, 6172.",
-      "amount": 7449.98,
-      "due_date": null,
-      "due_status": "due now",
+      "title": "Shipux sales order SO14531",
+      "detail": "Ev requested an urgent shipping update for Shipux sales order SO14531 - 001034 because it had no shipping update since 2026-05-08 and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-19 that it has shipped; Odoo sales order notice shows UPS tracking 1ZYV02810391168524. Shipux invoice INV/2026/05/001308 for $36.92 is due 2026-05-19 for SO14531. Next step: update the waiting customer with tracking and verify/pay the Shipux invoice if not already handled. Sources: `gluemasters` msgs 192543, 192545, 192666, 192667, 192668.",
+      "amount": 36.92,
+      "due_date": "2026-05-19",
+      "due_status": "overdue 22d",
       "owner": "Operator",
       "sources": [
-        "6134",
-        "6172"
+        "192543",
+        "192545",
+        "192666",
+        "192667",
+        "192668"
       ],
       "note": "Collect or reconcile inbound cash."
     },
     {
       "lane": "collect",
-      "title": "Garcor / Kyle Lawson",
-      "detail": "sent attached purchase order PO4046132.pdf and asked us to process it and confirm receipt. PayPal invoice 1001-0244 for $1,806.00 was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg 192403, `sales` msgs 6165, 6178.",
-      "amount": 1806.0,
+      "title": "Gemifly LLC",
+      "detail": "PayPal invoice 1001-0243 is paid as of 2026-05-16: $7,424.15 received from Gemifly LLC, transaction 1JB03438J23145733, PayPal Seller Protection eligible, ship-to address unconfirmed. Invoice line items: 815× Gemiflex V1 ($6,552.60), 10,000× dispensing tips ($600.00), 500× Natural Pin Cap EXTRA ($125.00), shipping ($146.55). Next step: fulfill/ship the paid Gemiflex/tips/caps order, using normal unconfirmed-address caution. Sources: `sales` msgs 6134, 6172, 6235.",
+      "amount": 7424.15,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
       "sources": [
-        "192403",
-        "6165",
-        "6178"
+        "6134",
+        "6172",
+        "6235"
+      ],
+      "note": "Collect or reconcile inbound cash."
+    },
+    {
+      "lane": "collect",
+      "title": "Gemifly LLC invoice 1001-0248",
+      "detail": "PayPal invoice 1001-0248 for $1,968.63 was sent to Gemifly LLC on 2026-05-20. Next step: watch for payment before treating as paid/ready to fulfill. Source: `sales` msg 6261.",
+      "amount": 1968.63,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "6261"
+      ],
+      "note": "Collect or reconcile inbound cash."
+    },
+    {
+      "lane": "collect",
+      "title": "WaterRower / NOHRD / Abel Sanchez / Peter King",
+      "detail": "PO 00039435 received for 15× CA Medium 700 CPS / WRC1505, 16oz, $42.99 each, total $644.85, C.O.D., ship to WATERROWER | NOHRD, 560 Metacom Ave, Warren, RI 02885, ship via Best Way. PayPal invoice 1001-0246 was sent and paid on 2026-05-13 by Peter King / `peter@waterrower.com`; transaction 4W686707JS430003G, Seller Protection eligible, PayPal ship-to address unconfirmed. Next step: fulfill/ship the paid order. Sources: `sales` msgs 6206, 6210, 6211.",
+      "amount": 42.99,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "6206",
+        "6210",
+        "6211"
+      ],
+      "note": "Collect or reconcile inbound cash."
+    },
+    {
+      "lane": "collect",
+      "title": "Petite Keep / Amber Peterson",
+      "detail": "Amber confirmed the 60-bottle welcome-back order: 60× 16oz Medium 1500 cps at $26/bottle = $1,560. Ship only to 1093 N Warson Rd, St Louis, MO 63132. Invoices still go to `accounting@petitekeep.com`, and should also copy `lmartin@petitekeep.com` and Amber. Ramp says payment for invoice 1001-0247 was received/processed for $1,560.00 via ACH, payment ID SU4JBCM49C, trace ID 074920900154501, estimated arrival 2026-05-15. Next step: fulfill/ship the paid order if internal cash-clearance policy allows shipment on Ramp receipt. Sources: `gluemasters` msgs 192521, 192542, 192579.",
+      "amount": 26.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "192521",
+        "192542",
+        "192579"
       ],
       "note": "Collect or reconcile inbound cash."
     }
@@ -45,27 +91,105 @@
     {
       "lane": "pay",
       "title": "A3 Partners Gemiflex shipment / invoice",
-      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371.",
+      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3/Caroline forwarded UPS tracking 1Z43A99A0347220365 for the remaining 1,260 Gemiflex units on PO#29, ship-to David Christensen, Mesa AZ, 4 packages / 142 lb, UPS Ground, estimated delivery 2026-05-30 by 7 PM. UPS confirmed an A3 Partners package with tracking 1Z43A99A0348523929 was delivered on 2026-06-05 at 3:34 PM. This resolves the June 5 delivery-watch signal for that tracking number only; it does not resolve A3 open-balance verification. Caroline Silvestro sent an example COA PDF for V-500 1Lb Lot 121261 and noted she edits these PDFs in Adobe Acrobat Pro with the logo/details. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. A3 sent invoice 26-05272 for $3,825.79, due 2026-06-26. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Caroline sent another 2026-06-08 open-invoices PDF; monitor summary says one invoice is overdue and another is due in 2 days under 90-day terms. Next step remains verify against bank/QuickBooks before asserting payment status. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701, 192888, 192889, 193079, 193081; 2026-06-08 persisted `gluemasters` monitor alert at 3:35 PM PT.",
       "amount": 6597.07,
       "due_date": "2026-04-25",
-      "due_status": "overdue 16d",
+      "due_status": "overdue 46d",
       "owner": "Ev",
       "sources": [
         "192183",
         "192184",
         "191451",
         "191683",
-        "192371"
+        "192371",
+        "192632",
+        "192701",
+        "192888",
+        "192889",
+        "193079",
+        "193081"
       ],
       "note": "Verify supplier-side balance before asserting internal non-payment."
+    },
+    {
+      "lane": "pay",
+      "title": "PayPal CAD payment — CONCEPT-PET",
+      "detail": "PayPal receipt says Glue Masters sent $300.00 CAD to CONCEPT-PET on 2026-05-28, paid from PayPal balance as $226.91 USD, transaction 1L278286X78311449. PayPal receipt says Glue Masters sent another $500.00 CAD to CONCEPT-PET on 2026-05-29, paid from PayPal balance as $378.29 USD, transaction 0897258629457592R. PayPal receipt says Glue Masters sent another $200.00 CAD to CONCEPT-PET on 2026-06-01, paid from PayPal balance as $151.13 USD, transaction 4PU68074V5759423E. Treat as expected supplier/personal payments only if Ev recognizes them; otherwise verify directly in PayPal. Sources: `sales` msgs 6323, 6333, 6349.",
+      "amount": 300.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Ev",
+      "sources": [
+        "6323",
+        "6333",
+        "6349"
+      ],
+      "note": "Confirm payable timing and avoid surprise outbound cash."
     }
   ],
   "protect_margin": [
     {
       "lane": "protect",
+      "title": "Travel bookings / Amex alerts",
+      "detail": "Agoda booking 1005553226 confirmed for Cross Hotel Kyoto, check-in 2026-07-14, check-out 2026-07-19, 1 room / 3 adults, paid $1,190.86 on card ending 4007; cancellation policy says non-refundable from 2026-05-21 05:19 Kyoto time. Matching Amex large-purchase alert for AGODA COMPANY PTELTD $1,190.86 on account ending 94007. Agoda booking 1005557122 confirmed for MIMARU Tokyo Shinjuku West, check-in 2026-07-10, check-out 2026-07-14, 1 room / 3 adults, total $2,215.45, automatic charge scheduled 2026-06-29, card ending 4007; free cancellation before 2026-07-01. teamLab Planets TOKYO ticket purchase completed for 2026-07-12 09:00-09:30 JST, total ¥10,200; matching Amex foreign-transaction alert on account ending 794007. Treat as expected travel planning unless Ev does not recognize any booking/charge. Sources: `gluemasters` msgs 192691, 192692, 192693, 192697, 192698.",
+      "amount": 4597.17,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "192691",
+        "192692",
+        "192693",
+        "192697",
+        "192698"
+      ],
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
+    },
+    {
+      "lane": "protect",
+      "title": "Garcor / Kyle Lawson / David Young",
+      "detail": "PO/payment corrected: David Young paid PayPal invoice 1001-0244 for $1,806.00 on 2026-05-11 (transaction 8L633560LT2348943) for 420× 20g Gel, but Garcor used the wrong card on that first payment and it has been refunded per Ev on 2026-05-13. David then paid invoice 1001-0245 for $1,806.00 on 2026-05-13 (transaction 8U542068D8830142E) as the valid payment for the order. PayPal notice says Seller Protection eligible and ship-to address unconfirmed. Next step: fulfill/ship one paid 420-unit order only; do not treat invoice 1001-0244 as an open duplicate-payment risk. Sources: Ev Telegram 2026-05-13 13:40 PT, `gluemasters` msgs 192403, 192479, `sales` msgs 6165, 6178, 6191, 6194, 6208.",
+      "amount": 3612.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "192403",
+        "192479",
+        "6165",
+        "6178",
+        "6191",
+        "6194",
+        "6208"
+      ],
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
+    },
+    {
+      "lane": "protect",
+      "title": "Shopify / marketplace backlog",
+      "detail": "ShipBob Northeast Hub move — ShipBob is moving from Kutztown to 4755 Hanoverville Road, Building E, Bethlehem, PA 18020. Transition window 2026-05-11 to 2026-05-29; no Kutztown appointments after 2026-05-22; new WRO labels show new address starting 2026-05-27; inbound arriving at Kutztown starting 2026-05-27 will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg 192400. ShipBob / Niyati created or updated case thread::nTthrrhGdgmmyhr_yqOvHj0:: / case #02713670 on 2026-05-27 after Ev's chat. On 2026-05-28, Niyati said the shipment is now labelled and waiting for carrier pickup; after Ev asked how ShipBob will prevent repeats, Niyati apologized and offered to help with the shipment's shipping cost if Ev confirms. On 2026-05-29, Niyati closed the case for internal reporting because no confirmation was received, but said replying to the thread will reopen it without starting over. Source: `gluemasters` msgs 192858, 192872, 192885, 192903. ShipBob / Mohit opened a separate credit request on 2026-05-29 for SLA-breached shipments totaling $114.31: 370553993 ($19.18), 370345903 ($14.08), 370259129 ($19.35), 370025482 ($42.52), and 368622070 ($19.18). Next step: watch for approval/application of the credit; do not treat it as applied cash yet. Source: `gluemasters` msg 192910. ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg 192468. ShipBob updated the Claims Page effective 2026-05-18: lost-in-transit claims can be filed from 7 days after estimated delivery through 45 days post-EDD, uninsured LIT liability is capped at the lesser of $100 or the carrier limit, and proactive claim filing is opt-in with a 25% fee on approved payouts. Source: `gluemasters` msg 192620. ShipBob updated Terms of Service effective 2026-06-21; continuing to use services on/after that date accepts the updated terms. Non-urgent legal/vendor watch unless Ev wants review. Source: `gluemasters` msg 192735. Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: 1,183 reviews. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1).",
+      "amount": 328.62,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "192400",
+        "192858",
+        "192872",
+        "192885",
+        "192903",
+        "192910",
+        "192468",
+        "192620",
+        "192735"
+      ],
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
+    },
+    {
+      "lane": "protect",
       "title": "Amazon refunds",
-      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438.",
-      "amount": 105.4,
+      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438. Amazon initiated a $15.14 refund for order 111-3032772-6512258 to Caroline M. Lerner / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192559. Amazon initiated a $73.80 refund for order 113-4123533-5785839 to Richard W Sewell / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 5× 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192628. Amazon initiated a $15.00 refund for order 114-1453287-1830630 to Brad Peebles / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192733. Amazon initiated a $15.07 refund for order 114-0022731-1717060 to Juliana Rosenstein / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192955. Amazon initiated a $36.96 refund for order 111-7459006-2785003 / SKU 8OZTHICKCAGM; reason Product not as described. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:05 PM PT. Amazon initiated a $36.37 refund for order 114-5833430-2211417 / SKU 8OZTHICKCAGM; reason General adjustment. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:35 PM PT. Amazon initiated a $14.92 refund for order 111-8989740-0678653 to Allison Goldfine / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 193203.",
+      "amount": 312.66,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
@@ -73,7 +197,12 @@
         "192357",
         "192328",
         "192188",
-        "192438"
+        "192438",
+        "192559",
+        "192628",
+        "192733",
+        "192955",
+        "193203"
       ],
       "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
     },
@@ -98,18 +227,29 @@
     },
     {
       "lane": "protect",
-      "title": "Walmart Marketplace performance/pricing",
-      "detail": "Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. Sources: `gluemasters` msgs 192323, 192326, 192443.",
-      "amount": 14.99,
+      "title": "Amex merchant credit — RoyalCaribbean.com",
+      "detail": "American Express reported a -$55.50 merchant credit from RoyalCaribbean.com, dated 2026-06-04, on account ending 94007. Treat as expected travel/refund activity unless Ev does not recognize it. Source: `gluemasters` msg 193067.",
+      "amount": 55.5,
       "due_date": null,
       "due_status": "undated",
-      "owner": "Ev",
+      "owner": "Operator",
       "sources": [
-        "192323",
-        "192326",
-        "192443"
+        "193067"
       ],
-      "note": "Margin / marketplace decision, not an automatic price cut."
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
+    },
+    {
+      "lane": "protect",
+      "title": "Pinnacle Brand Management / Tim Edmunds",
+      "detail": "cold pitch for TikTok retargeting against the existing email list with a claimed 5× return guarantee and $50 gift card for a call. Low-priority marketing vendor outreach unless Ev wants to evaluate. Source: `sales` msg 6281.",
+      "amount": 50.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "6281"
+      ],
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
     }
   ],
   "upside_queue": [
@@ -131,6 +271,20 @@
     },
     {
       "lane": "upside",
+      "title": "Accurate Graphics / Javier Baeza",
+      "detail": "B2B production trial request for polyurethane ejection rubber to raw dieboard/wood bonding, dip-application workflow, current adhesive f-bond H-1 Adhesive, problems with cure/bond/cost/shelf life, estimated 10-50 bottles/month. Ev replied recommending a side-by-side 100 cps + 700 cps trial kit; Javier confirmed the ship-to address is correct: 6994 Rogers Lake Rd, Lithonia, GA 30058. Contact: `jbaeza@accurategraphix.com`, 678-801-0175 / 770-484-0273 x1021. Next step: ship the trial kit, then quote from test results/monthly volume. Sources: `sales` msg 6328; `gluemasters` msg 193077.",
+      "amount": null,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "6328",
+        "193077"
+      ],
+      "note": "Revenue opportunity waiting for quote, response, or decision."
+    },
+    {
+      "lane": "upside",
       "title": "Arka / Sean",
       "detail": "chose stock 700 cps in 2oz bottles, ships now for the CO 80110 quote path. Next step: get initial quantity / annual volume and price the stock 2oz Medium option. Draft follow-up created at `moneysamurai/drafts/arka-stock-700cps-2oz-followup-2026-05-04.md`. Sources: `sales` msgs 6112, 6131.",
       "amount": null,
@@ -145,13 +299,15 @@
     },
     {
       "lane": "upside",
-      "title": "Christopher Webber",
-      "detail": "B2B inquiry stale.",
+      "title": "Champion Fiberglass / Miguel Garcia",
+      "detail": "new RFQ for 52× Gluemasters 1500 CPS Super Glue, 2g, 4 ct. Ship/contact context: Champion Fiberglass, 6400 Spring Stuebner Rd, Spring, TX 77389; Miguel Garcia / Purchasing Manager. Needs product mapping, quote, and reply. Source: `sales` msg 6218.",
       "amount": null,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
-      "sources": [],
+      "sources": [
+        "6218"
+      ],
       "note": "Revenue opportunity waiting for quote, response, or decision."
     },
     {
@@ -208,55 +364,179 @@
   "all_items": [
     {
       "lane": "collect",
-      "title": "Gemifly LLC",
-      "detail": "PayPal invoice 1001-0243 remains unpaid; PayPal reminder on 2026-05-08 shows $7,424.15 due on receipt (earlier sent notice showed $7,449.98). Track for payment / reconcile amount if needed. Earlier open amount listed was $1,513.23, now superseded by the new larger invoice unless Ev says otherwise. Sources: `sales` msgs 6134, 6172.",
-      "amount": 7449.98,
-      "due_date": null,
-      "due_status": "due now",
+      "title": "Shipux sales order SO14531",
+      "detail": "Ev requested an urgent shipping update for Shipux sales order SO14531 - 001034 because it had no shipping update since 2026-05-08 and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-19 that it has shipped; Odoo sales order notice shows UPS tracking 1ZYV02810391168524. Shipux invoice INV/2026/05/001308 for $36.92 is due 2026-05-19 for SO14531. Next step: update the waiting customer with tracking and verify/pay the Shipux invoice if not already handled. Sources: `gluemasters` msgs 192543, 192545, 192666, 192667, 192668.",
+      "amount": 36.92,
+      "due_date": "2026-05-19",
+      "due_status": "overdue 22d",
       "owner": "Operator",
       "sources": [
-        "6134",
-        "6172"
+        "192543",
+        "192545",
+        "192666",
+        "192667",
+        "192668"
       ],
       "note": "Collect or reconcile inbound cash."
     },
     {
       "lane": "collect",
-      "title": "Garcor / Kyle Lawson",
-      "detail": "sent attached purchase order PO4046132.pdf and asked us to process it and confirm receipt. PayPal invoice 1001-0244 for $1,806.00 was sent to `ap@garcor.com` on 2026-05-07 and PayPal sent a due-on-receipt reminder on 2026-05-09. Sources: `gluemasters` msg 192403, `sales` msgs 6165, 6178.",
-      "amount": 1806.0,
+      "title": "Gemifly LLC",
+      "detail": "PayPal invoice 1001-0243 is paid as of 2026-05-16: $7,424.15 received from Gemifly LLC, transaction 1JB03438J23145733, PayPal Seller Protection eligible, ship-to address unconfirmed. Invoice line items: 815× Gemiflex V1 ($6,552.60), 10,000× dispensing tips ($600.00), 500× Natural Pin Cap EXTRA ($125.00), shipping ($146.55). Next step: fulfill/ship the paid Gemiflex/tips/caps order, using normal unconfirmed-address caution. Sources: `sales` msgs 6134, 6172, 6235.",
+      "amount": 7424.15,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
       "sources": [
-        "192403",
-        "6165",
-        "6178"
+        "6134",
+        "6172",
+        "6235"
+      ],
+      "note": "Collect or reconcile inbound cash."
+    },
+    {
+      "lane": "collect",
+      "title": "Gemifly LLC invoice 1001-0248",
+      "detail": "PayPal invoice 1001-0248 for $1,968.63 was sent to Gemifly LLC on 2026-05-20. Next step: watch for payment before treating as paid/ready to fulfill. Source: `sales` msg 6261.",
+      "amount": 1968.63,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "6261"
+      ],
+      "note": "Collect or reconcile inbound cash."
+    },
+    {
+      "lane": "collect",
+      "title": "WaterRower / NOHRD / Abel Sanchez / Peter King",
+      "detail": "PO 00039435 received for 15× CA Medium 700 CPS / WRC1505, 16oz, $42.99 each, total $644.85, C.O.D., ship to WATERROWER | NOHRD, 560 Metacom Ave, Warren, RI 02885, ship via Best Way. PayPal invoice 1001-0246 was sent and paid on 2026-05-13 by Peter King / `peter@waterrower.com`; transaction 4W686707JS430003G, Seller Protection eligible, PayPal ship-to address unconfirmed. Next step: fulfill/ship the paid order. Sources: `sales` msgs 6206, 6210, 6211.",
+      "amount": 42.99,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "6206",
+        "6210",
+        "6211"
+      ],
+      "note": "Collect or reconcile inbound cash."
+    },
+    {
+      "lane": "collect",
+      "title": "Petite Keep / Amber Peterson",
+      "detail": "Amber confirmed the 60-bottle welcome-back order: 60× 16oz Medium 1500 cps at $26/bottle = $1,560. Ship only to 1093 N Warson Rd, St Louis, MO 63132. Invoices still go to `accounting@petitekeep.com`, and should also copy `lmartin@petitekeep.com` and Amber. Ramp says payment for invoice 1001-0247 was received/processed for $1,560.00 via ACH, payment ID SU4JBCM49C, trace ID 074920900154501, estimated arrival 2026-05-15. Next step: fulfill/ship the paid order if internal cash-clearance policy allows shipment on Ramp receipt. Sources: `gluemasters` msgs 192521, 192542, 192579.",
+      "amount": 26.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "192521",
+        "192542",
+        "192579"
       ],
       "note": "Collect or reconcile inbound cash."
     },
     {
       "lane": "pay",
       "title": "A3 Partners Gemiflex shipment / invoice",
-      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3 invoice 26-04271 is due 2026-05-27 for $501.25. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371.",
+      "detail": "A3/Caroline forwarded UPS tracking 1Z43A99A0348588986 for 165 backordered Gemiflex units to KNCH Law / Gabriel Majalca in Phoenix; ETA Thu 2026-04-30 by 7 PM. A3/Joe forwarded a UPS delivery confirmation for tracking 1Z43A99A0347067700: delivered 2026-05-20 12:27 PM, ship-to David Christensen, Mesa AZ, 28 lb, references PO#29 and BH. A3/Caroline forwarded UPS tracking 1Z43A99A0347220365 for the remaining 1,260 Gemiflex units on PO#29, ship-to David Christensen, Mesa AZ, 4 packages / 142 lb, UPS Ground, estimated delivery 2026-05-30 by 7 PM. UPS confirmed an A3 Partners package with tracking 1Z43A99A0348523929 was delivered on 2026-06-05 at 3:34 PM. This resolves the June 5 delivery-watch signal for that tracking number only; it does not resolve A3 open-balance verification. Caroline Silvestro sent an example COA PDF for V-500 1Lb Lot 121261 and noted she edits these PDFs in Adobe Acrobat Pro with the logo/details. A3 invoice 26-04271 is due 2026-05-27 for $501.25. A3 sent new invoice 26-05151 for $732.63, due 2026-06-14. A3 sent invoice 26-05272 for $3,825.79, due 2026-06-26. Caroline’s later past-due balance statement says A3 still shows $6,597.07 open across older invoices 26-03263 ($3,312.37, due 2026-04-25) and 26-03311 ($3,284.70, due 2026-04-30). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Caroline sent another 2026-06-08 open-invoices PDF; monitor summary says one invoice is overdue and another is due in 2 days under 90-day terms. Next step remains verify against bank/QuickBooks before asserting payment status. Sources: `gluemasters` msgs 192183, 192184, 191451, 191683, 192371, 192632, 192701, 192888, 192889, 193079, 193081; 2026-06-08 persisted `gluemasters` monitor alert at 3:35 PM PT.",
       "amount": 6597.07,
       "due_date": "2026-04-25",
-      "due_status": "overdue 16d",
+      "due_status": "overdue 46d",
       "owner": "Ev",
       "sources": [
         "192183",
         "192184",
         "191451",
         "191683",
-        "192371"
+        "192371",
+        "192632",
+        "192701",
+        "192888",
+        "192889",
+        "193079",
+        "193081"
       ],
       "note": "Verify supplier-side balance before asserting internal non-payment."
     },
     {
+      "lane": "pay",
+      "title": "PayPal CAD payment — CONCEPT-PET",
+      "detail": "PayPal receipt says Glue Masters sent $300.00 CAD to CONCEPT-PET on 2026-05-28, paid from PayPal balance as $226.91 USD, transaction 1L278286X78311449. PayPal receipt says Glue Masters sent another $500.00 CAD to CONCEPT-PET on 2026-05-29, paid from PayPal balance as $378.29 USD, transaction 0897258629457592R. PayPal receipt says Glue Masters sent another $200.00 CAD to CONCEPT-PET on 2026-06-01, paid from PayPal balance as $151.13 USD, transaction 4PU68074V5759423E. Treat as expected supplier/personal payments only if Ev recognizes them; otherwise verify directly in PayPal. Sources: `sales` msgs 6323, 6333, 6349.",
+      "amount": 300.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Ev",
+      "sources": [
+        "6323",
+        "6333",
+        "6349"
+      ],
+      "note": "Confirm payable timing and avoid surprise outbound cash."
+    },
+    {
+      "lane": "protect",
+      "title": "Travel bookings / Amex alerts",
+      "detail": "Agoda booking 1005553226 confirmed for Cross Hotel Kyoto, check-in 2026-07-14, check-out 2026-07-19, 1 room / 3 adults, paid $1,190.86 on card ending 4007; cancellation policy says non-refundable from 2026-05-21 05:19 Kyoto time. Matching Amex large-purchase alert for AGODA COMPANY PTELTD $1,190.86 on account ending 94007. Agoda booking 1005557122 confirmed for MIMARU Tokyo Shinjuku West, check-in 2026-07-10, check-out 2026-07-14, 1 room / 3 adults, total $2,215.45, automatic charge scheduled 2026-06-29, card ending 4007; free cancellation before 2026-07-01. teamLab Planets TOKYO ticket purchase completed for 2026-07-12 09:00-09:30 JST, total ¥10,200; matching Amex foreign-transaction alert on account ending 794007. Treat as expected travel planning unless Ev does not recognize any booking/charge. Sources: `gluemasters` msgs 192691, 192692, 192693, 192697, 192698.",
+      "amount": 4597.17,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "192691",
+        "192692",
+        "192693",
+        "192697",
+        "192698"
+      ],
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
+    },
+    {
+      "lane": "protect",
+      "title": "Garcor / Kyle Lawson / David Young",
+      "detail": "PO/payment corrected: David Young paid PayPal invoice 1001-0244 for $1,806.00 on 2026-05-11 (transaction 8L633560LT2348943) for 420× 20g Gel, but Garcor used the wrong card on that first payment and it has been refunded per Ev on 2026-05-13. David then paid invoice 1001-0245 for $1,806.00 on 2026-05-13 (transaction 8U542068D8830142E) as the valid payment for the order. PayPal notice says Seller Protection eligible and ship-to address unconfirmed. Next step: fulfill/ship one paid 420-unit order only; do not treat invoice 1001-0244 as an open duplicate-payment risk. Sources: Ev Telegram 2026-05-13 13:40 PT, `gluemasters` msgs 192403, 192479, `sales` msgs 6165, 6178, 6191, 6194, 6208.",
+      "amount": 3612.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "192403",
+        "192479",
+        "6165",
+        "6178",
+        "6191",
+        "6194",
+        "6208"
+      ],
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
+    },
+    {
+      "lane": "protect",
+      "title": "Shopify / marketplace backlog",
+      "detail": "ShipBob Northeast Hub move — ShipBob is moving from Kutztown to 4755 Hanoverville Road, Building E, Bethlehem, PA 18020. Transition window 2026-05-11 to 2026-05-29; no Kutztown appointments after 2026-05-22; new WRO labels show new address starting 2026-05-27; inbound arriving at Kutztown starting 2026-05-27 will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg 192400. ShipBob / Niyati created or updated case thread::nTthrrhGdgmmyhr_yqOvHj0:: / case #02713670 on 2026-05-27 after Ev's chat. On 2026-05-28, Niyati said the shipment is now labelled and waiting for carrier pickup; after Ev asked how ShipBob will prevent repeats, Niyati apologized and offered to help with the shipment's shipping cost if Ev confirms. On 2026-05-29, Niyati closed the case for internal reporting because no confirmation was received, but said replying to the thread will reopen it without starting over. Source: `gluemasters` msgs 192858, 192872, 192885, 192903. ShipBob / Mohit opened a separate credit request on 2026-05-29 for SLA-breached shipments totaling $114.31: 370553993 ($19.18), 370345903 ($14.08), 370259129 ($19.35), 370025482 ($42.52), and 368622070 ($19.18). Next step: watch for approval/application of the credit; do not treat it as applied cash yet. Source: `gluemasters` msg 192910. ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg 192468. ShipBob updated the Claims Page effective 2026-05-18: lost-in-transit claims can be filed from 7 days after estimated delivery through 45 days post-EDD, uninsured LIT liability is capped at the lesser of $100 or the carrier limit, and proactive claim filing is opt-in with a 25% fee on approved payouts. Source: `gluemasters` msg 192620. ShipBob updated Terms of Service effective 2026-06-21; continuing to use services on/after that date accepts the updated terms. Non-urgent legal/vendor watch unless Ev wants review. Source: `gluemasters` msg 192735. Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: 1,183 reviews. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1).",
+      "amount": 328.62,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "192400",
+        "192858",
+        "192872",
+        "192885",
+        "192903",
+        "192910",
+        "192468",
+        "192620",
+        "192735"
+      ],
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
+    },
+    {
       "lane": "protect",
       "title": "Amazon refunds",
-      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438.",
-      "amount": 105.4,
+      "detail": "Amazon initiated a $15.21 refund for order 111-7692391-0638603 / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Customer Return. Source: `gluemasters` msg 192357. Amazon initiated a $38.15 refund for order 114-0455907-8694635 / ASIN B01LZUN030 / SKU 8OZMED; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192328. Amazon initiated a $36.83 refund for order 111-6918255-6449022 / ASIN B01CDPIIXK / SKU 8OZTHICKCAGM; reason Product not as described. Source: `gluemasters` msg 192188. Amazon initiated a $15.21 refund for order 112-8576738-1861063 to Gregory I Boldrey / ASIN B01M8JT9LI / SKU GM2TH / item 2oz Thin; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192438. Amazon initiated a $15.14 refund for order 111-3032772-6512258 to Caroline M. Lerner / ASIN B01MDNS8QB / SKU GM2M / item 2oz Medium; reason Shipping Address Undeliverable. Source: `gluemasters` msg 192559. Amazon initiated a $73.80 refund for order 113-4123533-5785839 to Richard W Sewell / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 5× 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192628. Amazon initiated a $15.00 refund for order 114-1453287-1830630 to Brad Peebles / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192733. Amazon initiated a $15.07 refund for order 114-0022731-1717060 to Juliana Rosenstein / ASIN B00WHEM0UA / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 192955. Amazon initiated a $36.96 refund for order 111-7459006-2785003 / SKU 8OZTHICKCAGM; reason Product not as described. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:05 PM PT. Amazon initiated a $36.37 refund for order 114-5833430-2211417 / SKU 8OZTHICKCAGM; reason General adjustment. Source: 2026-06-08 persisted `gluemasters` monitor alert at 2:35 PM PT. Amazon initiated a $14.92 refund for order 111-8989740-0678653 to Allison Goldfine / SKU 2OZTHICKCAGM / 2oz Thick; reason Customer Return. Source: `gluemasters` msg 193203.",
+      "amount": 312.66,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
@@ -264,7 +544,12 @@
         "192357",
         "192328",
         "192188",
-        "192438"
+        "192438",
+        "192559",
+        "192628",
+        "192733",
+        "192955",
+        "193203"
       ],
       "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
     },
@@ -289,18 +574,29 @@
     },
     {
       "lane": "protect",
-      "title": "Walmart Marketplace performance/pricing",
-      "detail": "Fresh Walmart performance snapshot shows on-time delivery 83.3% vs 90% standard and late shipment 50% vs 5% standard; valid tracking 100%, cancellations/negative feedback/returns/item-not-received all 0%. Fresh Walmart pricing digest shows price competitiveness 46.15% (+5.32% WoW), Buy Box win rate 100%, and top recommended price cuts: `20GRGELCAGM` $8.99 → $6.99, `24MLEPOXYGM2` $14.99 → $7.99. Treat as recommendations only; Ev should decide before price changes. New 2026-05-09 Walmart Partner Performance alert says 1 shipped order has a late origin scan and needs carrier scan/tracking accuracy confirmed within 24 hours; impacted-orders XLSX was referenced but not available in the local download path during the heartbeat check. Sources: `gluemasters` msgs 192323, 192326, 192443.",
-      "amount": 14.99,
+      "title": "Amex merchant credit — RoyalCaribbean.com",
+      "detail": "American Express reported a -$55.50 merchant credit from RoyalCaribbean.com, dated 2026-06-04, on account ending 94007. Treat as expected travel/refund activity unless Ev does not recognize it. Source: `gluemasters` msg 193067.",
+      "amount": 55.5,
       "due_date": null,
       "due_status": "undated",
-      "owner": "Ev",
+      "owner": "Operator",
       "sources": [
-        "192323",
-        "192326",
-        "192443"
+        "193067"
       ],
-      "note": "Margin / marketplace decision, not an automatic price cut."
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
+    },
+    {
+      "lane": "protect",
+      "title": "Pinnacle Brand Management / Tim Edmunds",
+      "detail": "cold pitch for TikTok retargeting against the existing email list with a claimed 5× return guarantee and $50 gift card for a call. Low-priority marketing vendor outreach unless Ev wants to evaluate. Source: `sales` msg 6281.",
+      "amount": 50.0,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "6281"
+      ],
+      "note": "Reduce leakage from refunds, disputes, or fulfillment misses."
     },
     {
       "lane": "upside",
@@ -320,6 +616,20 @@
     },
     {
       "lane": "upside",
+      "title": "Accurate Graphics / Javier Baeza",
+      "detail": "B2B production trial request for polyurethane ejection rubber to raw dieboard/wood bonding, dip-application workflow, current adhesive f-bond H-1 Adhesive, problems with cure/bond/cost/shelf life, estimated 10-50 bottles/month. Ev replied recommending a side-by-side 100 cps + 700 cps trial kit; Javier confirmed the ship-to address is correct: 6994 Rogers Lake Rd, Lithonia, GA 30058. Contact: `jbaeza@accurategraphix.com`, 678-801-0175 / 770-484-0273 x1021. Next step: ship the trial kit, then quote from test results/monthly volume. Sources: `sales` msg 6328; `gluemasters` msg 193077.",
+      "amount": null,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "6328",
+        "193077"
+      ],
+      "note": "Revenue opportunity waiting for quote, response, or decision."
+    },
+    {
+      "lane": "upside",
       "title": "Arka / Sean",
       "detail": "chose stock 700 cps in 2oz bottles, ships now for the CO 80110 quote path. Next step: get initial quantity / annual volume and price the stock 2oz Medium option. Draft follow-up created at `moneysamurai/drafts/arka-stock-700cps-2oz-followup-2026-05-04.md`. Sources: `sales` msgs 6112, 6131.",
       "amount": null,
@@ -334,13 +644,15 @@
     },
     {
       "lane": "upside",
-      "title": "Christopher Webber",
-      "detail": "B2B inquiry stale.",
+      "title": "Champion Fiberglass / Miguel Garcia",
+      "detail": "new RFQ for 52× Gluemasters 1500 CPS Super Glue, 2g, 4 ct. Ship/contact context: Champion Fiberglass, 6400 Spring Stuebner Rd, Spring, TX 77389; Miguel Garcia / Purchasing Manager. Needs product mapping, quote, and reply. Source: `sales` msg 6218.",
       "amount": null,
       "due_date": null,
       "due_status": "undated",
       "owner": "Operator",
-      "sources": [],
+      "sources": [
+        "6218"
+      ],
       "note": "Revenue opportunity waiting for quote, response, or decision."
     },
     {
@@ -390,6 +702,26 @@
       "owner": "Operator",
       "sources": [
         "6145"
+      ],
+      "note": "Revenue opportunity waiting for quote, response, or decision."
+    },
+    {
+      "lane": "upside",
+      "title": "MarcoRocks / Joseph Caparatta",
+      "detail": "owner says they have recommended Glue Masters for joining reef-aquarium rocks and wants to discuss a reef-space co-branding opportunity. Ev sent Joseph a proposal on 2026-05-29 after their call: 8oz Thin as the co-branded bottle with \"Powered by Glue Masters\" mark, wholesale pricing tiered by volume, and rebate-based step-down pricing. Joseph replied that it looks good and he will review over the weekend, then come back next week with questions. Contact: `joe@marcorocks.com`, 917-757-9744. Sources: `sales` msgs 6313, 6320, 6321, 6322; `gluemasters` msgs 192881, 192890, 192892, 192912.",
+      "amount": null,
+      "due_date": null,
+      "due_status": "undated",
+      "owner": "Operator",
+      "sources": [
+        "6313",
+        "6320",
+        "6321",
+        "6322",
+        "192881",
+        "192890",
+        "192892",
+        "192912"
       ],
       "note": "Revenue opportunity waiting for quote, response, or decision."
     }

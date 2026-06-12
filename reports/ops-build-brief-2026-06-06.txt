@@ -1,0 +1,158 @@
+OPS BUILD BRIEF — 2026-06-06
+Generated: 2026-06-06 08:57 PDT
+
+Artifacts:
+- reports/morning-ops-hub-latest.html
+- reports/morning-priority-pack-latest.md
+- reports/ops-debt-dashboard-latest.html
+- reports/ads-pull-dashboard-latest.html
+- reports/ads-pull-incident-latest.html
+- reports/ads-growth-execution-latest.html
+- reports/ads-growth-readiness-latest.html
+- reports/morning-handoff-latest.html
+- reports/morning-decision-desk-latest.html
+- reports/morning-customer-desk-latest.html
+- reports/morning-money-desk-latest.html
+- reports/deadline-control-desk-latest.html
+- reports/supplier-ops-desk-latest.html
+- reports/order-ops-desk-latest.html
+- reports/order-ops-handoff-latest.csv
+- reports/morning-commerce-desk-latest.html
+- reports/brand-narrative-desk-latest.html
+- reports/b2b-kit-dispatch-desk-latest.html
+- reports/b2b-kit-dispatch-labels-latest.csv
+- reports/morning-unblock-desk-latest.html
+- reports/morning-delta-brief-latest.html
+- reports/morning-exception-desk-latest.html
+- reports/artifact-freshness-latest.html
+- reports/git-hygiene-latest.html
+- reports/state-audit-latest.html
+- reports/morning-actionability-latest.html
+- latest cron-watchlist-*.html (dated report)
+- reports/cron-trend-report-latest.html
+
+Morning pack freshness:
+- Status: STALE
+- Newest source edit: 2026-06-05 18:05 PDT
+- Build lag vs newest source: 892 min
+- BUSINESS_STATE.md: 2026-06-05 18:03 PDT (893 min old)
+- MEMORY.md: 2026-05-29 14:03 PDT (11214 min old)
+- memory/2026-06-05.md: 2026-06-05 18:05 PDT (892 min old)
+
+Artifact trust check:
+- OK: 26 / 26
+- Stale: 0
+- Missing: 0
+- Mismatched latest vs dated: 0
+
+Git hygiene:
+- Repos scanned: 4
+- High risk: 0
+- Medium risk: 1
+- Low/noise only: 1
+- Changed files visible: 84
+- Hottest repo: moneysamurai — Ahead 42.
+
+Business state audit:
+- Active items scanned: 90
+- Past-date refs: 29
+- Relative-time refs: 5
+- Urgent items missing source: 1
+- Duplicate source IDs: 0
+
+Brand narrative desk:
+- Reviews surfaced as proof: 1343
+- Proof points packaged: 5
+- Narrative gaps flagged: 4
+- Messaging inconsistencies to verify: 2
+
+Morning money desk:
+- Collect visible: $9,498.69
+- Pay / verify visible: $6,897.07
+- Leakage / disputes visible: $8,924.54
+- Pipeline / upside visible: $16,030.20
+- Overdue or due-now items: 2
+
+Deadline control desk:
+- Total deadline items: 13
+- Due today: 0
+- Overdue: 2
+- Shipment/account risks: 6
+- Finance/admin items: 3
+
+Supplier ops desk:
+- Collect / confirm inbound cash: $11,198.78
+- Pay / verify supplier pressure: $6,597.07
+- Fulfillment / warehouse watch items: 1
+- Relationship follow-ups: 1
+- Do-now supplier items: 2
+
+Order ops closure desk:
+- Closure items: 21
+- Do-now items: 7
+- Needs Ev / credentialed owner: 9
+- Marketplace firebreaks: 1
+- Customer closure items: 6
+- Paid fulfillment releases: 5
+
+Amazon Ads daily pull (local status):
+- Latest day: 2026-06-05
+- Latest status: OK (failed: —)
+- Current invalid streak: 0
+- Latest pull log: logs/ads-daily/2026-04-24_060021.log
+
+Amazon Ads growth plan execution:
+- Overall completion: 100%
+- Live changes executed: 100% (36/36 actions)
+- Monitoring completion: 100% (7/7 valid post-change pulls)
+- Days remaining before default next scale wave: 0
+- Latest post-change day: 2026-06-05 — spend $105.31, sales $61.97, ACOS 169.9%
+- Rule: Do not run a second scale wave until 7 valid post-change daily pulls are reviewed, unless Ev explicitly overrides.
+
+Cron timeout watchlist:
+- Source freshness: STALE (45 days old; source 2026-04-22)
+- Freshness warning: Cron timeout watchlist is historical only; do not treat listed risks as current blockers without a fresh source snapshot.
+- Jobs scanned: 13
+- Critical: 1
+- High: 0
+- Medium: 1
+- Ready timeout patches: 3
+- Hottest job: ads-daily-pull (critical, last 1800057 ms on 1800 s timeout)
+
+Cron trend (multi-day):
+- Source freshness: STALE (45 days old; latest watchlist 2026-04-22)
+- Freshness warning: Cron trend is historical only; do not treat listed risks as current blockers without a fresh cron snapshot.
+- Days compared: 3
+- Regressing jobs: 1
+- Improving jobs: 1
+- New risks: 0
+- Delta vs previous: critical 0, high 0, medium 0, patches 0
+- Worst regression: ads-daily-pull (ok → critical)
+
+Ops debt (from ops-debt.json):
+- Open items: 9 (active/critical: 7)
+- Daily burn (true): $0/day
+- Accrued (open): $1,715.54
+- 30-day burn exposure: $0
+- One-time dollars open: $1,715.54
+
+BUSINESS_STATE.md queue depth:
+- 🔴 Urgent: 35
+- 🟡 Needs Ev: 43
+- 🔵 In progress: 10
+- 📋 Backlog: 2
+- Total open tasks ranked: 90
+
+Top 8 morning actions (ranked):
+1. Shopify / marketplace backlog — **ShipBob Northeast Hub move** — ShipBob is moving from Kutztown to **4755 Hanoverville Road, Building E, Bethlehem, PA 18020**. Transition window **2026-05-11 to 2026-05-29**; no Kutztown appointments after **2026-05-22**; new WRO labels show new address starting **2026-05-27**; inbound arriving at Kutztown starting **2026-05-27** will be denied. Check any open Northeast/Kutztown WROs before shipping inbound inventory. Source: `gluemasters` msg **192400**. ShipBob / Niyati created or updated case **thread::nTthrrhGdgmmyhr_yqOvHj0::** / case **#02713670** on **2026-05-27** after Ev's chat. On **2026-05-28**, Niyati said the shipment is now labelled and waiting for carrier pickup; after Ev asked how ShipBob will prevent repeats, Niyati apologized and offered to help with the shipment's shipping cost if Ev confirms. On **2026-05-29**, Niyati closed the case for internal reporting because no confirmation was received, but said replying to the thread will reopen it without starting over. Source: `gluemasters` msgs **192858**, **192872**, **192885**, **192903**. ShipBob / Mohit opened a separate credit request on **2026-05-29** for SLA-breached shipments totaling **$114.31**: **370553993** ($19.18), **370345903** ($14.08), **370259129** ($19.35), **370025482** ($42.52), and **368622070** ($19.18). Next step: watch for approval/application of the credit; do not treat it as applied cash yet. Source: `gluemasters` msg **192910**. ShipBob sent a non-urgent security reminder recommending rotation of PATs older than 90 days; memory note remains that PATs do not expire, so treat this as hygiene only, not an outage. Source: `gluemasters` msg **192468**. ShipBob updated the Claims Page effective **2026-05-18**: lost-in-transit claims can be filed from **7 days after estimated delivery** through **45 days post-EDD**, uninsured LIT liability is capped at the lesser of **$100** or the carrier limit, and proactive claim filing is opt-in with a **25% fee** on approved payouts. Source: `gluemasters` msg **192620**. ShipBob updated Terms of Service effective **2026-06-21**; continuing to use services on/after that date accepts the updated terms. Non-urgent legal/vendor watch unless Ev wants review. Source: `gluemasters` msg **192735**. Back-in-stock notification app. Refund policy links to gravixadhesives.com. Google Search Console sitemap submission. Opinew review import verification: **1,183 reviews**. Bundle offers. Oversold inventory watch: Gel 20g (-6), Thick 2oz (-1). (7m)
+2. **Louise Frogley** — order **#6055** delayed/stuck at label printed; Ev replied that USPS tracking might lag and asked her to report if not delivered. Louise followed up again on 2026-05-03 saying the product never arrived, she bought a replacement, and she wants a credit-card refund. Shopify opened a product-not-received chargeback for **$41.84 + $15.00 fee** and auto-submitted the response on 2026-05-08; bank decision may take up to 75 days. Sources: `sales` msgs **6088**, **6089**, **6098**, **6116**, **6122**, **6168**, **6170**. (7m)
+3. Shipux sales order SO14531 — Ev requested an urgent shipping update for Shipux sales order **SO14531 - 001034** because it had no shipping update since **2026-05-08** and a customer is waiting for tracking. Shipux / Tomas replied on 2026-05-19 that it **has shipped**; Odoo sales order notice shows UPS tracking **1ZYV02810391168524**. Shipux invoice **INV/2026/05/001308** for **$36.92** is due **2026-05-19** for SO14531. Next step: update the waiting customer with tracking and verify/pay the Shipux invoice if not already handled. Sources: `gluemasters` msgs **192543**, **192545**, **192666**, **192667**, **192668**. (25m)
+4. A3 Partners Gemiflex shipment / invoice — A3/Caroline forwarded UPS tracking **1Z43A99A0348588986** for **165 backordered Gemiflex units** to KNCH Law / Gabriel Majalca in Phoenix; ETA **Thu 2026-04-30 by 7 PM**. A3/Joe forwarded a UPS delivery confirmation for tracking **1Z43A99A0347067700**: delivered **2026-05-20 12:27 PM**, ship-to **David Christensen**, Mesa AZ, **28 lb**, references **PO#29** and **BH**. A3/Caroline forwarded UPS tracking **1Z43A99A0347220365** for the remaining **1,260 Gemiflex units** on **PO#29**, ship-to **David Christensen**, Mesa AZ, **4 packages / 142 lb**, UPS Ground, estimated delivery **2026-05-30 by 7 PM**. UPS confirmed an A3 Partners package with tracking **1Z43A99A0348523929** was delivered on **2026-06-05 at 3:34 PM**. This resolves the June 5 delivery-watch signal for that tracking number only; it does not resolve A3 open-balance verification. Caroline Silvestro sent an example COA PDF for **V-500 1Lb Lot 121261** and noted she edits these PDFs in Adobe Acrobat Pro with the logo/details. A3 invoice **26-04271** is due **2026-05-27** for **$501.25**. A3 sent new invoice **26-05151** for **$732.63**, due **2026-06-14**. A3 sent invoice **26-05272** for **$3,825.79**, due **2026-06-26**. Caroline’s later past-due balance statement says A3 still shows **$6,597.07** open across older invoices **26-03263** (**$3,312.37**, due **2026-04-25**) and **26-03311** (**$3,284.70**, due **2026-04-30**). Treat that as supplier-side open-balance evidence; verify against bank/QuickBooks before asserting internal non-payment as fact. Sources: `gluemasters` msgs **192183**, **192184**, **191451**, **191683**, **192371**, **192632**, **192701**, **192888**, **192889**, **193079**, **193081**. (25m)
+5. Insurance midterm sales/product check — Ashlin Hadden Insurance asked whether Gluemasters is still on schedule for estimated **$900k** annual sales and whether any products have been added/discontinued. If sales/product mix has changed materially, Ev should reply so coverage can be adjusted; otherwise no policy adjustment is needed until renewal. Claire followed up again on 2026-05-18 asking Ev to confirm whether business/products/sales pace have changed. Sources: `gluemasters` msgs **192475**, **192631**. (8m)
+6. **Garcor / Kyle Lawson / David Young** — PO/payment corrected: David Young paid PayPal invoice **1001-0244** for **$1,806.00** on 2026-05-11 (transaction **8L633560LT2348943**) for **420× 20g Gel**, but Garcor used the wrong card on that first payment and it has been refunded per Ev on 2026-05-13. David then paid invoice **1001-0245** for **$1,806.00** on 2026-05-13 (transaction **8U542068D8830142E**) as the valid payment for the order. PayPal notice says Seller Protection eligible and ship-to address unconfirmed. Next step: fulfill/ship one paid 420-unit order only; do not treat invoice 1001-0244 as an open duplicate-payment risk. Sources: Ev Telegram **2026-05-13 13:40 PT**, `gluemasters` msgs **192403**, **192479**, `sales` msgs **6165**, **6178**, **6191**, **6194**, **6208**. (7m)
+7. Travel bookings / Amex alerts — Agoda booking **1005553226** confirmed for **Cross Hotel Kyoto**, check-in **2026-07-14**, check-out **2026-07-19**, 1 room / 3 adults, paid **$1,190.86** on card ending **4007**; cancellation policy says **non-refundable from 2026-05-21 05:19 Kyoto time**. Matching Amex large-purchase alert for **AGODA COMPANY PTELTD $1,190.86** on account ending **94007**. Agoda booking **1005557122** confirmed for **MIMARU Tokyo Shinjuku West**, check-in **2026-07-10**, check-out **2026-07-14**, 1 room / 3 adults, total **$2,215.45**, automatic charge scheduled **2026-06-29**, card ending **4007**; free cancellation before **2026-07-01**. teamLab Planets TOKYO ticket purchase completed for **2026-07-12 09:00-09:30 JST**, total **¥10,200**; matching Amex foreign-transaction alert on account ending **794007**. Treat as expected travel planning unless Ev does not recognize any booking/charge. Sources: `gluemasters` msgs **192691**, **192692**, **192693**, **192697**, **192698**. (7m)
+8. Bank of America scheduled transfer — Barristo Enterprises — Bank of America says funds transfer request **614560288** was scheduled on **2026-05-27** as a next-day transfer of **$26,392.00** to **Barristo Enterprises Inc.**, with a **$5.00** fee. Treat as expected only if Ev recognizes the transfer; otherwise verify directly in Bank of America. Source: 2026-05-27 persisted session alert at **14:36 PT**. (18m)
+
+Build again:
+- ./scripts/ops_build.py
+

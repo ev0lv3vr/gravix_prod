@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Git Hygiene Report — 2026-05-28</title>
+<style>
+:root {--bg:#0A1628;--surface:#111B2E;--border:#1E293B;--text:#fff;--muted:#94A3B8;--good:#22c55e;--warn:#f59e0b;--bad:#ef4444;}
+*{box-sizing:border-box} body{margin:0;padding:24px;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,sans-serif}
+.wrap{max-width:1280px;margin:0 auto} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.card,.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px}
+.k{color:var(--muted);font-size:12px} .v{font-size:26px;font-weight:750;margin-top:4px} .muted{color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px} th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top} th{color:var(--muted);font-size:11px;text-transform:uppercase}
+.badge{display:inline-block;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700}
+.badge.clean{background:#12253a;color:#bfdbfe} .badge.low{background:#1f2937;color:#cbd5e1} .badge.medium{background:#3b2a10;color:#fcd34d} .badge.high{background:#3d1616;color:#fca5a5}
+a{color:#93C5FD;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Git Hygiene Report</h1>
+  <div class="muted">2026-05-28 18:02 PDT · branch drift and surprise local changes across workspace repos</div>
+  <p><a href="./morning-ops-hub-latest.html">Open morning ops hub</a></p>
+  <div class="grid"><div class='card'><div class='k'>Repos</div><div class='v'>4</div></div><div class='card'><div class='k'>High risk</div><div class='v'>0</div></div><div class='card'><div class='k'>Medium risk</div><div class='v'>1</div></div><div class='card'><div class='k'>Low/noise</div><div class='v'>1</div></div><div class='card'><div class='k'>Clean</div><div class='v'>2</div></div><div class='card'><div class='k'>Changed files</div><div class='v'>106</div></div></div>
+  <div class="panel" style="margin-top:12px">
+    <table>
+      <thead><tr><th>Repo</th><th>Risk</th><th>Branch</th><th>Upstream</th><th>Ahead</th><th>Behind</th><th>Dirty</th><th>Changed files</th><th>Summary</th></tr></thead>
+      <tbody><tr><td><b>moneysamurai</b><div class='muted'>moneysamurai</div></td><td><span class='badge medium'>MEDIUM</span></td><td>docs/partner-share-moneysamurai</td><td>origin/docs/partner-share-moneysamurai</td><td>39</td><td>0</td><td>0</td><td>—</td><td>Ahead 39.</td></tr><tr><td><b>workspace</b><div class='muted'>.</div></td><td><span class='badge low'>LOW</span></td><td>fix/trim-public-env</td><td>—</td><td>0</td><td>0</td><td>106</td><td> M BUSINESS_STATE.md<br> M KANBAN.md<br> M MEMORY.md<br> M reports/ads-growth-execution-latest.html<br> M reports/ads-growth-execution-latest.md<br> M reports/ads-growth-readiness-latest.html<br> M reports/ads-growth-readiness-latest.md<br> M reports/ads-pull-dashboard-latest.html</td><td>Only state/report churn locally.</td></tr><tr><td><b>gluemasters-bizdev</b><div class='muted'>gluemasters-bizdev</div></td><td><span class='badge clean'>CLEAN</span></td><td>main</td><td>—</td><td>0</td><td>0</td><td>0</td><td>—</td><td>Clean and aligned with upstream.</td></tr><tr><td><b>gravix-holdouts</b><div class='muted'>gravix-holdouts</div></td><td><span class='badge clean'>CLEAN</span></td><td>main</td><td>origin/main</td><td>0</td><td>0</td><td>0</td><td>—</td><td>Clean and aligned with upstream.</td></tr></tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

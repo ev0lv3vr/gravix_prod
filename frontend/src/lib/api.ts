@@ -97,6 +97,101 @@ export type UsageResponse = {
   reset_date?: string | null;
 };
 
+export type AdminActivityItem = {
+  id: string;
+  type: string;
+  user_email?: string | null;
+  substrates?: string | null;
+  status?: string | null;
+  confidence_score?: number | null;
+  created_at?: string | null;
+};
+
+export type AdminOverviewMetrics = {
+  total_users: number;
+  users_by_plan: Record<string, number>;
+  total_analyses: number;
+  total_specs: number;
+  analyses_today: number;
+  analyses_this_week: number;
+  signups_today: number;
+  signups_this_week: number;
+};
+
+export type AdminAiEngineMetrics = {
+  total_ai_calls: number;
+  successful_ai_calls: number;
+  failed_ai_calls: number;
+  avg_latency_ms?: number | null;
+  calls_by_engine: Record<string, number>;
+  calls_with_knowledge: number;
+  injection_rate_pct?: number | null;
+  avg_patterns_per_call?: number | null;
+  total_knowledge_patterns: number;
+  patterns_with_strong_evidence: number;
+  total_feedback_entries: number;
+  last_aggregation_run?: string | null;
+  last_aggregation_status?: string | null;
+  last_aggregation_patterns_upserted: number;
+  avg_confidence_raw?: number | null;
+  avg_confidence_calibrated?: number | null;
+};
+
+export type AdminEngagementMetrics = {
+  window: { range: string; start_date: string; end_date: string };
+  new_users: number;
+  analyses: number;
+  specs: number;
+  recent_activity: AdminActivityItem[];
+};
+
+export type AdminKnowledgeMetrics = {
+  window: { range: string; start_date: string; end_date: string };
+  knowledge_patterns_total: number;
+  knowledge_patterns_recent: number;
+  feedback_total: number;
+  feedback_recent: number;
+};
+
+export type AdminSystemMetrics = {
+  window: { range: string; start_date: string; end_date: string };
+  requests_total: number;
+  server_errors: number;
+  client_errors: number;
+  p95_latency_ms?: number | null;
+  endpoint_performance: {
+    method: string;
+    path: string;
+    requests: number;
+    errors: number;
+    avg_latency_ms?: number | null;
+    p95_latency_ms?: number | null;
+    error_rate_pct: number;
+  }[];
+  hourly_traffic: {
+    hour: string;
+    requests: number;
+    errors: number;
+  }[];
+  recent_errors: {
+    method: string;
+    path: string;
+    status_code?: number | null;
+    duration_ms?: number | null;
+    error?: unknown;
+    created_at?: string | null;
+  }[];
+  cron_failures: number;
+  recent_cron_runs: {
+    job_name?: string | null;
+    status?: string | null;
+    created_at?: string | null;
+    duration_ms?: number | null;
+    result?: unknown;
+    error?: unknown;
+  }[];
+};
+
 function mapUserProfile(u: ApiUserProfile): User {
   return {
     id: u.id,
@@ -409,42 +504,43 @@ export class ApiClient {
   }
 
   // PDF Download with Auth
-  async downloadAnalysisPdf(id: string): Promise<void> {
+  private async _downloadAuthenticatedPdf(url: string, filename: string): Promise<void> {
     const headers = await this.getAuthHeaders();
-    const response = await fetch(`${API_URL}/reports/analysis/${id}/pdf`, {
-      headers,
-    });
+    const response = await fetch(url, { headers });
     if (!response.ok) {
-      throw new Error('Failed to download PDF');
+      const error = await response.json().catch(() => ({}));
+      const message = typeof error.detail === 'string'
+        ? error.detail
+        : (error.message || 'Failed to download PDF');
+      throw new ApiError(message, response.status, error.detail);
     }
+
     const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+    const disposition = response.headers.get('content-disposition');
+    const serverFilename = disposition?.match(/filename="?([^"]+)"?/i)?.[1];
+    const downloadName = serverFilename || filename;
+    const urlObject = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `gravix-analysis-${id.slice(0, 8)}.pdf`;
+    a.href = urlObject;
+    a.download = downloadName;
     document.body.appendChild(a);
     a.click();
-    window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+    window.setTimeout(() => window.URL.revokeObjectURL(urlObject), 0);
+  }
+
+  async downloadAnalysisPdf(id: string): Promise<void> {
+    await this._downloadAuthenticatedPdf(
+      `${API_URL}/reports/analysis/${id}/pdf`,
+      `gravix-analysis-${id.slice(0, 8)}.pdf`
+    );
   }
 
   async downloadSpecPdf(id: string): Promise<void> {
-    const headers = await this.getAuthHeaders();
-    const response = await fetch(`${API_URL}/reports/spec/${id}/pdf`, {
-      headers,
-    });
-    if (!response.ok) {
-      throw new Error('Failed to download PDF');
-    }
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `gravix-spec-${id.slice(0, 8)}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
+    await this._downloadAuthenticatedPdf(
+      `${API_URL}/reports/spec/${id}/pdf`,
+      `gravix-spec-${id.slice(0, 8)}.pdf`
+    );
   }
 
   // Feedback
@@ -637,7 +733,11 @@ export class ApiClient {
     return params.toString();
   }
 
-  async getAdminMetricsOverview(range = '7d', startDate?: string, endDate?: string) {
+  async getAdminMetricsOverview(
+    range = '7d',
+    startDate?: string,
+    endDate?: string
+  ): Promise<AdminOverviewMetrics> {
     const headers = await this.getAuthHeaders();
     const q = this._metricsQuery(range, startDate, endDate);
     const res = await fetch(`${API_URL}/api/admin/metrics/overview?${q}`, { headers });
@@ -645,7 +745,11 @@ export class ApiClient {
     return res.json();
   }
 
-  async getAdminMetricsAiEngine(range = '7d', startDate?: string, endDate?: string) {
+  async getAdminMetricsAiEngine(
+    range = '7d',
+    startDate?: string,
+    endDate?: string
+  ): Promise<AdminAiEngineMetrics> {
     const headers = await this.getAuthHeaders();
     const q = this._metricsQuery(range, startDate, endDate);
     const res = await fetch(`${API_URL}/api/admin/metrics/ai-engine?${q}`, { headers });
@@ -653,7 +757,11 @@ export class ApiClient {
     return res.json();
   }
 
-  async getAdminMetricsEngagement(range = '7d', startDate?: string, endDate?: string) {
+  async getAdminMetricsEngagement(
+    range = '7d',
+    startDate?: string,
+    endDate?: string
+  ): Promise<AdminEngagementMetrics> {
     const headers = await this.getAuthHeaders();
     const q = this._metricsQuery(range, startDate, endDate);
     const res = await fetch(`${API_URL}/api/admin/metrics/engagement?${q}`, { headers });
@@ -661,7 +769,11 @@ export class ApiClient {
     return res.json();
   }
 
-  async getAdminMetricsKnowledge(range = '7d', startDate?: string, endDate?: string) {
+  async getAdminMetricsKnowledge(
+    range = '7d',
+    startDate?: string,
+    endDate?: string
+  ): Promise<AdminKnowledgeMetrics> {
     const headers = await this.getAuthHeaders();
     const q = this._metricsQuery(range, startDate, endDate);
     const res = await fetch(`${API_URL}/api/admin/metrics/knowledge?${q}`, { headers });
@@ -669,7 +781,11 @@ export class ApiClient {
     return res.json();
   }
 
-  async getAdminMetricsSystem(range = '7d', startDate?: string, endDate?: string) {
+  async getAdminMetricsSystem(
+    range = '7d',
+    startDate?: string,
+    endDate?: string
+  ): Promise<AdminSystemMetrics> {
     const headers = await this.getAuthHeaders();
     const q = this._metricsQuery(range, startDate, endDate);
     const res = await fetch(`${API_URL}/api/admin/metrics/system?${q}`, { headers });
