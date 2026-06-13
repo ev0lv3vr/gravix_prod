@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 from fastapi.responses import JSONResponse
 
 from main import _apply_error_cors_headers, http_exception_handler
-from routers.analyze import _mark_analysis_failed
+from routers.analyze import _db_insert_payload, _mark_analysis_failed
 
 
 def test_mark_analysis_failed_falls_back_when_error_detail_column_missing():
@@ -23,6 +23,33 @@ def test_mark_analysis_failed_falls_back_when_error_detail_column_missing():
     assert first_update["error_detail"] == "RuntimeError: failed"
     assert second_update["status"] == "failed"
     assert "error_detail" not in second_update
+
+
+def test_db_insert_payload_excludes_request_only_fields():
+    payload = {
+        "material_category": "adhesive",
+        "failure_description": "Bond failed after two days",
+        "substrate_a": "aluminum",
+        "substrate_b": "ABS",
+        "chemical_exposure": ["env:standard_indoor"],
+        "environment": ["standard_indoor"],
+        "sterilization_methods": ["autoclave"],
+        "product_name": "3M DP420",
+        "defect_photos": ["https://example.com/photo.jpg"],
+        "chemical_exposure_detail": ["chem:ipa"],
+        "chemical_exposure_other": "custom solvent",
+        "surface_prep_detail": "IPA wipe",
+    }
+
+    result = _db_insert_payload(payload)
+
+    assert result == {
+        "material_category": "adhesive",
+        "failure_description": "Bond failed after two days",
+        "substrate_a": "aluminum",
+        "substrate_b": "ABS",
+        "chemical_exposure": ["env:standard_indoor"],
+    }
 
 
 def test_error_cors_headers_are_added_for_allowed_origin():

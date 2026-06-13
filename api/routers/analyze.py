@@ -33,6 +33,38 @@ router = APIRouter(prefix="/analyze", tags=["analysis"])
 api_router = APIRouter(prefix="/api", tags=["analysis"])
 
 
+FAILURE_ANALYSIS_INSERT_FIELDS = {
+    "material_category",
+    "material_subcategory",
+    "material_product",
+    "failure_mode",
+    "failure_description",
+    "substrate_a",
+    "substrate_b",
+    "industry",
+    "production_impact",
+    "temperature_range",
+    "humidity",
+    "chemical_exposure",
+    "time_to_failure",
+    "application_method",
+    "surface_preparation",
+    "cure_conditions",
+    "photos",
+    "test_results",
+    "additional_notes",
+}
+
+
+def _db_insert_payload(payload: dict) -> dict:
+    """Keep request-only/new UI fields out of the legacy failure_analyses table."""
+    return {
+        key: value
+        for key, value in payload.items()
+        if key in FAILURE_ANALYSIS_INSERT_FIELDS
+    }
+
+
 def _mark_analysis_failed(db, analysis_id: str, error_detail: str) -> None:
     """Persist failure status; include error_detail when the DB column exists."""
     update_data = {
@@ -90,7 +122,7 @@ async def create_analysis(
         "status": "processing",
         "created_at": now,
         "updated_at": now,
-        **payload,
+        **_db_insert_payload(payload),
         # Structured fields populated on insert (Sprint 1)
         "substrate_a_normalized": normalize_substrate(payload.get("substrate_a")),
         "substrate_b_normalized": normalize_substrate(payload.get("substrate_b")),
