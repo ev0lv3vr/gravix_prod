@@ -10,6 +10,7 @@ import base64
 import hashlib
 import hmac
 import json
+import uuid
 from typing import Literal
 
 from fastapi import APIRouter, HTTPException, Request
@@ -58,7 +59,7 @@ async def issue_holdout_test_session(body: IssueTokenRequest, request: Request) 
         raise HTTPException(status_code=403, detail="Forbidden")
 
     plan = _plan_from_email(email)
-    sub = f"holdout-{plan}-{hashlib.sha1(email.encode()).hexdigest()[:10]}"
+    sub = str(uuid.uuid5(uuid.NAMESPACE_URL, f"gravix-holdout:{email}:{plan}"))
 
     analyses_this_month, specs_this_month = _usage_from_email(email)
 
