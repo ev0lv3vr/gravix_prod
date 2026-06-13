@@ -6,6 +6,7 @@ import hmac
 import hashlib
 import base64
 import json
+import uuid
 from functools import lru_cache
 from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -107,14 +108,29 @@ async def get_current_user(
     # Holdout preview test auth (explicitly gated by server flag + token signature)
     holdout_claims = _verify_holdout_token(token)
     if holdout_claims is not None:
-        user_id = holdout_claims.get("sub") or f"holdout-{holdout_claims.get('plan','free')}-user"
         email = holdout_claims.get("email", "")
         plan = holdout_claims.get("plan", "free")
+        user_id = holdout_claims.get("sub") or str(uuid.uuid5(uuid.NAMESPACE_URL, f"gravix-holdout:{email}:{plan}"))
         analyses_this_month = int(holdout_claims.get("analyses_this_month", 0) or 0)
         specs_this_month = int(holdout_claims.get("specs_this_month", 0) or 0)
 
-        # Return synthetic user dict directly — no DB dependency.
-        # This avoids Supabase RLS/schema issues for holdout test users.
+        # Ensure service-role writes that require users(id) FKs can persist
+        # holdout scenario records without depending on real Supabase auth users.
+        try:
+            db = get_supabase()
+            db.table("users").upsert(
+                {
+                    "id": user_id,
+                    "email": email,
+                    "plan": plan,
+                    "analyses_this_month": analyses_this_month,
+                    "specs_this_month": specs_this_month,
+                },
+                on_conflict="id",
+            ).execute()
+        except Exception as e:
+            logger.warning("Could not upsert holdout test user %s: %s", user_id, e)
+
         return {
             "id": user_id,
             "email": email,
