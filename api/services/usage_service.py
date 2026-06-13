@@ -22,7 +22,6 @@ def check_and_reset_usage(user: dict) -> dict:
     if user.get("holdout_test"):
         return user
 
-    db = get_supabase()
     now = datetime.now(timezone.utc)
 
     analyses_reset = user.get("analyses_reset_date")
@@ -46,8 +45,12 @@ def check_and_reset_usage(user: dict) -> dict:
             "analyses_reset_date": reset_date,
             "specs_reset_date": reset_date,
         }
-        db.table("users").update(update_data).eq("id", user["id"]).execute()
-        user.update(update_data)
+        try:
+            db = get_supabase()
+            db.table("users").update(update_data).eq("id", user["id"]).execute()
+            user.update(update_data)
+        except Exception as e:
+            logger.warning("Usage counter reset failed for user %s: %s", user.get("id"), e)
 
     return user
 
@@ -84,13 +87,16 @@ def increment_analysis_usage(user_id: str):
     if user_id.startswith("holdout-"):
         return
 
-    db = get_supabase()
-    user = db.table("users").select("analyses_this_month").eq("id", user_id).execute()
-    if user.data:
-        current = user.data[0].get("analyses_this_month", 0)
-        db.table("users").update(
-            {"analyses_this_month": current + 1}
-        ).eq("id", user_id).execute()
+    try:
+        db = get_supabase()
+        user = db.table("users").select("analyses_this_month").eq("id", user_id).execute()
+        if user.data:
+            current = user.data[0].get("analyses_this_month", 0)
+            db.table("users").update(
+                {"analyses_this_month": current + 1}
+            ).eq("id", user_id).execute()
+    except Exception as e:
+        logger.warning("Analysis usage increment failed for user %s: %s", user_id, e)
 
 
 def increment_spec_usage(user_id: str):
@@ -98,13 +104,16 @@ def increment_spec_usage(user_id: str):
     if user_id.startswith("holdout-"):
         return
 
-    db = get_supabase()
-    user = db.table("users").select("specs_this_month").eq("id", user_id).execute()
-    if user.data:
-        current = user.data[0].get("specs_this_month", 0)
-        db.table("users").update(
-            {"specs_this_month": current + 1}
-        ).eq("id", user_id).execute()
+    try:
+        db = get_supabase()
+        user = db.table("users").select("specs_this_month").eq("id", user_id).execute()
+        if user.data:
+            current = user.data[0].get("specs_this_month", 0)
+            db.table("users").update(
+                {"specs_this_month": current + 1}
+            ).eq("id", user_id).execute()
+    except Exception as e:
+        logger.warning("Spec usage increment failed for user %s: %s", user_id, e)
 
 
 def get_usage(user: dict) -> dict:
