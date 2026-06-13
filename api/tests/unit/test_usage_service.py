@@ -1,6 +1,6 @@
 """Unit tests for usage tracking edge cases."""
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from services.usage_service import (
     can_use_analysis,
@@ -34,3 +34,29 @@ def test_holdout_usage_increment_is_noop():
         increment_spec_usage("holdout-pro-user")
 
     get_supabase.assert_not_called()
+
+
+def test_usage_reset_failure_does_not_block_analysis():
+    user = {
+        "id": "11111111-1111-1111-1111-111111111111",
+        "email": "ev@example.com",
+        "plan": "pro",
+        "analyses_this_month": 12,
+        "specs_this_month": 4,
+        "role": "user",
+        "analyses_reset_date": None,
+    }
+    db = MagicMock()
+    db.table.return_value.update.return_value.eq.return_value.execute.side_effect = Exception("db down")
+
+    with patch("services.usage_service.get_supabase", return_value=db):
+        assert can_use_analysis(user) is True
+
+
+def test_usage_increment_failure_is_noop():
+    db = MagicMock()
+    db.table.return_value.select.return_value.eq.return_value.execute.side_effect = Exception("db down")
+
+    with patch("services.usage_service.get_supabase", return_value=db):
+        increment_analysis_usage("11111111-1111-1111-1111-111111111111")
+        increment_spec_usage("11111111-1111-1111-1111-111111111111")
