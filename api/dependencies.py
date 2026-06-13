@@ -121,6 +121,7 @@ async def get_current_user(
             "plan": plan,
             "analyses_this_month": analyses_this_month,
             "specs_this_month": specs_this_month,
+            "holdout_test": True,
             "role": "user",
         }
 
