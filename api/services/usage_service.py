@@ -19,6 +19,9 @@ def _get_reset_date() -> str:
 
 def check_and_reset_usage(user: dict) -> dict:
     """Check if usage counters need to be reset (monthly). Returns updated user."""
+    if user.get("holdout_test"):
+        return user
+
     db = get_supabase()
     now = datetime.now(timezone.utc)
 
@@ -78,6 +81,9 @@ def can_use_spec(user: dict) -> bool:
 
 def increment_analysis_usage(user_id: str):
     """Increment the analysis counter for a user."""
+    if user_id.startswith("holdout-"):
+        return
+
     db = get_supabase()
     user = db.table("users").select("analyses_this_month").eq("id", user_id).execute()
     if user.data:
@@ -89,6 +95,9 @@ def increment_analysis_usage(user_id: str):
 
 def increment_spec_usage(user_id: str):
     """Increment the spec counter for a user."""
+    if user_id.startswith("holdout-"):
+        return
+
     db = get_supabase()
     user = db.table("users").select("specs_this_month").eq("id", user_id).execute()
     if user.data:
