@@ -188,29 +188,28 @@ jobs:
         timeout-minutes: 25
         with:
           script: |
-            const checkName = 'holdout-results';
+            const statusContext = 'holdout-results';
             const ref = context.sha;
             const deadline = Date.now() + 25 * 60 * 1000;
 
             while (Date.now() < deadline) {
-              const { data } = await github.rest.checks.listForRef({
+              const { data } = await github.rest.repos.listCommitStatusesForRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 ref,
-                check_name: checkName,
+                per_page: 100,
               });
 
-              const run = data.check_runs[0];
-              if (!run) {
-                console.log(`Waiting for ${checkName} check on ${ref}...`);
+              const status = data.find(item => item.context === statusContext);
+              if (!status) {
+                console.log(`Waiting for ${statusContext} status on ${ref}...`);
               } else {
-                console.log(`${checkName}: status=${run.status} conclusion=${run.conclusion}`);
-                if (run.status !== 'completed') {
-                  // keep waiting
-                } else if (['success', 'neutral'].includes(run.conclusion)) {
+                console.log(`${statusContext}: state=${status.state} description=${status.description || ''}`);
+                if (status.state === 'success') {
                   return;
-                } else {
-                  core.setFailed(`${checkName} concluded ${run.conclusion}`);
+                }
+                if (['failure', 'error'].includes(status.state)) {
+                  core.setFailed(`${statusContext} concluded ${status.state}: ${status.description || 'no description'}`);
                   return;
                 }
               }
@@ -218,7 +217,7 @@ jobs:
               await new Promise(resolve => setTimeout(resolve, 15000));
             }
 
-            core.setFailed(`${checkName} did not appear before timeout`);
+            core.setFailed(`${statusContext} did not appear before timeout`);
 
   # ─── Report ──────────────────────────────────────────────
   # Posts convergence results to the PR.
@@ -234,28 +233,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch holdout check run results
+      - name: Fetch holdout status results
         id: holdout
         uses: actions/github-script@v7
         with:
           script: |
-            // Look for the holdout-results check run on this commit
-            const { data: checkRuns } = await github.rest.checks.listForRef({
+            const { data: statuses } = await github.rest.repos.listCommitStatusesForRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: context.sha,
-              check_name: 'holdout-results',
+              per_page: 100,
             });
 
-            const run = checkRuns.check_runs[0];
-            if (run) {
-              core.setOutput('score', run.output.title || 'N/A');
-              core.setOutput('summary', run.output.summary || 'No summary available.');
-              core.setOutput('conclusion', run.conclusion || 'unknown');
+            const status = statuses.find(item => item.context === 'holdout-results');
+            if (status) {
+              core.setOutput('score', status.description || 'N/A');
+              core.setOutput('summary', status.target_url ? `Holdout run: ${status.target_url}` : 'No holdout run URL available.');
+              core.setOutput('conclusion', status.state || 'unknown');
               core.setOutput('found', 'true');
             } else {
               core.setOutput('score', 'N/A');
-              core.setOutput('summary', 'Holdout check run not found.');
+              core.setOutput('summary', 'Holdout status not found.');
               core.setOutput('conclusion', 'unknown');
               core.setOutput('found', 'false');
             }
