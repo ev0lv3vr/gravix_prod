@@ -184,15 +184,41 @@ jobs:
             }
 
       - name: Wait for holdout results
-        uses: lewagon/wait-on-check-action@v1.5.0
-        with:
-          ref: ${{ github.sha }}
-          check-name: holdout-results
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 15
-          allowed-conclusions: success,neutral
-          fail-on-no-checks: true
+        uses: actions/github-script@v7
         timeout-minutes: 25
+        with:
+          script: |
+            const checkName = 'holdout-results';
+            const ref = context.sha;
+            const deadline = Date.now() + 25 * 60 * 1000;
+
+            while (Date.now() < deadline) {
+              const { data } = await github.rest.checks.listForRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref,
+                check_name: checkName,
+              });
+
+              const run = data.check_runs[0];
+              if (!run) {
+                console.log(`Waiting for ${checkName} check on ${ref}...`);
+              } else {
+                console.log(`${checkName}: status=${run.status} conclusion=${run.conclusion}`);
+                if (run.status !== 'completed') {
+                  // keep waiting
+                } else if (['success', 'neutral'].includes(run.conclusion)) {
+                  return;
+                } else {
+                  core.setFailed(`${checkName} concluded ${run.conclusion}`);
+                  return;
+                }
+              }
+
+              await new Promise(resolve => setTimeout(resolve, 15000));
+            }
+
+            core.setFailed(`${checkName} did not appear before timeout`);
 
   # ─── Report ──────────────────────────────────────────────
   # Posts convergence results to the PR.
