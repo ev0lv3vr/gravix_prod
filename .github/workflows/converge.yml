@@ -191,7 +191,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 15
           allowed-conclusions: success,neutral
-          fail-on-no-checks: false
+          fail-on-no-checks: true
         timeout-minutes: 25
 
   # ─── Report ──────────────────────────────────────────────
