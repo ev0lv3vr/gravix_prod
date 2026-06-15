@@ -54,7 +54,7 @@ export interface FailureAnalysis {
 
 export interface RootCause {
   cause: string;
-  confidence: number;
+  confidence?: number | null;
   explanation: string;
   evidence: string[];
 }

@@ -46,7 +46,7 @@ interface FailureResultData {
     rank: number;
     cause: string;
     category: string;
-    confidence: number;
+    confidence: number | null;
     explanation: string;
     mechanism: string;
     gravixData?: string;
@@ -156,11 +156,13 @@ export function FailureResults({ status, data, analysisId, errorMessage, onNewAn
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-sm font-semibold text-white">{rc.cause}</span>
-                    <span className={cn('text-xs font-mono px-2 py-0.5 rounded',
-                      rc.confidence >= 0.8 ? 'bg-emerald-500/10 text-emerald-400' :
-                      rc.confidence >= 0.6 ? 'bg-accent-500/10 text-accent-500' :
-                      'bg-amber-500/10 text-amber-400'
-                    )}>{Math.round(rc.confidence * 100)}%</span>
+                    {typeof rc.confidence === 'number' && (
+                      <span className={cn('text-xs font-mono px-2 py-0.5 rounded',
+                        rc.confidence >= 0.8 ? 'bg-emerald-500/10 text-emerald-400' :
+                        rc.confidence >= 0.6 ? 'bg-accent-500/10 text-accent-500' :
+                        'bg-amber-500/10 text-amber-400'
+                      )}>{Math.round(rc.confidence * 100)}%</span>
+                    )}
                   </div>
                   {rc.gravixData && (
                     <p className="text-xs text-accent-500 mb-1">Gravix Data: {rc.gravixData}</p>

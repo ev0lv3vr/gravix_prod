@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 
 from main import _apply_error_cors_headers, http_exception_handler
 from routers.analyze import _db_insert_payload, _mark_analysis_failed
+from schemas.analyze import FailureAnalysisResponse
 
 
 def test_mark_analysis_failed_falls_back_when_error_detail_column_missing():
@@ -50,6 +51,25 @@ def test_db_insert_payload_excludes_request_only_fields():
         "substrate_b": "ABS",
         "chemical_exposure": ["env:standard_indoor"],
     }
+
+
+def test_failure_response_accepts_plan_gated_root_causes_without_confidence():
+    response = FailureAnalysisResponse(
+        id="analysis-1",
+        user_id="user-1",
+        material_category="adhesive",
+        status="completed",
+        root_causes=[
+            {
+                "cause": "Surface contamination",
+                "category": "surface_prep",
+                "explanation": "Oil residue prevented wet-out.",
+                "evidence": ["Clean substrate on one side"],
+            }
+        ],
+    )
+
+    assert response.root_causes[0].confidence is None
 
 
 def test_error_cors_headers_are_added_for_allowed_origin():

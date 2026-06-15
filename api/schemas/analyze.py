@@ -12,7 +12,7 @@ from datetime import datetime
 class RootCause(BaseModel):
     cause: str
     category: str
-    confidence: float = Field(ge=0, le=1)
+    confidence: Optional[float] = Field(default=None, ge=0, le=1)
     explanation: str
     evidence: List[str] = []
 

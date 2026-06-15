@@ -156,7 +156,7 @@ function StandardFailureAnalysis() {
           rank: i + 1,
           cause: rc.cause,
           category: 'general',
-          confidence: rc.confidence,
+          confidence: rc.confidence ?? null,
           explanation: rc.explanation,
           mechanism: Array.isArray(rc.evidence) ? rc.evidence.join('. ') : (rc.evidence || ''),
         })),
