@@ -175,6 +175,10 @@ class TestRootCause:
         rc = RootCause(cause="x", category="y", confidence=0.5, explanation="z")
         assert rc.evidence == []
 
+    def test_confidence_can_be_omitted_for_plan_filtered_output(self):
+        rc = RootCause(cause="x", category="y", explanation="z")
+        assert rc.confidence is None
+
 
 # =====================================================================
 # Recommendation schema
@@ -477,6 +481,25 @@ class TestFailureAnalysisResponse:
         )
         assert resp.status == "completed"
         assert len(resp.root_causes) == 1
+
+    def test_free_plan_filtered_response_without_root_cause_confidence(self):
+        resp = FailureAnalysisResponse(
+            id="test-id",
+            user_id="user-1",
+            material_category="adhesive",
+            failure_mode="adhesive_failure",
+            root_causes=[
+                {
+                    "cause": "Surface contamination",
+                    "category": "surface_prep",
+                    "explanation": "Clean adhesive-side separation suggests poor wetting.",
+                    "evidence": ["Clean substrate surface", "Reduced output reported"],
+                }
+            ],
+            status="completed",
+        )
+
+        assert resp.root_causes[0].confidence is None
 
 
 # =====================================================================
